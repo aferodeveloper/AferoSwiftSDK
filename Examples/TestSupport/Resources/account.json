@@ -1,0 +1,65 @@
+{
+    "firstName" : "Justin",
+    "lastName" : "Middleton",
+    "accountAccess" : [
+                       {
+                       "endAccessTimestamp" : 0,
+                       "account" : {
+                       "accountId" : "58786ce6-f355-44ce-b7d4-94a8824f8519",
+                       "type" : "CUSTOMER",
+                       "description" : "Home",
+                       "createdTimestamp" : 1427741198601
+                       },
+                       "privileges" : {
+                       "owner" : true,
+                       "canWrite" : false
+                       },
+                       "startAccessTimestamp" : 0
+                       },
+                       {
+                       "endAccessTimestamp" : 0,
+                       "account" : {
+                       "accountId" : "180313F8-20C2-465D-B865-F86F409AC331",
+                       "type" : "CUSTOMER",
+                       "description" : "NorthStar Condo",
+                       "createdTimestamp" : 1427741198601
+                       },
+                       "privileges" : {
+                       "owner" : false,
+                       "canWrite" : true
+                       },
+                       "startAccessTimestamp" : 0
+                       },
+                       {
+                       "endAccessTimestamp" : 0,
+                       "account" : {
+                       "accountId" : "4C6BC1C7-1324-4BEC-81A2-2E3EDECF64BC",
+                       "type" : "CUSTOMER",
+                       "description" : "Log Cabin",
+                       "createdTimestamp" : 1427741198601
+                       },
+                       "privileges" : {
+                       "owner" : false,
+                       "canWrite" : false
+                       },
+                       "startAccessTimestamp" : 0
+                       }
+                       ],
+    "partnerAccess" : [
+                       {
+                       "partner" : {
+                       "name" : "Kiban.io",
+                       "createdTimestamp" : 1422381519333,
+                       "partnerId" : "3da8249e-57c6-42d4-8b07-91377f617db7"
+                       },
+                       "privileges" : {
+                       "owner" : false,
+                       "inviteUsers" : true,
+                       "manageDeviceProfiles" : true,
+                       "viewDeviceInfo" : true
+                       }
+                       }
+                       ],
+    "userId" : "f0c30c20-6676-43ab-bf47-0ffbcc819bf5",
+    "lastUsedTimestamp" : 0
+}

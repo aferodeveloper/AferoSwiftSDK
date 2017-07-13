@@ -1,0 +1,823 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A8F93353CACE9757D8027B6 /* Pods_AferoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE141C3EECD6EA06EA74415 /* Pods_AferoTests.framework */; };
+		AA3A16231D889EE600C5660E /* account.json in Resources */ = {isa = PBXBuildFile; fileRef = AA3A16221D889EDF00C5660E /* account.json */; };
+		CB1CED441EF8A5E500B86534 /* DebounceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED231EF8A5E500B86534 /* DebounceTests.swift */; };
+		CB1CED461EF8A5E500B86534 /* DeviceModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */; };
+		CB1CED471EF8A5E500B86534 /* DeviceProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED261EF8A5E500B86534 /* DeviceProfileTests.swift */; };
+		CB1CED481EF8A5E500B86534 /* DeviceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED271EF8A5E500B86534 /* DeviceRuleTests.swift */; };
+		CB1CED491EF8A5E500B86534 /* DisplayRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED281EF8A5E500B86534 /* DisplayRulesTests.swift */; };
+		CB1CED4A1EF8A5E500B86534 /* accountDeviceProfiles.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED2B1EF8A5E500B86534 /* accountDeviceProfiles.json */; };
+		CB1CED4B1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED2C1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json */; };
+		CB1CED4C1EF8A5E500B86534 /* conclave-attributeUpdate-error.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED2D1EF8A5E500B86534 /* conclave-attributeUpdate-error.json */; };
+		CB1CED4D1EF8A5E500B86534 /* conclave-error-device_error.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED2E1EF8A5E500B86534 /* conclave-error-device_error.json */; };
+		CB1CED4E1EF8A5E500B86534 /* conclave-invalidate-accounts.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED2F1EF8A5E500B86534 /* conclave-invalidate-accounts.json */; };
+		CB1CED4F1EF8A5E500B86534 /* conclave-invalidate-invitations.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED301EF8A5E500B86534 /* conclave-invalidate-invitations.json */; };
+		CB1CED501EF8A5E500B86534 /* conclave-invalidate-location.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED311EF8A5E500B86534 /* conclave-invalidate-location.json */; };
+		CB1CED511EF8A5E500B86534 /* conclave-invalidate-nokind.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED321EF8A5E500B86534 /* conclave-invalidate-nokind.json */; };
+		CB1CED531EF8A5E500B86534 /* conclave-invalidate-unknownkind.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED341EF8A5E500B86534 /* conclave-invalidate-unknownkind.json */; };
+		CB1CED541EF8A5E500B86534 /* conclave-OTA-device_ota.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED351EF8A5E500B86534 /* conclave-OTA-device_ota.json */; };
+		CB1CED551EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED361EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json */; };
+		CB1CED561EF8A5E500B86534 /* conclave-OTA-ota_progress-inProgress.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED371EF8A5E500B86534 /* conclave-OTA-ota_progress-inProgress.json */; };
+		CB1CED571EF8A5E500B86534 /* conclave-OTA-ota_progress-start.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED381EF8A5E500B86534 /* conclave-OTA-ota_progress-start.json */; };
+		CB1CED581EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED391EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json */; };
+		CB1CED591EF8A5E500B86534 /* conclave-rate-device_mute.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED3A1EF8A5E500B86534 /* conclave-rate-device_mute.json */; };
+		CB1CED5A1EF8A5E500B86534 /* conclave-statusUpdate-status_change.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED3B1EF8A5E500B86534 /* conclave-statusUpdate-status_change.json */; };
+		CB1CED5D1EF8A5E500B86534 /* displayRulesTest1.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED3F1EF8A5E500B86534 /* displayRulesTest1.json */; };
+		CB1CED5E1EF8A5E500B86534 /* displayRulesTest2.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED401EF8A5E500B86534 /* displayRulesTest2.json */; };
+		CB1CED5F1EF8A5E500B86534 /* OfflineScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED411EF8A5E500B86534 /* OfflineScheduleTests.swift */; };
+		CB1CED601EF8A5E500B86534 /* TypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED421EF8A5E500B86534 /* TypeTests.swift */; };
+		CB1CED611EF8A5E500B86534 /* UserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED431EF8A5E500B86534 /* UserTests.swift */; };
+		CB1CED7F1EF8A61900B86534 /* ConclaveClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED631EF8A61900B86534 /* ConclaveClientTests.swift */; };
+		CB1CED801EF8A61900B86534 /* ConclaveMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED641EF8A61900B86534 /* ConclaveMessageTests.swift */; };
+		CB1CED811EF8A61900B86534 /* DeviceStreamEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED651EF8A61900B86534 /* DeviceStreamEventTests.swift */; };
+		CB1CED921EF8A61900B86534 /* conclave_hello.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED771EF8A61900B86534 /* conclave_hello.json */; };
+		CB1CED941EF8A61900B86534 /* conclave_private.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED791EF8A61900B86534 /* conclave_private.json */; };
+		CB1CED951EF8A61900B86534 /* conclave_public.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED7A1EF8A61900B86534 /* conclave_public.json */; };
+		CB1CED961EF8A61900B86534 /* conclave_welcome.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */; };
+		CB1CED971EF8A61900B86534 /* conclaveConnectionInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */; };
+		CB1CED9B1EF8A89300B86534 /* conclave_peripheralList.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED3C1EF8A5E500B86534 /* conclave_peripheralList.json */; };
+		CB593CC01D74F8050069F8A0 /* coffeemaker.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB31D74F8050069F8A0 /* coffeemaker.json */; };
+		CB593CC11D74F8050069F8A0 /* fan.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB41D74F8050069F8A0 /* fan.json */; };
+		CB593CC21D74F8050069F8A0 /* fancyfan.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB51D74F8050069F8A0 /* fancyfan.json */; };
+		CB593CC31D74F8050069F8A0 /* garagedoor.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB61D74F8050069F8A0 /* garagedoor.json */; };
+		CB593CC41D74F8050069F8A0 /* hub.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB71D74F8050069F8A0 /* hub.json */; };
+		CB593CC51D74F8050069F8A0 /* kram.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB81D74F8050069F8A0 /* kram.json */; };
+		CB593CC61D74F8050069F8A0 /* light.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB91D74F8050069F8A0 /* light.json */; };
+		CB593CC71D74F8050069F8A0 /* lock.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBA1D74F8050069F8A0 /* lock.json */; };
+		CB593CC81D74F8050069F8A0 /* massagechair.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBB1D74F8050069F8A0 /* massagechair.json */; };
+		CB593CC91D74F8050069F8A0 /* moban.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBC1D74F8050069F8A0 /* moban.json */; };
+		CB593CCA1D74F8050069F8A0 /* nest.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBD1D74F8050069F8A0 /* nest.json */; };
+		CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBE1D74F8050069F8A0 /* plasmacluster.json */; };
+		CB593CCC1D74F8050069F8A0 /* wetcheck.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBF1D74F8050069F8A0 /* wetcheck.json */; };
+		CB990C501F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */; };
+		CB990C511F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */; };
+		CB990C521F02FDF500265EAE /* conclave-invalidate-profiles-id.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4F1F02FDF500265EAE /* conclave-invalidate-profiles-id.json */; };
+		CBA97AFC1B192F4100AA216E /* profileTest.json in Resources */ = {isa = PBXBuildFile; fileRef = CBA97AF51B192F4100AA216E /* profileTest.json */; };
+		CBA97AFE1B192F4100AA216E /* ruleTest1.json in Resources */ = {isa = PBXBuildFile; fileRef = CBA97AF61B192F4100AA216E /* ruleTest1.json */; };
+		CBA993731EE750F50066213B /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA993711EE750F50066213B /* Mocks.swift */; };
+		CBB85CC51EC4D77B0010D61B /* userJohnSmith.json in Resources */ = {isa = PBXBuildFile; fileRef = CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */; };
+		CBB85CC71EC4DD920010D61B /* userJaneDoe.json in Resources */ = {isa = PBXBuildFile; fileRef = CBB85CC61EC4DD920010D61B /* userJaneDoe.json */; };
+		CBF1918C1B19211B00884457 /* SpecSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF1918A1B19211A00884457 /* SpecSupport.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CBA97AED1B192E5B00AA216E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2AE141C3EECD6EA06EA74415 /* Pods_AferoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		47F5272FBEE4065E3BD5678D /* Pods-AferoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		67F99E49F3645F3ED3931380 /* Pods-AferoTests.ad hoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoTests.ad hoc.xcconfig"; path = "Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests.ad hoc.xcconfig"; sourceTree = "<group>"; };
+		966A05E8F9200C490E6C4971 /* Pods-AferoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests.release.xcconfig"; sourceTree = "<group>"; };
+		AA3A16221D889EDF00C5660E /* account.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = account.json; sourceTree = "<group>"; };
+		CB1CED231EF8A5E500B86534 /* DebounceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebounceTests.swift; sourceTree = "<group>"; };
+		CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCollectionTests.swift; sourceTree = "<group>"; };
+		CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceModelTests.swift; sourceTree = "<group>"; };
+		CB1CED261EF8A5E500B86534 /* DeviceProfileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceProfileTests.swift; sourceTree = "<group>"; };
+		CB1CED271EF8A5E500B86534 /* DeviceRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceRuleTests.swift; sourceTree = "<group>"; };
+		CB1CED281EF8A5E500B86534 /* DisplayRulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRulesTests.swift; sourceTree = "<group>"; };
+		CB1CED2B1EF8A5E500B86534 /* accountDeviceProfiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = accountDeviceProfiles.json; sourceTree = "<group>"; };
+		CB1CED2C1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-attributeUpdate-attr_change.json"; sourceTree = "<group>"; };
+		CB1CED2D1EF8A5E500B86534 /* conclave-attributeUpdate-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-attributeUpdate-error.json"; sourceTree = "<group>"; };
+		CB1CED2E1EF8A5E500B86534 /* conclave-error-device_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-error-device_error.json"; sourceTree = "<group>"; };
+		CB1CED2F1EF8A5E500B86534 /* conclave-invalidate-accounts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-accounts.json"; sourceTree = "<group>"; };
+		CB1CED301EF8A5E500B86534 /* conclave-invalidate-invitations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-invitations.json"; sourceTree = "<group>"; };
+		CB1CED311EF8A5E500B86534 /* conclave-invalidate-location.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-location.json"; sourceTree = "<group>"; };
+		CB1CED321EF8A5E500B86534 /* conclave-invalidate-nokind.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-nokind.json"; sourceTree = "<group>"; };
+		CB1CED341EF8A5E500B86534 /* conclave-invalidate-unknownkind.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-unknownkind.json"; sourceTree = "<group>"; };
+		CB1CED351EF8A5E500B86534 /* conclave-OTA-device_ota.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-OTA-device_ota.json"; sourceTree = "<group>"; };
+		CB1CED361EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-OTA-ota_progress-complete.json"; sourceTree = "<group>"; };
+		CB1CED371EF8A5E500B86534 /* conclave-OTA-ota_progress-inProgress.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-OTA-ota_progress-inProgress.json"; sourceTree = "<group>"; };
+		CB1CED381EF8A5E500B86534 /* conclave-OTA-ota_progress-start.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-OTA-ota_progress-start.json"; sourceTree = "<group>"; };
+		CB1CED391EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-OTA-ota_progress-unknown.json"; sourceTree = "<group>"; };
+		CB1CED3A1EF8A5E500B86534 /* conclave-rate-device_mute.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-rate-device_mute.json"; sourceTree = "<group>"; };
+		CB1CED3B1EF8A5E500B86534 /* conclave-statusUpdate-status_change.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-statusUpdate-status_change.json"; sourceTree = "<group>"; };
+		CB1CED3C1EF8A5E500B86534 /* conclave_peripheralList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_peripheralList.json; sourceTree = "<group>"; };
+		CB1CED3F1EF8A5E500B86534 /* displayRulesTest1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = displayRulesTest1.json; sourceTree = "<group>"; };
+		CB1CED401EF8A5E500B86534 /* displayRulesTest2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = displayRulesTest2.json; sourceTree = "<group>"; };
+		CB1CED411EF8A5E500B86534 /* OfflineScheduleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineScheduleTests.swift; sourceTree = "<group>"; };
+		CB1CED421EF8A5E500B86534 /* TypeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeTests.swift; sourceTree = "<group>"; };
+		CB1CED431EF8A5E500B86534 /* UserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserTests.swift; sourceTree = "<group>"; };
+		CB1CED631EF8A61900B86534 /* ConclaveClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConclaveClientTests.swift; sourceTree = "<group>"; };
+		CB1CED641EF8A61900B86534 /* ConclaveMessageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConclaveMessageTests.swift; sourceTree = "<group>"; };
+		CB1CED651EF8A61900B86534 /* DeviceStreamEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceStreamEventTests.swift; sourceTree = "<group>"; };
+		CB1CED771EF8A61900B86534 /* conclave_hello.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_hello.json; sourceTree = "<group>"; };
+		CB1CED791EF8A61900B86534 /* conclave_private.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_private.json; sourceTree = "<group>"; };
+		CB1CED7A1EF8A61900B86534 /* conclave_public.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_public.json; sourceTree = "<group>"; };
+		CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_welcome.json; sourceTree = "<group>"; };
+		CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclaveConnectionInfo.json; sourceTree = "<group>"; };
+		CB1E2ED61B6543B30018C022 /* FetchedResults.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FetchedResults.playground; sourceTree = "<group>"; };
+		CB3ACA8C1AF8212D00AD7E7D /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
+		CB593CB31D74F8050069F8A0 /* coffeemaker.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = coffeemaker.json; sourceTree = "<group>"; };
+		CB593CB41D74F8050069F8A0 /* fan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fan.json; sourceTree = "<group>"; };
+		CB593CB51D74F8050069F8A0 /* fancyfan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fancyfan.json; sourceTree = "<group>"; };
+		CB593CB61D74F8050069F8A0 /* garagedoor.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = garagedoor.json; sourceTree = "<group>"; };
+		CB593CB71D74F8050069F8A0 /* hub.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = hub.json; sourceTree = "<group>"; };
+		CB593CB81D74F8050069F8A0 /* kram.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = kram.json; sourceTree = "<group>"; };
+		CB593CB91D74F8050069F8A0 /* light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = light.json; sourceTree = "<group>"; };
+		CB593CBA1D74F8050069F8A0 /* lock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lock.json; sourceTree = "<group>"; };
+		CB593CBB1D74F8050069F8A0 /* massagechair.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = massagechair.json; sourceTree = "<group>"; };
+		CB593CBC1D74F8050069F8A0 /* moban.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = moban.json; sourceTree = "<group>"; };
+		CB593CBD1D74F8050069F8A0 /* nest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = nest.json; sourceTree = "<group>"; };
+		CB593CBE1D74F8050069F8A0 /* plasmacluster.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = plasmacluster.json; sourceTree = "<group>"; };
+		CB593CBF1D74F8050069F8A0 /* wetcheck.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = wetcheck.json; sourceTree = "<group>"; };
+		CB5FCDA41B0A9FDC005B2964 /* Box.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Box.framework; path = Carthage/Build/iOS/Box.framework; sourceTree = "<group>"; };
+		CB5FCDA91B0AA07D005B2964 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		CB8731651E64C756003102CF /* TimeAndDate.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TimeAndDate.playground; sourceTree = "<group>"; };
+		CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-profiles-deviceId.json"; sourceTree = "<group>"; };
+		CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-profiles-id-and-deviceId.json"; sourceTree = "<group>"; };
+		CB990C4F1F02FDF500265EAE /* conclave-invalidate-profiles-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-profiles-id.json"; sourceTree = "<group>"; };
+		CBA2A0501AE71C1F0035C58D /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
+		CBA2A05B1AE83DD90035C58D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CBA97AF51B192F4100AA216E /* profileTest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profileTest.json; sourceTree = "<group>"; };
+		CBA97AF61B192F4100AA216E /* ruleTest1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ruleTest1.json; sourceTree = "<group>"; };
+		CBA97B321B1CF01700AA216E /* AttributeValues.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = AttributeValues.playground; sourceTree = "<group>"; };
+		CBA993711EE750F50066213B /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		CBB10EC01DB6D419008297FB /* afrac-profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "afrac-profile.json"; sourceTree = "<group>"; };
+		CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userJohnSmith.json; sourceTree = "<group>"; };
+		CBB85CC61EC4DD920010D61B /* userJaneDoe.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userJaneDoe.json; sourceTree = "<group>"; };
+		CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RulesProcessor2.playground; sourceTree = "<group>"; };
+		CBC7A2731ADD48D300655611 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
+		CBC7A2741ADD48D300655611 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		CBD2D5661B7CFAFE0056C72D /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
+		CBD2D56B1B7CFBFC0056C72D /* libcorecrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcorecrypto.dylib; path = usr/lib/system/libcorecrypto.dylib; sourceTree = SDKROOT; };
+		CBE317711B2F485200E05CD1 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Scratchpad.playground; sourceTree = "<group>"; };
+		CBEEB6211AFC171F00A1570E /* RulesProcessor.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RulesProcessor.playground; sourceTree = "<group>"; };
+		CBF191681B191EF800884457 /* AferoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AferoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CBF1918A1B19211A00884457 /* SpecSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SpecSupport.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		CF4EF90F20D550EB85C0D298 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA8F819A1A1E7C4700C02479 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		EA8F819C1A1E7C5300C02479 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		EA8F819E1A1E7C5F00C02479 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CBF191651B191EF800884457 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A8F93353CACE9757D8027B6 /* Pods_AferoTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1C42E14016FF5249FD21101E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CBD2D56B1B7CFBFC0056C72D /* libcorecrypto.dylib */,
+				CBD2D5661B7CFAFE0056C72D /* libcommonCrypto.dylib */,
+				CB5FCDA91B0AA07D005B2964 /* Result.framework */,
+				CB5FCDA41B0A9FDC005B2964 /* Box.framework */,
+				CB3ACA8C1AF8212D00AD7E7D /* libPods.a */,
+				CBA2A05B1AE83DD90035C58D /* QuartzCore.framework */,
+				CBA2A0501AE71C1F0035C58D /* ReactiveCocoa.framework */,
+				CBC7A2731ADD48D300655611 /* Nimble.framework */,
+				CBC7A2741ADD48D300655611 /* Quick.framework */,
+				EA8F819E1A1E7C5F00C02479 /* SystemConfiguration.framework */,
+				EA8F819C1A1E7C5300C02479 /* CFNetwork.framework */,
+				EA8F819A1A1E7C4700C02479 /* libz.dylib */,
+				CF4EF90F20D550EB85C0D298 /* Pods.framework */,
+				2AE141C3EECD6EA06EA74415 /* Pods_AferoTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9E08FD111FE200A684442005 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				47F5272FBEE4065E3BD5678D /* Pods-AferoTests.debug.xcconfig */,
+				966A05E8F9200C490E6C4971 /* Pods-AferoTests.release.xcconfig */,
+				67F99E49F3645F3ED3931380 /* Pods-AferoTests.ad hoc.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		CB1CED221EF8A5E500B86534 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED231EF8A5E500B86534 /* DebounceTests.swift */,
+				CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */,
+				CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */,
+				CB1CED261EF8A5E500B86534 /* DeviceProfileTests.swift */,
+				CB1CED271EF8A5E500B86534 /* DeviceRuleTests.swift */,
+				CB1CED281EF8A5E500B86534 /* DisplayRulesTests.swift */,
+				CB1CED291EF8A5E500B86534 /* Fixtures */,
+				CB1CED411EF8A5E500B86534 /* OfflineScheduleTests.swift */,
+				CB1CED421EF8A5E500B86534 /* TypeTests.swift */,
+				CB1CED431EF8A5E500B86534 /* UserTests.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		CB1CED291EF8A5E500B86534 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED2A1EF8A5E500B86534 /* DeviceCollection */,
+				CB1CED3E1EF8A5E500B86534 /* DisplayRules */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		CB1CED2A1EF8A5E500B86534 /* DeviceCollection */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED2B1EF8A5E500B86534 /* accountDeviceProfiles.json */,
+				CB1CED2C1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json */,
+				CB1CED2D1EF8A5E500B86534 /* conclave-attributeUpdate-error.json */,
+				CB1CED2E1EF8A5E500B86534 /* conclave-error-device_error.json */,
+				CB1CED2F1EF8A5E500B86534 /* conclave-invalidate-accounts.json */,
+				CB1CED301EF8A5E500B86534 /* conclave-invalidate-invitations.json */,
+				CB1CED311EF8A5E500B86534 /* conclave-invalidate-location.json */,
+				CB1CED321EF8A5E500B86534 /* conclave-invalidate-nokind.json */,
+				CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */,
+				CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */,
+				CB990C4F1F02FDF500265EAE /* conclave-invalidate-profiles-id.json */,
+				CB1CED341EF8A5E500B86534 /* conclave-invalidate-unknownkind.json */,
+				CB1CED351EF8A5E500B86534 /* conclave-OTA-device_ota.json */,
+				CB1CED361EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json */,
+				CB1CED371EF8A5E500B86534 /* conclave-OTA-ota_progress-inProgress.json */,
+				CB1CED381EF8A5E500B86534 /* conclave-OTA-ota_progress-start.json */,
+				CB1CED391EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json */,
+				CB1CED3A1EF8A5E500B86534 /* conclave-rate-device_mute.json */,
+				CB1CED3B1EF8A5E500B86534 /* conclave-statusUpdate-status_change.json */,
+				CB1CED3C1EF8A5E500B86534 /* conclave_peripheralList.json */,
+			);
+			path = DeviceCollection;
+			sourceTree = "<group>";
+		};
+		CB1CED3E1EF8A5E500B86534 /* DisplayRules */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED3F1EF8A5E500B86534 /* displayRulesTest1.json */,
+				CB1CED401EF8A5E500B86534 /* displayRulesTest2.json */,
+			);
+			path = DisplayRules;
+			sourceTree = "<group>";
+		};
+		CB1CED621EF8A61900B86534 /* Conclave */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED631EF8A61900B86534 /* ConclaveClientTests.swift */,
+				CB1CED641EF8A61900B86534 /* ConclaveMessageTests.swift */,
+				CB1CED651EF8A61900B86534 /* DeviceStreamEventTests.swift */,
+				CB1CED661EF8A61900B86534 /* Fixtures */,
+			);
+			path = Conclave;
+			sourceTree = "<group>";
+		};
+		CB1CED661EF8A61900B86534 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED771EF8A61900B86534 /* conclave_hello.json */,
+				CB1CED791EF8A61900B86534 /* conclave_private.json */,
+				CB1CED7A1EF8A61900B86534 /* conclave_public.json */,
+				CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */,
+				CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		CB93841B1AE1C8B70012ED7B /* playgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				CBEEB6211AFC171F00A1570E /* RulesProcessor.playground */,
+				CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */,
+				CBA97B321B1CF01700AA216E /* AttributeValues.playground */,
+				CBE317711B2F485200E05CD1 /* Scratchpad.playground */,
+				CB1E2ED61B6543B30018C022 /* FetchedResults.playground */,
+				CB8731651E64C756003102CF /* TimeAndDate.playground */,
+			);
+			path = playgrounds;
+			sourceTree = "<group>";
+		};
+		CBA97AF21B192F4100AA216E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CBB10EC01DB6D419008297FB /* afrac-profile.json */,
+				AA3A16221D889EDF00C5660E /* account.json */,
+				CB593CB31D74F8050069F8A0 /* coffeemaker.json */,
+				CB593CB41D74F8050069F8A0 /* fan.json */,
+				CB593CB51D74F8050069F8A0 /* fancyfan.json */,
+				CB593CB61D74F8050069F8A0 /* garagedoor.json */,
+				CB593CB71D74F8050069F8A0 /* hub.json */,
+				CB593CB81D74F8050069F8A0 /* kram.json */,
+				CB593CB91D74F8050069F8A0 /* light.json */,
+				CB593CBA1D74F8050069F8A0 /* lock.json */,
+				CB593CBB1D74F8050069F8A0 /* massagechair.json */,
+				CB593CBC1D74F8050069F8A0 /* moban.json */,
+				CB593CBD1D74F8050069F8A0 /* nest.json */,
+				CB593CBE1D74F8050069F8A0 /* plasmacluster.json */,
+				CB593CBF1D74F8050069F8A0 /* wetcheck.json */,
+				CBA97AF51B192F4100AA216E /* profileTest.json */,
+				CBA97AF61B192F4100AA216E /* ruleTest1.json */,
+				CBB85CC61EC4DD920010D61B /* userJaneDoe.json */,
+				CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CBA97AFF1B192F7A00AA216E /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CBF191891B19211A00884457 /* TestSupport */,
+				CBF1916E1B191EF900884457 /* AferoSwiftSDK Tests */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		CBE962CF1E21D9200005E6BD /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		CBF1916E1B191EF900884457 /* AferoSwiftSDK Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED621EF8A61900B86534 /* Conclave */,
+				CB1CED221EF8A5E500B86534 /* Core */,
+				CBF1916F1B191EF900884457 /* Supporting Files */,
+			);
+			name = "AferoSwiftSDK Tests";
+			path = AferoSwiftSDKTests;
+			sourceTree = "<group>";
+		};
+		CBF1916F1B191EF900884457 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CBF191891B19211A00884457 /* TestSupport */ = {
+			isa = PBXGroup;
+			children = (
+				CBA97AF21B192F4100AA216E /* Resources */,
+				CBF1918A1B19211A00884457 /* SpecSupport.swift */,
+				CBA993711EE750F50066213B /* Mocks.swift */,
+			);
+			path = TestSupport;
+			sourceTree = "<group>";
+		};
+		EAD47A7B1A1D47B800598B2A = {
+			isa = PBXGroup;
+			children = (
+				CBA97AFF1B192F7A00AA216E /* Tests */,
+				EAD47A851A1D47B800598B2A /* Products */,
+				1C42E14016FF5249FD21101E /* Frameworks */,
+				CB93841B1AE1C8B70012ED7B /* playgrounds */,
+				9E08FD111FE200A684442005 /* Pods */,
+				CBE962CF1E21D9200005E6BD /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		EAD47A851A1D47B800598B2A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CBF191681B191EF800884457 /* AferoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CBF191671B191EF800884457 /* AferoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CBF1917C1B191EF900884457 /* Build configuration list for PBXNativeTarget "AferoTests" */;
+			buildPhases = (
+				246639EDC5D807B92D94B663 /* [CP] Check Pods Manifest.lock */,
+				CBF191641B191EF800884457 /* Sources */,
+				CBF191651B191EF800884457 /* Frameworks */,
+				CBF191661B191EF800884457 /* Resources */,
+				CBA97AED1B192E5B00AA216E /* CopyFiles */,
+				925D5E6AF66D6B5B9CD6580F /* [CP] Embed Pods Frameworks */,
+				00A1743C4BF33AF4BF2C22F7 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AferoTests;
+			productName = KibanTests;
+			productReference = CBF191681B191EF800884457 /* AferoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EAD47A7C1A1D47B800598B2A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Afero, Inc.";
+				TargetAttributes = {
+					CBF191671B191EF800884457 = {
+						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 534JTUC87X;
+						LastSwiftMigration = 0800;
+					};
+				};
+			};
+			buildConfigurationList = EAD47A7F1A1D47B800598B2A /* Build configuration list for PBXProject "AferoSwiftSDK" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				de,
+				fr,
+				"es-419",
+				ja,
+			);
+			mainGroup = EAD47A7B1A1D47B800598B2A;
+			productRefGroup = EAD47A851A1D47B800598B2A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CBF191671B191EF800884457 /* AferoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CBF191661B191EF800884457 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB593CC51D74F8050069F8A0 /* kram.json in Resources */,
+				CB1CED921EF8A61900B86534 /* conclave_hello.json in Resources */,
+				CB1CED561EF8A5E500B86534 /* conclave-OTA-ota_progress-inProgress.json in Resources */,
+				CBA97AFC1B192F4100AA216E /* profileTest.json in Resources */,
+				CB593CC41D74F8050069F8A0 /* hub.json in Resources */,
+				CB1CED961EF8A61900B86534 /* conclave_welcome.json in Resources */,
+				CB1CED5D1EF8A5E500B86534 /* displayRulesTest1.json in Resources */,
+				AA3A16231D889EE600C5660E /* account.json in Resources */,
+				CB1CED9B1EF8A89300B86534 /* conclave_peripheralList.json in Resources */,
+				CB1CED571EF8A5E500B86534 /* conclave-OTA-ota_progress-start.json in Resources */,
+				CB1CED531EF8A5E500B86534 /* conclave-invalidate-unknownkind.json in Resources */,
+				CB1CED941EF8A61900B86534 /* conclave_private.json in Resources */,
+				CB593CC11D74F8050069F8A0 /* fan.json in Resources */,
+				CB990C511F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json in Resources */,
+				CB990C501F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json in Resources */,
+				CB1CED971EF8A61900B86534 /* conclaveConnectionInfo.json in Resources */,
+				CB593CCC1D74F8050069F8A0 /* wetcheck.json in Resources */,
+				CB990C521F02FDF500265EAE /* conclave-invalidate-profiles-id.json in Resources */,
+				CB1CED581EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json in Resources */,
+				CB1CED4C1EF8A5E500B86534 /* conclave-attributeUpdate-error.json in Resources */,
+				CB1CED551EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json in Resources */,
+				CB593CC81D74F8050069F8A0 /* massagechair.json in Resources */,
+				CB1CED5E1EF8A5E500B86534 /* displayRulesTest2.json in Resources */,
+				CB1CED541EF8A5E500B86534 /* conclave-OTA-device_ota.json in Resources */,
+				CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */,
+				CB1CED591EF8A5E500B86534 /* conclave-rate-device_mute.json in Resources */,
+				CB593CCA1D74F8050069F8A0 /* nest.json in Resources */,
+				CB593CC61D74F8050069F8A0 /* light.json in Resources */,
+				CB593CC31D74F8050069F8A0 /* garagedoor.json in Resources */,
+				CB1CED5A1EF8A5E500B86534 /* conclave-statusUpdate-status_change.json in Resources */,
+				CB1CED4D1EF8A5E500B86534 /* conclave-error-device_error.json in Resources */,
+				CBB85CC51EC4D77B0010D61B /* userJohnSmith.json in Resources */,
+				CB1CED4B1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json in Resources */,
+				CB1CED4E1EF8A5E500B86534 /* conclave-invalidate-accounts.json in Resources */,
+				CB1CED511EF8A5E500B86534 /* conclave-invalidate-nokind.json in Resources */,
+				CB1CED951EF8A61900B86534 /* conclave_public.json in Resources */,
+				CB1CED4F1EF8A5E500B86534 /* conclave-invalidate-invitations.json in Resources */,
+				CB593CC91D74F8050069F8A0 /* moban.json in Resources */,
+				CBB85CC71EC4DD920010D61B /* userJaneDoe.json in Resources */,
+				CB593CC01D74F8050069F8A0 /* coffeemaker.json in Resources */,
+				CB1CED4A1EF8A5E500B86534 /* accountDeviceProfiles.json in Resources */,
+				CBA97AFE1B192F4100AA216E /* ruleTest1.json in Resources */,
+				CB593CC21D74F8050069F8A0 /* fancyfan.json in Resources */,
+				CB593CC71D74F8050069F8A0 /* lock.json in Resources */,
+				CB1CED501EF8A5E500B86534 /* conclave-invalidate-location.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00A1743C4BF33AF4BF2C22F7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		246639EDC5D807B92D94B663 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		925D5E6AF66D6B5B9CD6580F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CBF191641B191EF800884457 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB1CED7F1EF8A61900B86534 /* ConclaveClientTests.swift in Sources */,
+				CB1CED811EF8A61900B86534 /* DeviceStreamEventTests.swift in Sources */,
+				CB1CED5F1EF8A5E500B86534 /* OfflineScheduleTests.swift in Sources */,
+				CB1CED471EF8A5E500B86534 /* DeviceProfileTests.swift in Sources */,
+				CB1CED491EF8A5E500B86534 /* DisplayRulesTests.swift in Sources */,
+				CBF1918C1B19211B00884457 /* SpecSupport.swift in Sources */,
+				CB1CED611EF8A5E500B86534 /* UserTests.swift in Sources */,
+				CB1CED481EF8A5E500B86534 /* DeviceRuleTests.swift in Sources */,
+				CB1CED441EF8A5E500B86534 /* DebounceTests.swift in Sources */,
+				CB1CED601EF8A5E500B86534 /* TypeTests.swift in Sources */,
+				CBA993731EE750F50066213B /* Mocks.swift in Sources */,
+				CB1CED801EF8A61900B86534 /* ConclaveMessageTests.swift in Sources */,
+				CB1CED461EF8A5E500B86534 /* DeviceModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CB4150851ACDA7C200BF79F6 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Ad Hoc";
+		};
+		CBF1917D1B191EF900884457 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47F5272FBEE4065E3BD5678D /* Pods-AferoTests.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = AferoSwiftSDKTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) -DINTERNAL -DTEST";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.kiban.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CBF1917E1B191EF900884457 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 966A05E8F9200C490E6C4971 /* Pods-AferoTests.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = AferoSwiftSDKTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) -DINTERNAL -DTEST";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.kiban.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		CBF1917F1B191EF900884457 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67F99E49F3645F3ED3931380 /* Pods-AferoTests.ad hoc.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = AferoSwiftSDKTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) -DINTERNAL -DTEST";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.kiban.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = "Ad Hoc";
+		};
+		EAD47AA11A1D47B800598B2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EAD47AA21A1D47B800598B2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CBF1917C1B191EF900884457 /* Build configuration list for PBXNativeTarget "AferoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CBF1917D1B191EF900884457 /* Debug */,
+				CBF1917E1B191EF900884457 /* Release */,
+				CBF1917F1B191EF900884457 /* Ad Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EAD47A7F1A1D47B800598B2A /* Build configuration list for PBXProject "AferoSwiftSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAD47AA11A1D47B800598B2A /* Debug */,
+				EAD47AA21A1D47B800598B2A /* Release */,
+				CB4150851ACDA7C200BF79F6 /* Ad Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EAD47A7C1A1D47B800598B2A /* Project object */;
+}

@@ -1,0 +1,160 @@
+{
+    "profileId": "10d18297-ba51-438f-b387-45a1e88e2242",
+    "schemaVersion": 1,
+    "profileVersion": 1,
+    "firmwareVersion": "1.0",
+    "partnerId": "kiban-839f59e6-18a3-4d82-818d-42df5cc0c3cf",
+    "description": {
+        "label": {
+            "base": "Tingler"
+        }
+    },
+    "uiGauge": {
+        "type": "tingler"
+    },
+    "services": [
+        {
+            "id": 100,
+            "attributes": [
+                {
+                    "id": 100,
+                    "dataType": "uint8",
+                    "semanticType": "batteryLevel",
+                    "operations": ["read"],
+                    "uiHint": {
+                        "uiControl": {
+                            "type": "batteryLevel"
+                        },
+                        "flags": ["gaugeSummary"]
+                    },
+                    "description": {
+                        "label": {
+                            "base": "Battery Level"
+                        }
+                    }
+                },
+               {
+               "id": 1010,
+               "dataType": "utf8s",
+               "semanticType": "batteryLevel",
+               "operations": ["read"],
+               "uiHint": {
+               "uiControl": {
+               "type": "batteryLevel"
+               },
+               "flags": ["gaugeSummary"]
+               },
+               "description": {
+               "label": {
+               "base": "Battery Level"
+               }
+               }
+               },
+               {
+               "id": 2000,
+               "dataType": "utf8s",
+               "semanticType": "batteryLevel",
+               "operations": ["read"],
+               "uiHint": {
+               "uiControl": {
+               "type": "batteryLevel"
+               },
+               "flags": ["gaugeSummary"]
+               },
+               "description": {
+               "label": {
+               "base": "Battery Level"
+               }
+               }
+               }
+            ]
+        },
+        {
+            "id": 200,
+            "attributes": [
+                {
+                    "id": 200,
+                    "dataType": "uint8",
+                    "semanticType": "power",
+                    "operations": ["read","write"],
+                    "uiHint": {
+                        "uiControl": {
+                            "type": "powerButton"
+                        },
+                        "flags": ["primaryOperation"]
+                    },
+                    "description": {
+                        "label": {
+                            "base": "Power"
+                        }
+                    }
+                },
+            ]
+        },
+        {
+            "id": 300,
+            "attributes": [
+                {
+                    "id": 300,
+                    "dataType": "foo",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 301,
+                    "dataType": "uint8",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 302,
+                    "dataType": "uint16",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 303,
+                    "dataType": "uint32",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 304,
+                    "dataType": "sint8",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 305,
+                    "dataType": "sint16",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 306,
+                    "dataType": "sint32",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 307,
+                    "dataType": "Float32",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 308,
+                    "dataType": "Float64",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                },
+                {
+                    "id": 309,
+                    "dataType": "UTF8s",
+                    "semanticType": "power",
+                    "operations": ["read","write"]
+                }
+            ]
+        }
+    ]
+}

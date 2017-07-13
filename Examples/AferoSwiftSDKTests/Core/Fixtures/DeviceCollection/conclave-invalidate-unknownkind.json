@@ -1,0 +1,7 @@
+{
+    "event": "invalidate",
+    "data": {
+        "id": "11111111",
+        "kind": "unknown"
+    }
+}

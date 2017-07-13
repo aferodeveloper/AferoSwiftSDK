@@ -1,0 +1,75 @@
+source 'git@github.com:KibanLabsInc/Podspecs.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '9.3'
+
+use_frameworks!
+
+workspace 'AferoSwiftSDK.xcworkspace'
+
+# MARK: -
+# MARK: Prerequisite definitions
+
+def base_pods
+    pod 'CryptoSwift', '0.6.9'
+    pod 'ReactiveSwift', '1.1.3', :inhibit_warnings => true
+    pod 'CocoaLumberjack/Swift', '3.2.0'
+    pod 'PromiseKit', '4.1.3'
+    pod 'HTTPStatusCodes', '~> 3.1'
+    pod 'AferoSwiftLogging', '1.1.4'
+#    pod 'AferoSwiftLogging', :path => '../AferoSwiftLogging/'
+#    pod 'AferoSwiftConclave', :path => '../AferoSwiftConclave/'
+#    pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
+    pod 'AferoSofthub', :inhibit_warnings => true
+    pod 'AferoSwiftSDK/AFNetworking', :path => '../'
+end
+
+def test_pods
+    pod 'Quick', :inhibit_warnings => true
+    pod 'Nimble', :inhibit_warnings => true
+    pod 'OHHTTPStubs/Swift'
+end
+
+# MARK: - Target Linking
+# MARK • Base framework
+
+target 'AferoTests' do
+    project 'AferoSwiftSDK.xcodeproj'
+    platform :ios, '9.3'
+    base_pods
+    test_pods
+end
+
+
+# MARK: - Subprojects -
+# MARK: * AferoLab
+
+target 'AferoLab' do
+
+    project 'AferoLab/AferoLab.xcodeproj'
+    
+    pod 'ReactiveSwift', '1.1.3', :inhibit_warnings => true
+    pod 'AferoSwiftSDK/AFNetworking', :path => '../'
+
+#    pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
+    pod 'AferoSofthub', :inhibit_warnings => true
+
+    pod 'HTTPStatusCodes', '~> 3.1'
+    pod 'PromiseKit', '4.1.3'
+    pod 'CocoaLumberjack/Swift', '3.2.0'
+    pod 'LKAlertController', '1.12.1'
+    pod 'RSEnvironment', '0.0.3'
+    pod 'SVProgressHUD', '1.1.3'
+
+end
+
+target 'AferoLabTests' do
+  project 'AferoLab/AferoLab.xcodeproj'
+  inherit! :search_paths
+end
+
+target 'AferoLabUITests' do
+  project 'AferoLab/AferoLab.xcodeproj'
+  inherit! :search_paths
+end
+

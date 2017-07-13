@@ -1,0 +1,79 @@
+{
+    "label": "Fancy Fan",
+    "attributeOptions": {
+        "200": {
+            "label": "Power",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "background": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_fan_grill.png"
+                }
+            ]
+        },
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_fan_blades.png"
+                }
+            ]
+        },
+        "displayRules": [
+            {
+                "match": "0",
+                "apply": {
+                    "rotate": "forward",
+                    "rotateBehavior": "oneshot"
+                }
+            },
+            {
+                "match": "1",
+                "apply": {
+                    "rotate": "forward",
+                    "rotateBehavior": "loop"
+                }
+            }
+        ]
+    },
+    "groups": [
+        {
+            "label": "Power",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 200
+            }
+        }
+    ]
+}

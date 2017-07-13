@@ -1,0 +1,48 @@
+{
+    "label": "Nest",
+    "attributeOptions": {
+        "100": {
+            "label": "Temperature",
+            "flags": ["primaryOperation"],
+            "rangeOptions": {
+                "min": 10,
+                "max": 32,
+                "step": 1,
+                "unitLabel": "°"
+            }
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_temperature.png"
+                }
+            ]
+        }
+    },
+    "groups": [
+        {
+            "label": "Temperature",
+            "controls": [ 101 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/devices_coffee_function_1_4_cups_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 101,
+            "controlType": "climateControl",
+            "attributeMap": {
+                "temperature": 100
+            }
+        }
+    ]
+}

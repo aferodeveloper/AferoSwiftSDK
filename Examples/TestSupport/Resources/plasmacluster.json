@@ -1,0 +1,263 @@
+{
+    "label": "PlasmaCluster",
+    "attributeOptions": {
+        "100": {
+            "label": "Power",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        },
+        "101": {
+            "label": "Fan Speed",
+            "valueOptions": [
+                {
+                    "match": "3",
+                    "apply": {
+                    	"label": "Auto"
+                    }
+                },
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Low"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Med"
+                    }
+                },
+                {
+                    "match": "2",
+                    "apply": {
+                    	"label": "Fast"
+                    }
+                },
+                {
+                    "match": "4",
+                    "apply": {
+                    	"label": "Pollen"
+                    }
+                }
+            ]
+        },
+        "102": {
+            "label": "Cleaning Mode",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Clean Only"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Clean & Humidify"
+                    }
+                },
+                {
+                    "match": "2",
+                    "apply": {
+                    	"label": "Quick Clean"
+                    }
+                }
+            ]
+        },
+        "103": {
+            "label": "Lighting Mode",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Bright"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Dim"
+                    }
+                },
+                {
+                    "match": "2",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                }
+            ]
+        },
+        "104": {
+            "label": "Sound",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        },
+        "105": {
+            "label": "ION Mode",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        },
+        "106": {
+            "label": "Air Quality",
+            "rangeOptions": {
+                "max": 15,
+                "min": 0,
+                "step": 1,
+                "unitLabel": ""
+            }
+        },
+        "107": {
+            "label": "Humidity",
+            "rangeOptions": {
+                "max": 99,
+                "min": 1,
+                "step": 1,
+                "unitLabel": "%"
+            }
+        }
+    },
+    "gauge": {
+        "type": "plasmacluster"
+    },
+    "groups": [
+        {
+            "label": "Power",
+            "controls": [ 99 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Fan Speed",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_fan_speed.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Cleaning Mode",
+            "controls": [ 101 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_cleaning_mode.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Lights/Sounds",
+            "controls": [ 102 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_lights.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "ION Mode",
+            "controls": [ 103 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_ion_mode.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 99,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 100
+            }
+        },
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 101
+            }
+        },
+        {
+            "id": 101,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 102
+            }
+        },
+        {
+            "id": 102,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 103
+            }
+        },
+        {
+            "id": 103,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 105
+            }
+        }
+    ]
+}

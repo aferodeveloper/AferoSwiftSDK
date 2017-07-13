@@ -1,0 +1,851 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		491A6C774265D5E4E887AC8D /* Pods_AferoLabUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */; };
+		7C90D7040159EEF26D6D8852 /* Pods_AferoLab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */; };
+		CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */; };
+		CB33761E1F15AE8B009BFA9E /* APIClientConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = CB33761D1F15AE8B009BFA9E /* APIClientConfig.plist */; };
+		CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3721E7C689700547FD9 /* AppDelegate.swift */; };
+		CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */; };
+		CB34C3781E7C689700547FD9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB34C3761E7C689700547FD9 /* Main.storyboard */; };
+		CB34C37A1E7C689700547FD9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB34C3791E7C689700547FD9 /* Assets.xcassets */; };
+		CB34C37D1E7C689700547FD9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CB34C37B1E7C689700547FD9 /* LaunchScreen.storyboard */; };
+		CB34C3881E7C689700547FD9 /* AferoLabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3871E7C689700547FD9 /* AferoLabTests.swift */; };
+		CB34C3931E7C689700547FD9 /* AferoLabUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3921E7C689700547FD9 /* AferoLabUITests.swift */; };
+		CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */; };
+		CB82FED11E7CD7A30088CC0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED01E7CD7A30088CC0C /* Extensions.swift */; };
+		CB82FED31E7CD7DD0088CC0C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED21E7CD7DD0088CC0C /* Utils.swift */; };
+		CB82FED51E7CD9CF0088CC0C /* AccountInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED41E7CD9CF0088CC0C /* AccountInfoTableViewController.swift */; };
+		CB82FED71E7CDA4D0088CC0C /* SignInViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */; };
+		CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */; };
+		CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */; };
+		CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */; };
+		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CB34C3841E7C689700547FD9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB34C3671E7C689700547FD9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB34C36E1E7C689700547FD9;
+			remoteInfo = AferoLab;
+		};
+		CB34C38F1E7C689700547FD9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB34C3671E7C689700547FD9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB34C36E1E7C689700547FD9;
+			remoteInfo = AferoLab;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CB34C3B61E7C970C00547FD9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		26B51F22D0383B24E011DBD6 /* Pods-AferoLab.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.release.xcconfig"; sourceTree = "<group>"; };
+		27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLabTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5532648D19448443F31C6A5F /* Pods-AferoLabTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests.release.xcconfig"; sourceTree = "<group>"; };
+		96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLabUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		982FD2D8DADC37CF187B6F3E /* Pods-AferoLabUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.release.xcconfig"; sourceTree = "<group>"; };
+		BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C000460375D6E9ED982A6C4E /* Pods-AferoLabTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AferoLogFormatter.swift; sourceTree = "<group>"; };
+		CB33761D1F15AE8B009BFA9E /* APIClientConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIClientConfig.plist; sourceTree = "<group>"; };
+		CB34C36F1E7C689700547FD9 /* AferoLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AferoLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB34C3721E7C689700547FD9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoLabNavigationController.swift; sourceTree = "<group>"; };
+		CB34C3771E7C689700547FD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CB34C3791E7C689700547FD9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CB34C37C1E7C689700547FD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CB34C37E1E7C689700547FD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB34C3831E7C689700547FD9 /* AferoLabTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AferoLabTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB34C3871E7C689700547FD9 /* AferoLabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoLabTests.swift; sourceTree = "<group>"; };
+		CB34C3891E7C689700547FD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB34C38E1E7C689700547FD9 /* AferoLabUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AferoLabUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB34C3921E7C689700547FD9 /* AferoLabUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoLabUITests.swift; sourceTree = "<group>"; };
+		CB34C3941E7C689700547FD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountInfoZeroStateView.swift; sourceTree = "<group>"; };
+		CB823D611F080D0B00C4F8F2 /* AferoLab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AferoLab.entitlements; sourceTree = "<group>"; };
+		CB82FED01E7CD7A30088CC0C /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		CB82FED21E7CD7DD0088CC0C /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		CB82FED41E7CD9CF0088CC0C /* AccountInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountInfoTableViewController.swift; sourceTree = "<group>"; };
+		CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewcontroller.swift; sourceTree = "<group>"; };
+		CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCollectionCollator.swift; sourceTree = "<group>"; };
+		CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SofthubMinder.swift; sourceTree = "<group>"; };
+		CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountInfoZeroStateView.xib; sourceTree = "<group>"; };
+		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CB34C36C1E7C689700547FD9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C90D7040159EEF26D6D8852 /* Pods_AferoLab.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C3801E7C689700547FD9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C38B1E7C689700547FD9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				491A6C774265D5E4E887AC8D /* Pods_AferoLabUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		566DC5FBD84528524A3BD6A5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */,
+				27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */,
+				96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CB34C3661E7C689700547FD9 = {
+			isa = PBXGroup;
+			children = (
+				CB34C3711E7C689700547FD9 /* AferoLab */,
+				CB34C3861E7C689700547FD9 /* AferoLabTests */,
+				CB34C3911E7C689700547FD9 /* AferoLabUITests */,
+				CB34C3701E7C689700547FD9 /* Products */,
+				F65B2B5B090F0EECF0F3A66B /* Pods */,
+				566DC5FBD84528524A3BD6A5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		CB34C3701E7C689700547FD9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB34C36F1E7C689700547FD9 /* AferoLab.app */,
+				CB34C3831E7C689700547FD9 /* AferoLabTests.xctest */,
+				CB34C38E1E7C689700547FD9 /* AferoLabUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB34C3711E7C689700547FD9 /* AferoLab */ = {
+			isa = PBXGroup;
+			children = (
+				CB823D611F080D0B00C4F8F2 /* AferoLab.entitlements */,
+				CB34C37E1E7C689700547FD9 /* Info.plist */,
+				CB33761D1F15AE8B009BFA9E /* APIClientConfig.plist */,
+				CB34C3721E7C689700547FD9 /* AppDelegate.swift */,
+				CB34C3791E7C689700547FD9 /* Assets.xcassets */,
+				CB82FEFC1E7D9A400088CC0C /* nibs */,
+				CB82FEE41E7D151E0088CC0C /* ViewControllers */,
+				CB82FEE81E7D16250088CC0C /* Services */,
+				CB82FEE91E7D16460088CC0C /* Utils */,
+				CB82FEE71E7D160D0088CC0C /* Models */,
+			);
+			path = AferoLab;
+			sourceTree = "<group>";
+		};
+		CB34C3861E7C689700547FD9 /* AferoLabTests */ = {
+			isa = PBXGroup;
+			children = (
+				CB34C3871E7C689700547FD9 /* AferoLabTests.swift */,
+				CB34C3891E7C689700547FD9 /* Info.plist */,
+			);
+			path = AferoLabTests;
+			sourceTree = "<group>";
+		};
+		CB34C3911E7C689700547FD9 /* AferoLabUITests */ = {
+			isa = PBXGroup;
+			children = (
+				CB34C3921E7C689700547FD9 /* AferoLabUITests.swift */,
+				CB34C3941E7C689700547FD9 /* Info.plist */,
+			);
+			path = AferoLabUITests;
+			sourceTree = "<group>";
+		};
+		CB82FEE41E7D151E0088CC0C /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				CB82FED41E7CD9CF0088CC0C /* AccountInfoTableViewController.swift */,
+				CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */,
+				CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		CB82FEE71E7D160D0088CC0C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		CB82FEE81E7D16250088CC0C /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		CB82FEE91E7D16460088CC0C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */,
+				CB82FED01E7CD7A30088CC0C /* Extensions.swift */,
+				CB82FED21E7CD7DD0088CC0C /* Utils.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		CB82FEFC1E7D9A400088CC0C /* nibs */ = {
+			isa = PBXGroup;
+			children = (
+				CB34C3761E7C689700547FD9 /* Main.storyboard */,
+				CB34C37B1E7C689700547FD9 /* LaunchScreen.storyboard */,
+				CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */,
+				CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */,
+			);
+			name = nibs;
+			sourceTree = "<group>";
+		};
+		F65B2B5B090F0EECF0F3A66B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */,
+				26B51F22D0383B24E011DBD6 /* Pods-AferoLab.release.xcconfig */,
+				C000460375D6E9ED982A6C4E /* Pods-AferoLabTests.debug.xcconfig */,
+				5532648D19448443F31C6A5F /* Pods-AferoLabTests.release.xcconfig */,
+				E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */,
+				982FD2D8DADC37CF187B6F3E /* Pods-AferoLabUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CB34C36E1E7C689700547FD9 /* AferoLab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB34C3971E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLab" */;
+			buildPhases = (
+				4CDCD5214DAA9040AFA2F146 /* [CP] Check Pods Manifest.lock */,
+				CB34C36B1E7C689700547FD9 /* Sources */,
+				CB34C36C1E7C689700547FD9 /* Frameworks */,
+				CB34C36D1E7C689700547FD9 /* Resources */,
+				CB34C3B61E7C970C00547FD9 /* Embed Frameworks */,
+				FE48F004D990F1A77B6A10BC /* [CP] Embed Pods Frameworks */,
+				BC80ED016223A9CA8EF1571E /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AferoLab;
+			productName = AferoLab;
+			productReference = CB34C36F1E7C689700547FD9 /* AferoLab.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CB34C3821E7C689700547FD9 /* AferoLabTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB34C39A1E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLabTests" */;
+			buildPhases = (
+				F386ED07E51700C22FABF89F /* [CP] Check Pods Manifest.lock */,
+				CB34C37F1E7C689700547FD9 /* Sources */,
+				CB34C3801E7C689700547FD9 /* Frameworks */,
+				CB34C3811E7C689700547FD9 /* Resources */,
+				0E5DC2CF162189CF4E49DC07 /* [CP] Embed Pods Frameworks */,
+				ABC7ABC2FB7A819CAF12BB5A /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB34C3851E7C689700547FD9 /* PBXTargetDependency */,
+			);
+			name = AferoLabTests;
+			productName = AferoLabTests;
+			productReference = CB34C3831E7C689700547FD9 /* AferoLabTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CB34C38D1E7C689700547FD9 /* AferoLabUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB34C39D1E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLabUITests" */;
+			buildPhases = (
+				67F00259BD23B0926471CB8B /* [CP] Check Pods Manifest.lock */,
+				CB34C38A1E7C689700547FD9 /* Sources */,
+				CB34C38B1E7C689700547FD9 /* Frameworks */,
+				CB34C38C1E7C689700547FD9 /* Resources */,
+				317E6E8606181639A582ED4D /* [CP] Embed Pods Frameworks */,
+				D5502A2266AD0DFC989CE3DE /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB34C3901E7C689700547FD9 /* PBXTargetDependency */,
+			);
+			name = AferoLabUITests;
+			productName = AferoLabUITests;
+			productReference = CB34C38E1E7C689700547FD9 /* AferoLabUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CB34C3671E7C689700547FD9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Afero, Inc";
+				TargetAttributes = {
+					CB34C36E1E7C689700547FD9 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 534JTUC87X;
+						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.DataProtection = {
+								enabled = 1;
+							};
+						};
+					};
+					CB34C3821E7C689700547FD9 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 534JTUC87X;
+						ProvisioningStyle = Automatic;
+						TestTargetID = CB34C36E1E7C689700547FD9;
+					};
+					CB34C38D1E7C689700547FD9 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 534JTUC87X;
+						ProvisioningStyle = Automatic;
+						TestTargetID = CB34C36E1E7C689700547FD9;
+					};
+				};
+			};
+			buildConfigurationList = CB34C36A1E7C689700547FD9 /* Build configuration list for PBXProject "AferoLab" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CB34C3661E7C689700547FD9;
+			productRefGroup = CB34C3701E7C689700547FD9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB34C36E1E7C689700547FD9 /* AferoLab */,
+				CB34C3821E7C689700547FD9 /* AferoLabTests */,
+				CB34C38D1E7C689700547FD9 /* AferoLabUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CB34C36D1E7C689700547FD9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB34C37D1E7C689700547FD9 /* LaunchScreen.storyboard in Resources */,
+				CB33761E1F15AE8B009BFA9E /* APIClientConfig.plist in Resources */,
+				CB34C37A1E7C689700547FD9 /* Assets.xcassets in Resources */,
+				CB34C3781E7C689700547FD9 /* Main.storyboard in Resources */,
+				CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C3811E7C689700547FD9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C38C1E7C689700547FD9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0E5DC2CF162189CF4E49DC07 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		317E6E8606181639A582ED4D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4CDCD5214DAA9040AFA2F146 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		67F00259BD23B0926471CB8B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		ABC7ABC2FB7A819CAF12BB5A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BC80ED016223A9CA8EF1571E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D5502A2266AD0DFC989CE3DE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F386ED07E51700C22FABF89F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FE48F004D990F1A77B6A10BC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CB34C36B1E7C689700547FD9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB82FED31E7CD7DD0088CC0C /* Utils.swift in Sources */,
+				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
+				CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */,
+				CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */,
+				CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */,
+				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
+				CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */,
+				CB82FED71E7CDA4D0088CC0C /* SignInViewcontroller.swift in Sources */,
+				CB82FED11E7CD7A30088CC0C /* Extensions.swift in Sources */,
+				CB82FED51E7CD9CF0088CC0C /* AccountInfoTableViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C37F1E7C689700547FD9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB34C3881E7C689700547FD9 /* AferoLabTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB34C38A1E7C689700547FD9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB34C3931E7C689700547FD9 /* AferoLabUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CB34C3851E7C689700547FD9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB34C36E1E7C689700547FD9 /* AferoLab */;
+			targetProxy = CB34C3841E7C689700547FD9 /* PBXContainerItemProxy */;
+		};
+		CB34C3901E7C689700547FD9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB34C36E1E7C689700547FD9 /* AferoLab */;
+			targetProxy = CB34C38F1E7C689700547FD9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CB34C3761E7C689700547FD9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB34C3771E7C689700547FD9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		CB34C37B1E7C689700547FD9 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CB34C37C1E7C689700547FD9 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CB34C3951E7C689700547FD9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB34C3961E7C689700547FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CB34C3981E7C689700547FD9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AferoClientSDK/darwin/AferoSwiftConclave/1.2.2/AferoSwiftConclave",
+				);
+				INFOPLIST_FILE = AferoLab/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DINTERNAL -DDEBUG -Xfrontend -debug-time-function-bodies";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		CB34C3991E7C689700547FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 26B51F22D0383B24E011DBD6 /* Pods-AferoLab.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AferoClientSDK/darwin/AferoSwiftConclave/1.2.2/AferoSwiftConclave",
+				);
+				INFOPLIST_FILE = AferoLab/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		CB34C39B1E7C689700547FD9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C000460375D6E9ED982A6C4E /* Pods-AferoLabTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				INFOPLIST_FILE = AferoLabTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AferoLab.app/AferoLab";
+			};
+			name = Debug;
+		};
+		CB34C39C1E7C689700547FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5532648D19448443F31C6A5F /* Pods-AferoLabTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				INFOPLIST_FILE = AferoLabTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AferoLab.app/AferoLab";
+			};
+			name = Release;
+		};
+		CB34C39E1E7C689700547FD9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				INFOPLIST_FILE = AferoLabUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = AferoLab;
+			};
+			name = Debug;
+		};
+		CB34C39F1E7C689700547FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 982FD2D8DADC37CF187B6F3E /* Pods-AferoLabUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 534JTUC87X;
+				INFOPLIST_FILE = AferoLabUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = AferoLab;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB34C36A1E7C689700547FD9 /* Build configuration list for PBXProject "AferoLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB34C3951E7C689700547FD9 /* Debug */,
+				CB34C3961E7C689700547FD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB34C3971E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB34C3981E7C689700547FD9 /* Debug */,
+				CB34C3991E7C689700547FD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB34C39A1E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLabTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB34C39B1E7C689700547FD9 /* Debug */,
+				CB34C39C1E7C689700547FD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB34C39D1E7C689700547FD9 /* Build configuration list for PBXNativeTarget "AferoLabUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB34C39E1E7C689700547FD9 /* Debug */,
+				CB34C39F1E7C689700547FD9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CB34C3671E7C689700547FD9 /* Project object */;
+}

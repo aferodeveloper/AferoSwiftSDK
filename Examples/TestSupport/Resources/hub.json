@@ -1,0 +1,12 @@
+{
+    "label": "Hub",
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_hub.png"
+                }
+            ]
+        }
+    }
+}

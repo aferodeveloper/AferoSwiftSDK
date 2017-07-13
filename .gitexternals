@@ -1,0 +1,4 @@
+[external "android"]
+	path = android
+	url = git@github.com:KibanLabsInc/tokui.git
+	branch = master

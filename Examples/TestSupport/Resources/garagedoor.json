@@ -1,0 +1,127 @@
+{
+    "label": "Garage Door",
+    "attributeOptions": {
+        "100": {
+            "label": "Door",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Closed"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Open"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0000.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0001.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0002.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0003.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0004.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0005.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0006.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0007.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0008.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0009.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0010.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0011.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0012.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0013.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0014.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0015.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0016.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0017.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0018.png"
+                },
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/animation_garage_door0019.png"
+                }
+            ]
+        },
+        "displayRules": [
+            {
+                "match": "0",
+                "apply": {
+                    "animate": "reverse"
+                }
+            },
+            {
+                "match": "1",
+                "apply": {
+                    "animate": "forward"
+                }
+            }
+        ]
+    },
+    "groups": [
+        {
+            "label": "Door",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 100
+            }
+        }
+    ]
+}

@@ -1,0 +1,71 @@
+{
+    "label": "Wet Check",
+    "attributeOptions": {
+        "100": {
+            "label": "Battery Level",
+            "rangeOptions": {
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unitLabel": ""
+            }
+        },
+        "200": {
+            "label": "Status",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Normal"
+                    }
+
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Leak Detected"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_wet_check.png"
+                }
+            ]
+        }
+    },
+    "groups": [
+        {
+            "label": "Battery Level",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_lights.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "batteryLevel",
+            "attributeMap": {
+                "chargeLevel": 0,
+                "isCharging": 0,
+                "chargeTimeRemaining": 0,
+                "maxCharge": 0
+            },
+            "displayRules": [
+            ]
+        }
+    ]
+}

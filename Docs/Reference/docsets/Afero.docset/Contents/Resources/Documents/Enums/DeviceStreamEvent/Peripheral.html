@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Peripheral Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/Peripheral" class="dashAnchor"></a>
+    <a title="Peripheral Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../../index.html">Afero Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/aferodeveloper/AferoSwiftSDK"><img src="../../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../../index.html">Afero Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        Peripheral Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Classes/AnyWrapped.html">AnyWrapped</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveClient.html">ConclaveClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveClient/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveClient/ClientEvent.html">– ClientEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveDeviceEventStream.html">ConclaveDeviceEventStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveSocketConnection.html">ConclaveSocketConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveStreamConnection.html">ConclaveStreamConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ConclaveStreamConnection/ErrorCode.html">– ErrorCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceCollection.html">DeviceCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceCollection/State.html">– State</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceCollection/ContentsChange.html">– ContentsChange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceModel.html">DeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceProfile.html">DeviceProfile</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceProfile/Presentation.html">– Presentation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceProfile/AttributeDescriptor.html">– AttributeDescriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DeviceProfile/Service.html">– Service</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/DisplayRulesProcessor.html">DisplayRulesProcessor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/FilterCriteriaRecordingDeviceModel.html">FilterCriteriaRecordingDeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/LineDelimitedJSONStreamReader.html">LineDelimitedJSONStreamReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/LineDelimitedJSONStreamWriter.html">LineDelimitedJSONStreamWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/MetricHelper.html">MetricHelper</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/OfflineSchedule.html">OfflineSchedule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/OfflineSchedule/Event.html">– Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/OfflineSchedule/ScheduleEvent.html">– ScheduleEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/OfflineSchedule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/OfflineSchedule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/PipeHolder.html">PipeHolder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/RecordingDeviceModel.html">RecordingDeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/ResourceUtils.html">ResourceUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/Utils.html">Utils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/Wrapped.html">Wrapped</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Enums/AccountNotification.html">AccountNotification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/AferoSystemAttribute.html">AferoSystemAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/AttributeEvent.html">AttributeEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/AttributeFlavor.html">AttributeFlavor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/AttributeValue.html">AttributeValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/ConclaveConnectionEvent.html">ConclaveConnectionEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/ConclaveMessage.html">ConclaveMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/ConnectionState.html">ConnectionState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceModelCommand.html">DeviceModelCommand</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceModelEvent.html">DeviceModelEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent.html">DeviceStreamEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent/Peripheral.html">– Peripheral</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent/OTAPackageInfo.html">– OTAPackageInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent/OTAProgress.html">– OTAProgress</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceStreamEvent/DeviceError.html">– DeviceError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/DeviceWriteState.html">DeviceWriteState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/HachiState.html">HachiState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/InvalidationEvent.html">InvalidationEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/JSONStreamEvent.html">JSONStreamEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/LocationSourceType.html">LocationSourceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/LocationState.html">LocationState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/WifiAuthState.html">WifiAuthState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/WifiSetupError.html">WifiSetupError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/WifiSetupEvent.html">WifiSetupEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/WifiSetupManagerState.html">WifiSetupManagerState</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/CharacterSet.html">CharacterSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Data.html">Data</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Date.html">Date</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/DateComponents.html">DateComponents</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/DateFormatter.html">DateFormatter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Dictionary.html">Dictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Error.html">Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/HTTPStatusCode.html">HTTPStatusCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/HubbySetupWifiCommandState.html">HubbySetupWifiCommandState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/HubbyWifiState.html">HubbyWifiState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/IndexSet.html">IndexSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int16.html">Int16</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int32.html">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int64.html">Int64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Int8.html">Int8</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Locale.html">Locale</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/NSDecimalNumber.html">NSDecimalNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/NSDecimalNumber/IntegerBehaviors.html">– IntegerBehaviors</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/NSError.html">NSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/NSNumber.html">NSNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/SignedNumber.html">SignedNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/String.html">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/TimeZone.html">TimeZone</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UIViewController.html">UIViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UInt16.html">UInt16</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UInt32.html">UInt32</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UInt64.html">UInt64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UInt8.html">UInt8</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/UnsignedInteger.html">UnsignedInteger</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1mFTCSo15NSDecimalNumberS0__S0_">*(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1pFTCSo15NSDecimalNumberS0__S0_">+(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2ppu1_R_s8HashablerFTFxGVs10Dictionaryq_q0__FxGS1_q_q0___FxGS1_q_q0__">++(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1sFTCSo15NSDecimalNumberS0__S0_">-(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1dFTCSo15NSDecimalNumberS0__S0_">/(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTOS_14AttributeValueS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVS_10DeviceRuleS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVS_13PartnerAccessS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVS_15HistoryActivityS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVVCS_15OfflineSchedule13ScheduleEvent17TimeSpecificationS2__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVVS_13PartnerAccess17PartnerPrivilegesS1__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1lFTVVVS_11UserAccount4User20SharingAccountAccessS2__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1luRxS_15DeviceModelablerFTxx_Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi1luRxS_32OfflineScheduleEventSerializablerFTxx_Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions/&lt;&lt;(_:_:).html">&lt;&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions/&lt;&lt;(_:_:).html">&lt;&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTCS_13DeviceProfileS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTOCS_14ConclaveClient11ClientEventS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTOS_13LocationStateS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTOS_14AttributeValueS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTOS_15ConclaveMessageS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTOVVS_14ConclaveAccess5Token6ClientS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile12PresentationS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile19AttributeDescriptorS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile7ServiceS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_10DeviceRuleS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_11DeviceGroupS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_12ConclaveHostS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_13LocationModelS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_13PartnerAccessS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_15HistoryActivityS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_16DeviceRuleActionS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_17DeviceGroupMemberS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVS_21DeviceFilterCriterionS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation10LayerImageS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5FlagsS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5GaugeS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5GroupS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5LayerS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation7ControlS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVCS_15OfflineSchedule13ScheduleEvent17TimeSpecificationS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVS_10DeviceRule8ScheduleS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVS_13PartnerAccess17PartnerPrivilegesS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVS_13PartnerAccess7PartnerS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVS_14ConclaveAccess5TokenS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVVCS_13DeviceProfile12Presentation15AttributeOption11ValueOptionS3__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVVCS_13DeviceProfile12Presentation15AttributeOption12RangeOptionsS3__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVVS_11UserAccount4User10CredentialS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeFTVVVS_11UserAccount4User20SharingAccountAccessS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeuRxS_15DeviceModelablerFTxx_Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeuRxS_21LayerImagePresentablerFTGSqx_GSqx__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeuRxS_32OfflineScheduleEventSerializablerFTxx_Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi2eeuRxs9EquatablerFTGSqGSax__GSqGSax___Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions/&gt;&gt;(_:_:).html">&gt;&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions/&gt;&gt;(_:_:).html">&gt;&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero8FromJSONuRxS_15AferoJSONCodingrFGSqGSaP___GSqGSax__">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero8FromJSONuRxS_15AferoJSONCodingrFGSqP__GSqx_">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero8FromJSONuRxS_19OptionSetJSONCodingrFGSqGSaP___x">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero3absFCSo15NSDecimalNumberS0_">abs(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero5afterFTSd7onQueueCSo13DispatchQueue7performFT_T__T_">after(_:onQueue:perform:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero18asyncGlobalDefaultFFT_T_T_">asyncGlobalDefault(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero9asyncMainFFT_T_T_">asyncMain(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero8debounceFTSd5queueCSo13DispatchQueue6actionFT_T__FT_T_">debounce(_:queue:action:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero12fastDebounceFTSd5queueCSo13DispatchQueue6actionFT_T__FT_T_">fastDebounce(_:queue:action:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero16floatDenormalizeurFTGSqx_3maxGSqx_7currentGSqSf_3t2fFGSqx_GSqSf_3f2tFSfGSqx__GSqx_">floatDenormalize(_:max:current:t2f:f2t:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero14floatNormalizeuRxs12SignedNumberrFTGSqx_3maxGSqx_7currentGSqx_4convFxSf_GSqSf_">floatNormalize(_:max:current:conv:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Afero8minimizeu0_R_s10ComparablerFTGSaGSqx__1fFGSqx_GSqq___GSqx_">minimize(_:f:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqGSaP___GSqGSax__">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqGVs10DictionarySSP___GSqx_">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqP__GSqx_">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferoop2oluRxS_19OptionSetJSONCodingrFGSqGSaP___x">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi3teeFTOS_14AttributeValueS0__Sb">~==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5Aferooi3teeuRxs9EquatablerFTxx_Sb">~==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions/∈(_:_:).html">∈(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Functions.html#/s:F5AferoXoi3kJgu0_Rxs9Equatable_s8SequenceW_8Iterator7Element_zxrFTGSqx_GSqq___Sb">∉(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Protocols/AccountAccessPrivilegesRepresentable.html">AccountAccessPrivilegesRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/AccountAccessRepresentable.html">AccountAccessRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/AttributeEventSignaling.html">AttributeEventSignaling</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/AttributeOptionPresentable.html">AttributeOptionPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ConclaveAuthable.html">ConclaveAuthable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ConclaveConnection.html">ConclaveConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ConnectionMediaSupporting.html">ConnectionMediaSupporting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ControlPresentable.html">ControlPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DataConvertible.html">DataConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DateFormatting.html">DateFormatting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceAccountProfilesSource.html">DeviceAccountProfilesSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceActionSource.html">DeviceActionSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceBatchActionRequestable.html">DeviceBatchActionRequestable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceCollectionDelegate.html">DeviceCollectionDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceCommandConsuming.html">DeviceCommandConsuming</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceEventSignaling.html">DeviceEventSignaling</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceEventStreamable.html">DeviceEventStreamable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceFilterCriteriaSource.html">DeviceFilterCriteriaSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceInfoSource.html">DeviceInfoSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceModelable.html">DeviceModelable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/DeviceProfileSource.html">DeviceProfileSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/GaugePresentable.html">GaugePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/GroupPresentable.html">GroupPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/LayerImagePresentable.html">LayerImagePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/LayerPresentable.html">LayerPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/LongIntegerAttributeValueSubscriptable.html">LongIntegerAttributeValueSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/OfflineScheduleCollator.html">OfflineScheduleCollator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/OfflineScheduleEventSerializable.html">OfflineScheduleEventSerializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/OfflineScheduleStorage.html">OfflineScheduleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols.html#/s:P5Afero19OptionSetJSONCoding">OptionSetJSONCoding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols.html#/s:P5Afero20OptionsSubscriptable">OptionsSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/PartnerAccessRepresentable.html">PartnerAccessRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/PartnerPrivilegesRepresentable.html">PartnerPrivilegesRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/PartnerRepresentable.html">PartnerRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ProportionAttributeValueSubscriptable.html">ProportionAttributeValueSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/RangeOptionsPresentable.html">RangeOptionsPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols.html#/s:P5Afero17SafeSubscriptable">SafeSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ValueOptionPresentable.html">ValueOptionPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/WifiConfigurable.html">WifiConfigurable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/WifiSetupManaging.html">WifiSetupManaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Structs/AccountAction.html">AccountAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/AccountAction.html#/s:VV5Afero13AccountAction19AccountActionSource">– AccountActionSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ArrayDeltas.html">ArrayDeltas</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/AttributeInstance.html">AttributeInstance</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ConclaveAccess.html">ConclaveAccess</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ConclaveAccess/Token.html">– Token</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ConclaveHost.html">ConclaveHost</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ConclaveHosts.html">ConclaveHosts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ConnectionMediaTypes.html">ConnectionMediaTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DateTypes.html">DateTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DateTypes/DayOfWeek.html">– DayOfWeek</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DateTypes/Time.html">– Time</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceBatchAction.html">DeviceBatchAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceBatchAction/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceBatchAction/Results.html">– Results</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceBatchAction/Request.html">– Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceBatchAction/Response.html">– Response</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceFilterCriterion.html">DeviceFilterCriterion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceFilterCriterion/Operation.html">– Operation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceGroup.html">DeviceGroup</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceGroupMember.html">DeviceGroupMember</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceRule.html">DeviceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceRule/Schedule.html">– Schedule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceRule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceRuleAction.html">DeviceRuleAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DeviceState.html">DeviceState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/HistoryActivity.html">HistoryActivity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/HistoryActivity/HistoryType.html">– HistoryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/HistoryFilter.html">HistoryFilter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Invitation.html">Invitation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/LocationModel.html">LocationModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PartnerAccess.html">PartnerAccess</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PartnerAccess/Partner.html">– Partner</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PartnerAccess/PartnerPrivileges.html">– PartnerPrivileges</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/RangeOptionsSubscriptor.html">RangeOptionsSubscriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/UserAccount.html">UserAccount</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/UserAccount/User.html">– User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/UserNotificationAssociation.html">UserNotificationAssociation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ValueOptionsSubscriptor.html">ValueOptionsSubscriptor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Typealiases.html#/s:5Afero18ConclaveReadSignal">ConclaveReadSignal</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Typealiases.html#/s:5Afero22ControlTypePresentable">ControlTypePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Typealiases.html#/s:5Afero21InvalidationEventKind">InvalidationEventKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Typealiases.html#/s:5Afero20WifiSetupEventSignal">WifiSetupEventSignal</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Peripheral</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                </div>
+              </div>
+            <p>Represents a peripheral in a DeviceStreamEvent peripheral list.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral2idSS"></a>
+                    <a name="//apple_ref/swift/Property/id" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral2idSS">id</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral9profileIdSS"></a>
+                    <a name="//apple_ref/swift/Property/profileId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral9profileIdSS">profileId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral10attributesGVs10DictionarySiVS1_9Attribute_"></a>
+                    <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral10attributesGVs10DictionarySiVS1_9Attribute_">attributes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral6statusVS1_6Status"></a>
+                    <a name="//apple_ref/swift/Property/status" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral6statusVS1_6Status">status</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral11isAvailableSb"></a>
+                    <a name="//apple_ref/swift/Property/isAvailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral11isAvailableSb">isAvailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral9isVisibleSb"></a>
+                    <a name="//apple_ref/swift/Property/isVisible" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral9isVisibleSb">isVisible</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral8isDirectSb"></a>
+                    <a name="//apple_ref/swift/Property/isDirect" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral8isDirectSb">isDirect</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>If true, this peripheral&rsquo;s connection to the Afero service is direct,
+rather than through a hub (e.g., Wifi capable devices)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isDirect</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral12friendlyNameGSqSS_"></a>
+                    <a name="//apple_ref/swift/Property/friendlyName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral12friendlyNameGSqSS_">friendlyName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral7virtualSb"></a>
+                    <a name="//apple_ref/swift/Property/virtual" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral7virtualSb">virtual</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral4tagsGSaVS1_9DeviceTag_"></a>
+                    <a name="//apple_ref/swift/Property/tags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral4tagsGSaVS1_9DeviceTag_">tags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral13locationStateGSqOS1_13LocationState_"></a>
+                    <a name="//apple_ref/swift/Property/locationState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral13locationStateGSqOS1_13LocationState_">locationState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The location state of the peripheral.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When decoding from JSON, <code>locationState</code> is set if and only if
+    a value was provided in the JSON. In that case, it is set to
+    <code>.known(loc)</code>. Otherwise it is left <code>nil</code>, as an indication that
+    the location needs to be acquired from the client API.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">locationState</span><span class="p">:</span> <span class="kt"><a href="../../Enums/DeviceStreamEvent/Peripheral/LocationState.html">LocationState</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral18createdTimestampMsCSo8NSNumber"></a>
+                    <a name="//apple_ref/swift/Property/createdTimestampMs" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral18createdTimestampMsCSo8NSNumber">createdTimestampMs</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral7createdV10Foundation4Date"></a>
+                    <a name="//apple_ref/swift/Property/created" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral7createdV10Foundation4Date">created</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVO5Afero17DeviceStreamEvent10PeripheralcFT2idSS9profileIdSS10attributesGSaVS1_9Attribute_6statusVS1_6Status12friendlyNameGSqSS_7virtualSb13locationStateGSqOS1_13LocationState_4tagsGSaVS1_9DeviceTag_18createdTimestampMsCSo8NSNumber_S1_"></a>
+                    <a name="//apple_ref/swift/Method/init(id:profileId:attributes:status:friendlyName:virtual:locationState:tags:createdTimestampMs:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVO5Afero17DeviceStreamEvent10PeripheralcFT2idSS9profileIdSS10attributesGSaVS1_9Attribute_6statusVS1_6Status12friendlyNameGSqSS_7virtualSb13locationStateGSqOS1_13LocationState_4tagsGSaVS1_9DeviceTag_18createdTimestampMsCSo8NSNumber_S1_">init(id:profileId:attributes:status:friendlyName:virtual:locationState:tags:createdTimestampMs:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%3CCustomDebugStringConvertible%3E"></a>
+                <a name="//apple_ref/swift/Section/&lt;CustomDebugStringConvertible&gt;" class="dashAnchor"></a>
+                <a href="#/%3CCustomDebugStringConvertible%3E">
+                  <h3 class="section-name">&lt;CustomDebugStringConvertible&gt;</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vPs28CustomDebugStringConvertible16debugDescriptionSS"></a>
+                    <a name="//apple_ref/swift/Property/debugDescription" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vPs28CustomDebugStringConvertible16debugDescriptionSS">debugDescription</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">debugDescription</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%3CHashable%3E"></a>
+                <a name="//apple_ref/swift/Section/&lt;Hashable&gt;" class="dashAnchor"></a>
+                <a href="#/%3CHashable%3E">
+                  <h3 class="section-name">&lt;Hashable&gt;</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vPs8Hashable9hashValueSi"></a>
+                    <a name="//apple_ref/swift/Property/hashValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vPs8Hashable9hashValueSi">hashValue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFPs9Equatableoi2eeFTxx_Sb"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFPs9Equatableoi2eeFTxx_Sb">==(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span><span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">Peripheral</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">Peripheral</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>lhs</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>rhs</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/%3CAferoJSONCoding%3E"></a>
+                <a name="//apple_ref/swift/Section/&lt;AferoJSONCoding&gt;" class="dashAnchor"></a>
+                <a href="#/%3CAferoJSONCoding%3E">
+                  <h3 class="section-name">&lt;AferoJSONCoding&gt;</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVO5Afero17DeviceStreamEvent10Peripheral8JSONDictGSqP__"></a>
+                    <a name="//apple_ref/swift/Property/JSONDict" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVO5Afero17DeviceStreamEvent10Peripheral8JSONDictGSqP__">JSONDict</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVO5Afero17DeviceStreamEvent10PeripheralcFT4jsonGSqP___GSqS1__"></a>
+                    <a name="//apple_ref/swift/Method/init(json:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVO5Afero17DeviceStreamEvent10PeripheralcFT4jsonGSqP___GSqS1__">init(json:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Public"></a>
+                <a name="//apple_ref/swift/Section/Public" class="dashAnchor"></a>
+                <a href="#/Public">
+                  <h3 class="section-name">Public</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVO5Afero17DeviceStreamEvent10Peripheral9attributeFT3forGSqSi__GSqVS1_9Attribute_"></a>
+                    <a name="//apple_ref/swift/Method/attribute(for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVO5Afero17DeviceStreamEvent10Peripheral9attributeFT3forGSqSi__GSqVS1_9Attribute_">attribute(for:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieve a value for an attribute.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">attribute</span><span class="p">(</span><span class="k">for</span> <span class="nv">attributeId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html">Attribute</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>attributeId</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The id of the attribute to fetch. Can be <code>nil</code>, in
+             which case <code>nil</code> is returned.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The <code><a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html">Attribute</a></code> instance dereferenced by <code>attributeId</code>, if
+       present.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVO5Afero17DeviceStreamEvent10Peripheral12setAttributeFVS1_9AttributeGSqS2__"></a>
+                    <a name="//apple_ref/swift/Method/setAttribute(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVO5Afero17DeviceStreamEvent10Peripheral12setAttributeFVS1_9AttributeGSqS2__">setAttribute(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set a value for an attribute.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">setAttribute</span><span class="p">(</span><span class="n">_</span> <span class="nv">attribute</span><span class="p">:</span> <span class="kt"><a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html">Attribute</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html">Attribute</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>attribute</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The value to set. If <code>nil</code>, deletes the existing value.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The previous value of the attribute, if available.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVO5Afero17DeviceStreamEvent10Peripheral15removeAttributeFT3forSi_GSqVS1_9Attribute_"></a>
+                    <a name="//apple_ref/swift/Method/removeAttribute(for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVO5Afero17DeviceStreamEvent10Peripheral15removeAttributeFT3forSi_GSqVS1_9Attribute_">removeAttribute(for:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove and return the attribute for the given id, if any.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeAttribute</span><span class="p">(</span><span class="k">for</span> <span class="nv">attributeId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html">Attribute</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>attributeId</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The id of the attribute to remove.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The previous value of the attribute, if any.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.Status"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.Status" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.Status">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.Status</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VVO5Afero17DeviceStreamEvent10Peripheral6Status"></a>
+                    <a name="//apple_ref/swift/Struct/Status" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VVO5Afero17DeviceStreamEvent10Peripheral6Status">Status</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Peripheral status flags</p>
+
+<p>For each registered peripheral on an account, conclave tracks the
+RSSI (signal strength) and various other status flags (like visibility)
+summarizing transient information from each hub, coalescing this data
+and re-broadcasting it.</p>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/Status.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Status</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.DeviceTag"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.DeviceTag" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.DeviceTag">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.DeviceTag</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VVO5Afero17DeviceStreamEvent10Peripheral9DeviceTag"></a>
+                    <a name="//apple_ref/swift/Struct/DeviceTag" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VVO5Afero17DeviceStreamEvent10Peripheral9DeviceTag">DeviceTag</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/DeviceTag.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Peripheral</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.Attribute"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.Attribute" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.Attribute">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.Attribute</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VVO5Afero17DeviceStreamEvent10Peripheral9Attribute"></a>
+                    <a name="//apple_ref/swift/Struct/Attribute" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VVO5Afero17DeviceStreamEvent10Peripheral9Attribute">Attribute</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents an Attribute id/value in a Peripheral.</p>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/Attribute.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Attribute</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt"><a href="../../Protocols/AferoJSONCoding.html">AferoJSONCoding</a></span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.LocationState"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.LocationState" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.LocationState">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.LocationState</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OVO5Afero17DeviceStreamEvent10Peripheral13LocationState"></a>
+                    <a name="//apple_ref/swift/Enum/LocationState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OVO5Afero17DeviceStreamEvent10Peripheral13LocationState">LocationState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Physical location state for an Afero device.</p>
+
+<p>Afero devices can optionally be given a physical location. This may be
+assigned by a hub, optionally by the user during initial association,
+or afterward by the user in device settings.</p>
+<h1 id='interpretation' class='heading'>Interpretation</h1>
+
+<ul>
+<li><p><code>unknown</code>: The location state has been fetched from the service, and
+         the service has responded that the device does not have a set
+         location.</p></li>
+<li><p><code>known(location)</code>: The device has a known <code>location</code>.</p></li>
+</ul>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/LocationState.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LocationState</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.UpdateState"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.UpdateState" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.UpdateState">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.UpdateState</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OVO5Afero17DeviceStreamEvent10Peripheral11UpdateState"></a>
+                    <a name="//apple_ref/swift/Enum/UpdateState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OVO5Afero17DeviceStreamEvent10Peripheral11UpdateState">UpdateState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Terminal states for device update requests</p>
+
+<ul>
+<li><code>.updated</code>: Everything A-OK</li>
+<li><code>.interrupted</code>: Interrupted (device-side update in progress or preempted by device-side update)</li>
+<li><code>.unknownUUID</code>: Unknown UUID</li>
+<li><code>.lengthExceeded</code>: Length Exceeded</li>
+<li><code>.conflict</code>: Conflict (previous Set in progress)</li>
+<li><code>.timeout</code>: Timeout (Set timed out)</li>
+</ul>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/UpdateState.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">UpdateState</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="kt">CustomStringConvertible</span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/DeviceStreamEvent.Peripheral.UpdateReason"></a>
+                <a name="//apple_ref/swift/Section/DeviceStreamEvent.Peripheral.UpdateReason" class="dashAnchor"></a>
+                <a href="#/DeviceStreamEvent.Peripheral.UpdateReason">
+                  <h3 class="section-name">DeviceStreamEvent.Peripheral.UpdateReason</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OVO5Afero17DeviceStreamEvent10Peripheral12UpdateReason"></a>
+                    <a name="//apple_ref/swift/Enum/UpdateReason" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OVO5Afero17DeviceStreamEvent10Peripheral12UpdateReason">UpdateReason</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reasons for device update events</p>
+
+<ul>
+<li><code>.unknown</code>: Unknown</li>
+<li><code>.unsolicted</code>: Unsolicited Kiban-module-initiated or MCU-initiated Update (e.g., button press)</li>
+<li><code>.serviceInitiated</code>: Response to Service-initiated Set</li>
+<li><code>.mcuInitiated</code>: Response to MCU-initiated Set</li>
+<li><code>.linkingCompleted</code>: Linking completed</li>
+<li><code>.boundAttriuteChanged</code>: A bound attribute was changed</li>
+<li><code>.fake</code>: Fake update.</li>
+</ul>
+
+                        <a href="../../Enums/DeviceStreamEvent/Peripheral/UpdateReason.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">UpdateReason</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="kt">CustomStringConvertible</span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="http://afero.io" target="_blank" rel="external">Afero</a>. All rights reserved. (Last updated: 2017-06-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

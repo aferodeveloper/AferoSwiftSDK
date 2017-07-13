@@ -1,0 +1,100 @@
+{
+    "__DESCRIPTION__": "Jane Doe Test fixture for UserAccount, UserAccount.User, UserAccount.User.AccountAccess, and UserAccount.User.AccountAccess.Account.",
+    "userId": "userIdJaneDoe",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "lastUsedTimestamp": 0,
+    "partnerAccess":
+    [
+        {
+            "partner":
+            {
+                "clientSecret": "clientSecretJaneDoe-0",
+                "clientId": "clientIdJaneDoe-0",
+                "partnerId": "partnerIdJaneDoe-0",
+                "name": "ParterNameJaneDoe",
+                "createdTimestamp": 1422381519333
+            },
+            "privileges":
+            {
+                "owner": false,
+                "inviteUsers": true,
+                "manageDeviceProfiles": true,
+                "viewDeviceInfo": true
+            }
+        },
+        {
+            "partner":
+            {
+                "clientSecret": "clientSecretJaneDoe-1",
+                "clientId": "clientIdJaneDoe-1",
+                "partnerId": "partnerIdJaneDoe-1",
+                "name": "Jane's Devices",
+                "createdTimestamp": 1449178397821
+            },
+            "privileges":
+            {
+                "owner": true,
+                "inviteUsers": true,
+                "manageDeviceProfiles": true,
+                "viewDeviceInfo": true
+            }
+        }
+    ],
+    "credential":
+    {
+        "lastUsedTimestamp": 1494523779164,
+        "createdTimestamp": 0,
+        "failedAttempts": 0,
+        "type": "EMAIL",
+        "verified": true,
+        "credentialId": "janedoe@afero.io"
+    },
+    "accountAccess":
+    [
+        {
+            "account":
+            {
+                "accountId": "accountIdJaneDoe-0",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "Where Brooklyn At, Jane Doe?",
+                "createdTimestamp": 1427741198601
+            },
+            "privileges":
+            {
+                "owner": true,
+                "canWrite": false
+            }
+        },
+        {
+            "account":
+            {
+                "accountId": "accountIdJaneDoe-1",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "Work it, Jane Doe",
+                "createdTimestamp": 1447379865026
+            },
+            "privileges":
+            {
+                "owner": false,
+                "canWrite": true
+            }
+        },        {
+            "account":
+            {
+                "accountId": "accountIdJaneDoe-2",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "I'm Better I'm Better I'm Better",
+                "createdTimestamp": 1431100873782
+            },
+            "privileges":
+            {
+                "owner": false,
+                "canWrite": true
+            }
+        }
+    ]
+}

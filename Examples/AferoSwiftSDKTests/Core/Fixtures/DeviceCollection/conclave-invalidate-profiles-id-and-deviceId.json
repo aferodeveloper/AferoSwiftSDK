@@ -1,0 +1,8 @@
+{
+    "event": "invalidate",
+    "data": {
+        "id": "11111111",
+        "deviceId": "22222222",
+        "kind": "profiles"
+    }
+}

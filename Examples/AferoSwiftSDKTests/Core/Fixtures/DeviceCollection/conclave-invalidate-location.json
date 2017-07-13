@@ -1,0 +1,7 @@
+{
+    "event": "invalidate",
+    "data": {
+        "id": "eeeeeeee",
+        "kind": "location"
+    }
+}

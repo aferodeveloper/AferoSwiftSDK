@@ -1,0 +1,105 @@
+{
+    "label": "KRaM",
+    "attributeOptions": {
+        "201": {
+            "label": "Power",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "On"
+                    }
+                }
+            ]
+        },
+        "200": {
+            "rangeOptions": {
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unitLabel": ""
+            }
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_kram.png"
+                }
+            ]
+        },
+        "displayRules": [
+            {
+                "match": "0",
+                "apply": {
+                    "rotate": "forward",
+                    "rotateBehavior": "oneshot"
+                }
+            },
+            {
+                "match": "1",
+                "apply": {
+                    "rotate": "forward",
+                    "rotateBehavior": "loop"
+                }
+            }
+        ]
+    },
+    "groups": [
+        {
+            "label": "Power",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Battery Level",
+            "controls": [ 101 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_lights.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 0
+            }
+        },
+        {
+            "id": 101,
+            "controlType": "batteryLevel",
+            "attributeMap": {
+                "chargeLevel": 200,
+                "isCharging": 0,
+                "chargeTimeRemaining": 0,
+                "maxCharge": 0
+            },
+            "displayRules": [
+            ]
+        }
+    ]
+}

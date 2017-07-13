@@ -1,0 +1,14 @@
+{
+    "public":
+    {
+        "seq": 6666,
+        "sessionId": 99999,
+        "sender": "fake sender man",
+        "event": "fake event man",
+        "data":
+        {
+            "key1": "val1",
+            "key2": 2
+        }
+    }
+}

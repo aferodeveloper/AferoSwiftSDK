@@ -1,0 +1,7 @@
+{
+  "event": "device:mute",
+  "data": {
+    "id": "ffffffff",
+    "timeout": 59902
+  }
+}

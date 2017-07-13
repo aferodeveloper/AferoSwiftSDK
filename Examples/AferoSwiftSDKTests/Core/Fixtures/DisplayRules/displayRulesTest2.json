@@ -1,0 +1,91 @@
+[
+    {
+        "apply": {
+            "barColor": "#00FF00",
+            "hint": ""
+        },
+        "match": "*"
+    },
+    {
+        "apply": {
+            "barColor": "#FF0000",
+            "hint": "Discharged"
+        },
+        "match": "0",
+        "attributeId": 100
+    },
+    {
+        "apply": {
+            "barColor": "#FF0000",
+            "hint": "Low Battery",
+            "tintColor": "red"
+        },
+        "match": "1...15",
+        "attibuteId": 200
+    },
+    {
+        "apply": {
+            "barColor": "#FFFF00",
+            "sounds": [
+                "quack",
+                "moof",
+                "I fart in your general direction."
+            ]
+        },
+        "match": "16...35",
+        "attributeId": 200
+    },
+    {
+        "apply": {
+            "hint": "Sufficient Charge"
+        },
+        "match": "16...99",
+        "attributeId": 100,
+        
+    },
+    {
+        "apply": {
+            "hint": "Half Charged"
+        },
+        "match": "0x32"
+    },
+    {
+        "apply": {
+            "admonishment": "You are amazing.",
+            "hint": "Charged"
+        },
+        "match": "100"
+    },
+    {
+        "apply": {
+            "externalPower": true,
+            "hint": "Charging"
+        },
+        "match": "101"
+    },
+    {
+        "apply": {
+            "externalPower": true,
+            "hint": "Fully charged"
+        },
+        "match": "102"
+    },
+    {
+        "apply": {
+            "also": "My 2-bit is set."
+        },
+        "match": "&2"
+    },
+    {
+        "apply": {
+            "also": "My 2-bit is set, but my 1-isn't."
+        },
+        "match": "(&0x02)&&(!&0x01)"
+    },
+    {
+        "apply": {
+            "also": "2-bit set and betwen 3 and 12 (inclusive), or between 20 and 30(inclusive)"
+        },
+        "match": "((&0x02)&&(3...12))||(20...30)"
+    }
+]

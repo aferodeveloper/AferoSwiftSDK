@@ -1,0 +1,47 @@
+{
+    "conclave": {
+        "host": "",
+        "ssl": false,
+        "compression": false,
+        "port": 0
+    },
+    "tokens": [
+               {
+               "token": "mytoken",
+               "channelId": "mychannelid",
+               "expiresTimestamp": 0,
+               "client": {
+               "type": "sunnyd",
+               "deviceId": "01234"
+               },
+               "createdTimestamp": 0
+               },
+               {
+               "token": "mytoken2",
+               "channelId": "mychannelid2",
+               "expiresTimestamp": 0,
+               "client": {
+               "type": "minutemaid",
+               "mobileDeviceId": "56789"
+               },
+               "createdTimestamp": 0
+               }
+               ],
+    "conclaveHosts": [
+                      {
+                      "type": "socket",
+                      "host": "conclave-socket-host",
+                      "port": 1337
+                      },
+                      {
+                      "type": "socket",
+                      "host": "conclave-socket-host-2",
+                      "port": 31337
+                      },
+                      {
+                      "type": "http",
+                      "host": "conclave-http-host",
+                      "port": 187
+                      }
+                      ]
+}

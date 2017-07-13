@@ -1,0 +1,71 @@
+[
+    {
+        "deviceActions": [
+            {
+                "attributes": [
+                    {
+                        "value": "1933036286",
+                        "id": 234
+                    }
+                ],
+                "deviceId": "NRBQ333",
+                "durationSeconds": 34
+            }
+        ],
+        "deviceFilterCriteria": [
+            {
+                "attribute": {
+                    "value": "3735928559",
+                    "id": 123
+                },
+                "deviceId": "ABCD3456",
+                "operation": "EQUALS!",
+                "trigger": false
+            }
+        ],
+        "enabled": true,
+        "ruleId": "XXYY123",
+        "schedule": {
+            "dayOfWeek": [
+                "MON",
+                "TUE",
+                "SAT"
+            ],
+            "scheduleId": "MMNNDD",
+            "time": {
+                "hour": 11,
+                "minute": 22,
+                "seconds": 33,
+                "timeZone": "America/Los_Angeles"
+            }
+        }
+    },
+
+    {
+        "deviceActions": [
+            {
+                "attributes": [
+                    {
+                        "value": "4207868622",
+                        "id": 789
+                    }
+                ],
+                "deviceId": "NRB444",
+            }
+        ],
+        "deviceFilterCriteria": [],
+        "enabled": false,
+        "ruleId": "XXYY345",
+        "schedule": {
+            "dayOfWeek": [],
+            "scheduleId": "MMNNDD",
+            "time": {
+                "hour": 11,
+                "minute": 22,
+                "seconds": 33,
+                "timeZone": "America/Los_Angeles"
+            }
+        }
+    }
+    
+]

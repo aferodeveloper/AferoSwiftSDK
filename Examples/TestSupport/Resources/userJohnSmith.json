@@ -1,0 +1,100 @@
+{
+    "__DESCRIPTION__": "John Smith Test fixture for UserAccount, UserAccount.User, UserAccount.User.AccountAccess, and UserAccount.User.AccountAccess.Account.",
+    "userId": "userIdJohnSmith",
+    "firstName": "John",
+    "lastName": "Smith",
+    "lastUsedTimestamp": 0,
+    "partnerAccess":
+    [
+        {
+            "partner":
+            {
+                "clientSecret": "clientSecretJohnSmith-0",
+                "clientId": "clientIdJohnSmith-0",
+                "partnerId": "partnerIdJohnSmith-0",
+                "name": "JohnSmithCo",
+                "createdTimestamp": 1422381519333
+            },
+            "privileges":
+            {
+                "owner": false,
+                "inviteUsers": true,
+                "manageDeviceProfiles": true,
+                "viewDeviceInfo": true
+            }
+        },
+        {
+            "partner":
+            {
+                "clientSecret": "clientSecretJohnSmith-1",
+                "clientId": "clientIdJohnSmith-1",
+                "partnerId": "partnerIdJohnSmith-1",
+                "name": "John's Devices",
+                "createdTimestamp": 1449178397821
+            },
+            "privileges":
+            {
+                "owner": true,
+                "inviteUsers": true,
+                "manageDeviceProfiles": true,
+                "viewDeviceInfo": true
+            }
+        }
+    ],
+    "credential":
+    {
+        "lastUsedTimestamp": 1494523779164,
+        "createdTimestamp": 0,
+        "failedAttempts": 0,
+        "type": "EMAIL",
+        "verified": true,
+        "credentialId": "derp@johnsmith.co"
+    },
+    "accountAccess":
+    [
+        {
+            "account":
+            {
+                "accountId": "accountIdJohnSmith-0",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "Why U Buggin",
+                "createdTimestamp": 1427741198601
+            },
+            "privileges":
+            {
+                "owner": true,
+                "canWrite": false
+            }
+        },
+        {
+            "account":
+            {
+                "accountId": "accountIdJohnSmith-1",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "Get Out My Grille",
+                "createdTimestamp": 1447379865026
+            },
+            "privileges":
+            {
+                "owner": false,
+                "canWrite": true
+            }
+        },        {
+            "account":
+            {
+                "accountId": "accountIdJohnSmith-2",
+                "region": "us-west-2",
+                "type": "CUSTOMER",
+                "description": "Johnny Johnny Johnny Can't You See",
+                "createdTimestamp": 1431100873782
+            },
+            "privileges":
+            {
+                "owner": false,
+                "canWrite": true
+            }
+        }
+    ]
+}

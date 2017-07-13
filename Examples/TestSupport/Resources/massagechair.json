@@ -1,0 +1,234 @@
+{
+    "label": "Massage Chair",
+    "attributeOptions": {
+        "100": {
+            "label": "Power",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "On"
+                    }
+                }
+            ]
+        },
+        "200": {
+            "label": "Massage",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "Swedish"
+                    }
+                },
+                {
+                    "match": "2",
+                    "apply": {
+                        "label": "Deep"
+                    }
+                },
+                {
+                    "match": "3",
+                    "apply": {
+                        "label": "Shiatsu"
+                    }
+                },
+                {
+                    "match": "4",
+                    "apply": {
+                        "label": "Stretch"
+                    }
+                },
+                {
+                    "match": "5",
+                    "apply": {
+                        "label": "Neck/Shoulder"
+                    }
+                },
+                {
+                    "match": "6",
+                    "apply": {
+                        "label": "Lower Back"
+                    }
+                }
+            ]
+        },
+        "300": {
+            "label": "Chair Position",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Up"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "Down"
+                    }
+                }
+            ]
+        },
+        "301": {
+            "label": "Ottoman Position",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Up"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "Down"
+                    }
+                }
+            ]
+        },
+        "400": {
+            "label": "Heat",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                        "label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                        "label": "On"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_massage_chair.png"
+                }
+            ]
+        }
+    },
+    "groups": [
+        {
+            "label": "Power",
+            "controls": [99],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Massage",
+            "controls": [100],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/device_massage_chair_control_manual_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Heat",
+            "controls": [101],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/device_massage_chair_control_heat_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Chair",
+            "controls": [102],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/device_massage_chair_control_recline_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Ottoman",
+            "controls": [103],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/device_massage_chair_control_footrest_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 99,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 100
+            }
+        },
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 200
+            }
+        },
+        {
+            "id": 101,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 400
+            }
+        },
+        {
+            "id": 102,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 300
+            }
+        },
+        {
+            "id": 103,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 301
+            }
+        }
+    ]
+}

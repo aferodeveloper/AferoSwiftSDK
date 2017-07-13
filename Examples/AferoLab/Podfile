@@ -1,0 +1,38 @@
+# !! NOTE !! The pod configuration for AferoLab has been migrated to
+# the unified ../Podfile; please open from ../AferoSwiftSDK.workspace.
+
+#source 'git@github.com:KibanLabsInc/Podspecs.git'
+#source 'https://github.com/CocoaPods/Specs.git'
+#
+#use_frameworks!
+#
+#target 'AferoLab' do
+#    
+#    platform :ios, '9.3'
+#    
+#    pod 'afero-thirdparty', '0.0.5'
+#    pod 'AferoSwiftSDK', '~> 1.0'
+#
+#    pod 'Hubby', :inhibit_warnings => true
+#    pod 'ReactiveSwift', :inhibit_warnings => true
+#
+#    pod 'HTTPStatusCodes', '3.1.1'
+#    pod 'AFNetworking', '3.1.0'
+#    pod 'AFOAuth2Manager', '3.0.0'
+#    pod 'PromiseKit', '4.1.3'
+#    pod 'CocoaLumberjack/Swift', '3.2.0'
+#    pod 'LKAlertController', '1.12.1'
+#    pod 'RSEnvironment', '0.0.3'
+#    pod 'SVProgressHUD', '1.1.3'
+#
+#    target 'AferoLabTests' do
+#      inherit! :search_paths
+#      # Pods for testing
+#    end
+#
+#    target 'AferoLabUITests' do
+#      inherit! :search_paths
+#      # Pods for testing
+#    end
+#
+#end

@@ -1,0 +1,116 @@
+{
+    "label": "Lock",
+    "attributeOptions": {
+        "201": {
+            "label": "Lock",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Unlocked"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "Locked"
+                    }
+                }
+            ]
+        },
+        "200": {
+            "label": "Battery Level",
+            "rangeOptions": {
+                "max": 100,
+                "min": 0,
+                "step": 1,
+                "unitLabel": ""
+            }
+        }
+    },
+    "gauge": {
+        "background": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_lock_frame.png"
+                }
+            ]
+        },
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_lock_latch.png"
+                }
+            ]
+        },
+        "labelSize": "small",
+        "labelColor": "black",
+        "displayRules": [
+            {
+                "match": "0",
+                "apply": {
+                    "rotate": "reverse",
+                    "label": "UNLOCKED"
+                }
+            },
+            {
+                "match": "1",
+                "apply": {
+                    "rotate": "forward",
+                    "rotateMaximum": 180,
+                    "label": "LOCKED"
+                }
+            }
+        ]
+    },
+    "groups": [
+        {
+            "label": "Lock",
+            "controls": [ 99 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Battery Level",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/plasmatics_lights.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 99,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 201
+            }
+        },
+        {
+            "id": 100,
+            "controlType": "batteryLevel",
+            "attributeMap": {
+                "chargeLevel": 200,
+                "isCharging": 0,
+                "chargeTimeRemaining": 0,
+                "maxCharge": 0
+            },
+            "displayRules": [
+            ]
+        }
+    ]
+}

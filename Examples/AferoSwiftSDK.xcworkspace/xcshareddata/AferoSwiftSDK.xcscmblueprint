@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "533E7A1BBE7DC682C3E31917B8D72646E93A2A2B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7C64FC2014943A1975EF6C8A8850DDB0AB579281" : 9223372036854775807,
+    "533E7A1BBE7DC682C3E31917B8D72646E93A2A2B" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "876F7FF8-0909-4CAC-AD5F-F637317B9C80",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7C64FC2014943A1975EF6C8A8850DDB0AB579281" : "hubby\/",
+    "533E7A1BBE7DC682C3E31917B8D72646E93A2A2B" : "AferoSwiftSDK\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "AferoSwiftSDK",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Examples\/AferoSwiftSDK.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:KibanLabsInc\/AferoSwiftSDK.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "533E7A1BBE7DC682C3E31917B8D72646E93A2A2B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:KibanLabsInc\/hubby.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7C64FC2014943A1975EF6C8A8850DDB0AB579281"
+    }
+  ]
+}

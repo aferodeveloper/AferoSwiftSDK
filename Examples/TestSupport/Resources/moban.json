@@ -1,0 +1,56 @@
+{
+    "label": "Moban",
+    "attributeOptions": {
+        "200": {
+            "label": "Power",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_moban.png"
+                }
+            ]
+        }
+    },
+    "groups": [
+        {
+            "label": "Power",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_power_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 0
+            }
+        }
+    ]
+}

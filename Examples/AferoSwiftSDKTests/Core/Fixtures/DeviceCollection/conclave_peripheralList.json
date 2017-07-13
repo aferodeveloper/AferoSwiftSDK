@@ -1,0 +1,51 @@
+{
+    "__DESCRIPTION__": "DeviceStreamEvent.peripheralList Test Fixture 1",
+    "event": "peripheralList",
+    "data":
+    {
+        "peripherals":
+        [
+            {
+                "friendlyName": "friendlyName1",
+                "profileId": "a37e5e66-8b08-4f2d-8f51-a255f762c5fc",
+                "createdTimestamp": 1476119789875,
+                "virtual": true,
+                "id": "ffffffff",
+                "attributes":
+                [
+                    {
+                        "id": 1024,
+                    }
+                ],
+                "status":
+                {
+                    "available": false,
+                    "visible": false,
+                    "direct": true,
+                }
+            },
+            {
+                "friendlyName": "friendlyName2",
+                "profileId": "0e46e637-ea87-48ee-92e9-fe0259ae24ff",
+                "createdTimestamp": 123456789022,
+                "virtual": false,
+                "id": "fffffffd",
+                "attributes":
+                [
+                    {
+                        "id": 1024,
+                        "data": "0100",
+                        "value": "1"
+                    }
+                ],
+                "status":
+                {
+                    "available": false,
+                    "visible": false,
+                    "direct": false,
+                }
+            }
+        ],
+        "currentSeq": 100
+    }
+}

@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>OfflineSchedule Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/OfflineSchedule" class="dashAnchor"></a>
+    <a title="OfflineSchedule Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Afero Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/aferodeveloper/AferoSwiftSDK"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Afero Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        OfflineSchedule Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/AnyWrapped.html">AnyWrapped</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveClient.html">ConclaveClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveClient/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveClient/ClientEvent.html">– ClientEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveDeviceEventStream.html">ConclaveDeviceEventStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveSocketConnection.html">ConclaveSocketConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveStreamConnection.html">ConclaveStreamConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ConclaveStreamConnection/ErrorCode.html">– ErrorCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceCollection.html">DeviceCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceCollection/State.html">– State</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceCollection/ContentsChange.html">– ContentsChange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceModel.html">DeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceProfile.html">DeviceProfile</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceProfile/Presentation.html">– Presentation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceProfile/AttributeDescriptor.html">– AttributeDescriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceProfile/Service.html">– Service</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DisplayRulesProcessor.html">DisplayRulesProcessor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FilterCriteriaRecordingDeviceModel.html">FilterCriteriaRecordingDeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LineDelimitedJSONStreamReader.html">LineDelimitedJSONStreamReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LineDelimitedJSONStreamWriter.html">LineDelimitedJSONStreamWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MetricHelper.html">MetricHelper</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OfflineSchedule.html">OfflineSchedule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OfflineSchedule/Event.html">– Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OfflineSchedule/ScheduleEvent.html">– ScheduleEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OfflineSchedule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OfflineSchedule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PipeHolder.html">PipeHolder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RecordingDeviceModel.html">RecordingDeviceModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ResourceUtils.html">ResourceUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Utils.html">Utils</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Wrapped.html">Wrapped</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AccountNotification.html">AccountNotification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/AferoSystemAttribute.html">AferoSystemAttribute</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/AttributeEvent.html">AttributeEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/AttributeFlavor.html">AttributeFlavor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/AttributeValue.html">AttributeValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ConclaveConnectionEvent.html">ConclaveConnectionEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ConclaveMessage.html">ConclaveMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ConnectionState.html">ConnectionState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceModelCommand.html">DeviceModelCommand</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceModelEvent.html">DeviceModelEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent.html">DeviceStreamEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent/Peripheral.html">– Peripheral</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent/OTAPackageInfo.html">– OTAPackageInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent/OTAProgress.html">– OTAProgress</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceStreamEvent/DeviceError.html">– DeviceError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceWriteState.html">DeviceWriteState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/HachiState.html">HachiState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/InvalidationEvent.html">InvalidationEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/JSONStreamEvent.html">JSONStreamEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/LocationSourceType.html">LocationSourceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/LocationState.html">LocationState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/WifiAuthState.html">WifiAuthState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/WifiSetupError.html">WifiSetupError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/WifiSetupEvent.html">WifiSetupEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/WifiSetupManagerState.html">WifiSetupManagerState</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/CharacterSet.html">CharacterSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Data.html">Data</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/DateComponents.html">DateComponents</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/DateFormatter.html">DateFormatter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Dictionary.html">Dictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Error.html">Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/HTTPStatusCode.html">HTTPStatusCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/HubbySetupWifiCommandState.html">HubbySetupWifiCommandState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/HubbyWifiState.html">HubbyWifiState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/IndexSet.html">IndexSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int16.html">Int16</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int32.html">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int64.html">Int64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int8.html">Int8</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Locale.html">Locale</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSDecimalNumber.html">NSDecimalNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSDecimalNumber/IntegerBehaviors.html">– IntegerBehaviors</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSError.html">NSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSNumber.html">NSNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/SignedNumber.html">SignedNumber</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/String.html">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/TimeZone.html">TimeZone</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UIViewController.html">UIViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UInt16.html">UInt16</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UInt32.html">UInt32</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UInt64.html">UInt64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UInt8.html">UInt8</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UnsignedInteger.html">UnsignedInteger</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1mFTCSo15NSDecimalNumberS0__S0_">*(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1pFTCSo15NSDecimalNumberS0__S0_">+(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2ppu1_R_s8HashablerFTFxGVs10Dictionaryq_q0__FxGS1_q_q0___FxGS1_q_q0__">++(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1sFTCSo15NSDecimalNumberS0__S0_">-(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1dFTCSo15NSDecimalNumberS0__S0_">/(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTOS_14AttributeValueS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVS_10DeviceRuleS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVS_13PartnerAccessS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVS_15HistoryActivityS0__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVVCS_15OfflineSchedule13ScheduleEvent17TimeSpecificationS2__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVVS_13PartnerAccess17PartnerPrivilegesS1__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1lFTVVVS_11UserAccount4User20SharingAccountAccessS2__Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1luRxS_15DeviceModelablerFTxx_Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi1luRxS_32OfflineScheduleEventSerializablerFTxx_Sb">&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;&lt;(_:_:).html">&lt;&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;&lt;(_:_:).html">&lt;&lt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTCS_13DeviceProfileS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTOCS_14ConclaveClient11ClientEventS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTOS_13LocationStateS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTOS_14AttributeValueS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTOS_15ConclaveMessageS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTOVVS_14ConclaveAccess5Token6ClientS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile12PresentationS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile19AttributeDescriptorS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVCS_13DeviceProfile7ServiceS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_10DeviceRuleS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_11DeviceGroupS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_12ConclaveHostS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_13LocationModelS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_13PartnerAccessS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_15HistoryActivityS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_16DeviceRuleActionS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_17DeviceGroupMemberS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVS_21DeviceFilterCriterionS0__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation10LayerImageS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5FlagsS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5GaugeS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5GroupS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation5LayerS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_13DeviceProfile12Presentation7ControlS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVCS_15OfflineSchedule13ScheduleEvent17TimeSpecificationS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVS_10DeviceRule8ScheduleS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVS_13PartnerAccess17PartnerPrivilegesS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVS_13PartnerAccess7PartnerS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVS_14ConclaveAccess5TokenS1__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVVCS_13DeviceProfile12Presentation15AttributeOption11ValueOptionS3__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVVCS_13DeviceProfile12Presentation15AttributeOption12RangeOptionsS3__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVVS_11UserAccount4User10CredentialS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeFTVVVS_11UserAccount4User20SharingAccountAccessS2__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeuRxS_15DeviceModelablerFTxx_Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeuRxS_21LayerImagePresentablerFTGSqx_GSqx__Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeuRxS_32OfflineScheduleEventSerializablerFTxx_Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi2eeuRxs9EquatablerFTGSqGSax__GSqGSax___Sb">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&gt;&gt;(_:_:).html">&gt;&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&gt;&gt;(_:_:).html">&gt;&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero8FromJSONuRxS_15AferoJSONCodingrFGSqGSaP___GSqGSax__">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero8FromJSONuRxS_15AferoJSONCodingrFGSqP__GSqx_">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero8FromJSONuRxS_19OptionSetJSONCodingrFGSqGSaP___x">FromJSON(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero3absFCSo15NSDecimalNumberS0_">abs(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero5afterFTSd7onQueueCSo13DispatchQueue7performFT_T__T_">after(_:onQueue:perform:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero18asyncGlobalDefaultFFT_T_T_">asyncGlobalDefault(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero9asyncMainFFT_T_T_">asyncMain(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero8debounceFTSd5queueCSo13DispatchQueue6actionFT_T__FT_T_">debounce(_:queue:action:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero12fastDebounceFTSd5queueCSo13DispatchQueue6actionFT_T__FT_T_">fastDebounce(_:queue:action:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero16floatDenormalizeurFTGSqx_3maxGSqx_7currentGSqSf_3t2fFGSqx_GSqSf_3f2tFSfGSqx__GSqx_">floatDenormalize(_:max:current:t2f:f2t:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero14floatNormalizeuRxs12SignedNumberrFTGSqx_3maxGSqx_7currentGSqx_4convFxSf_GSqSf_">floatNormalize(_:max:current:conv:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Afero8minimizeu0_R_s10ComparablerFTGSaGSqx__1fFGSqx_GSqq___GSqx_">minimize(_:f:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqGSaP___GSqGSax__">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqGVs10DictionarySSP___GSqx_">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferoop2oluRxS_15AferoJSONCodingrFGSqP__GSqx_">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferoop2oluRxS_19OptionSetJSONCodingrFGSqGSaP___x">|&lt;(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi3teeFTOS_14AttributeValueS0__Sb">~==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5Aferooi3teeuRxs9EquatablerFTxx_Sb">~==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/∈(_:_:).html">∈(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F5AferoXoi3kJgu0_Rxs9Equatable_s8SequenceW_8Iterator7Element_zxrFTGSqx_GSqq___Sb">∉(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/AccountAccessPrivilegesRepresentable.html">AccountAccessPrivilegesRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AccountAccessRepresentable.html">AccountAccessRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AferoJSONCoding.html">AferoJSONCoding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AttributeEventSignaling.html">AttributeEventSignaling</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AttributeOptionPresentable.html">AttributeOptionPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ConclaveAuthable.html">ConclaveAuthable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ConclaveConnection.html">ConclaveConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ConnectionMediaSupporting.html">ConnectionMediaSupporting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ControlPresentable.html">ControlPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DataConvertible.html">DataConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DateFormatting.html">DateFormatting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceAccountProfilesSource.html">DeviceAccountProfilesSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceActionSource.html">DeviceActionSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceBatchActionRequestable.html">DeviceBatchActionRequestable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceCollectionDelegate.html">DeviceCollectionDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceCommandConsuming.html">DeviceCommandConsuming</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceEventSignaling.html">DeviceEventSignaling</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceEventStreamable.html">DeviceEventStreamable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceFilterCriteriaSource.html">DeviceFilterCriteriaSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceInfoSource.html">DeviceInfoSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceModelable.html">DeviceModelable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/DeviceProfileSource.html">DeviceProfileSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GaugePresentable.html">GaugePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/GroupPresentable.html">GroupPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LayerImagePresentable.html">LayerImagePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LayerPresentable.html">LayerPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LongIntegerAttributeValueSubscriptable.html">LongIntegerAttributeValueSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/OfflineScheduleCollator.html">OfflineScheduleCollator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/OfflineScheduleEventSerializable.html">OfflineScheduleEventSerializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/OfflineScheduleStorage.html">OfflineScheduleStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:P5Afero19OptionSetJSONCoding">OptionSetJSONCoding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:P5Afero20OptionsSubscriptable">OptionsSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PartnerAccessRepresentable.html">PartnerAccessRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PartnerPrivilegesRepresentable.html">PartnerPrivilegesRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PartnerRepresentable.html">PartnerRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ProportionAttributeValueSubscriptable.html">ProportionAttributeValueSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/RangeOptionsPresentable.html">RangeOptionsPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:P5Afero17SafeSubscriptable">SafeSubscriptable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ValueOptionPresentable.html">ValueOptionPresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WifiConfigurable.html">WifiConfigurable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WifiSetupManaging.html">WifiSetupManaging</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/AccountAction.html">AccountAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountAction.html#/s:VV5Afero13AccountAction19AccountActionSource">– AccountActionSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ArrayDeltas.html">ArrayDeltas</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AttributeInstance.html">AttributeInstance</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ConclaveAccess.html">ConclaveAccess</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ConclaveAccess/Token.html">– Token</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ConclaveHost.html">ConclaveHost</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ConclaveHosts.html">ConclaveHosts</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ConnectionMediaTypes.html">ConnectionMediaTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DateTypes.html">DateTypes</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DateTypes/DayOfWeek.html">– DayOfWeek</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DateTypes/Time.html">– Time</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceBatchAction.html">DeviceBatchAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceBatchAction/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceBatchAction/Results.html">– Results</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceBatchAction/Request.html">– Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceBatchAction/Response.html">– Response</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceFilterCriterion.html">DeviceFilterCriterion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceFilterCriterion/Operation.html">– Operation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceGroup.html">DeviceGroup</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceGroupMember.html">DeviceGroupMember</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceRule.html">DeviceRule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceRule/Schedule.html">– Schedule</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceRule/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceRuleAction.html">DeviceRuleAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/DeviceState.html">DeviceState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HistoryActivity.html">HistoryActivity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HistoryActivity/HistoryType.html">– HistoryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HistoryFilter.html">HistoryFilter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Invitation.html">Invitation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/LocationModel.html">LocationModel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PartnerAccess.html">PartnerAccess</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PartnerAccess/Partner.html">– Partner</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PartnerAccess/PartnerPrivileges.html">– PartnerPrivileges</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RangeOptionsSubscriptor.html">RangeOptionsSubscriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserAccount.html">UserAccount</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserAccount/User.html">– User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserNotificationAssociation.html">UserNotificationAssociation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ValueOptionsSubscriptor.html">ValueOptionsSubscriptor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Afero18ConclaveReadSignal">ConclaveReadSignal</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Afero22ControlTypePresentable">ControlTypePresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Afero21InvalidationEventKind">InvalidationEventKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:5Afero20WifiSetupEventSignal">WifiSetupEventSignal</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>OfflineSchedule</h1>
+            <p>Undocumented</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedulecFT7storagePS_22OfflineScheduleStorage_8collatorPS_23OfflineScheduleCollator__GSqS0__"></a>
+                    <a name="//apple_ref/swift/Method/init(storage:collator:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedulecFT7storagePS_22OfflineScheduleStorage_8collatorPS_23OfflineScheduleCollator__GSqS0__">init(storage:collator:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Change%20signaling"></a>
+                <a name="//apple_ref/swift/Section/Change signaling" class="dashAnchor"></a>
+                <a href="#/Change%20signaling">
+                  <h3 class="section-name">Change signaling</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule8setEventFT5eventGSqVS0_13ScheduleEvent_14forAttributeIdSi_T_"></a>
+                    <a name="//apple_ref/swift/Method/setEvent(event:forAttributeId:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule8setEventFT5eventGSqVS0_13ScheduleEvent_14forAttributeIdSi_T_">setEvent(event:forAttributeId:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set an event for a given index by attributeId</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">func</span> <span class="nf">setEvent</span><span class="p">(</span><span class="n">event</span> <span class="nv">newEvent</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">?,</span> <span class="n">forAttributeId</span> <span class="nv">newAttributeId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule5eventFSiVS0_13ScheduleEvent"></a>
+                    <a name="//apple_ref/swift/Method/event(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule5eventFSiVS0_13ScheduleEvent">event(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get an event at the given index (as per the collator)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="kd">func</span> <span class="nf">event</span><span class="p">(</span><span class="n">_</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Public%20Interface"></a>
+                <a name="//apple_ref/swift/Section/Public Interface" class="dashAnchor"></a>
+                <a href="#/Public%20Interface">
+                  <h3 class="section-name">Public Interface</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OC5Afero15OfflineSchedule5Event"></a>
+                    <a name="//apple_ref/swift/Enum/Event" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OC5Afero15OfflineSchedule5Event">Event</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/OfflineSchedule/Event.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C5Afero15OfflineSchedule11EventSignal"></a>
+                    <a name="//apple_ref/swift/Alias/EventSignal" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C5Afero15OfflineSchedule11EventSignal">EventSignal</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type for the signal on which clients listen for <code><a href="../Classes/OfflineSchedule/Event.html">Event</a></code>s.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">EventSignal</span> <span class="o">=</span> <span class="kt">Signal</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/OfflineSchedule/Event.html">Event</a></span><span class="p">,</span> <span class="kt">NoError</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule26offlineScheduleEventSignalGC13ReactiveSwift6SignalOS0_5EventO6Result7NoError_"></a>
+                    <a name="//apple_ref/swift/Property/offlineScheduleEventSignal" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule26offlineScheduleEventSignalGC13ReactiveSwift6SignalOS0_5EventO6Result7NoError_">offlineScheduleEventSignal</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The <code>Signal</code> on which  events can be received.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">open</span> <span class="k">var</span> <span class="nv">offlineScheduleEventSignal</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule.html#/s:C5Afero15OfflineSchedule11EventSignal">EventSignal</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule7enabledSb"></a>
+                    <a name="//apple_ref/swift/Property/enabled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule7enabledSb">enabled</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule5flagsVS0_5Flags"></a>
+                    <a name="//apple_ref/swift/Property/flags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule5flagsVS0_5Flags">flags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/End%20Public%20Interface"></a>
+                <a name="//apple_ref/swift/Section/End Public Interface" class="dashAnchor"></a>
+                <a href="#/End%20Public%20Interface">
+                  <h3 class="section-name">End Public Interface</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VC5Afero15OfflineSchedule13ScheduleEvent"></a>
+                    <a name="//apple_ref/swift/Struct/ScheduleEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VC5Afero15OfflineSchedule13ScheduleEvent">ScheduleEvent</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Represents a scheduled setting of an attribute</p>
+
+                        <a href="../Classes/OfflineSchedule/ScheduleEvent.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ScheduleEvent</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC5Afero15OfflineSchedule16FlagsAttributeIdSi"></a>
+                    <a name="//apple_ref/swift/Variable/FlagsAttributeId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC5Afero15OfflineSchedule16FlagsAttributeIdSi">FlagsAttributeId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>See <a href="http://wiki.afero.io/display/FIR/Device+Attribute+Registry">the Afero attribute registry</a>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">FlagsAttributeId</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC5Afero15OfflineSchedule17EventAttributeIdsGVs3SetSi_"></a>
+                    <a name="//apple_ref/swift/Variable/EventAttributeIds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC5Afero15OfflineSchedule17EventAttributeIdsGVs3SetSi_">EventAttributeIds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule14numberOfEventsSi"></a>
+                    <a name="//apple_ref/swift/Property/numberOfEvents" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule14numberOfEventsSi">numberOfEvents</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule10eventIndexFT3forVS0_13ScheduleEvent_GSqSi_"></a>
+                    <a name="//apple_ref/swift/Method/eventIndex(for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule10eventIndexFT3forVS0_13ScheduleEvent_GSqSi_">eventIndex(for:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule13scheduleEventFSiVS0_13ScheduleEvent"></a>
+                    <a name="//apple_ref/swift/Method/scheduleEvent(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule13scheduleEventFSiVS0_13ScheduleEvent">scheduleEvent(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule19removeScheduleEventFT7atIndexSi6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/removeScheduleEvent(atIndex:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule19removeScheduleEventFT7atIndexSi6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">removeScheduleEvent(atIndex:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove an event at the given index as per the collator.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    If <code>commit == true</code>, then the promise will resolve to an empty set,
+    since there&rsquo;s nothing remaining to commit.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeScheduleEvent</span><span class="p">(</span><span class="n">atIndex</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>index</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the collator-index of the event to remove.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true (the default), will automatically commit the attribute.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A <code>Promise&lt;Set&lt;Int&gt;&gt;</code>, which resolves to a set containing the
+       <code>attributeId</code> of the uncommitted attribute, if any.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule19removeScheduleEventFTVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/removeScheduleEvent(_:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule19removeScheduleEventFTVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">removeScheduleEvent(_:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove an event at the given index as per the collator.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    If <code>commit == true</code>, then the promise will resolve to an empty set,
+    since there&rsquo;s nothing remaining to commit.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeScheduleEvent</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>event</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The event to remove.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true (the default), will automatically commit the attribute.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A <code>Promise&lt;Set&lt;Int&gt;&gt;</code>, which resolves to a set containing the
+       <code>attributeId</code> of the uncommitted attribute, if any.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule16addScheduleEventFTVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/addScheduleEvent(_:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule16addScheduleEventFTVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">addScheduleEvent(_:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add an event. Promise reject called if there&rsquo;s no more room.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    The promise will resolve to an empty set if either of the following conditions are met:
+    1. <code>commit == true</code>.
+    2. No actual changes were made, because the even matches an existing event.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">addScheduleEvent</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>event</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the event to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true (the default), will automatically commit the attribute, if any changes were made.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A <code>Promise&lt;Set&lt;Int&gt;&gt;</code>, which resolves to a set containing the
+       <code>attributeId</code> of the uncommitted attribute, if any.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule17addScheduleEventsuRxs10CollectionWx8Iterator7Element_zVS0_13ScheduleEventrFTx6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/addScheduleEvents(_:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule17addScheduleEventsuRxs10CollectionWx8Iterator7Element_zVS0_13ScheduleEventrFTx6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">addScheduleEvents(_:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add a collection of <code><a href="../Classes/OfflineSchedule/ScheduleEvent.html">OfflineSchedule.ScheduleEvent</a></code>s.</p>
+<div class="aside aside-warning">
+    <p class="aside-title">Warning</p>
+    If any of the adds fail (e.g. due to capacity), autocommit is cancelled,
+       but successful uncommitted changes to the schedule will persist.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">addScheduleEvents</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">events</span><span class="p">:</span> <span class="kt">T</span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>events</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The events to add.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true, commit automatically</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A <code>Promise&lt;Set&lt;Int&gt;&gt;</code>, which resolves to a set containing the
+       <code>attributeId</code> of uncommitted attributes, if any.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule20replaceScheduleEventFTVS0_13ScheduleEvent4withS1_6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/replaceScheduleEvent(_:with:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule20replaceScheduleEventFTVS0_13ScheduleEvent4withS1_6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">replaceScheduleEvent(_:with:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Replace one event with another, essentially <q>updating</q> the event.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">replaceScheduleEvent</span><span class="p">(</span><span class="n">_</span> <span class="nv">oldEvent</span><span class="p">:</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">,</span> <span class="n">with</span> <span class="nv">newEvent</span><span class="p">:</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>oldEvent</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The event to replace</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>newEvent</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The replacement event</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true, automatically commit results. If false, do not, and have the returned
+                promise resolve the attributeIds that need to be committed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule20replaceScheduleEventFT2atSi4withVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__"></a>
+                    <a name="//apple_ref/swift/Method/replaceScheduleEvent(at:with:commit:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule20replaceScheduleEventFT2atSi4withVS0_13ScheduleEvent6commitSb_GC10PromiseKit7PromiseGVs3SetSi__">replaceScheduleEvent(at:with:commit:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Replace the event at the given event index with a new event.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">replaceScheduleEvent</span><span class="p">(</span><span class="n">at</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">with</span> <span class="nv">newEvent</span><span class="p">:</span> <span class="kt">OfflineSchedule</span><span class="o">.</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">,</span> <span class="nv">commit</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Set</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>index</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The eventIndex of the event to replace</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>newEvent</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The replacement event</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>commit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If true, automatically commit results. If false, do not, and have the returned
+                promise resolve the attributeIds that need to be committed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12commitEventsuRxs10CollectionWx8Iterator7Element_zSirFT11forEventIdsGSqx__GC10PromiseKit7PromiseGSaVS_17AttributeInstance__"></a>
+                    <a name="//apple_ref/swift/Method/commitEvents(forEventIds:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12commitEventsuRxs10CollectionWx8Iterator7Element_zSirFT11forEventIdsGSqx__GC10PromiseKit7PromiseGSaVS_17AttributeInstance__">commitEvents(forEventIds:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Commit schedule events identified by event index (as per the collator).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">commitEvents</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forEventIds</span> <span class="nv">eventIds</span><span class="p">:</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="p">[</span><span class="kt"><a href="../Structs/AttributeInstance.html">AttributeInstance</a></span><span class="p">]</span><span class="o">&gt;</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>forEventIds</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>Sequence</code> of <code>eventIds</code> referencing the events
+                     to commit.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12commitEventsuRxs10CollectionWx8Iterator7Element_zSirFT15forAttributeIdsGSqx__GC10PromiseKit7PromiseGSaVS_17AttributeInstance__"></a>
+                    <a name="//apple_ref/swift/Method/commitEvents(forAttributeIds:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12commitEventsuRxs10CollectionWx8Iterator7Element_zSirFT15forAttributeIdsGSqx__GC10PromiseKit7PromiseGSaVS_17AttributeInstance__">commitEvents(forAttributeIds:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Commit schedule events by <code>attributeId</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">commitEvents</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forAttributeIds</span> <span class="nv">attributeIds</span><span class="p">:</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="p">[</span><span class="kt"><a href="../Structs/AttributeInstance.html">AttributeInstance</a></span><span class="p">]</span><span class="o">&gt;</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>forAttributeIds</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A sequence of attributeIds to commit.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule23numberOfSupportedEventsSi"></a>
+                    <a name="//apple_ref/swift/Property/numberOfSupportedEvents" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule23numberOfSupportedEventsSi">numberOfSupportedEvents</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The total number of events this device supports</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">numberOfSupportedEvents</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule29numberOfSupportedEventsPerDaySi"></a>
+                    <a name="//apple_ref/swift/Property/numberOfSupportedEventsPerDay" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule29numberOfSupportedEventsPerDaySi">numberOfSupportedEventsPerDay</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The total number of events per day that this device supports</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">numberOfSupportedEventsPerDay</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule20unavailableLocalDaysGVs3SetOVS_9DateTypes9DayOfWeek_"></a>
+                    <a name="//apple_ref/swift/Property/unavailableLocalDays" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule20unavailableLocalDaysGVs3SetOVS_9DateTypes9DayOfWeek_">unavailableLocalDays</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Local days in the schedule which which have maxed out their event count.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unavailableLocalDays</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule18availableLocalDaysGVs3SetOVS_9DateTypes9DayOfWeek_"></a>
+                    <a name="//apple_ref/swift/Property/availableLocalDays" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule18availableLocalDaysGVs3SetOVS_9DateTypes9DayOfWeek_">availableLocalDays</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Local days in the schedule which which have <em>not</em> maxed out their event count.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">availableLocalDays</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule16availableUTCDaysGVs3SetOVS_9DateTypes9DayOfWeek_"></a>
+                    <a name="//apple_ref/swift/Property/availableUTCDays" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule16availableUTCDaysGVs3SetOVS_9DateTypes9DayOfWeek_">availableUTCDays</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>THe UTC days-of-week with available event slots</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">availableUTCDays</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule19localDayEventCountsGVs10DictionaryOVS_9DateTypes9DayOfWeekSi_"></a>
+                    <a name="//apple_ref/swift/Property/localDayEventCounts" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule19localDayEventCountsGVs10DictionaryOVS_9DateTypes9DayOfWeekSi_">localDayEventCounts</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A map of <code>DayOfWeek</code> to the number of events currently scheduled on that local day.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">localDayEventCounts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC5Afero15OfflineSchedule17utcDayEventCountsGVs10DictionaryOVS_9DateTypes9DayOfWeekSi_"></a>
+                    <a name="//apple_ref/swift/Property/utcDayEventCounts" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC5Afero15OfflineSchedule17utcDayEventCountsGVs10DictionaryOVS_9DateTypes9DayOfWeekSi_">utcDayEventCounts</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A map of <code>DayOfWeek</code> to the number of events currently scheduled on that UTC day.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">utcDayEventCounts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule6eventsFT15forUTCDayOfWeekOVS_9DateTypes9DayOfWeek_GSaVS0_13ScheduleEvent_"></a>
+                    <a name="//apple_ref/swift/Method/events(forUTCDayOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule6eventsFT15forUTCDayOfWeekOVS_9DateTypes9DayOfWeek_GSaVS0_13ScheduleEvent_">events(forUTCDayOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return all events for a given UTC day of week</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">events</span><span class="p">(</span><span class="n">forUTCDayOfWeek</span> <span class="nv">utcDayOfWeek</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>utcDayOfWeek</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The UTC day of week for which to query.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule6eventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT16forUTCDaysOfWeekx_GSaVS0_13ScheduleEvent_"></a>
+                    <a name="//apple_ref/swift/Method/events(forUTCDaysOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule6eventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT16forUTCDaysOfWeekx_GSaVS0_13ScheduleEvent_">events(forUTCDaysOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return all events whose UTC day of week is in <code>utcDaysOfWeek</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">events</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Sequence</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forUTCDaysOfWeek</span> <span class="nv">utcDaysOfWeek</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">]</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>utcDaysOfWeek</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The UTC days for which to filter</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule6eventsFT17forLocalDayOfWeekOVS_9DateTypes9DayOfWeek_GSaVS0_13ScheduleEvent_"></a>
+                    <a name="//apple_ref/swift/Method/events(forLocalDayOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule6eventsFT17forLocalDayOfWeekOVS_9DateTypes9DayOfWeek_GSaVS0_13ScheduleEvent_">events(forLocalDayOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return all events for a given local day of week</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">events</span><span class="p">(</span><span class="n">forLocalDayOfWeek</span> <span class="nv">localDayOfWeek</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>localDayOfWeek</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The local-timezone day of week for which to query.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule6eventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT18forLocalDaysOfWeekx_GSaVS0_13ScheduleEvent_"></a>
+                    <a name="//apple_ref/swift/Method/events(forLocalDaysOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule6eventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT18forLocalDaysOfWeekx_GSaVS0_13ScheduleEvent_">events(forLocalDaysOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return all events whose local day of week is in <code>localDaysOfWeek</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">events</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Sequence</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forLocalDaysOfWeek</span> <span class="nv">localDaysOfWeek</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">]</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>localDaysOfWeek</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The local days for which to filter</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule6eventsFT8matchingFVS0_13ScheduleEventSb_GSaS1__"></a>
+                    <a name="//apple_ref/swift/Method/events(matching:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule6eventsFT8matchingFVS0_13ScheduleEventSb_GSaS1__">events(matching:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return all events matching the given predicate.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">events</span><span class="p">(</span><span class="n">matching</span> <span class="nv">predicate</span><span class="p">:</span> <span class="kt">ScheduleEventPredicate</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="k">return</span> <span class="kc">true</span> <span class="p">})</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>predicate</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The predicate which to evaluate each <code>ScheduleEvent</code> against.
+                   defaults to matching all.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12removeEventsFT17forLocalDayOfWeekOVS_9DateTypes9DayOfWeek_GC10PromiseKit7PromiseT__"></a>
+                    <a name="//apple_ref/swift/Method/removeEvents(forLocalDayOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12removeEventsFT17forLocalDayOfWeekOVS_9DateTypes9DayOfWeek_GC10PromiseKit7PromiseT__">removeEvents(forLocalDayOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all events for a given <code>localDayOfWeek</code>, and commit the removal.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeEvents</span><span class="p">(</span><span class="n">forLocalDayOfWeek</span> <span class="nv">localDayOfWeek</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12removeEventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT18forLocalDaysOfWeekx_GC10PromiseKit7PromiseT__"></a>
+                    <a name="//apple_ref/swift/Method/removeEvents(forLocalDaysOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12removeEventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT18forLocalDaysOfWeekx_GC10PromiseKit7PromiseT__">removeEvents(forLocalDaysOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all events with <code>localDayOfWeek</code> in the given sequence, and commit the removal.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">removeEvents</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forLocalDaysOfWeek</span> <span class="nv">localDaysOfWeek</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Sequence</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12removeEventsFT15forUTCDayOfWeekOVS_9DateTypes9DayOfWeek_GC10PromiseKit7PromiseT__"></a>
+                    <a name="//apple_ref/swift/Method/removeEvents(forUTCDayOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12removeEventsFT15forUTCDayOfWeekOVS_9DateTypes9DayOfWeek_GC10PromiseKit7PromiseT__">removeEvents(forUTCDayOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all events with the given <code>utcDayOfWeek</code>, and commit the removal.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeEvents</span><span class="p">(</span><span class="n">forUTCDayOfWeek</span> <span class="nv">utcDayOfWeek</span><span class="p">:</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12removeEventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT16forUTCDaysOfWeekx_GC10PromiseKit7PromiseT__"></a>
+                    <a name="//apple_ref/swift/Method/removeEvents(forUTCDaysOfWeek:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12removeEventsuRxs8SequenceWx8Iterator7Element_zOVS_9DateTypes9DayOfWeekrFT16forUTCDaysOfWeekx_GC10PromiseKit7PromiseT__">removeEvents(forUTCDaysOfWeek:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all events with <code>utcDayOfWeek</code> in the given sequence, and commit the removal.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">removeEvents</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">forUTCDaysOfWeek</span> <span class="nv">utcDaysOfWeek</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+        <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Sequence</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Iterator</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/OfflineSchedule/ScheduleEvent.html">ScheduleEvent</a></span><span class="o">.</span><span class="kt">TimeSpecification</span><span class="o">.</span><span class="kt">DayOfWeek</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC5Afero15OfflineSchedule12removeEventsFT8matchingFVS0_13ScheduleEventSb_GC10PromiseKit7PromiseT__"></a>
+                    <a name="//apple_ref/swift/Method/removeEvents(matching:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC5Afero15OfflineSchedule12removeEventsFT8matchingFVS0_13ScheduleEventSb_GC10PromiseKit7PromiseT__">removeEvents(matching:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all events with <code>utcDayOfWeek</code> in the given sequence, and commit the removal.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    Because of the destructive nature of this operation, there is no default
+    predicate.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeEvents</span><span class="p">(</span><span class="n">matching</span> <span class="nv">predicate</span><span class="p">:</span> <span class="kt">ScheduleEventPredicate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>predicate</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The predicate for which matching events will be removed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVC5Afero15OfflineSchedule13ScheduleEventcFT17timeSpecificationGSqVS1_17TimeSpecification_23attributeSpecificationsGSaVS_17AttributeInstance__S1_"></a>
+                    <a name="//apple_ref/swift/Method/init(timeSpecification:attributeSpecifications:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVC5Afero15OfflineSchedule13ScheduleEventcFT17timeSpecificationGSqVS1_17TimeSpecification_23attributeSpecificationsGSaVS_17AttributeInstance__S1_">init(timeSpecification:attributeSpecifications:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVC5Afero15OfflineSchedule13ScheduleEvent8scheduleVVS_10DeviceRule8Schedule"></a>
+                    <a name="//apple_ref/swift/Property/schedule" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVC5Afero15OfflineSchedule13ScheduleEvent8scheduleVVS_10DeviceRule8Schedule">schedule</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVC5Afero15OfflineSchedule13ScheduleEventcFT6devicePS_15DeviceModelable_7repeatsSb8scheduleVVS_10DeviceRule8Schedule_S1_"></a>
+                    <a name="//apple_ref/swift/Method/init(device:repeats:schedule:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVC5Afero15OfflineSchedule13ScheduleEventcFT6devicePS_15DeviceModelable_7repeatsSb8scheduleVVS_10DeviceRule8Schedule_S1_">init(device:repeats:schedule:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize a device rule event with the current state of a device.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">device</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DeviceModelable.html">DeviceModelable</a></span><span class="p">,</span> <span class="nv">repeats</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">schedule</span><span class="p">:</span> <span class="kt"><a href="../Structs/DeviceRule.html">DeviceRule</a></span><span class="o">.</span><span class="kt">Schedule</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VC5Afero15OfflineSchedule5Flags"></a>
+                    <a name="//apple_ref/swift/Struct/Flags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VC5Afero15OfflineSchedule5Flags">Flags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/OfflineSchedule/Flags.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification5Flags"></a>
+                    <a name="//apple_ref/swift/Struct/Flags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification5Flags">Flags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/OfflineSchedule/Flags.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Coding"></a>
+                <a name="//apple_ref/swift/Section/Coding" class="dashAnchor"></a>
+                <a href="#/Coding">
+                  <h3 class="section-name">Coding</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification5bytesGSaVs5UInt8_"></a>
+                    <a name="//apple_ref/swift/Property/bytes" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification5bytesGSaVs5UInt8_">bytes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a binary encoding of this <code>timeSpecification</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">bytes</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification4dataV10Foundation4Data"></a>
+                    <a name="//apple_ref/swift/Property/data" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecification4dataV10Foundation4Data">data</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the binary encoding as an <code>NSData</code> object.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecificationcFT5bytesGSaVs5UInt8__GSqS2__"></a>
+                    <a name="//apple_ref/swift/Method/init(bytes:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecificationcFT5bytesGSaVs5UInt8__GSqS2__">init(bytes:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecificationcFT5sliceGVs10ArraySliceVs5UInt8__GSqS2__"></a>
+                    <a name="//apple_ref/swift/Method/init(slice:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FVVC5Afero15OfflineSchedule13ScheduleEvent17TimeSpecificationcFT5sliceGVs10ArraySliceVs5UInt8__GSqS2__">init(slice:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vVC5Afero15OfflineSchedule13ScheduleEvent10serializedT5bytesGSaVs5UInt8_5typesGVs10DictionarySiOVCS_13DeviceProfile19AttributeDescriptor8DataType__"></a>
+                    <a name="//apple_ref/swift/Property/serialized" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vVC5Afero15OfflineSchedule13ScheduleEvent10serializedT5bytesGSaVs5UInt8_5typesGVs10DictionarySiOVCS_13DeviceProfile19AttributeDescriptor8DataType__">serialized</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFVC5Afero15OfflineSchedule13ScheduleEvent9FromBytesFzTGSaVs5UInt8_5typesGVs10DictionarySiOVCS_13DeviceProfile19AttributeDescriptor8DataType__T5eventGSqS1__8consumedSi_"></a>
+                    <a name="//apple_ref/swift/Method/FromBytes(_:types:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFVC5Afero15OfflineSchedule13ScheduleEvent9FromBytesFzTGSaVs5UInt8_5typesGVs10DictionarySiOVCS_13DeviceProfile19AttributeDescriptor8DataType__T5eventGSqS1__8consumedSi_">FromBytes(_:types:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Parse a single ScheduleEvent from a byteArray.</p>
+
+<p>This method takes an array of bytes, and a map of attributeIds to DataTypes, and attempts
+to parse a full Schedule event, returning the event and number of bytes consumed. If data are incomplete,
+the method returns <code>(nil, 0)</code>. If various other conditions are not met, the method will throw (see below for details).</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>note:</p>
+
+<ul>
+<li>If data are incomplete, we return <code>(nil, 0)</code>, since it&rsquo;s possible we just have an empty chunk.</li>
+<li>If data are complete, but any of the following conditions are met, then we throw:</li>
+<li>The TimeSpecification does not parse.</li>
+<li>The AttributeSpecification does not parse.</li>
+<li>The AttributeId is not contained in the <code>types</code> map</li>
+<li>The type mapped to the given <code>AttributeId</code> is not of fixed size.</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">FromBytes</span><span class="p">(</span><span class="n">_</span> <span class="nv">bytes</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">],</span> <span class="nv">types</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">:</span> <span class="kt"><a href="../Classes/DeviceProfile.html">DeviceProfile</a></span><span class="o">.</span><span class="kt">AttributeDescriptor</span><span class="o">.</span><span class="kt">DataType</span><span class="p">])</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">ScheduleEventFromBytes</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>bytes</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>[UInt8]</code> containing the <code>ScheduleEvent</code> data staring at index 0.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>types</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A map of <code>attributeIds</code> to <code>DataType</code>s. All referenced ids in the serialized data
+               must dereference from this map, otherwise we throw.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The event, if any, that was parsed out, along with the number of bytes, if any, consumed from
+       the data.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="http://afero.io" target="_blank" rel="external">Afero</a>. All rights reserved. (Last updated: 2017-06-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

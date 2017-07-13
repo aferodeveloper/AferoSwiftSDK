@@ -1,0 +1,155 @@
+[
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "ffffffff",
+            "status": "Status::OK",
+            "channelId": 62000,
+            "requestId": 1883
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "fffffffd",
+            "status": "Status::FAIL",
+            "channelId": 62001,
+            "requestId": 1884
+        }
+    },    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "ffffffdf",
+            "status": "Status::NOT_FOUND",
+            "channelId": 62002,
+            "requestId": 1885
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "fffffdff",
+            "status": "Status::ALREADY",
+            "channelId": 62003,
+            "requestId": 1886
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "ffffdfff",
+            "status": "Status::INVALID_PARAM",
+            "channelId": 62004,
+            "requestId": 1887
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "fffdffff",
+            "status": "Status::TIMED_OUT",
+            "channelId": 62005,
+            "requestId": 1888
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "ffdfffff",
+            "status": "Status::CANCELLED",
+            "channelId": 62006,
+            "requestId": 1889
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "fdffffff",
+            "status": "Status::CONNECTION_FAILED",
+            "channelId": 62007,
+            "requestId": 1890
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "id": "dfffffff",
+            "event": "device:write",
+            "status": "Status::SHUTDOWN",
+            "channelId": 62008,
+            "requestId": 1891
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "ddffffff",
+            "status": "Status::CONNECTION_NOT_ALLOWED",
+            "channelId": 62009,
+            "requestId": 1892
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "dfdfffff",
+            "status": "Status::OTA_DOWNLOAD_FAILED",
+            "channelId": 62010,
+            "requestId": 1893
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "dffdffff",
+            "status": "Status::FILE_IO_ERROR",
+            "channelId": 62011,
+            "requestId": 1894
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "dfffdfff",
+            "status": "Status::OTA_START_ERROR",
+            "channelId": 62012,
+            "requestId": 1895
+        }
+    },
+    {
+        "event": "device:error",
+        "data":
+        {
+            "event": "device:write",
+            "id": "dffffdff",
+            "status": "Status::NOT_ALLOWED",
+            "channelId": 62013,
+            "requestId": 1896
+        }
+    }
+]

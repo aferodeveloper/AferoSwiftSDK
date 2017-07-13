@@ -1,0 +1,8 @@
+{
+  "event": "error",
+  "data": {
+    "deviceId": "ffffffff",
+    "requestId": 230981,
+    "message": "(some text)"
+  }
+}

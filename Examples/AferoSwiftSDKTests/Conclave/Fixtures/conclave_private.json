@@ -1,0 +1,14 @@
+{
+    "private":
+    {
+        "seq": 777,
+        "sessionId": 88888,
+        "target": "fake private target man",
+        "event": "fake private event man",
+        "data":
+        {
+            "key1": "priv val1",
+            "key2": 23
+        }
+    }
+}

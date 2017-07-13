@@ -1,0 +1,96 @@
+{
+    "label": "Coffee Maker",
+    "attributeOptions": {
+        "200": {
+            "label": "Time"
+        },
+        "201": {
+            "label": "Brew",
+            "flags": ["primaryOperation"],
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        },
+        "202": {
+            "label": "Cups 1-4",
+            "valueOptions": [
+                {
+                    "match": "0",
+                    "apply": {
+                    	"label": "Off"
+                    }
+                },
+                {
+                    "match": "1",
+                    "apply": {
+                    	"label": "On"
+                    }
+                }
+            ]
+        }
+    },
+    "gauge": {
+        "foreground": {
+            "images": [
+                {
+                    "uri": "http://tonyhacks.com/icons/3x/devices/devices_coffee.png"
+                }
+            ]
+        }
+    },
+    "groups": [
+        {
+            "label": "Brew",
+            "controls": [ 100 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/control_brew_on.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "label": "Cups 1-4",
+            "controls": [ 101 ],
+            "gauge": {
+                "foreground": {
+                    "images": [
+                        {
+                            "uri": "http://tonyhacks.com/icons/3x/controls/devices_coffee_function_1_4_cups_on.png"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "controls": [
+        {
+            "id": 100,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 201
+            }
+        },
+        {
+            "id": 101,
+            "controlType": "menuControl",
+            "attributeMap": {
+                "value": 202
+            }
+        }
+    ]
+}

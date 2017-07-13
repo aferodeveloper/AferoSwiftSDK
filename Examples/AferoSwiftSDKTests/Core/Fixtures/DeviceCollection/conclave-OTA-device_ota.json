@@ -1,0 +1,15 @@
+{
+  "event": "device:ota",
+  "data": {
+    "id": "ffffffff",
+    "packageInfos": [
+      {
+        "packageTypeId": 4,
+        "packageName": "Device Description",
+        "version": "1493840735486",
+        "versionNumber": "9860",
+        "downloadUrl": "https://otacdn.dev.afero.io/..."
+      }
+    ]
+  }
+}

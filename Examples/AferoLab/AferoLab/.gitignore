@@ -1,0 +1,5 @@
+# !!!WARNING!!!
+# APIClientConfig.plist contains your AFero OAuth2 client id and secret.
+# DO NOT CHECK IT IN.
+
+APIClientConfig.plist

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YYV-1Q-Ilk">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--SignInViewController-->
+        <scene sceneID="PYT-eP-UWC">
+            <objects>
+                <viewController storyboardIdentifier="SignInViewController" id="cBT-gx-i5G" userLabel="SignInViewController" customClass="SignInViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hng-hT-EWK"/>
+                        <viewControllerLayoutGuide type="bottom" id="TK3-kZ-U0N"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="67J-Fd-3CY">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AferoLab" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frb-Th-8K5">
+                                <rect key="frame" x="16" y="56" width="288" height="21"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="customer@afero.io" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Qw-31-uH3">
+                                <rect key="frame" x="16" y="129" width="288" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
+                                <connections>
+                                    <action selector="emailChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="bpp-A6-o6p"/>
+                                </connections>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dLI-dX-dMo">
+                                <rect key="frame" x="16" y="106" width="288" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="qGh-wl-a1Q">
+                                <rect key="frame" x="16" y="195" width="288" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES"/>
+                                <connections>
+                                    <action selector="passwordChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="JB5-C3-gcm"/>
+                                </connections>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tss-FA-KtN">
+                                <rect key="frame" x="16" y="173" width="288" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IxR-GU-dgX">
+                                <rect key="frame" x="16" y="245" width="288" height="30"/>
+                                <state key="normal" title="Sign In"/>
+                                <connections>
+                                    <action selector="signInTapped:" destination="cBT-gx-i5G" eventType="touchUpInside" id="mtG-cW-9in"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="fXX-uM-g5e">
+                                <rect key="frame" x="150" y="283" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="frb-Th-8K5" firstAttribute="top" secondItem="hng-hT-EWK" secondAttribute="bottom" constant="36" id="3Eb-ga-R5U"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="qGh-wl-a1Q" secondAttribute="trailing" id="5d4-tr-gE4"/>
+                            <constraint firstItem="IxR-GU-dgX" firstAttribute="top" secondItem="qGh-wl-a1Q" secondAttribute="bottom" constant="20" id="BM9-kz-bhm"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="2Qw-31-uH3" secondAttribute="leading" id="BX8-jc-G72"/>
+                            <constraint firstItem="dLI-dX-dMo" firstAttribute="top" secondItem="frb-Th-8K5" secondAttribute="bottom" constant="29" id="C3o-Jl-ibk"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2Qw-31-uH3" secondAttribute="trailing" id="KX0-Ho-IEf"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dLI-dX-dMo" secondAttribute="trailing" id="Lv4-1K-2YZ"/>
+                            <constraint firstItem="2Qw-31-uH3" firstAttribute="top" secondItem="dLI-dX-dMo" secondAttribute="bottom" constant="2" id="NxI-X9-5ke"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="frb-Th-8K5" secondAttribute="leading" id="O2t-rY-Eyz"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="frb-Th-8K5" secondAttribute="trailing" id="Plh-AH-bVA"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="tss-FA-KtN" secondAttribute="leading" id="QhE-6W-qjj"/>
+                            <constraint firstItem="fXX-uM-g5e" firstAttribute="top" secondItem="IxR-GU-dgX" secondAttribute="bottom" constant="8" id="WEw-3M-omF"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tss-FA-KtN" secondAttribute="trailing" id="X8w-Nm-yaG"/>
+                            <constraint firstItem="frb-Th-8K5" firstAttribute="centerX" secondItem="67J-Fd-3CY" secondAttribute="centerX" id="aQL-1G-tbL"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="IxR-GU-dgX" secondAttribute="trailing" id="bAT-se-brf"/>
+                            <constraint firstItem="qGh-wl-a1Q" firstAttribute="top" secondItem="tss-FA-KtN" secondAttribute="bottom" constant="1" id="cpy-SW-2HV"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="qGh-wl-a1Q" secondAttribute="leading" id="eFh-zw-8mY"/>
+                            <constraint firstItem="tss-FA-KtN" firstAttribute="top" secondItem="2Qw-31-uH3" secondAttribute="bottom" constant="14" id="mmC-xH-c2C"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="IxR-GU-dgX" secondAttribute="leading" id="nSH-TO-E94"/>
+                            <constraint firstItem="fXX-uM-g5e" firstAttribute="centerX" secondItem="IxR-GU-dgX" secondAttribute="centerX" id="rmX-To-Zhu"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="dLI-dX-dMo" secondAttribute="leading" id="x50-R0-UB6"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="568"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="fXX-uM-g5e" id="0h5-rK-hc1"/>
+                        <outlet property="emailTextField" destination="2Qw-31-uH3" id="qHd-f4-xQ8"/>
+                        <outlet property="passwordTextField" destination="qGh-wl-a1Q" id="4ce-D0-1pU"/>
+                        <outlet property="signInButton" destination="IxR-GU-dgX" id="ufC-L1-XLU"/>
+                        <segue destination="LAd-iY-1cp" kind="unwind" identifier="unwindToAccountController" unwindAction="unwindFromSignInSegue:" id="JEi-SK-css"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aAT-TF-H7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="LAd-iY-1cp" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1360" y="672.86356821589209"/>
+        </scene>
+        <!--AccountViewController-->
+        <scene sceneID="4Lb-NI-2VO">
+            <objects>
+                <tableViewController storyboardIdentifier="AccountViewController" title="AferoLab" id="nFc-5S-3DK" userLabel="AccountViewController" customClass="AccountViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Hsf-rE-4pi">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AccountInfo" rowHeight="118" id="0bM-Rc-fyz" userLabel="AccountInfoCell" customClass="AccountInfoCell" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="118"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0bM-Rc-fyz" id="SNr-MM-PA5">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="118"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zdJ-7Q-UQd">
+                                            <rect key="frame" x="8" y="8" width="64" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AccountNameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWG-lA-CQM">
+                                            <rect key="frame" x="152" y="8" width="215" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="215" id="iPg-Uy-L11"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lpp-Yr-GLK">
+                                            <rect key="frame" x="8" y="42" width="118" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NetworkStatusLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7V-1m-RXK">
+                                            <rect key="frame" x="152" y="42" width="215" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SoftHub" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lf0-Ze-wi8">
+                                            <rect key="frame" x="8" y="76" width="64" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zcz-gR-67K" userLabel="HubStatusSwitch">
+                                            <rect key="frame" x="318" y="71" width="51" height="31"/>
+                                            <color key="onTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <action selector="softhubSwitchValueChanged:" destination="0bM-Rc-fyz" eventType="valueChanged" id="rlM-NR-IEe"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Lf0-Ze-wi8" firstAttribute="centerY" secondItem="Zcz-gR-67K" secondAttribute="centerY" id="232-He-RKb"/>
+                                        <constraint firstItem="T7V-1m-RXK" firstAttribute="trailing" secondItem="Zcz-gR-67K" secondAttribute="trailing" id="29E-nR-BZd"/>
+                                        <constraint firstItem="Lpp-Yr-GLK" firstAttribute="top" secondItem="zdJ-7Q-UQd" secondAttribute="bottom" constant="13" id="5Sx-ZW-Aoc"/>
+                                        <constraint firstAttribute="topMargin" secondItem="FWG-lA-CQM" secondAttribute="top" id="7DR-IB-VYd"/>
+                                        <constraint firstItem="Lpp-Yr-GLK" firstAttribute="baseline" secondItem="T7V-1m-RXK" secondAttribute="baseline" id="88v-5T-gKN"/>
+                                        <constraint firstAttribute="topMargin" secondItem="zdJ-7Q-UQd" secondAttribute="top" id="AQk-QB-lRF"/>
+                                        <constraint firstItem="Lpp-Yr-GLK" firstAttribute="leading" secondItem="Lf0-Ze-wi8" secondAttribute="leading" id="L78-UG-Xft"/>
+                                        <constraint firstItem="zdJ-7Q-UQd" firstAttribute="baseline" secondItem="FWG-lA-CQM" secondAttribute="baseline" id="NXI-3I-w4A"/>
+                                        <constraint firstItem="Lf0-Ze-wi8" firstAttribute="top" secondItem="Lpp-Yr-GLK" secondAttribute="bottom" constant="13" id="Pha-LT-eQW"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Zcz-gR-67K" secondAttribute="bottom" constant="7" id="PiO-O2-3rs"/>
+                                        <constraint firstItem="FWG-lA-CQM" firstAttribute="trailing" secondItem="SNr-MM-PA5" secondAttribute="trailingMargin" id="bn8-EY-J2h"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Lf0-Ze-wi8" secondAttribute="bottom" constant="12" id="i42-xS-CIJ"/>
+                                        <constraint firstItem="FWG-lA-CQM" firstAttribute="leading" secondItem="T7V-1m-RXK" secondAttribute="leading" id="mrd-2i-73g"/>
+                                        <constraint firstItem="zdJ-7Q-UQd" firstAttribute="leading" secondItem="Lpp-Yr-GLK" secondAttribute="leading" id="n7H-O4-AQh"/>
+                                        <constraint firstItem="FWG-lA-CQM" firstAttribute="trailing" secondItem="T7V-1m-RXK" secondAttribute="trailing" id="qxo-Z7-DZ6"/>
+                                        <constraint firstItem="zdJ-7Q-UQd" firstAttribute="leading" secondItem="SNr-MM-PA5" secondAttribute="leadingMargin" id="xIZ-tl-eig"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="accountNameLabel" destination="FWG-lA-CQM" id="6KK-oi-YMN"/>
+                                    <outlet property="networkStatusLabel" destination="T7V-1m-RXK" id="4ce-Rx-npY"/>
+                                    <outlet property="softhubSwitch" destination="Zcz-gR-67K" id="nkD-H3-kA2"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Device" textLabel="wGe-0l-NzX" style="IBUITableViewCellStyleDefault" id="oax-B1-aDz" userLabel="DeviceCell">
+                                <rect key="frame" x="0.0" y="146" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oax-B1-aDz" id="KLC-2Q-Rmt">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Device Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wGe-0l-NzX">
+                                            <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="nFc-5S-3DK" id="mvV-cE-u1m"/>
+                            <outlet property="delegate" destination="nFc-5S-3DK" id="7aI-Lr-2nt"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="AferoLab" id="sNg-Tl-RCw">
+                        <barButtonItem key="rightBarButtonItem" title="Sign Out" id="pYM-Km-9YV">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="signOutTapped:" destination="nFc-5S-3DK" id="LlM-nU-CTb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="signOutButton" destination="pYM-Km-9YV" id="i6D-eA-6ut"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YBM-zI-17X" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1361" y="1315"/>
+        </scene>
+        <!--Afero Lab Navigation Controller-->
+        <scene sceneID="rPQ-ml-vIO">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YYV-1Q-Ilk" customClass="AferoLabNavigationController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="NJL-Rb-4Ot">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="nFc-5S-3DK" kind="relationship" relationship="rootViewController" id="8Sn-pa-IaX"/>
+                        <segue destination="cBT-gx-i5G" kind="presentation" identifier="PresentSignin" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="Cgn-8t-aOa"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nrB-Bl-gK5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="421.60000000000002" y="867.61619190404804"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" red="0.99987393617630005" green="0.67495071887969971" blue="0.2409055233001709" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+</document>

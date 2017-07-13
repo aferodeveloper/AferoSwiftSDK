@@ -1,0 +1,9 @@
+{
+  "event": "device:ota_progress",
+  "data": {
+    "id": "ffffffff",
+    "state": 4,
+    "offset": 0,
+    "total": 398
+  }
+}

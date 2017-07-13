@@ -1,0 +1,11 @@
+{
+  "event": "status_change",
+  "data": {
+    "id": "ffffffff",
+    "status": {
+      "visible": true,
+      "available": false,
+      "rssi": -33
+    }  
+  }
+}

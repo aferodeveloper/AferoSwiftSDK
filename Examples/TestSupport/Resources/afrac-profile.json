@@ -1,0 +1,669 @@
+{
+	"profileId": "cdc61522-32ef-4af8-a399-be72ea13464a",
+	"schemaVersion": 2,
+	"partnerId": "3da8249e-57c6-42d4-8b07-91377f617db7",
+	"deviceType": "AfRac",
+	"deviceTypeId": "03dcfe36-2e33-46ec-9ea8-d8288428eee5",
+	"services": [{
+		"id": 1,
+		"attributes": [{
+			"id": 2001,
+			"dataType": "SINT64",
+			"semanticType": "Bootloader Version",
+			"operations": ["READ"],
+			"length": 8
+		}, {
+			"id": 2003,
+			"dataType": "SINT64",
+			"semanticType": "Application Version",
+			"operations": ["READ"],
+			"length": 8
+		}, {
+			"id": 2004,
+			"dataType": "SINT64",
+			"semanticType": "Profile Version",
+			"operations": ["READ"],
+			"length": 8
+		}, {
+			"id": 2006,
+			"dataType": "SINT64",
+			"semanticType": "WiFi Version",
+			"operations": ["READ"],
+			"length": 8
+		}, {
+			"id": 50000,
+			"dataType": "BOOLEAN",
+			"semanticType": "Power",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "00",
+			"value": "false",
+			"length": 1
+		}, {
+			"id": 50001,
+			"dataType": "SINT8",
+			"semanticType": "Fan Speed",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 50002,
+			"dataType": "SINT8",
+			"semanticType": "Mode",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 50004,
+			"dataType": "SINT16",
+			"semanticType": "Power Off Timer",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "0000",
+			"value": "0",
+			"length": 2
+		}, {
+			"id": 50005,
+			"dataType": "SINT16",
+			"semanticType": "Power On Timer",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "0000",
+			"value": "0",
+			"length": 2
+		}, {
+			"id": 50006,
+			"dataType": "SINT16",
+			"semanticType": "Filter Remain Time",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "0000",
+			"value": "0",
+			"length": 2
+		}, {
+			"id": 50007,
+			"dataType": "SINT16",
+			"semanticType": "Filter Max Time",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "0000",
+			"value": "0",
+			"length": 2
+		}, {
+			"id": 50008,
+			"dataType": "FIXED_16_16",
+			"semanticType": "Current Temperature",
+			"operations": ["READ"],
+			"defaultValue": "00000000",
+			"value": "0.0",
+			"length": 4
+		}, {
+			"id": 50009,
+			"dataType": "FIXED_16_16",
+			"semanticType": "Desired Temperature",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "00000000",
+			"value": "0.0",
+			"length": 4
+		}, {
+			"id": 50010,
+			"dataType": "SINT8",
+			"semanticType": "IDU Error",
+			"operations": ["READ"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 60002,
+			"dataType": "BYTES",
+			"semanticType": "Conclave Access",
+			"operations": ["READ", "WRITE", "PASS_THROUGH"],
+			"length": 255
+		}, {
+			"id": 65004,
+			"dataType": "UTF8S",
+			"semanticType": "Connected SSID",
+			"operations": ["READ"],
+			"defaultValue": "20",
+			"value": " ",
+			"length": 33
+		}, {
+			"id": 65005,
+			"dataType": "SINT8",
+			"semanticType": "WiFi Bars",
+			"operations": ["READ"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 65006,
+			"dataType": "SINT8",
+			"semanticType": "WiFi Steady State",
+			"operations": ["READ"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 65007,
+			"dataType": "SINT8",
+			"semanticType": "WiFi Setup State",
+			"operations": ["READ"],
+			"defaultValue": "00",
+			"value": "0",
+			"length": 1
+		}, {
+			"id": 65009,
+			"dataType": "BYTES",
+			"semanticType": "WiFi SSID List",
+			"operations": ["READ", "WRITE", "PASS_THROUGH"],
+			"length": 2048
+		}, {
+			"id": 65010,
+			"dataType": "BYTES",
+			"semanticType": "WiFi Credentials",
+			"operations": ["READ", "WRITE", "PASS_THROUGH"],
+			"length": 100
+		}, {
+			"id": 65012,
+			"dataType": "SINT32",
+			"semanticType": "Command",
+			"operations": ["WRITE", "MCU"],
+			"length": 4
+		}, {
+			"id": 65013,
+			"dataType": "SINT8",
+			"semanticType": "ASR-2 State",
+			"operations": ["READ", "MCU"],
+			"length": 1
+		}, {
+			"id": 65014,
+			"dataType": "SINT8",
+			"semanticType": "Low Battery Warn",
+			"operations": ["READ", "MCU"],
+			"length": 1
+		}, {
+			"id": 65015,
+			"dataType": "SINT32",
+			"semanticType": "Linked Timestamp",
+			"operations": ["WRITE"],
+			"length": 4
+		}, {
+			"id": 65016,
+			"dataType": "SINT8",
+			"semanticType": "Advertising Secret Duration",
+			"operations": ["READ", "WRITE"],
+			"defaultValue": "05",
+			"value": "5",
+			"length": 1
+		}, {
+			"id": 65017,
+			"dataType": "BYTES",
+			"semanticType": "Advertising Secret",
+			"operations": ["READ"],
+			"length": 32
+		}, {
+			"id": 65018,
+			"dataType": "SINT16",
+			"semanticType": "Attribute ACK",
+			"operations": ["WRITE"],
+			"length": 2
+		}, {
+			"id": 65019,
+			"dataType": "UTF8S",
+			"semanticType": "Reboot Reason",
+			"operations": ["READ", "MCU"],
+			"length": 100
+		}, {
+			"id": 65020,
+			"dataType": "BYTES",
+			"semanticType": "BLE Comms",
+			"operations": ["READ"],
+			"defaultValue": "FA000000180018000C00A00F",
+			"value": "FA000000180018000C00A00F",
+			"length": 12
+		}, {
+			"id": 65021,
+			"dataType": "BOOLEAN",
+			"semanticType": "MCU Interface",
+			"operations": ["READ", "MCU"],
+			"defaultValue": "01",
+			"value": "true",
+			"length": 1
+		}]
+	}],
+	"presentation": {
+		"label": "AfRac",
+		"attributeOptions": {
+			"50000": {
+				"label": "Power",
+				"flags": [],
+				"valueOptions": [{
+					"match": "true",
+					"apply": {
+						"state": "running",
+						"label": "On"
+					}
+				}, {
+					"match": "false",
+					"apply": {
+						"state": "standby",
+						"label": "Off"
+					}
+				}]
+			},
+			"50001": {
+				"label": "Fan Speed",
+				"flags": [],
+				"valueOptions": [{
+					"match": "0",
+					"apply": {
+						"state": "standby",
+						"label": "Low"
+					}
+				}, {
+					"match": "1",
+					"apply": {
+						"state": "standby",
+						"label": "Medium"
+					}
+				}, {
+					"match": "2",
+					"apply": {
+						"state": "standby",
+						"label": "High"
+					}
+				}]
+			},
+			"50002": {
+				"label": "Mode",
+				"flags": [],
+				"valueOptions": [{
+					"match": "0",
+					"apply": {
+						"state": "standby",
+						"label": "Cool"
+					}
+				}, {
+					"match": "1",
+					"apply": {
+						"state": "standby",
+						"label": "Dry"
+					}
+				}, {
+					"match": "2",
+					"apply": {
+						"state": "standby",
+						"label": "Fan"
+					}
+				}, {
+					"match": "3",
+					"apply": {
+						"state": "standby",
+						"label": "Eco-Mode"
+					}
+				}]
+			},
+			"50004": {
+				"label": "Power Off Timer",
+				"flags": [],
+				"rangeOptions": {
+					"minValue": "0",
+					"maxValue": "100",
+					"stepValue": "1",
+					"unitLabel": " Minutes"
+				}
+			},
+			"50005": {
+				"label": "Power On Timer",
+				"flags": [],
+				"rangeOptions": {
+					"minValue": "0",
+					"maxValue": "100",
+					"stepValue": "1",
+					"unitLabel": " Minutes"
+				}
+			},
+			"50006": {
+				"label": "Filter Remain Time",
+				"flags": []
+			},
+			"50007": {
+				"label": "Filter Max Time",
+				"flags": []
+			},
+			"50008": {
+				"label": "Temperature",
+				"flags": [],
+				"rangeOptions": {
+					"minValue": "16",
+					"maxValue": "30",
+					"stepValue": "0.5",
+					"unitLabel": "°"
+				}
+			},
+			"50009": {
+				"label": "Temperature",
+				"flags": [],
+				"valueOptions": [{
+					"match": "16.0",
+					"apply": {
+						"label": "60°F"
+					}
+				}, {
+					"match": "16.5",
+					"apply": {
+						"label": "61°F"
+					}
+				}, {
+					"match": "17.0",
+					"apply": {
+						"label": "62°F"
+					}
+				}, {
+					"match": "17.5",
+					"apply": {
+						"label": "63°F"
+					}
+				}, {
+					"match": "18.0",
+					"apply": {
+						"label": "64°F"
+					}
+				}, {
+					"match": "18.5",
+					"apply": {
+						"label": "65°F"
+					}
+				}, {
+					"match": "19.0",
+					"apply": {
+						"label": "66°F"
+					}
+				}, {
+					"match": "19.5",
+					"apply": {
+						"label": "67°F"
+					}
+				}, {
+					"match": "20.0",
+					"apply": {
+						"label": "68°F"
+					}
+				}, {
+					"match": "20.5",
+					"apply": {
+						"label": "69°F"
+					}
+				}, {
+					"match": "21.0",
+					"apply": {
+						"label": "70°F"
+					}
+				}, {
+					"match": "21.5",
+					"apply": {
+						"label": "71°F"
+					}
+				}, {
+					"match": "22.0",
+					"apply": {
+						"label": "72°F"
+					}
+				}, {
+					"match": "22.5",
+					"apply": {
+						"label": "73°F"
+					}
+				}, {
+					"match": "23.0",
+					"apply": {
+						"label": "74°F"
+					}
+				}, {
+					"match": "23.5",
+					"apply": {
+						"label": "75°F"
+					}
+				}, {
+					"match": "24.0",
+					"apply": {
+						"label": "76°F"
+					}
+				}, {
+					"match": "25.0",
+					"apply": {
+						"label": "77°F"
+					}
+				}, {
+					"match": "26.0",
+					"apply": {
+						"label": "78°F"
+					}
+				}, {
+					"match": "26.5",
+					"apply": {
+						"label": "79°F"
+					}
+				}, {
+					"match": "27.0",
+					"apply": {
+						"label": "80°F"
+					}
+				}, {
+					"match": "27.5",
+					"apply": {
+						"label": "81°F"
+					}
+				}, {
+					"match": "28.0",
+					"apply": {
+						"label": "82°F"
+					}
+				}, {
+					"match": "28.5",
+					"apply": {
+						"label": "83°F"
+					}
+				}, {
+					"match": "29.0",
+					"apply": {
+						"label": "84°F"
+					}
+				}, {
+					"match": "29.5",
+					"apply": {
+						"label": "85°F"
+					}
+				}, {
+					"match": "30.0",
+					"apply": {
+						"label": "86°F"
+					}
+				}],
+				"rangeOptions": {
+					"minValue": "16",
+					"maxValue": "30",
+					"stepValue": "0.5",
+					"unitLabel": "°"
+				}
+			},
+			"50010": {
+				"label": "Error",
+				"flags": [],
+				"valueOptions": [{
+					"match": "0",
+					"apply": {
+						"state": "standby",
+						"label": "None"
+					}
+				}, {
+					"match": "1",
+					"apply": {
+						"state": "standby",
+						"label": "Indoor Air Sensor Error"
+					}
+				}, {
+					"match": "2",
+					"apply": {
+						"state": "standby",
+						"label": "Indoor Pipe Sensor Error"
+					}
+				}, {
+					"match": "3",
+					"apply": {
+						"state": "standby",
+						"label": "EEProm Error"
+					}
+				}, {
+					"match": "4",
+					"apply": {
+						"state": "standby",
+						"label": "BLDC Fan Lock Error"
+					}
+				}, {
+					"match": "5",
+					"apply": {
+						"state": "standby",
+						"label": "Pressure Switch Error"
+					}
+				}]
+			}
+		},
+		"gauge": {
+			"background": {
+				"images": []
+			},
+			"foreground": {
+				"images": [{
+					"uri": "https://cdn.dev.afero.io/media-library/device_icon_ac@2x.png",
+					"imageSize": "2x"
+				}]
+			},
+			"displayRules": []
+		},
+		"groups": [{
+			"groups": [],
+			"label": "Controls",
+			"controls": [1, 3, 2, 4],
+			"gauge": {
+				"background": {
+					"images": []
+				},
+				"foreground": {
+					"images": [{
+						"uri": "https://cdn.dev.afero.io/media-library/device_control_icon_climate@2x.png",
+						"imageSize": "2x"
+					}]
+				},
+				"label": "",
+				"displayRules": []
+			}
+		}, {
+			"groups": [],
+			"label": "Experimental",
+			"controls": [6, 7, 8, 9, 10],
+			"gauge": {
+				"background": {
+					"images": []
+				},
+				"foreground": {
+					"images": [{
+						"uri": "https://cdn.dev.afero.io/media-library/device_control_icon_beaker@2x.png",
+						"imageSize": "2x"
+					}]
+				},
+				"label": "",
+				"displayRules": []
+			}
+		}],
+		"controls": [{
+			"id": 1,
+			"controlType": "switch",
+			"attributeMap": {
+				"value": 50000
+			},
+			"displayRules": []
+		}, {
+			"id": 2,
+			"controlType": "climateControl",
+			"attributeMap": {
+				"currentTemperature": 50008,
+				"temperature": 50009
+			},
+			"displayRules": [{
+				"match": "*",
+				"apply": {
+					"viewStyle": "SIMPLE",
+					"enabled": true
+				}
+			}, {
+				"match": "0",
+				"apply": {
+					"enabled": false
+				},
+				"attributeId": 50000
+			}]
+		}, {
+			"id": 3,
+			"controlType": "menuControl",
+			"attributeMap": {
+				"value": 50002
+			},
+			"displayRules": [{
+				"match": "0",
+				"apply": {
+					"enabled": false
+				},
+				"attributeId": 50000
+			}]
+		}, {
+			"id": 4,
+			"controlType": "menuControl",
+			"attributeMap": {
+				"value": 50001
+			},
+			"displayRules": [{
+				"match": "0",
+				"apply": {
+					"enabled": false
+				},
+				"attributeId": 50000
+			}, {
+				"match": "1",
+				"apply": {
+					"enabled": false
+				},
+				"attributeId": 50002
+			}]
+		}, {
+			"id": 6,
+			"controlType": "slider",
+			"attributeMap": {
+				"value": 50004
+			},
+			"displayRules": []
+		}, {
+			"id": 7,
+			"controlType": "slider",
+			"attributeMap": {
+				"value": 50005
+			},
+			"displayRules": []
+		}, {
+			"id": 8,
+			"controlType": "stringControl",
+			"attributeMap": {
+				"value": 50006
+			}
+		}, {
+			"id": 9,
+			"controlType": "stringControl",
+			"attributeMap": {
+				"value": 50007
+			}
+		}, {
+			"id": 10,
+			"controlType": "stringControl",
+			"attributeMap": {
+				"value": 50010
+			}
+		}]
+	}
+}

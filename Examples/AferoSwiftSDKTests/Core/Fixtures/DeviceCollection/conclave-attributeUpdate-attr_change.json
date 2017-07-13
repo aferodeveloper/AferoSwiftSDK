@@ -1,0 +1,15 @@
+{
+  "event": "attr_change",
+  "data": {
+    "id": "ffffffff",
+    "requestId": 19,
+    "state": 2,
+    "reason": 3,
+    "attribute": {
+      "id": 1000,
+      "data": "0100",
+      "value": "1"
+    },
+    "sourceHubId": "dddddddd"
+  }
+}
