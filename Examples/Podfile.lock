@@ -1,13 +1,13 @@
 PODS:
   - AferoSofthub (1.0.1)
-  - AferoSwiftLogging (1.1.4):
-    - CocoaLumberjack (= 3.2.0)
-  - AferoSwiftSDK/AFNetworking (1.2.2):
+  - AferoSwiftLogging (1.1.5):
+    - CocoaLumberjack (~> 3.2)
+  - AferoSwiftSDK/AFNetworking (0.6.0):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
     - PromiseKit (~> 4.1)
-  - AferoSwiftSDK/Core (1.2.2):
+  - AferoSwiftSDK/Core (0.6.0):
     - AferoSofthub (~> 1.0)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
@@ -71,7 +71,7 @@ PODS:
   - PromiseKit/UIKit (4.1.3):
     - PromiseKit/CorePromise
   - Quick (1.1.0)
-  - ReactiveSwift (1.1.3):
+  - ReactiveSwift (1.1.5):
     - Result (~> 3.2)
   - Result (3.2.3)
   - RSEnvironment (0.0.3)
@@ -79,8 +79,8 @@ PODS:
 
 DEPENDENCIES:
   - AferoSofthub
-  - AferoSwiftLogging (= 1.1.4)
-  - AferoSwiftSDK/AFNetworking (from `../`)
+  - AferoSwiftLogging (= 1.1.5)
+  - AferoSwiftSDK/AFNetworking
   - CocoaLumberjack/Swift (= 3.2.0)
   - CryptoSwift (= 0.6.9)
   - HTTPStatusCodes (~> 3.1)
@@ -89,18 +89,14 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift
   - PromiseKit (= 4.1.3)
   - Quick
-  - ReactiveSwift (= 1.1.3)
+  - ReactiveSwift (~> 1.1)
   - RSEnvironment (= 0.0.3)
   - SVProgressHUD (= 1.1.3)
 
-EXTERNAL SOURCES:
-  AferoSwiftSDK:
-    :path: "../"
-
 SPEC CHECKSUMS:
-  AferoSofthub: 171f5f3a73266c476ba23c331d4ce51e497abb25
-  AferoSwiftLogging: 0a0d2ac219c366f87cfe9bd0555a302e18378c4e
-  AferoSwiftSDK: 15441af97a7cd20db64c839236e0dc308f4e85ab
+  AferoSofthub: 1194e2b1f9424131d6a49d934333f4d04084d942
+  AferoSwiftLogging: 8484c3cf430f67126ed5fa4c00774d979db1607e
+  AferoSwiftSDK: 8f33483cd72b8a1e780fea057cba569d7cbbd882
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 9b4aed7073d242f29cc2f62068d995faf67f703a
@@ -112,11 +108,11 @@ SPEC CHECKSUMS:
   OHHTTPStubs: 752f9b11fd810a15162d50f11c06ff94f8e012eb
   PromiseKit: 56baec63efa89210c023260879435a5a6b3bff00
   Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
-  ReactiveSwift: f54ba12c2e799003432930fa55495315ae44f32b
+  ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
   Result: 128640a6347e8d2ae48b142556739a2d13f90ce6
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 1425d4872b0fefbc1dc4f8b69810935a0ac29e0d
+PODFILE CHECKSUM: 32ca5e4d6d0b3c7fa38a69c266ab4828cd366659
 
 COCOAPODS: 1.2.1

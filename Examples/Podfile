@@ -1,4 +1,4 @@
-source 'git@github.com:KibanLabsInc/Podspecs.git'
+source 'git@github.com:aferodeveloper/Podspecs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '9.3'
@@ -12,16 +12,13 @@ workspace 'AferoSwiftSDK.xcworkspace'
 
 def base_pods
     pod 'CryptoSwift', '0.6.9'
-    pod 'ReactiveSwift', '1.1.3', :inhibit_warnings => true
+    pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'CocoaLumberjack/Swift', '3.2.0'
     pod 'PromiseKit', '4.1.3'
     pod 'HTTPStatusCodes', '~> 3.1'
-    pod 'AferoSwiftLogging', '1.1.4'
-#    pod 'AferoSwiftLogging', :path => '../AferoSwiftLogging/'
-#    pod 'AferoSwiftConclave', :path => '../AferoSwiftConclave/'
-#    pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
+    pod 'AferoSwiftLogging', '1.1.5'
     pod 'AferoSofthub', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking', :path => '../'
+    pod 'AferoSwiftSDK/AFNetworking'
 end
 
 def test_pods
@@ -48,10 +45,9 @@ target 'AferoLab' do
 
     project 'AferoLab/AferoLab.xcodeproj'
     
-    pod 'ReactiveSwift', '1.1.3', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking', :path => '../'
+    pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
+    pod 'AferoSwiftSDK/AFNetworking'
 
-#    pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
     pod 'AferoSofthub', :inhibit_warnings => true
 
     pod 'HTTPStatusCodes', '~> 3.1'
