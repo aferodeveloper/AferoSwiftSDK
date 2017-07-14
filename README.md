@@ -50,7 +50,7 @@ For details, see the [Quick Start Guide][qsg]
 | [Push Notifications][push-notifications] | Documents use of DeviceRules to implement push notifications for Afero device state changes. |
 | [API Reference][api-ref] | Reference documentation for the `Afero` module. |
 
-[qsg]: Docs/QuickStart.md
+[qsg]: Docs/Quickstart.md
 [push-notifications]: Docs/Push_Notifications.md
 [rest-api-client]: Docs/RESTApiClient.md
 [api-ref]: Docs/Reference/index.html
