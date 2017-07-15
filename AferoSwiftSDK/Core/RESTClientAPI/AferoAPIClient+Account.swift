@@ -196,3 +196,43 @@ public extension AferoAPIClientProto {
     }
 
 }
+
+// MARK: - Activity
+
+public extension AferoAPIClientProto {
+    
+    func fetchActivity(
+        _ accountId: String,
+        deviceId: String? = nil,
+        endTimestamp: Int64? = nil,
+        limit: Int = 40,
+        historyFilter: String? = nil
+        ) -> Promise<[HistoryActivity]> {
+        
+        var endTimestampNumber = NSNumber(value: Int64(Date().timeIntervalSince1970 * 1000) as Int64)
+        if let endTimestamp = endTimestamp {
+            endTimestampNumber = NSNumber(value: endTimestamp)
+        }
+        
+        var body: [String: Any] = [
+            "endTimestamp": endTimestampNumber,
+            "limit": limit,
+            ]
+        
+        if let historyFilter = historyFilter {
+            body["filter"] = historyFilter
+        }
+        
+        let path: String
+        
+        if let deviceId = deviceId {
+            path = "/v1/accounts/\(accountId)/devices/\(deviceId)/activity"
+        } else {
+            path = "/v1/accounts/\(accountId)/activity"
+        }
+        
+        return GET(path, parameters: body)
+    }
+    
+}
+

@@ -9,7 +9,7 @@
 import Foundation
 import PromiseKit
 
-extension AferoAPIClientProto {
+public extension AferoAPIClientProto {
     
     // MARK: - Groups
     
