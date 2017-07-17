@@ -157,7 +157,7 @@ extension AferoAPIClientProto {
 
 // MARK: - POST Primitives -
 
-extension AferoAPIClientProto {
+public extension AferoAPIClientProto {
     
     func POST<U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
         return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
@@ -284,7 +284,7 @@ extension AferoAPIClientProto {
     ///
     /// - parameter expansions: fields to expand, if any, in the response.
     
-    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
@@ -314,7 +314,7 @@ extension AferoAPIClientProto {
 
 // MARK: - GET Primitives -
 
-extension AferoAPIClientProto {
+public extension AferoAPIClientProto {
     
     /// GET a path, and throw away the results..
     ///
@@ -473,7 +473,7 @@ extension AferoAPIClientProto {
     ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         
         let localPath = withExpansions(path, expansions: expansions)
@@ -505,7 +505,7 @@ extension AferoAPIClientProto {
 
 // MARK: - DELETE Primitives -
 
-extension AferoAPIClientProto {
+public extension AferoAPIClientProto {
     
     func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
         return DELETE(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
@@ -513,7 +513,7 @@ extension AferoAPIClientProto {
         }
     }
     
-    func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
@@ -544,7 +544,7 @@ extension AferoAPIClientProto {
 
 // MARK: - PUT Primitives -
 
-extension AferoAPIClientProto {
+public extension AferoAPIClientProto {
     
     /// PUT a path.
     ///
@@ -657,7 +657,7 @@ extension AferoAPIClientProto {
     ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    func PUT(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func PUT(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
