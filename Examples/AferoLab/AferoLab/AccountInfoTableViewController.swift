@@ -12,6 +12,7 @@ import Result
 import PromiseKit
 import CocoaLumberjack
 import Afero
+import SVProgressHUD
 
 typealias APIClient = AFNetworkingAferoAPIClient
 
@@ -72,7 +73,7 @@ class AccountViewController: UITableViewController {
     func updateBackgroundVisibility(animated: Bool = true, delay: TimeInterval = 0.0) {
 
         if shouldShowTableContent {
-            zeroStateView.hideImage(animated: animated, delay: delay).then {
+            _ = zeroStateView.hideImage(animated: animated, delay: delay).then {
                 ()->Void in
                 self.navigationController?.setNavigationBarHidden(false, animated: animated)
                 self.tableView.separatorStyle = .singleLine
@@ -80,7 +81,7 @@ class AccountViewController: UITableViewController {
             return
         }
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        zeroStateView.showImage(animated: animated, delay: delay)
+        _ = zeroStateView.showImage(animated: animated, delay: delay)
         tableView.separatorStyle = .none
         
     }
@@ -222,7 +223,7 @@ class AccountViewController: UITableViewController {
                 do {
                     try SofthubMinder.sharedInstance.start(withAccountId: accountId) {
                         associationId in
-                        _ = APIClient.default.associateDevice(accountId, associationId: associationId, location: nil)
+                        _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {
                                 device in
                                 DDLogDebug("Associated device: \(String(describing: device))", tag: self.TAG)
@@ -339,11 +340,15 @@ class AccountViewController: UITableViewController {
         return IndexPath(item: index, section: AccountInfoSection.devices.rawValue)
     }
     
-    func device(at indexPath: IndexPath) -> DeviceModelable {
+    func device(at indexPath: IndexPath) -> DeviceModelable? {
+        
+        guard indexPath.accountInfoSection == .devices else { return nil }
         
         guard let model = model else {
             fatalError("nil model")
         }
+    
+        guard (0..<model.numberOfDevices()).contains(indexPath.item) else { return nil }
         
         return model.deviceForIndex(indexPath.item)
     }
@@ -410,7 +415,10 @@ class AccountViewController: UITableViewController {
             accountCell.softhubSwitch.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
             
         case .devices:
-            let device = self.device(at: indexPath)
+            guard let device = self.device(at: indexPath) else {
+                cell.textLabel?.text = "<unknown>"
+                break
+            }
             cell.textLabel?.text = device.displayName
             
         }
@@ -423,6 +431,54 @@ class AccountViewController: UITableViewController {
         softhubEnabled = (sender as? UISwitch)?.isOn ?? false
     }
     
+    // MARK: <UITableViewDelegate>
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+
+        guard let _ = self.device(at: indexPath) else { return [] }
+        
+        return [
+            UITableViewRowAction(
+            style: .destructive,
+            title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
+                [weak self] action, indexPath in self?.disassociateDevice(at: indexPath)
+                },
+        ]
+        
+    }
+    
+    func disassociateDevice(at indexPath: IndexPath) {
+        
+        guard let device = self.device(at: indexPath) else { return }
+        
+        let deviceId = device.id
+        let accountId = device.accountId
+        
+        SVProgressHUD.show(
+            withStatus: NSLocalizedString(
+                "Disassociating…",
+                comment: "Disassociate device status hud message"),
+            maskType: .clear
+        )
+        
+        _ = APIClient.default.removeDevice(with: deviceId, in: accountId).then {
+            ()->Void in
+            DDLogDebug("Disassociated device \(String(describing: deviceId)) in account \(String(describing: accountId))", tag: self.TAG)
+            SVProgressHUD.dismiss()
+            }.catch {
+                error in
+                SVProgressHUD.showError(
+                    withStatus: String(
+                        format: NSLocalizedString(
+                        "Unable to disassociate device: %@",
+                        comment: "Disassociate device failure"
+                    ),
+                        error.localizedDescription
+                ),
+                    maskType: .clear
+                )
+        }
+    }
     
 }
 
