@@ -216,14 +216,21 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="AferoLab" id="sNg-Tl-RCw">
-                        <barButtonItem key="rightBarButtonItem" title="Sign Out" id="pYM-Km-9YV">
+                        <barButtonItem key="leftBarButtonItem" title="Sign Out" id="pYM-Km-9YV">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="signOutTapped:" destination="nFc-5S-3DK" id="LlM-nU-CTb"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="QRCode30" id="bMy-jt-Au2">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="associateDeviceTapped:" destination="nFc-5S-3DK" id="7dy-yc-UHx"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="associateDeviceButtonItem" destination="bMy-jt-Au2" id="VZx-KN-sv8"/>
                         <outlet property="signOutButton" destination="pYM-Km-9YV" id="i6D-eA-6ut"/>
                     </connections>
                 </tableViewController>
@@ -236,7 +243,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YYV-1Q-Ilk" customClass="AferoLabNavigationController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="NJL-Rb-4Ot">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="NJL-Rb-4Ot">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -255,5 +262,8 @@
             <point key="canvasLocation" x="421.60000000000002" y="867.61619190404804"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="QRCode30" width="30" height="30"/>
+    </resources>
     <color key="tintColor" red="0.99987393617630005" green="0.67495071887969971" blue="0.2409055233001709" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

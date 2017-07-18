@@ -14,6 +14,9 @@ import CocoaLumberjack
 import Afero
 import SVProgressHUD
 
+import QRCodeReader
+import AVFoundation
+
 typealias APIClient = AFNetworkingAferoAPIClient
 
 // MARK: - AccountViewController -
@@ -447,9 +450,84 @@ class AccountViewController: UITableViewController {
         
     }
     
-    func disassociateDevice(at indexPath: IndexPath) {
+    // MARK: Actions
+    
+    @IBOutlet weak var associateDeviceButtonItem: UIBarButtonItem!
+
+    @IBAction func associateDeviceTapped(_ sender: UIBarButtonItem) {
+        readerVC.delegate = self
+        readerVC.modalPresentationStyle = .popover
+        present(readerVC, animated: true, completion: nil)
+    }
+    
+    // Good practice: create the reader lazily to avoid cpu overload during the
+    // initialization and each time we need to scan a QRCode
+    lazy var readerVC: QRCodeReaderViewController = {
+        let builder = QRCodeReaderViewControllerBuilder {
+            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObjectTypeQRCode], captureDevicePosition: .back)
+        }
         
-        guard let device = self.device(at: indexPath) else { return }
+        return QRCodeReaderViewController(builder: builder)
+    }()
+    
+}
+
+// MARK: - Device Association <QRCodeReaderDelegate> -
+
+extension AccountViewController {
+    
+    func associateDevice(with associationId: String) -> Promise<Void> {
+        
+        guard let accountId = accountId else {
+            fatalError("No account id; this should never happen")
+        }
+        
+        let trimmedAssociationId = associationId.trimmed.replacingOccurrences(of: "-", with: "")
+        
+        SVProgressHUD.show(
+            withStatus: String(
+                format: NSLocalizedString(
+                    "Associating %@",
+                    comment: "Assocating device status fmt"
+                ), trimmedAssociationId
+            )
+        )
+        
+        return APIClient.default
+            .associateDevice(with: trimmedAssociationId, to: accountId)
+            .then {
+                device -> Void in
+                DDLogDebug("Successfully associated associationId \(trimmedAssociationId); device: \(String(reflecting: device))")
+                SVProgressHUD.showSuccess(
+                    withStatus: String(
+                        format: NSLocalizedString(
+                            "Done!",
+                            comment: "Associate device Done! message"
+                        )
+                    )
+                )
+            }.catch {
+                error in
+                DDLogError("Error associating associationId \(trimmedAssociationId): \(error.localizedDescription)", tag: self.TAG)
+                SVProgressHUD.showError(
+                    withStatus: String(
+                        format: NSLocalizedString(
+                            "Error associating %@:\n%@",
+                            comment: "Assocating device status fmt"
+                        ), trimmedAssociationId, error.localizedDescription
+                    ),
+                    maskType: .gradient
+                )
+                
+        }
+        
+    }
+    
+    func disassociateDevice(at indexPath: IndexPath) -> Promise<Void> {
+        
+        guard let device = self.device(at: indexPath) else {
+            return Promise { _, reject in reject("No device at \(indexPath)") }
+        }
         
         let deviceId = device.id
         let accountId = device.accountId
@@ -461,23 +539,52 @@ class AccountViewController: UITableViewController {
             maskType: .clear
         )
         
-        _ = APIClient.default.removeDevice(with: deviceId, in: accountId).then {
+        return APIClient.default.removeDevice(with: deviceId, in: accountId).then {
             ()->Void in
             DDLogDebug("Disassociated device \(String(describing: deviceId)) in account \(String(describing: accountId))", tag: self.TAG)
-            SVProgressHUD.dismiss()
+            SVProgressHUD.showSuccess(
+                withStatus: String(
+                    format: NSLocalizedString(
+                        "Done!",
+                        comment: "Associate device Done! message"
+                    )
+                )
+            )
             }.catch {
                 error in
                 SVProgressHUD.showError(
                     withStatus: String(
                         format: NSLocalizedString(
-                        "Unable to disassociate device: %@",
-                        comment: "Disassociate device failure"
-                    ),
+                            "Unable to disassociate device: %@",
+                            comment: "Disassociate device failure"
+                        ),
                         error.localizedDescription
-                ),
+                    ),
                     maskType: .clear
                 )
         }
+    }
+
+}
+
+extension AccountViewController: QRCodeReaderViewControllerDelegate {
+    
+    func reader(_ reader: QRCodeReaderViewController, didScanResult result: QRCodeReaderResult) {
+        reader.stopScanning()
+        dismiss(animated: true, completion: nil)
+        DDLogDebug("Got QRCodeReaderResult \(String(describing: result))", tag: TAG)
+        _ = associateDevice(with: result.value)
+    }
+    
+    func reader(_ reader: QRCodeReaderViewController, didSwitchCamera newCaptureDevice: AVCaptureDeviceInput) {
+        if let cameraName = newCaptureDevice.device.localizedName {
+            DDLogDebug("Switching capturing to: \(cameraName)", tag: TAG)
+        }
+    }
+    
+    func readerDidCancel(_ reader: QRCodeReaderViewController) {
+        reader.stopScanning()
+        dismiss(animated: true, completion: nil)
     }
     
 }
