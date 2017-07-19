@@ -1169,28 +1169,53 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         // MARK: - DeviceStreamEvent.Peripheral.UpdateState
         
         /// Terminal states for device update requests
-        /// - `.updated`: Everything A-OK
-        /// - `.interrupted`: Interrupted (device-side update in progress or preempted by device-side update)
-        /// - `.unknownUUID`: Unknown UUID
-        /// - `.lengthExceeded`: Length Exceeded
-        /// - `.conflict`: Conflict (previous Set in progress)
-        /// - `.timeout`: Timeout (Set timed out)
+        /// - `.updated`: Update successful..
+        /// - `.interrupted`: Interrupted (device-side update in progress or preempted by device-side update).
+        /// - `.unknownAttribute`: The attribute being updated is unrecognized by this device.
+        /// - `.lengthExceeded`: The new value for the attribute being updated is too large.
+        /// - `.conflict`: A conflict was detected when attempting to update the attribute (previous 'set' in progress).
+        /// - `.timeout`: Timed out attempting to update the attribute.
         
         public enum UpdateState: Int, CustomStringConvertible, CustomDebugStringConvertible {
             
-            public var description: String {
+            var name: String {
                 switch self {
                 case .updated: return ".updated"
                 case .interrupted: return ".interupted"
-                case .unknownUUID: return ".unknownUUID"
+                case .unknownAttribute: return ".unknownAttribute"
                 case .lengthExceeded: return ".lengthExceeded"
                 case .conflict: return ".conflict"
                 case .timeout: return ".timeout"
                 }
             }
             
+            public var description: String {
+                return debugDescription
+            }
+            
             public var debugDescription: String {
-                return "DeviceUpdateState\(description)(\(code))"
+                let preamble = "DeviceUpdateState\(name)(\(code)): "
+                switch self {
+
+                case .updated:
+                    return preamble + "Update successful."
+
+                case .interrupted:
+                    return preamble + "Operation interrupted (device-side update in progress or preempted by device-side update)."
+
+                case .unknownAttribute:
+                    return preamble + "The attribute being updated is unrecognized by this device"
+                    
+                case .lengthExceeded:
+                    return preamble + "The new value for the attribute being updated is too large"
+                
+                case .conflict:
+                    return preamble + "A conflict was detected when attempting to update the attribute (previous 'set' in progress)."
+
+                case .timeout:
+                    return preamble + "Timed out attempting to update the attribute."
+                    
+                }
             }
             
             public var code: Int { return rawValue }
@@ -1219,7 +1244,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             case interrupted       = 1
             
             /// Unknown UUID
-            case unknownUUID       = 2
+            case unknownAttribute       = 2
             
             /// Length exceeded
             case lengthExceeded    = 3
