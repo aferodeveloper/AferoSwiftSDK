@@ -794,14 +794,63 @@ public class DeviceCollection: NSObject, MetricsReportable {
         case InvalidationEvent.profiles.rawValue:
             device.profileId = nil
             
-        case "location":
-            device.currentState.locationState = .invalid
-            
+        case InvalidationEvent.location.rawValue:
+            updateLocation(for: peripheralId, retryInterval: 10.0)
+
         default:
             break
         }
     }
     
+    /// Update the location for the given peripheral id, optionally retrying upon failure.
+    ///
+    /// - parameter peripheralId: The id of the peripheral whose location should be updated.
+    /// - parameter retryInterval: If non-`nil`, retry upon failure after `retryInterval` seconds.
+    ///                            If `nil`, do not retry.
+    
+    func updateLocation(for peripheralId: String, retryInterval: TimeInterval? = nil) {
+        
+        guard let peripheral = peripheral(for: peripheralId) else { return }
+        
+        guard peripheral.locationState != .pendingUpdate else {
+            DDLogDebug("We already have an update pending, not trying again.")
+            return
+        }
+        
+        peripheral.locationState = .pendingUpdate
+        
+        _ = apiClient.getLocation(for: peripheralId, in: accountId)
+            .then {
+                
+                [weak peripheral] maybeLocation -> Void in
+                switch maybeLocation {
+                case let .some(location):
+                    peripheral?.locationState = .located(at: location)
+                case .none:
+                    peripheral?.locationState = .notLocated
+                }
+                
+            }.catch {
+                
+                [weak peripheral] error in
+                
+                DDLogError("Error updating location for \(peripheralId): \(String(reflecting: error))", tag: self.TAG)
+                peripheral?.locationState = .invalid(error: error)
+                
+                guard let retryInterval = retryInterval else {
+                    DDLogDebug("Location update for \(peripheralId) failed; not retrying.", tag: self.TAG)
+                    return
+                }
+                
+                DDLogInfo("Retrying location update for \(peripheralId) in \(retryInterval) secs.", tag: self.TAG)
+                
+                after(retryInterval) {
+                    [weak self] in self?.updateLocation(for: peripheralId)
+                }
+        }
+        
+
+    }
 
     // MARK: - Public Stream Controls
 
