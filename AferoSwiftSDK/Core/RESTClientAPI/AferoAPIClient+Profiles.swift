@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CoreLocation
+import CocoaLumberjack
 
 extension AferoAPIClientProto {
     
@@ -99,28 +100,3 @@ public extension AferoAPIClientProto {
     
 }
 
-public extension AferoAPIClientProto {
-    
-    /// Get the last known location of a device.
-    
-    public func getLocation(_ accountId: String, forDeviceId deviceId: String) -> Promise<LocationModel?> {
-        return GET("/v1/accounts/\(accountId)/devices/\(deviceId)/location")
-    }
-    
-    
-    public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: LocationSourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
-        
-        var deviceData : [String: Any] = [
-            "latitude": location.coordinate.latitude,
-            "longitude": location.coordinate.longitude,
-            "locationSourceType": locationSourceType.rawValue,
-            ]
-        
-        if let formattedAddressLines = formattedAddressLines {
-            deviceData["formattedAddressLines"] = formattedAddressLines
-        }
-        
-        return PUT("/v1/accounts/\(accountId)/devices/\(deviceId)/location", parameters: deviceData)
-    }
-
-}

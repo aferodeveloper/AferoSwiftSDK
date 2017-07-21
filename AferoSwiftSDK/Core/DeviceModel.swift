@@ -268,25 +268,24 @@ public class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Co
         set { currentState.friendlyName = newValue }
     }
     
-    /**
-    Whether or not the device is available, according to Conclave.
-    */
+    /// Whether or not the device is available, according to Conclave.
     
-    open var isAvailable: Bool {
-
-        get {
-            return self.currentState.isAvailable
-        }
-        
+    internal(set) public var isAvailable: Bool {
+        get { return self.currentState.isAvailable }
         set {
-            if newValue == currentState.isAvailable {
-                return
-            }
-            var state = self.currentState
-            state.isAvailable = newValue
-            self.currentState = state
+            if newValue == currentState.isAvailable { return }
+            currentState.isAvailable = newValue
         }
+    }
 
+    /// The curren `LocationState` of the device
+    
+    internal(set) public var locationState: LocationState {
+        get { return currentState.locationState }
+        set {
+            if newValue == currentState.locationState { return }
+            currentState.locationState = newValue
+        }
     }
 
     /**
@@ -662,25 +661,24 @@ public class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable
         return self
     }
     
-    /**
-    Whether or not the device is available, according to Conclave.
-    */
+    /// Whether or not the device is available, according to Conclave.
     
-    open var isAvailable: Bool {
-        
-        get {
-            return self.currentState.isAvailable
-        }
-        
+    internal(set) public var isAvailable: Bool {
+        get { return self.currentState.isAvailable }
         set {
-            if newValue == currentState.isAvailable {
-                return
-            }
-            var state = self.currentState
-            state.isAvailable = newValue
-            self.currentState = state
+            if newValue == currentState.isAvailable { return }
+            currentState.isAvailable = newValue
         }
-        
+    }
+    
+    /// The current `LocationState` of the device.
+    
+    internal(set) public var locationState: LocationState {
+        get { return currentState.locationState }
+        set {
+            if newValue == currentState.locationState { return }
+            currentState.locationState = newValue
+        }
     }
     
     /**

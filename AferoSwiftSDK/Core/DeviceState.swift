@@ -131,7 +131,7 @@ public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebu
     public var friendlyName: String?
     public var profileId: String?
     
-    public var locationState: LocationState = .none
+    public var locationState: LocationState = .notLocated
 
     public var attributes: [Key: Value]
     
@@ -389,7 +389,8 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     var profileId: String? { get set }
     var presentation: DeviceProfile.Presentation? { get }
     var profile: DeviceProfile? { get }
-    var isAvailable: Bool { get set }
+    var isAvailable: Bool { get }
+    var locationState: LocationState { get }
     var isDirect: Bool { get set }
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
@@ -644,7 +645,7 @@ public extension DeviceModelable {
     
     // MARK: - Update Methods: Handle external model updates
     
-    public func update(with peripheral: DeviceStreamEvent.Peripheral, attrsOnly: Bool = true) {
+    func update(with peripheral: DeviceStreamEvent.Peripheral, attrsOnly: Bool = true) {
 
         id = peripheral.id
         profileId = peripheral.profileId
@@ -662,18 +663,18 @@ public extension DeviceModelable {
         update(with: peripheral.attributes.values)
     }
     
-    public func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
+    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
         update(with: [attribute])
     }
     
-    public func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
         update(with: attributes.flatMap {
             v in return (v.id, v.value)
         })
     }
     
-    public func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == (Int, String?) {
             update(attributes.reduce([Int: String]()) {
                 curr, next in

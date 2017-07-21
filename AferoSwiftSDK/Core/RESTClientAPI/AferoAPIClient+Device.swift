@@ -12,7 +12,7 @@ import CoreLocation
 
 public extension AferoAPIClientProto {
     
-    // Kiban Device Management
+    // MARK: - Association / Disassociation -
     
     /// Associate a device.
     ///
@@ -54,18 +54,19 @@ public extension AferoAPIClientProto {
     ///  - returns: A `Promise<[String: Any]>`
     
     public func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false) -> Promise<[String: Any]> {
+        
         var deviceData : [String: Any] = [
             "associationId": associationId,
             ]
         
-        if let coord = location?.coordinate {
+        if let location = location {
             
-            deviceData["location"] = [
-                "latitude": coord.latitude,
-                "longitude": coord.longitude,
-                "locationSourceType": LocationSourceType.initialDeviceAssociate.rawValue,
-            ]
+            let deviceLocation = DeviceLocation(
+                location: location,
+                sourceType: .initialDeviceAssociate
+            )
             
+            deviceData["location"] = deviceLocation.JSONDict!
         }
         
         var additionalParams = AferoAppEnvironment.scaleAndLocale
@@ -115,3 +116,76 @@ public extension AferoAPIClientProto {
     }
 
 }
+
+// MARK: - Device Location -
+
+public extension AferoAPIClientProto {
+    
+    @available(*, deprecated, message: "Use getLocation(for:in:) instead.")
+    public func getLocation(_ accountId: String, forDeviceId deviceId: String) -> Promise<LocationModel?> {
+        return getLocation(for: deviceId, in: accountId)
+    }
+    
+    /// Get the last known location of a device.
+    ///
+    /// - parameter deviceId: The id of the device for which to fetch location.
+    /// - parameter accountId: The id of the account to which the device is associated.
+    /// - returns: A Promise<DeviceLocation?>. Resolves to `.some(DeviceLocation)` if the device has
+    ///            a set location, and `.none` if not.
+    
+    public func getLocation(for deviceId: String, in accountId: String) -> Promise<DeviceLocation?> {
+        
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString else {
+                return Promise { _, reject in reject("Unable to escape deviceId or accountId") }
+        }
+        
+        return GET("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/location")
+    }
+    
+    /// Set the location of a device.
+    /// - parameter location: The new location of the device.
+    /// - parameter deviceId: The id of the device to locate.
+    /// - parameter accountId: The id of the account to which the device is associated.
+    /// - returns: A Promise<DeviceLocation?> that resolves to the given parameters upon success.
+    
+    public func setLocation(
+        as location: DeviceLocation?,
+        for deviceId: String,
+        in accountId: String
+        ) -> Promise<Void> {
+        
+        guard let location = location else {
+            return Promise {
+                _, reject in reject("Nil locations are currently unsupported.")
+            }
+        }
+        
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString else {
+                return Promise { _, reject in reject("Unable to escape deviceId or accountId") }
+        }
+        
+        return PUT("/v1/accounts/\(safeDeviceId)/devices/\(safeAccountId)/location", object: location)
+    }
+    
+    @available(*, deprecated, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
+    public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: LocationSourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
+        return setLocation(as: location, with: locationSourceType, formattedAddressLines: formattedAddressLines, for: deviceId, in: accountId)
+    }
+    
+    public func setLocation(as location: CLLocation, with sourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil, for deviceId: String, in accountId: String) -> Promise<Void> {
+        
+        let location = DeviceLocation(
+            location: location,
+            sourceType: sourceType,
+            formattedAddressLines: formattedAddressLines
+        )
+        
+        return setLocation(as: location, for: deviceId, in: accountId)
+    }
+    
+}
+
