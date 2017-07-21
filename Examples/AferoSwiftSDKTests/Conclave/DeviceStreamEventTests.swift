@@ -321,7 +321,7 @@ class DeviceStreamEventTests: QuickSpec {
                 expect(interrupted?.code) == 1
 
                 let unknownUUID = UpdateState(maybeStateCode: 2)
-                expect(unknownUUID) == UpdateState.unknownUUID
+                expect(unknownUUID) == UpdateState.unknownAttribute
                 expect(unknownUUID?.code) == 2
                 
                 let lengthExceeded = UpdateState(maybeStateCode: 3)
@@ -897,7 +897,7 @@ class DeviceStreamEventTests: QuickSpec {
                         expect(seq).to(beNil())
                         expect(requestId) == 19
                         expect(peripheralId) == "ffffffff"
-                        expect(state) == DeviceStreamEvent.Peripheral.UpdateState.unknownUUID
+                        expect(state) == DeviceStreamEvent.Peripheral.UpdateState.unknownAttribute
                         expect(reason) == DeviceStreamEvent.Peripheral.UpdateReason.mcuInitiated
                         expect(attribute.id) == 1000
                         expect(attribute.data) == "0100"
