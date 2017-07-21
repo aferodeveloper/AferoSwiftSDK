@@ -641,6 +641,10 @@ public extension AferoAPIClientProto {
         }
     }
     
+    func PUT<U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
+    }
+    
     func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
         return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
     }
