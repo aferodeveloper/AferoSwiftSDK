@@ -54,7 +54,7 @@ extension NSError {
 
 // MARK: - Service-connected device model
 
-open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
+public class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
     
     static let ErrorDomain = "DeviceModel"
     
@@ -62,7 +62,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     case timeout = -1
     }
 
-    fileprivate(set) open var writeState: DeviceWriteState = .reconciled {
+    fileprivate(set) public var writeState: DeviceWriteState = .reconciled {
 
         didSet {
             switch(writeState) {
@@ -89,7 +89,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         }
     }
     
-    open var writeTimeout: TimeInterval = 10.0
+    public var writeTimeout: TimeInterval = 10.0
     
     fileprivate func startWriteTimer(_ actions: [DeviceBatchAction.Request]) {
         
@@ -124,7 +124,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     By default, this is nil, so writes are ignored.
     */
     
-    weak fileprivate(set) open var attributeWriteable: DeviceBatchActionRequestable? = nil
+    weak fileprivate(set) public var attributeWriteable: DeviceBatchActionRequestable? = nil
     
     // MARK: State Signaling
     
@@ -141,7 +141,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     The `Signal` on which state changes can be received.
     */
     
-    open var eventSignal: DeviceEventSignal {
+    public var eventSignal: DeviceEventSignal {
         return eventPipe.0
     }
     
@@ -149,7 +149,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     The `Sink` to which `currentState` is broadcast after being chaned.
     */
     
-    open var eventSink: DeviceEventSink {
+    public var eventSink: DeviceEventSink {
         return eventPipe.1
     }
     
@@ -157,7 +157,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     
     fileprivate var attributePipeTable: [Int: AttributeEventPipe] = [:]
     
-    open func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
+    public func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
         guard let attributeId = attributeId else { return nil }
         
         guard let eventPipe = attributePipeTable[attributeId] else {
@@ -171,11 +171,11 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         return eventPipe
     }
     
-    open func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
+    public func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
         return eventPipeForAttributeId(attributeId)?.signal
     }
     
-    open func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
+    public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
 
         guard let
             attributeDescriptor = descriptorForAttributeId(attributeId) else { return }
@@ -249,21 +249,21 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         return commandPipe.0
     }
     
-    open var commandSink: DeviceCommandSink {
+    public var commandSink: DeviceCommandSink {
         return commandPipe.1
     }
     
     // MARK: <Hashable>
     
-    open var hashValue: Int { return id.hashValue }
+    public var hashValue: Int { return id.hashValue }
     
     // MARK: State
     
-    open var id: String
+    public var id: String
     
-    fileprivate(set) open var accountId: String
+    fileprivate(set) public var accountId: String
     
-    open var friendlyName: String? {
+    public var friendlyName: String? {
         get { return currentState.friendlyName }
         set { currentState.friendlyName = newValue }
     }
@@ -293,7 +293,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
      True of the device connects directly to Afero, false if it is connected via a hub.
      */
     
-    open var isDirect: Bool {
+    public var isDirect: Bool {
         
         get {
             return self.currentState.isDirect
@@ -314,11 +314,11 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
 
     fileprivate var viewingNotificationConsumer: NotifyDeviceViewing = { _, _ in }
     
-    open func notifyViewing(_ isViewing: Bool) {
+    public func notifyViewing(_ isViewing: Bool) {
         viewingNotificationConsumer(isViewing, id)
     }
     
-    open func updateProfile(_ onDone: @escaping (_ success: Bool, _ error: Error?)->Void = { _, _ in }) {
+    public func updateProfile(_ onDone: @escaping (_ success: Bool, _ error: Error?)->Void = { _, _ in }) {
 
         if let profileId = profileId {
             self.profileSource?.fetchProfile(
@@ -373,7 +373,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     which on update will cause a seubsequent send on `stateSink`.
     */
     
-    open var profileId: String? {
+    public var profileId: String? {
 
         get {
             return self.currentState.profileId
@@ -396,7 +396,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     The profile associated with this device.
     */
     
-    open var profile: DeviceProfile? {
+    public var profile: DeviceProfile? {
         didSet {
             eventSink.send(value: .profileUpdate)
         }
@@ -408,7 +408,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     The current state of the device; canonical storage for isAvailable, attributes, and profileId.
     */
     
-    open var currentState: DeviceState = [:] {
+    public var currentState: DeviceState = [:] {
         didSet {
             
             if oldValue == currentState { return }
@@ -422,7 +422,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         eventSink.send(value: .stateUpdate(newState: newState))
     }
     
-    open var deleted: Bool = false {
+    public var deleted: Bool = false {
         didSet {
             if deleted {
                 eventSink.send(value: .deleted)
@@ -432,13 +432,13 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     
     // MARK: Printable
     
-    open var description: String {
+    public var description: String {
         get {
             return "<DeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(id) profileId: \(String(reflecting: profileId))"
         }
     }
     
-    open var debugDescription: String { return description }
+    public var debugDescription: String { return description }
     
     // MARK: OTA Handling
     
@@ -448,9 +448,9 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         }
     }
     
-    open var pendingOTAVersion: String?
+    public var pendingOTAVersion: String?
     
-    open var otaProgress: Float? {
+    public var otaProgress: Float? {
         
         didSet {
             
@@ -478,14 +478,14 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     }
     
     // MARK: Error reporting
-    open var deviceErrors = Set<DeviceErrorStatus>()
+    public var deviceErrors = Set<DeviceErrorStatus>()
     
-    open func error(_ error: DeviceError) {
+    public func error(_ error: DeviceError) {
         deviceErrors.insert(error.status)
         eventSink.send(value: .error(error))
     }
     
-    open func dismissError(_ status: DeviceErrorStatus) {
+    public func dismissError(_ status: DeviceErrorStatus) {
         deviceErrors.removeAll()
         eventSink.send(value: .errorResolved(status: status))
     }
@@ -537,17 +537,17 @@ public extension RecordingDeviceModel {
 A "Dummy" device model which records writeAttribute() in its `currentState`, acknowledges them, and emits DeviceActions.
 */
 
-open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, CustomDebugStringConvertible, Hashable, Comparable {
+public class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, CustomDebugStringConvertible, Hashable, Comparable {
     
     // MARK: CustomDebugStringConvertible
     
-    open var debugDescription: String {
+    public var debugDescription: String {
         return "<RecordingDeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(id) profileId: \(String(reflecting: profileId)) currentState: \(currentState)"
     }
     
     // MARK: Hashable
     
-    open var hashValue: Int { return id.hashValue }
+    public var hashValue: Int { return id.hashValue }
     
     /**
      `stateChangePipe` handles events coming from wherever The Truth(tm) resides, and
@@ -562,7 +562,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
      The `Signal` on which state changes can be received.
      */
     
-    open var eventSignal: DeviceEventSignal {
+    public var eventSignal: DeviceEventSignal {
         return eventPipe.0
     }
     
@@ -570,7 +570,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
      The `Sink` to which `currentState` is broadcast after being changed.
      */
     
-    open var eventSink: DeviceEventSink {
+    public var eventSink: DeviceEventSink {
         return eventPipe.1
     }
     
@@ -578,7 +578,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
     
     fileprivate var attributePipeTable: [Int: AttributeEventPipe] = [:]
     
-    open func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
+    public func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
         guard let attributeId = attributeId else { return nil }
         
         guard let eventPipe = attributePipeTable[attributeId] else {
@@ -590,7 +590,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         return eventPipe
     }
     
-    open func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
+    public func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
         return eventPipeForAttributeId(attributeId)?.signal
     }
     
@@ -598,7 +598,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         return eventPipeForAttributeId(attributeId)
     }
     
-    open func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
+    public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
         
         guard let
             attributeDescriptor = descriptorForAttributeId(attributeId) else { return }
@@ -651,14 +651,14 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         return commandPipe.0
     }
     
-    open var commandSink: DeviceCommandSink {
+    public var commandSink: DeviceCommandSink {
         return commandPipe.1
     }
     
     // MARK: <DeviceModelable>
     
     
-    open var attributeWriteable: DeviceBatchActionRequestable? {
+    public var attributeWriteable: DeviceBatchActionRequestable? {
         return self
     }
     
@@ -689,7 +689,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
                 and is not used anywhere else.
      */
     
-    open var isDirect: Bool {
+    public var isDirect: Bool {
         
         get {
             return self.currentState.isDirect
@@ -706,14 +706,14 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         
     }
 
-    open var accountId: String
-    open var id: String
-    open var profileId: String?
-    open var profile: DeviceProfile?
-    open var friendlyName: String?
-    open var deviceErrors = Set<DeviceErrorStatus>()
+    public var accountId: String
+    public var id: String
+    public var profileId: String?
+    public var profile: DeviceProfile?
+    public var friendlyName: String?
+    public var deviceErrors = Set<DeviceErrorStatus>()
     
-    open var currentState: DeviceState = [:] {
+    public var currentState: DeviceState = [:] {
         didSet {
             emitEventsForStateChange(oldValue, newState: currentState)
         }
@@ -723,7 +723,7 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         eventSink.send(value: .stateUpdate(newState: newState))
     }
     
-    open func clearAttributes() {
+    public func clearAttributes() {
         var state = currentState
         state.attributes.removeAll()
         currentState = state
@@ -790,11 +790,11 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
     
 }
 
-open class FilterCriteriaRecordingDeviceModel: RecordingDeviceModel, DeviceFilterCriteriaSource {
+public class FilterCriteriaRecordingDeviceModel: RecordingDeviceModel, DeviceFilterCriteriaSource {
 
     // MARK: <DeviceFilterCriteriaOperable>
     
-    open var attributeFilterOperations: [Int : DeviceFilterCriterion.Operation] = [:]
+    public var attributeFilterOperations: [Int : DeviceFilterCriterion.Operation] = [:]
 }
 
 // MARK: Presentation helpers
