@@ -7,9 +7,12 @@
 //
 
 import Foundation
-import Afero
-
+import OHHTTPStubs
 import ReactiveSwift
+import HTTPStatusCodes
+
+@testable import Afero
+
 
 // MARK: - MockDeviceBatchActionRequestable
 
@@ -210,6 +213,60 @@ class MockDeviceEventStreamable: DeviceEventStreamable {
         lastMetrics = metrics
     }
 
+}
+
+class MockAPIClient: AferoAPIClientProto {
+
+    // We stub out all of our calls using OHHTTPStubs, so we'll go through a real
+    // client, and just wrap those calls to inspect things like call verification
+    // where necessary.
+    
+    private var realClient = AFNetworkingAferoAPIClient(
+        config: AFNetworkingAferoAPIClient.Config(
+            oauthClientId: "mockClient123",
+            oauthClientSecret: "mockClient789"
+        )
+    )
+    
+    // MARK: Testy Bits
+    
+    private(set) var refreshOauthCount: Int = 0
+    func clearRefreshOauthCount() {
+        refreshOauthCount = 0
+    }
+
+    private(set) var signOutCount: Int = 0
+    func clearSignOutCount() {
+        signOutCount = 0
+    }
+
+    // MARK: <APIClientProto>
+    
+    func doRefreshOAuth(passthroughError: Error?, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+        refreshOauthCount += 1
+        realClient.doRefreshOAuth(passthroughError: passthroughError, success: success, failure: failure)
+    }
+    
+    func doSignOut(error: Error?, completion: @escaping () -> Void) {
+        signOutCount += 1
+        realClient.doSignOut(error: error, completion: completion)
+    }
+    
+    func doPut(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doPut(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    }
+    
+    func doPost(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doPost(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    }
+    
+    func doGet(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doGet(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    }
+    
+    func doDelete(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doDelete(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    }
 }
 
 

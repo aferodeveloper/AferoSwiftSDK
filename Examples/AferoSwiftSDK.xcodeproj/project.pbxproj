@@ -57,6 +57,7 @@
 		CB593CCA1D74F8050069F8A0 /* nest.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBD1D74F8050069F8A0 /* nest.json */; };
 		CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBE1D74F8050069F8A0 /* plasmacluster.json */; };
 		CB593CCC1D74F8050069F8A0 /* wetcheck.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBF1D74F8050069F8A0 /* wetcheck.json */; };
+		CB809A8D1F23F9AD0008DDD1 /* AferoAPIClient+AccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */; };
 		CB990C501F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */; };
 		CB990C511F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */; };
 		CB990C521F02FDF500265EAE /* conclave-invalidate-profiles-id.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4F1F02FDF500265EAE /* conclave-invalidate-profiles-id.json */; };
@@ -139,6 +140,7 @@
 		CB593CBF1D74F8050069F8A0 /* wetcheck.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = wetcheck.json; sourceTree = "<group>"; };
 		CB5FCDA41B0A9FDC005B2964 /* Box.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Box.framework; path = Carthage/Build/iOS/Box.framework; sourceTree = "<group>"; };
 		CB5FCDA91B0AA07D005B2964 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AferoAPIClient+AccountTests.swift"; sourceTree = "<group>"; };
 		CB8731651E64C756003102CF /* TimeAndDate.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TimeAndDate.playground; sourceTree = "<group>"; };
 		CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-profiles-deviceId.json"; sourceTree = "<group>"; };
 		CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conclave-invalidate-profiles-id-and-deviceId.json"; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 		CB1CED221EF8A5E500B86534 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				CB809A8A1F2391110008DDD1 /* RESTClientAPI */,
 				CB1CED231EF8A5E500B86534 /* DebounceTests.swift */,
 				CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */,
 				CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */,
@@ -293,6 +296,14 @@
 				CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		CB809A8A1F2391110008DDD1 /* RESTClientAPI */ = {
+			isa = PBXGroup;
+			children = (
+				CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */,
+			);
+			path = RESTClientAPI;
 			sourceTree = "<group>";
 		};
 		CB93841B1AE1C8B70012ED7B /* playgrounds */ = {
@@ -572,6 +583,7 @@
 			files = (
 				CB1CED7F1EF8A61900B86534 /* ConclaveClientTests.swift in Sources */,
 				CB1CED811EF8A61900B86534 /* DeviceStreamEventTests.swift in Sources */,
+				CB809A8D1F23F9AD0008DDD1 /* AferoAPIClient+AccountTests.swift in Sources */,
 				CB1CED5F1EF8A5E500B86534 /* OfflineScheduleTests.swift in Sources */,
 				CB1CED471EF8A5E500B86534 /* DeviceProfileTests.swift in Sources */,
 				CB1CED491EF8A5E500B86534 /* DisplayRulesTests.swift in Sources */,
