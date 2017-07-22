@@ -25,10 +25,8 @@ class APIClientSpec: QuickSpec {
     override func spec() {
         describe("when calling fetchAccountInfo()") {
 
-            guard
-                let maybeJaneDoe = try? self.readJson("userJaneDoe"),
-                let janeDoe = maybeJaneDoe,
-                let janeDoeUser: UserAccount.User = |<janeDoe else {
+            guard let janeDoeUser: UserAccount.User = try! fixture(named: "userJaneDoe")
+                else {
                     fatalError("Unable to read JSON reasource 'userJaneDoe'.")
             }
             
@@ -46,7 +44,7 @@ class APIClientSpec: QuickSpec {
 
                 stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                     request in
-                    return OHHTTPStubsResponse(jsonObject: janeDoe, statusCode: 200, headers: nil)
+                    return OHHTTPStubsResponse(jsonObject: janeDoeUser.JSONDict!, statusCode: 200, headers: nil)
                 }
                 
                 var fetchedUser: UserAccount.User?

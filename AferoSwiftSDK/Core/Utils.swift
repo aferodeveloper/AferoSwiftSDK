@@ -43,7 +43,7 @@ open class Utils {
     
 }
 
-open class ResourceUtils {
+open class ResourceUtils: NSObject {
     
     /**
     Read a JSON file from the given bundle, returning errors in the provided errorpointer.
@@ -55,11 +55,11 @@ open class ResourceUtils {
     - returns: An optional object containint the results.
     */
     
-    open class func readJson(_ file: String, bundle: Bundle? = Bundle.main) throws -> Any? {
+    open class func readJson(named name: String, bundle: Bundle? = Bundle(for: ResourceUtils.classForCoder())) throws -> Any? {
         
         if let bundle = bundle {
             
-            if let path = bundle.path(forResource: file, ofType: "json") {
+            if let path = bundle.path(forResource: name, ofType: "json") {
                 
                 do {
                     let jsonData = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
@@ -69,9 +69,45 @@ open class ResourceUtils {
                     throw error
                 }
             }
-            throw NSError(domain: "No path for file \(file).json in bundle \(bundle).", code: -1, userInfo: nil)
+            throw NSError(domain: "No path for file \(name).json in bundle \(bundle).", code: -1, userInfo: nil)
         }
         return nil
+    }
+    
+}
+
+public extension AferoJSONCoding {
+    
+    init?(withJsonNamed jsonName: String, inBundleForInstance inst: AnyObject) throws {
+        do {
+            
+            guard let coderClass = inst.classForCoder else {
+                throw "Unknown classForCoder for \(String(describing: inst))"
+            }
+            
+            try self.init(withJsonNamed: jsonName, inBundleForClass: coderClass)
+        } catch {
+            throw error
+        }
+    }
+    
+    init?(withJsonNamed jsonName: String, inBundleForClass cls: AnyClass) throws {
+        do {
+            try self.init(withJsonNamed: jsonName, inBundle: Bundle(for: cls))
+        } catch {
+            throw error
+        }
+    }
+    
+    init?(withJsonNamed jsonName: String, inBundle bundle: Bundle? = Bundle(for: ResourceUtils.classForCoder())) throws {
+        do {
+            guard let json = try ResourceUtils.readJson(named: jsonName, bundle: bundle) else {
+                return nil
+            }
+            self.init(json: json)
+        } catch {
+            throw error
+        }
     }
 }
 
