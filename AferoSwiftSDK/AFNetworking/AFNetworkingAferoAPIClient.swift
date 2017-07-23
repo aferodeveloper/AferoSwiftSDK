@@ -10,11 +10,12 @@ import Foundation
 import AFNetworking
 import AFOAuth2Manager
 import PromiseKit
+import CocoaLumberjack
 
 public class AFNetworkingAferoAPIClient {
 
     public struct Config {
-        
+
         let oauthClientId: String
         let oauthClientSecret: String
         let apiBaseURL: URL
@@ -62,7 +63,7 @@ public class AFNetworkingAferoAPIClient {
                 }
                 
                 apiBaseURL = overrideURL
-                NSLog("Overriding apiBaseUrl with \(apiBaseURL)")
+                DDLogWarn("Overriding apiBaseUrl with \(apiBaseURL)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
             self.init(apiBaseURL: apiBaseURL, oauthClientId: oauthClientId, oauthClientSecret: oauthClientSecret)
@@ -141,11 +142,14 @@ public extension AFNetworkingAferoAPIClient {
     func signIn(username: String, password: String, scope: String = "account") -> Promise<Void> {
 
         let clientTokenPath = type(of: self).OAUTH_TOKEN_PATH
-
+        let TAG = self.TAG
+        
         return Promise {
 
             fulfill, reject in
 
+            DDLogInfo("Requesting oauth refresh", tag: TAG)
+            
             let oauthManager = AFOAuth2Manager(
                 baseURL: self.apiBaseURL,
                 clientID: self.oauthClientId,
@@ -161,6 +165,8 @@ public extension AFNetworkingAferoAPIClient {
                 success: {
                     credential in
 
+                    DDLogInfo("Successfully acquired OAuth2 token.", tag: TAG)
+
                     DispatchQueue.main.async {
 
                         AFOAuthCredential.store(
@@ -174,7 +180,11 @@ public extension AFNetworkingAferoAPIClient {
                     }
             },
 
-                failure: reject
+                failure: {
+                    error in
+                    DDLogError("Failed to acquire OAuth2 token: \(String(reflecting: error))", tag: TAG)
+                    reject(error)
+            }
             )
         }
     }
@@ -195,10 +205,12 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
     
     public func doRefreshOAuth(passthroughError: Error? = nil, success: @escaping ()->Void, failure: @escaping (Error)->Void) {
         
-        NSLog("Requesting oauth refresh")
+        let TAG = self.TAG
+        
+        DDLogInfo("Requesting oauth refresh", tag: TAG)
         
         guard let credential = oauthCredential else {
-            NSLog("No credential; bailing on refresh attempt")
+            DDLogInfo("No credential; bailing on refresh attempt", tag: TAG)
             asyncMain { failure(passthroughError ?? "No credential.") }
             return
         }
@@ -214,6 +226,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             refreshToken: credential.refreshToken,
             success: {
                 credential in
+                DDLogInfo("Successfully refreshed OAuth2 token.", tag: TAG)
                 AFOAuthCredential.store(
                     credential,
                     withIdentifier: self.oauthCredentialIdentifier,
@@ -223,22 +236,28 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                 success()
         },
             failure: {
-                err in failure(err)
+                error in
+                DDLogError("Failed to refresh OAuth2 token: \(String(reflecting: error))", tag: TAG)
+                failure(error)
         })
         
     }
     
     public func doGet(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+
+        let TAG = self.TAG
         
         return sessionManager.get(
             urlString,
             parameters: parameters,
             progress: nil,
             success: { (task, result) -> Void in
+                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
+            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -247,15 +266,19 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
     }
     
     public func doPut(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
-        
+
+        let TAG = self.TAG
+
         return sessionManager.put(
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
+                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
+            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -265,15 +288,19 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
     
     public func doPost(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
         
+        let TAG = self.TAG
+        
         return sessionManager.post(
             urlString,
             parameters: parameters,
             progress: nil,
             success: { (task, result) -> Void in
+                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
+            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -283,14 +310,18 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
     
     public func doDelete(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
         
+        let TAG = self.TAG
+        
         return sessionManager.delete(
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
+                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
+            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -313,7 +344,7 @@ class AferoAFJSONResponseSerializer: AFJSONResponseSerializer {
             bodyString = prettyJson
         }
 
-        NSLog("Response: <body>\(bodyString)</body>")
+        DDLogDebug("Response: <body>\(bodyString)</body>", tag: "AferoAFJSONResponseSerializer")
         return super.responseObject(for: response, data: data, error: error) as AnyObject?
     }
 
@@ -330,7 +361,7 @@ class AferoAFJSONRequestSerializer: AFJSONRequestSerializer {
             bodyString = maybeBody
         }
 
-        NSLog("Request: <body>\(bodyString)</body>")
+        DDLogDebug("Request: <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
         return request
     }
 
