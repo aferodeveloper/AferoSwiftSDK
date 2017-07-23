@@ -16,7 +16,7 @@ class PerContextDisplayRulesSpec: QuickSpec {
     override func spec() {
         describe("When applying to a 'context'") {
             
-            let rules2Json: [[String: Any]]! = try? self.readJson("displayRulesTest2")! as! [[String: Any]]
+            let rules2Json: [[String: Any]]! = (try! self.fixture(named: "displayRulesTest2"))!
             
             it("Should do some awesome stuff.") {
                 
@@ -51,7 +51,7 @@ class PerAttributeDisplayRulesSpec: QuickSpec {
     
     override func spec() {
         
-        let rules1Json: [[String: Any]]! = try? self.readJson("displayRulesTest1")! as! [[String: Any]]
+        let rules1Json: [[String: Any]]! = (try! self.fixture(named: "displayRulesTest1"))!
 
         describe("When applying to an integer attribute") {
 

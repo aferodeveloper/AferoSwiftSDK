@@ -21,7 +21,7 @@ class ConclaveConnectionInfoSpec: QuickSpec {
             [weak self] in
             let fileName = "conclaveConnectionInfo"
 
-            guard let json = try? self?.readJson(fileName) else {
+            guard let json: [String: Any] = try! self?.fixture(named: fileName) else {
                 fatalError("No JSON file named \(fileName)")
             }
             
@@ -126,19 +126,19 @@ class ConclaveMessageSpec: QuickSpec {
         describe("When decoding messages") {
             
             it("Should be able to decode a Hello") {
-                let hello: ConclaveMessage? = |<(try? self.readJson("conclave_hello")!)
+                let hello: ConclaveMessage? = try! self.fixture(named: "conclave_hello")
                 expect(hello).toNot(beNil())
                 expect(hello) == ConclaveMessage.hello(version: "conclave 1.0.5", bufferSize: 1024, heartbeat: 270)
             }
             
             it("Should be able to decode a Welcome") {
-                let welcome: ConclaveMessage? = |<(try? self.readJson("conclave_welcome")!)
+                let welcome: ConclaveMessage? = try! self.fixture(named: "conclave_welcome")
                 expect(welcome).toNot(beNil())
                 expect(welcome) == ConclaveMessage.welcome(sessionId: 91, seq: 847553, channelId: "lockbox", generation: 12345)
             }
             
             it("Should be able to decode a Public") {
-                let ppublic: ConclaveMessage? = |<(try? self.readJson("conclave_public")!)
+                let ppublic: ConclaveMessage? = try! self.fixture(named: "conclave_public")
                 expect(ppublic).toNot(beNil())
                 switch(ppublic!) {
                 case let .public(seq, sessionId, event, data):
@@ -232,7 +232,7 @@ class ConclaveMessageSpec: QuickSpec {
             }
             
             it("Should be able to decode a Private") {
-                let pprivate: ConclaveMessage? = |<(try? self.readJson("conclave_private")!)
+                let pprivate: ConclaveMessage? = try! self.fixture(named: "conclave_private")
                 expect(pprivate).toNot(beNil())
                 switch(pprivate!) {
                 case let .private(seq, sessionId, target, event, data):

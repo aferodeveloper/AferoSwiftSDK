@@ -105,7 +105,7 @@ class DeviceModelSpec: QuickSpec {
                     requestSem.signal()
                 }
                 
-                let deviceModel = DeviceModel(id: "foo", state: [100: false], accountId: accountId, profile: nil, attributeWriteable: nil, profileResolver: resolver)
+                let deviceModel = DeviceModel(id: "foo", state: [100: false], accountId: accountId, profile: nil, attributeWriteable: nil, profileSource: resolver)
                 
                 var writeCount = 0
                 
@@ -146,7 +146,7 @@ class DeviceModelSpec: QuickSpec {
                 expect(resolver.fetchProfileByProfileIdRequestCount) == 1
                 expect(deviceModel.profile).to(beNil())
                 
-                resolver.profileToReturn = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
+                resolver.profileToReturn = try! self.fixture(named: "profileTest")
                 deviceModel.profileId = "bar"
                 
                 // Now we should succeed.
@@ -229,7 +229,7 @@ class DeviceModelSpec: QuickSpec {
             
             let writeSink = MockDeviceBatchActionRequestable()
             let deviceModel = DeviceModel(id: "foo", accountId: accountId, attributeWriteable: writeSink)
-            deviceModel.profile = |<(try? self.readJson("profileTest")!)
+            deviceModel.profile = try! self.fixture(named: "profileTest")
             
             beforeEach() {
                 writeSink.errorToReturn = nil
@@ -283,7 +283,7 @@ class DeviceModelSpec: QuickSpec {
 //                resolver.profileToReturn = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
 
                 let deviceModel = DeviceModel(id: "foo", state: [100: false, 101: "Moo"], accountId: accountId)
-                deviceModel.profile = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
+                deviceModel.profile = try! self.fixture(named: "profileTest")
                 
                 var writeState: DeviceState? = deviceModel.currentState
                 var writeCount = 0

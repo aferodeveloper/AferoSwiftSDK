@@ -817,7 +817,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
 
                 do {
-                    fixture = (try self.readJson("conclave_peripheralList")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave_peripheralList"))!
                 } catch {
                     fatalError("Unable to read fixture conclave_peripheralList: \(String(reflecting: error))")
                 }
@@ -870,7 +870,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-attributeUpdate-attr_change")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-attributeUpdate-attr_change"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-attributeUpdate-attr_change: \(String(reflecting: error))")
                 }
@@ -918,7 +918,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-statusUpdate-status_change")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-statusUpdate-status_change"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-statusUpdate-status_change: \(String(reflecting: error))")
                 }
@@ -969,7 +969,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-OTA-device_ota")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-OTA-device_ota"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-OTA-device_ota: \(String(reflecting: error))")
                 }
@@ -1022,7 +1022,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-start")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-start"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-start: \(String(reflecting: error))")
                     }
@@ -1065,7 +1065,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-inProgress")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-inProgress"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-inProgress: \(String(reflecting: error))")
                     }
@@ -1109,7 +1109,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-complete")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-complete"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-complete: \(String(reflecting: error))")
                     }
@@ -1152,7 +1152,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-unknown")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-unknown"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-unknown: \(String(reflecting: error))")
                     }
@@ -1188,13 +1188,13 @@ class DeviceStreamEventTests: QuickSpec {
                 
                 
                 do {
-                    fixtureAccounts = (try self.readJson("conclave-invalidate-accounts")) as! [String: Any]
-                    fixtureLocation = (try self.readJson("conclave-invalidate-location")) as! [String: Any]
-                    fixtureProfilesId = (try self.readJson("conclave-invalidate-profiles-id")) as! [String: Any]
-                    fixtureProfilesDeviceId = (try self.readJson("conclave-invalidate-profiles-deviceId")) as! [String: Any]
-                    fixtureProfilesIdAndDeviceId = (try self.readJson("conclave-invalidate-profiles-id-and-deviceId")) as! [String: Any]
-                    fixtureInvitations = (try self.readJson("conclave-invalidate-invitations")) as! [String: Any]
-                    fixtureNoKind = (try self.readJson("conclave-invalidate-nokind")) as! [String: Any]
+                    fixtureAccounts = (try self.fixture(named: "conclave-invalidate-accounts"))!
+                    fixtureLocation = (try self.fixture(named: "conclave-invalidate-location"))!
+                    fixtureProfilesId = (try self.fixture(named: "conclave-invalidate-profiles-id"))!
+                    fixtureProfilesDeviceId = (try self.fixture(named: "conclave-invalidate-profiles-deviceId"))!
+                    fixtureProfilesIdAndDeviceId = (try self.fixture(named: "conclave-invalidate-profiles-id-and-deviceId"))!
+                    fixtureInvitations = (try self.fixture(named: "conclave-invalidate-invitations"))!
+                    fixtureNoKind = (try self.fixture(named: "conclave-invalidate-nokind"))!
                 } catch {
                     fatalError("Unable to read fixture: \(String(reflecting: error))")
                 }
@@ -1317,7 +1317,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [[String: Any]]
                 
                 do {
-                    fixture = (try self.readJson("conclave-error-device_error")) as! [[String: Any]]
+                    fixture = (try self.fixture(named: "conclave-error-device_error"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-error-device_error: \(String(reflecting: error))")
                 }
@@ -1423,7 +1423,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-rate-device_mute")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-rate-device_mute"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-rate-device_mute: \(String(reflecting: error))")
                 }
