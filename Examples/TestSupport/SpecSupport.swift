@@ -51,6 +51,28 @@ extension XCTestCase {
         }
     }
     
+    /// Attempt to read JSON from a file named _name_ in the test bundle for the
+    /// calling test, and return a thawed array of instances of the given `AferoJSONCoding`
+    /// implementation.
+    ///
+    /// - parameter name: The name of the JSON fixture to read.
+    /// - returns: A thawed `AferoJSONCoding` implementation instance, or nil
+    ///            if marshalling failed.
+    /// - throws: Any underling I/O errors.
+    
+    func fixture<T: AferoJSONCoding>(named name: String) throws -> [T]? {
+        do {
+            guard let json: [[String: Any]] = try fixture(named: name) else {
+                throw "Fixture named \(name) is not a [[String: Any]]"
+            }
+            return |<json
+        } catch {
+            throw error
+        }
+        
+    }
+    
+    
 }
 
 extension OHHTTPStubsResponse {
