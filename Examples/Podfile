@@ -18,7 +18,7 @@ def base_pods
     pod 'HTTPStatusCodes', '~> 3.1'
     pod 'AferoSwiftLogging', '1.1.5'
     pod 'AferoSofthub', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking'
+    pod 'AferoSwiftSDK/AFNetworking', :path => '..'
 end
 
 def test_pods
@@ -46,7 +46,7 @@ target 'AferoLab' do
     project 'AferoLab/AferoLab.xcodeproj'
     
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking'
+    pod 'AferoSwiftSDK/AFNetworking', :path => '..'
 
     pod 'AferoSofthub', :inhibit_warnings => true
 

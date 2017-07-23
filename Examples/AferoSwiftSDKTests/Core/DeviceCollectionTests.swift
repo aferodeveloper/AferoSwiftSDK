@@ -9,6 +9,8 @@
 import Foundation
 import Quick
 import Nimble
+import OHHTTPStubs
+
 @testable import Afero
 
 
@@ -20,29 +22,25 @@ class DeviceCollectionSpec: QuickSpec {
         
         describe("DeviceCollection") {
             
-//            var deviceCollectionDelegate: MockDeviceCollectionDelegate!
             var deviceEventStreamable: MockDeviceEventStreamable!
-            var profileSource: MockDeviceAccountProfilesSource!
-            var batchActionRequestable: MockDeviceBatchActionRequestable!
             var deviceCollection: DeviceCollection!
             var contentEventDisposable: Disposable!
             var stateEventDisposable: Disposable!
+            var apiClient: MockAPIClient!
             
             let accountId = "accountIdFoo"
             let clientId = "clientIdFoo"
             
             beforeEach {
-//                deviceCollectionDelegate = MockDeviceCollectionDelegate()
+                
                 deviceEventStreamable = MockDeviceEventStreamable(clientId: clientId, accountId: accountId)
-                profileSource = MockDeviceAccountProfilesSource()
-                batchActionRequestable = MockDeviceBatchActionRequestable()
-                deviceCollection = DeviceCollection(deviceEventStreamable: deviceEventStreamable, profileSource: profileSource, batchActionRequestable: batchActionRequestable)
+                apiClient = MockAPIClient()
+                
+                deviceCollection = DeviceCollection(apiClient: apiClient, deviceEventStreamable: deviceEventStreamable)
             }
             
             afterEach {
                 deviceEventStreamable = nil
-                profileSource = nil
-                batchActionRequestable = nil
                 deviceCollection = nil
                 
                 contentEventDisposable?.dispose()
@@ -50,19 +48,13 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 stateEventDisposable?.dispose()
                 stateEventDisposable = nil
+                OHHTTPStubs.removeAllStubs()
             }
             
             // MARK: - Should Instantiate
             
             it("should instantiate") {
-                
-                let dc = DeviceCollection(delegate: deviceCollectionDelegate, deviceEventStreamable: deviceEventStreamable, profileSource: profileSource, batchActionRequestable: batchActionRequestable)
-                
-                expect(dc.delegate) === deviceCollectionDelegate
-                expect(dc.eventStream) === deviceEventStreamable
-                expect(dc.profileSource.source) === profileSource
-                expect(dc.batchActionRequestable) === batchActionRequestable
-                
+                expect(deviceCollection.eventStream) === deviceEventStreamable
             }
             
             // MARK: - When Starting
@@ -71,14 +63,12 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 // PeripheralList fixture
                 
-                let peripheralListFixtureData: [String: Any]
-                let peripheralListFixture: DeviceStreamEvent
-                
-                do {
-                    peripheralListFixtureData = (try self.readJson("conclave_peripheralList")) as! [String: Any]
-                } catch {
-                    fatalError("Unable to read fixture(s): \(String(reflecting: error))")
+                guard
+                    let peripheralListFixtureData: [String: Any] = try! self.fixture(named: "conclave_peripheralList") else {
+                        fatalError("Couldn't read peripheralList.")
                 }
+                
+                let peripheralListFixture: DeviceStreamEvent
                 
                 guard
                     let peripheralListData = peripheralListFixtureData["data"] as? [String: Any],
@@ -92,63 +82,44 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 // Account profiles fixture
                 
-                let accountProfilesFixtureData: [[String: Any]]
-
-                do {
-                    accountProfilesFixtureData = (try self.readJson("accountDeviceProfiles")) as! [[String: Any]]
-                } catch {
-                    fatalError("Unable to read fixture(s): \(String(reflecting: error))")
+                guard let accountProfilesFixtureData: [[String: Any]] = try! self.fixture(named: "accountDeviceProfiles") else {
+                    fatalError("Unable to read accountProfilesFixture")
                 }
                 
-                guard
-                    let accountProfilesFixture: [DeviceProfile] = |<accountProfilesFixtureData else {
-                        fatalError("Unable to extract 'accountProfilesFixtureData' ([DeviceProfile]) from \(String(reflecting: accountProfilesFixtureData))")
+                beforeEach {
+                    stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles") && isMethodGET()) {
+                        request in
+                        return OHHTTPStubsResponse(jsonObject: accountProfilesFixtureData, statusCode: 200, headers: nil)
+                    }
+                    
+                    accountProfilesFixtureData.forEach {
+                        fixture in guard let profileId = fixture["profileId"] as? String else {
+                            fatalError("No profileId found in \(String(describing: fixture))")
+                        }
+                        
+                        stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles/\(profileId)") && isMethodGET()) {
+                            request in
+                            return OHHTTPStubsResponse(jsonObject: fixture, statusCode: 200, headers: nil)
+                        }
+                    }
                 }
                 
                 typealias State = DeviceCollection.State
 
-                // MARK: • should not start if the delegate tells it not to
-                
-                it("should not start if the delegate tells it not to") {
-
-                    deviceCollectionDelegate.setShouldStart(false, for: deviceCollection)
-
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 0
-                    expect(deviceCollection.state) == State.unloaded
-                    deviceCollection.start()
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 1
-                    expect(deviceCollection.state) == State.unloaded
-                    expect(profileSource.fetchProfileByProfileIdRequestCount) == 0
-                    expect(profileSource.fetchProfileByDeviceIdRequestCount) == 0
-                    expect(profileSource.fetchProfilesByAccountIdRequestCount) == 0
-                }
-                
                 // MARK: • should start if the delegate tells it to
 
                 it("should start if the delegate tells it to") {
-
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 0
                     expect(deviceCollection.state) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 1
                     expect(deviceCollection.state) == State.loading
-                    expect(profileSource.fetchProfileByProfileIdRequestCount) == 0
-                    expect(profileSource.fetchProfileByDeviceIdRequestCount) == 0
-                    expect(profileSource.fetchProfilesByAccountIdRequestCount) == 1
                 }
                 
                 // MARK: • should transition from loading to loaded when it gets a peripheralList
                 
                 it("should transition from loading to loaded when it gets a peripheralList") {
                     
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 0
                     expect(deviceCollection.state) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 1
                     expect(deviceCollection.state) == State.loading
                     
                 }
@@ -157,15 +128,10 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 it("should attempt to fetch profiles for the peripherals when it gets a peripheralList") {
                     
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 0
                     expect(deviceCollection.state) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 1
                     expect(deviceCollection.state) == State.loading
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    expect(profileSource.fetchProfileByProfileIdRequestCount).toEventually(equal(peripheralList.count))
                     expect(deviceCollection.state).toEventually(equal(State.loaded))
                     
                 }
@@ -173,19 +139,13 @@ class DeviceCollectionSpec: QuickSpec {
                 // MARK: • should have the expected number of devices after getting a peripheralList
                 
                 it("should have the expected number of devices after getting a peripheralList") {
-
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    profileSource.accountProfilesToReturn = [accountId: accountProfilesFixture]
                     
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 0
                     expect(deviceCollection.state) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollectionDelegate.shouldStartCallCount) == 1
                     expect(deviceCollection.state) == State.loading
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    expect(profileSource.fetchProfilesByAccountIdRequestCount).toEventually(equal(1))
-                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count))
-                    expect(deviceCollection.devices.filter { $0.isDirect }.count) == 1
+                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.filter { $0.isDirect }.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.25)
                     expect(deviceCollection.state).toEventually(equal(State.loaded))
                     
                 }
@@ -193,9 +153,6 @@ class DeviceCollectionSpec: QuickSpec {
                 // MARK: • should fire two device add events
                 
                 it("should fire two device add events") {
-                    
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    profileSource.accountProfilesToReturn = [accountId: accountProfilesFixture]
                     
                     var addCount: Int = 0
                     var deleteCount: Int = 0
@@ -213,19 +170,26 @@ class DeviceCollectionSpec: QuickSpec {
                     
                     deviceCollection.start()
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    deviceEventStreamable.eventSink.send(value: peripheralListFixtureTruncated)
+                    
+                    // NOTE: .create messages are only sent once a device's profile has been resolved.
+                    // Because we're stubbing our profile fetch throught he URL loading mechanism
+                    // (see the stubs above), with the delay below, one device is removed
+                    // before its profile is resolved, and therefore before its create message is ever
+                    // sent. The delay is in place to ensure that there's time to load the profile,
+                    // so that we will indeed get the two adds.
+                    
+                    after(2.0) {
+                        deviceEventStreamable.eventSink.send(value: peripheralListFixtureTruncated)
+                    }
 
-                    expect(addCount).toEventually(equal(peripheralList.count))
-                    expect(deleteCount).toEventually(equal(peripheralList.count - 1))
-                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count - 1))
+                    expect(addCount).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
+                    expect(deleteCount).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
                 }
 
                 // MARK: • should fire the expected state events
                 
                 it("should fire the expected state events") {
-                    
-                    deviceCollectionDelegate.setShouldStart(true, for: deviceCollection)
-                    profileSource.accountProfilesToReturn = [accountId: accountProfilesFixture]
                     
                     var stateEvents: [DeviceCollection.State] = []
                     

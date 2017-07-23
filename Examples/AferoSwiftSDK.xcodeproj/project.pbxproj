@@ -58,6 +58,7 @@
 		CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBE1D74F8050069F8A0 /* plasmacluster.json */; };
 		CB593CCC1D74F8050069F8A0 /* wetcheck.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBF1D74F8050069F8A0 /* wetcheck.json */; };
 		CB809A8D1F23F9AD0008DDD1 /* AferoAPIClient+AccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */; };
+		CB809A8F1F241A2C0008DDD1 /* DeviceCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */; };
 		CB990C501F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4D1F02FDF500265EAE /* conclave-invalidate-profiles-deviceId.json */; };
 		CB990C511F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4E1F02FDF500265EAE /* conclave-invalidate-profiles-id-and-deviceId.json */; };
 		CB990C521F02FDF500265EAE /* conclave-invalidate-profiles-id.json in Resources */ = {isa = PBXBuildFile; fileRef = CB990C4F1F02FDF500265EAE /* conclave-invalidate-profiles-id.json */; };
@@ -591,6 +592,7 @@
 				CB1CED611EF8A5E500B86534 /* UserTests.swift in Sources */,
 				CB1CED481EF8A5E500B86534 /* DeviceRuleTests.swift in Sources */,
 				CB1CED441EF8A5E500B86534 /* DebounceTests.swift in Sources */,
+				CB809A8F1F241A2C0008DDD1 /* DeviceCollectionTests.swift in Sources */,
 				CB1CED601EF8A5E500B86534 /* TypeTests.swift in Sources */,
 				CBA993731EE750F50066213B /* Mocks.swift in Sources */,
 				CB1CED801EF8A61900B86534 /* ConclaveMessageTests.swift in Sources */,
