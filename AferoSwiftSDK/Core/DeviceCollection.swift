@@ -619,15 +619,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         let deviceId = peripheral.id
         
-        var device = _devices[peripheral.id]
-        
-        if device == nil {
-            device = DeviceModel(id: deviceId, accountId: accountId, profileId: peripheral.profileId, profile: nil, attributeWriteable: self, profileResolver: profileSource, viewingNotificationConsumer: {
-                [weak self] isViewing, deviceId in
-                self?.notifyIsViewing(isViewing, deviceId: deviceId)
-            })
-            registerDevice(device!, onDone: nil)
-        }
+        createDevice(with: deviceId, profileId: peripheral.profileId)
         
         updateDevice(with: peripheral) {
             [weak self] maybeDevice in
@@ -636,6 +628,20 @@ public class DeviceCollection: NSObject, MetricsReportable {
             }
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
+        }
+        
+    }
+    
+    fileprivate func createDevice(with deviceId: String, profileId: String) {
+
+        var device = _devices[deviceId]
+        
+        if device == nil {
+            device = DeviceModel(id: deviceId, accountId: accountId, profileId: profileId, profile: nil, attributeWriteable: self, profileSource: profileSource, viewingNotificationConsumer: {
+                [weak self] isViewing, deviceId in
+                self?.notifyIsViewing(isViewing, deviceId: deviceId)
+            })
+            registerDevice(device!, onDone: nil)
         }
         
     }

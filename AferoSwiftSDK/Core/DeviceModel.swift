@@ -101,13 +101,13 @@ public class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Co
         }
     }
     
-    public init(id: String, state: DeviceState = DeviceState(), accountId: String, profileId: String? = nil, profile: DeviceProfile? = nil, attributeWriteable: DeviceBatchActionRequestable? = nil, profileResolver: DeviceProfileSource? = nil, viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }) {
+    init(id: String, state: DeviceState = DeviceState(), accountId: String, profileId: String? = nil, profile: DeviceProfile? = nil, attributeWriteable: DeviceBatchActionRequestable? = nil, profileSource: DeviceProfileSource? = nil, viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }) {
         self.id = id
         self.accountId = accountId
         self.currentState = state
         self.profileId = profileId
         self.profile = profile
-        self.profileSource = profileResolver
+        self.profileSource = profileSource
         self.attributeWriteable = attributeWriteable
         self.viewingNotificationConsumer = viewingNotificationConsumer
     }
