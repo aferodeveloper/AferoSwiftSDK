@@ -1,0 +1,39 @@
+[
+    {
+        "__DESCRIPTION__": "DeviceLocation test fixture1",
+        "longitude": "-122.5349",
+        "latitude": "37.8488",
+        "lastUpdatedTimestamp": 1500828122154,
+        "locationSourceType": "INITIAL_DEVICE_ASSOCIATE",
+        "formattedAddressLines": ["tiny tim", "lives here"]
+    },
+    {
+        "__DESCRIPTION__": "DeviceLocation test fixture2",
+        "longitude": "-100",
+        "latitude": "37",
+        "lastUpdatedTimestamp": 1500728122154,
+        "locationSourceType": "HUB_LOCATION_GPS"
+    },
+    {
+        "__DESCRIPTION__": "DeviceLocation test fixture3",
+        "longitude": "60.5",
+        "latitude": "22",
+        "lastUpdatedTimestamp": 1510828122154,
+        "locationSourceType": "HUB_LOCATION_IP"
+    },
+    {
+        "__DESCRIPTION__": "DeviceLocation test fixture4",
+        "longitude": "99",
+        "latitude": "0",
+        "lastUpdatedTimestamp": 0,
+        "locationSourceType": "USER_DEFINED_LOCATION"
+    },
+    {
+        "__DESCRIPTION__": "DeviceLocation test fixture5",
+        "longitude": "2",
+        "latitude": "3",
+        "lastUpdatedTimestamp": 1000,
+        "locationSourceType": "CLIENT_IP_ESTIMATE"
+    }
+
+]

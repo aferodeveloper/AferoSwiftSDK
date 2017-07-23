@@ -191,6 +191,46 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     /// The CLLocation reresenting the physical location of the device.
     public var location: CLLocation
     
+    public var timestamp: Date {
+        return location.timestamp
+    }
+    
+    public var coordinate: CLLocationCoordinate2D {
+        return location.coordinate
+    }
+    
+    public var latitude: CLLocationDegrees {
+        return coordinate.latitude
+    }
+    
+    public var longitude: CLLocationDegrees {
+        return coordinate.longitude
+    }
+    
+    public var altitude: CLLocationDistance {
+        return location.altitude
+    }
+    
+    public var verticalAccuracy: CLLocationAccuracy {
+        return location.verticalAccuracy
+    }
+    
+    public var horizontalAccuracy: CLLocationAccuracy {
+        return location.horizontalAccuracy
+    }
+    
+    public var course: CLLocationDirection {
+        return location.course
+    }
+    
+    public var speed: CLLocationSpeed {
+        return location.speed
+    }
+    
+    var floor: CLFloor? {
+        return location.floor
+    }
+    
     /// The source of location data for a device.
     /// - `.initialDeviceAssociate`: The location was provided by the client
     ///                              that associated the device with the account.
@@ -239,7 +279,8 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     public var formattedAddressLines: [String]?
     
     /// Designated initializier.
-    /// - parameter location: The CLLocation reresenting the physical location of the device.
+    /// - parameter location: The CLLocation reresenting the physical location
+    ///                       of the device. Copied.
     /// - parameter sourceType: The provenance of the location designation.
     /// - parameter formattedAddressLines: If provided, the formatted, reverse-geocoded location
     ///                                    of the device.
@@ -247,30 +288,66 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     /// - note:  `formattedAddressLines` content may differ from what could
     ///           be obtained with `CLGeocoder.reverseGeocodeLocation(_:_:)`.
     
-    init(location: CLLocation, sourceType: SourceType, formattedAddressLines: [String]? = nil) {
-        self.location = location
+    init(location: CLLocation = CLLocation(), sourceType: SourceType = SourceType.clientIPEstimate, formattedAddressLines: [String]? = nil) {
+        self.location = location.copy() as! CLLocation
         self.sourceType = sourceType
         self.formattedAddressLines = formattedAddressLines
     }
     
-    /// - parameter latitude: The device's latitude.
-    /// - parameter longitude: The device's longitude.
-    /// - parameter sourceType: The provenance of the location designation.
-    /// - parameter formattedAddressLines: If provided, the formatted, reverse-geocoded location
-    ///                                    of the device.
+    /// - parameter coordinate: A coordinate structure containing the latitude
+    ///                         and longitude values.
     ///
-    /// - note:  `formattedAddressLines` content may differ from what could
-    ///           be obtained with `CLGeocoder.reverseGeocodeLocation(_:_:)`.
+    /// - parameter altitude: The altitude value for the location.
+    ///
+    /// - parameter horizontalAccuracy: The accuracy of the coordinate value.
+    ///                                 Specifying a negative number indicates
+    ///                                 that the coordinate value is invalid.
+    ///
+    /// - parameter verticalAccuracy: The accuracy of the altitude value.
+    ///                               Specifying a negative number indicates that
+    ///                               the altitude value is invalid.
+    ///
+    /// - parameter course: The direction of travel for the location.
+    ///
+    /// - parameter speed: The current speed associated with this location.
+    ///
+    /// - parameter timestamp: The time to associate with the location object.
+    ///                        Typically, you would set this to the current time.
     
-    init(latitude: CLLocationDegrees, longitude: CLLocationDegrees, sourceType: SourceType, formattedAddressLines: [String]? = nil) {
-        let location = CLLocation(latitude: latitude, longitude: longitude)
-        self.init(location: location, sourceType: sourceType, formattedAddressLines: formattedAddressLines)
+    init(
+        coordinate: CLLocationCoordinate2D,
+        altitude: CLLocationDistance = CLLocationDistance(),
+        horizontalAccuracy: CLLocationAccuracy = CLLocationDistance(),
+        verticalAccuracy: CLLocationAccuracy = CLLocationDistance(),
+        course: CLLocationDirection = CLLocationDirection(),
+        speed: CLLocationSpeed = CLLocationSpeed(),
+        timestamp: Date = Date(),
+        sourceType: SourceType = .clientIPEstimate,
+        formattedAddressLines: [String]? = nil
+        ) {
+        
+        let location = CLLocation(
+            coordinate: coordinate,
+            altitude: altitude,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: verticalAccuracy,
+            course: course,
+            speed: speed,
+            timestamp: timestamp
+        )
+        
+        self.init(
+            location: location,
+            sourceType: sourceType,
+            formattedAddressLines: formattedAddressLines
+        )
     }
-    
+
     /// - parameter latitude: The device's latitude.
     /// - parameter longitude: The device's longitude.
-    /// - parameter rawSourceType: The raw string representation of the provenance
-    ///                            of the location designation.
+    /// - parameter timestamp: The time to associate with the location object.
+    ///                        Typically, you would set this to the current time.
+    /// - parameter sourceType: The `SourceType` of the location.
     /// - parameter formattedAddressLines: If provided, the formatted, reverse-geocoded location
     ///                                    of the device.
     ///
@@ -279,18 +356,35 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     ///
     /// - seealso: `LocationState.DeviceLocation.SourceType`
     
-    init?(latitude: CLLocationDegrees, longitude: CLLocationDegrees, sourceType rawSourceType: String, formattedAddressLines: [String]? = nil) {
-        guard let sourceType = SourceType(rawValue: rawSourceType) else { return nil }
-        self.init(latitude: latitude, longitude: longitude, sourceType: sourceType, formattedAddressLines: formattedAddressLines)
+    init(
+        latitude: CLLocationDegrees,
+        longitude: CLLocationDegrees,
+        timestamp: Date = Date(),
+        sourceType: SourceType,
+        formattedAddressLines: [String]? = nil
+        ) {
+        
+        self.init(
+            coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+            timestamp: timestamp,
+            sourceType: sourceType,
+            formattedAddressLines: formattedAddressLines
+        )
     }
     
     // MARK: <Equatable>
     
     public static func ==(lhs: DeviceLocation, rhs: DeviceLocation) -> Bool {
         
-        return lhs.location == rhs.location
+        return lhs.latitude == rhs.latitude
+            && lhs.longitude == rhs.longitude
+            && lhs.altitude == rhs.altitude
+            && lhs.horizontalAccuracy == rhs.horizontalAccuracy
+            && lhs.verticalAccuracy == rhs.verticalAccuracy
+            && lhs.course == rhs.course
+            && lhs.speed == rhs.speed
             && lhs.sourceType == rhs.sourceType
-            && lhs.formattedAddressLines == rhs.formattedAddressLines
+            && (lhs.formattedAddressLines ?? []) == (rhs.formattedAddressLines ?? [])
     }
     
     // MARK: <Hashable>
@@ -308,32 +402,39 @@ extension DeviceLocation: AferoJSONCoding {
     static let CoderKeyLongitude = "longitude"
     static let CoderKeyLocationSourceType = "locationSourceType"
     static let CoderKeyCreatedFormattedAddressLines = "formattedAddressLines"
+    static let CoderKeyLastUpdatedTimestampMillis = "lastUpdatedTimestamp"
     
     public var JSONDict: AferoJSONCodedType? {
         
-        var ret: [String: Any] = [:]
+        var ret: [String: Any] = [
+            type(of: self).CoderKeyLatitude: String(location.coordinate.latitude),
+            type(of: self).CoderKeyLongitude: String(location.coordinate.longitude),
+            type(of: self).CoderKeyLocationSourceType: sourceType.rawValue,
+            type(of: self).CoderKeyLastUpdatedTimestampMillis: timestamp.millisSince1970,
+        ]
         
-        ret[type(of: self).CoderKeyLatitude] = String(location.coordinate.latitude)
-        ret[type(of: self).CoderKeyLongitude] = String(location.coordinate.longitude)
-        ret[type(of: self).CoderKeyLocationSourceType] = sourceType.rawValue
-        ret[type(of: self).CoderKeyCreatedFormattedAddressLines] = formattedAddressLines
-        
+        if let formattedAddressLines = formattedAddressLines {
+            ret[type(of: self).CoderKeyCreatedFormattedAddressLines] = formattedAddressLines
+        }
+    
         return ret
     }
     
     public init?(json: AferoJSONCodedType?) {
+
         guard let jsonDict = json as? [String: Any] else {
             DDLogError("Unable to decode Location: \(String(reflecting: json))")
             return nil
         }
-        guard let latitudeString = jsonDict[type(of: self).CoderKeyLatitude] as? String,
+        
+        guard
+            let latitudeString = jsonDict[type(of: self).CoderKeyLatitude] as? String,
             let latitude = CLLocationDegrees(latitudeString),
             let longitudeString = jsonDict[type(of: self).CoderKeyLongitude] as? String,
             let longitude = CLLocationDegrees(longitudeString),
             let locationSourceTypeString = jsonDict[type(of: self).CoderKeyLocationSourceType] as? String,
-            let locationSourceType = SourceType(rawValue: locationSourceTypeString)
-            
-            else {
+            let locationSourceType = SourceType(rawValue: locationSourceTypeString),
+            let lastUpdatedTimestampMillis = jsonDict[type(of: self).CoderKeyLastUpdatedTimestampMillis] as? NSNumber else {
                 DDLogError("Unable to decode Location: \(String(reflecting: json))")
                 return nil
         }
@@ -341,9 +442,23 @@ extension DeviceLocation: AferoJSONCoding {
         self.init(
             latitude: latitude,
             longitude: longitude,
+            timestamp: Date.dateWithMillisSince1970(lastUpdatedTimestampMillis),
             sourceType: locationSourceType,
             formattedAddressLines: jsonDict[type(of: self).CoderKeyCreatedFormattedAddressLines] as? [String]
         )
+    }
+    
+}
+
+extension CLLocation {
+    
+    /// Convenience method for converting a `CLLocation` to a `DeviceLocation`
+    /// - parameter sourceType: The sourceType to use; defaults to `.userDefinedLocation`.
+    /// - parameter formattedAddressLines: The geocoded address lines to use, if any. Defaults to nil.
+    /// - returns: A `DeviceLocation` instance backed by a copy of the receiver.
+    
+    func deviceLocation(with sourceType: DeviceLocation.SourceType = .userDefinedLocation, formattedAddressLines: [String]? = nil) -> DeviceLocation {
+        return DeviceLocation(location: self, sourceType: sourceType, formattedAddressLines: formattedAddressLines)
     }
     
 }
