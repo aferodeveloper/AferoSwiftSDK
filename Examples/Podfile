@@ -46,7 +46,7 @@ target 'AferoLab' do
     project 'AferoLab/AferoLab.xcodeproj'
     
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking', :path => '..'
+    pod 'AferoSwiftSDK/AFNetworking', :path => ".."
 
     pod 'AferoSofthub', :inhibit_warnings => true
 
