@@ -112,51 +112,166 @@ public enum DeviceWriteState {
     
 }
 
+typealias DeviceAttributes = Dictionary<Int, AttributeValue>
+
 // MARK: - Device State
 
+extension DeviceState {
+
+    /// Whether or not the device is available.
+    ///
+    /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
+    ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
+    ///         Generally, application developers only need be concerned with `isAvailable`
+    internal(set) public var isAvailable: Bool {
+        get { return connectionState.isAvailable }
+        set { connectionState.isAvailable = newValue }
+    }
+    
+    /// Whether or not a hub can see the device.
+    internal(set) public var isVisible: Bool {
+        get { return connectionState.isVisible }
+        set { connectionState.isVisible = newValue }
+    }
+    
+    /// Whether or not the device rebooted recently.
+    internal(set) public var isRebooted: Bool {
+        get { return connectionState.isRebooted }
+        set { connectionState.isRebooted = newValue }
+    }
+    
+    /// Whether or not the device is connectable.
+    internal(set) public var isConnectable: Bool {
+        get { return connectionState.isConnectable }
+        set { connectionState.isConnectable = newValue }
+    }
+    
+    /// Whether or not the device is connected to the Afero cloud.
+    internal(set) public var isConnected: Bool {
+        get { return connectionState.isConnected }
+        set { connectionState.isConnected = newValue }
+    }
+    
+    /// Whether or not the device is currently linked and communicating
+    /// with the Afero cloud.
+    internal(set) public var isLinked: Bool {
+        get { return connectionState.isLinked }
+        set { connectionState.isLinked = newValue }
+    }
+    
+    /// If true, the device is connected directly to the Afero cloud. If false,
+    /// the device is connected via a hub.
+    internal(set) public var isDirect: Bool {
+        get { return connectionState.isDirect }
+        set { connectionState.isDirect = newValue }
+    }
+    
+    /// The device has one or more attributes pending write to the Afero cloud.
+    internal(set) public var isDirty: Bool {
+        get { return connectionState.isDirty }
+        set { connectionState.isDirty = newValue }
+    }
+    
+    /// The RSSI of the device's connection to its hub, or to the Afero cloud
+    /// if direct.
+    internal(set) public var RSSI: Int {
+        get { return connectionState.RSSI }
+        set { connectionState.RSSI = newValue }
+    }
+    
+    /// The location state of the device.
+    internal(set) public var locationState: LocationState {
+        get { return connectionState.locationState ?? .notLocated }
+        set { connectionState.locationState = newValue }
+    }
+    
+    /// The timestamp of the most recent update.
+    public var updatedTimestamp: Date {
+        get { return connectionState.updatedTimestamp }
+    }
+    
+}
+
+// MARK: ExpressibleByDictionaryLiteral
+
+extension DeviceState:  ExpressibleByDictionaryLiteral {
+
+    public typealias Element = AttributeInstance
+    
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        self.init(elements: elements)
+    }
+
+
+    public init(elements: [(Key, Value)]) {
+        var d = [Key: Value]()
+        for (k, v) in elements {
+            d[k] = v
+        }
+        self.init(attributes: d, profileId: nil, friendlyName: nil)
+    }
+
+}
+
+// MARK: SafeSubscriptable
+
+extension DeviceState: SafeSubscriptable {
+    
+    public typealias Key = Int
+    public typealias Value = AttributeValue
+    
+    public subscript(safe key: Key?) -> Value? {
+        get {
+            if let key = key {
+                return attributes[key]
+            }
+            return nil
+        }
+        
+        set {
+            if let key = key {
+                attributes[key] = newValue
+            }
+        }
+    }
+
+}
+
 /// The set of attributes representing the current state of the device.
-public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebugStringConvertible, Hashable, SafeSubscriptable {
+public struct DeviceState: CustomDebugStringConvertible, Hashable {
     
     public var debugDescription: String {
         return "<DeviceState> profileId: \(String(reflecting: profileId)) isAvailable: \(isAvailable) attributes: \(attributes)"
     }
     
-    public typealias Key = Int
-    public typealias Value = AttributeValue
-    public typealias Element = AttributeInstance
-    
-    public var isAvailable: Bool
-    public var isDirect: Bool
-    
     public var friendlyName: String?
     public var profileId: String?
     
-    public var locationState: LocationState = .notLocated
-
-    public var attributes: [Key: Value]
+    /// Internal attributes representation
+    var attributes: DeviceAttributes = [:]
     
-    public var attributeInstances: [AttributeInstance] {
-        return attributes.map { AttributeInstance(id: $0, value: $1) }
-    }
+    var connectionState: DeviceModelState = DeviceModelState()
     
-    public init(attributes: [Key: Value], isAvailable: Bool = false, isDirect: Bool = false, profileId: String? = nil, friendlyName: String? = nil) {
+    init(attributes: DeviceAttributes = [:], connectionState: DeviceModelState = DeviceModelState(), profileId: String?, friendlyName: String?) {
         self.attributes = attributes
-        self.isAvailable = isAvailable
-        self.isDirect = isDirect
+        self.connectionState = connectionState
         self.friendlyName = friendlyName
         self.profileId = profileId
     }
     
-    public init(elements: [(Key, Value)], isAvailable: Bool = false, profileId: String? = nil) {
-        var d = [Key: Value]()
-        for (k, v) in elements {
-            d[k] = v
-        }
-        self.init(attributes: d, isAvailable: isAvailable)
-    }
-    
-    public init(dictionaryLiteral elements: (Key, Value)...) {
-        self.init(elements: elements)
+    init(attributes: DeviceAttributes = [:], isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?) {
+        
+        let connectionState = DeviceModelState(
+            isAvailable: isAvailable,
+            isVisible: isDirect
+        )
+        
+        self.init(
+            attributes: attributes,
+                  connectionState: connectionState,
+                  profileId: profileId,
+                  friendlyName: friendlyName
+        )
     }
     
     // MARK: Hashable
@@ -174,21 +289,6 @@ public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebu
         return attributes.count
     }
     
-    // MARK: SafeSubscriptable
-    public subscript(safe key: Key?) -> Value? {
-        get {
-            if let key = key {
-                return attributes[key]
-            }
-            return nil
-        }
-        
-        set {
-            if let key = key {
-                attributes[key] = newValue
-            }
-        }
-    }
     
     public mutating func update(_ attributeInstance: AttributeInstance?) {
         guard let attributeInstance = attributeInstance else { return }
@@ -198,6 +298,12 @@ public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebu
     public mutating func reset() {
         attributes.removeAll(keepingCapacity: true)
     }
+    
+    public var attributeInstances: [AttributeInstance] {
+        return attributes.map { AttributeInstance(id: $0, value: $1) }
+    }
+    
+
 }
 
 extension DeviceState: AferoJSONCoding {
@@ -391,7 +497,7 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     var profile: DeviceProfile? { get }
     var isAvailable: Bool { get }
     var locationState: LocationState { get }
-    var isDirect: Bool { get set }
+    var isDirect: Bool { get }
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
     var id: String { get set }
@@ -439,6 +545,90 @@ public extension DeviceModelable {
         return name
 
     }
+}
+
+// MARK: - DeviceModelState Aliases -
+
+public extension DeviceModelable {
+    
+    public var friendlyName: String? {
+        get { return currentState.friendlyName }
+        set { currentState.friendlyName = newValue }
+    }
+    
+    /// Whether or not the device is available.
+    ///
+    /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
+    ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
+    ///         Generally, application developers only need be concerned with `isAvailable`
+    
+    internal(set) public var isAvailable: Bool {
+        get { return currentState.isAvailable }
+        set { currentState.isAvailable = newValue }
+    }
+    
+    /// Whether or not a hub can see the device.
+    internal(set) public var isVisible: Bool {
+        get { return currentState.isVisible }
+        set { currentState.isVisible = newValue }
+    }
+    
+    /// Whether or not the device rebooted recently.
+    internal(set) public var isRebooted: Bool {
+        get { return currentState.isRebooted }
+        set { currentState.isRebooted = newValue }
+    }
+    
+    /// Whether or not the device is connectable.
+    internal(set) public var isConnectable: Bool {
+        get { return currentState.isConnectable }
+        set { currentState.isConnectable = newValue }
+    }
+    
+    /// Whether or not the device is connected to the Afero cloud.
+    internal(set) public var isConnected: Bool {
+        get { return currentState.isConnected }
+        set { currentState.isConnected = newValue }
+    }
+    
+    /// Whether or not the device is currently linked and communicating
+    /// with the Afero cloud.
+    internal(set) public var isLinked: Bool {
+        get { return currentState.isLinked }
+        set { currentState.isLinked = newValue }
+    }
+    
+    /// If true, the device is connected directly to the Afero cloud. If false,
+    /// the device is connected via a hub.
+    internal(set) public var isDirect: Bool {
+        get { return currentState.isDirect }
+        set { currentState.isDirect = newValue }
+    }
+    
+    /// The device has one or more attributes pending write to the Afero cloud.
+    internal(set) public var isDirty: Bool {
+        get { return currentState.isDirty }
+        set { currentState.isDirty = newValue }
+    }
+    
+    /// The RSSI of the device's connection to its hub, or to the Afero cloud
+    /// if direct.
+    internal(set) public var RSSI: Int {
+        get { return currentState.RSSI }
+        set { currentState.RSSI = newValue }
+    }
+    
+    /// The location state of the device.
+    internal(set) public var locationState: LocationState {
+        get { return currentState.locationState }
+        set { currentState.locationState = newValue }
+    }
+    
+    /// The timestamp of the most recent update.
+    public var updatedTimestamp: Date {
+        get { return currentState.updatedTimestamp }
+    }
+
 }
 
 public extension DeviceModelable {
@@ -645,18 +835,15 @@ public extension DeviceModelable {
     
     // MARK: - Update Methods: Handle external model updates
     
-    func update(with peripheral: DeviceStreamEvent.Peripheral, attrsOnly: Bool = true) {
+    func update(with peripheral: DeviceStreamEvent.Peripheral) {
 
         id = peripheral.id
         profileId = peripheral.profileId
         
         var state = self.currentState
 
-        if !attrsOnly {
-            state.friendlyName = peripheral.friendlyName
-            state.isAvailable = peripheral.isAvailable
-            state.isDirect = peripheral.isDirect
-        }
+        state.friendlyName = peripheral.friendlyName
+        state.connectionState.update(with: peripheral.status)
         
         currentState = state
         

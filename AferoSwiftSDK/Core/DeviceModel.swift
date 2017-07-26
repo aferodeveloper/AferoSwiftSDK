@@ -263,52 +263,6 @@ public class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Co
     
     fileprivate(set) public var accountId: String
     
-    public var friendlyName: String? {
-        get { return currentState.friendlyName }
-        set { currentState.friendlyName = newValue }
-    }
-    
-    /// Whether or not the device is available, according to Conclave.
-    
-    internal(set) public var isAvailable: Bool {
-        get { return self.currentState.isAvailable }
-        set {
-            if newValue == currentState.isAvailable { return }
-            currentState.isAvailable = newValue
-        }
-    }
-
-    /// The curren `LocationState` of the device
-    
-    internal(set) public var locationState: LocationState {
-        get { return currentState.locationState }
-        set {
-            if newValue == currentState.locationState { return }
-            currentState.locationState = newValue
-        }
-    }
-
-    /**
-     True of the device connects directly to Afero, false if it is connected via a hub.
-     */
-    
-    public var isDirect: Bool {
-        
-        get {
-            return self.currentState.isDirect
-        }
-        
-        set {
-            if newValue == currentState.isDirect {
-                return
-            }
-            var state = self.currentState
-            state.isDirect = newValue
-            self.currentState = state
-        }
-        
-    }
-
     public typealias NotifyDeviceViewing = (_ isViewing: Bool, _ deviceId: String) -> Void
 
     fileprivate var viewingNotificationConsumer: NotifyDeviceViewing = { _, _ in }
@@ -663,22 +617,14 @@ public class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable
     
     /// Whether or not the device is available, according to Conclave.
     
-    internal(set) public var isAvailable: Bool {
+    public var isAvailable: Bool {
         get { return self.currentState.isAvailable }
-        set {
-            if newValue == currentState.isAvailable { return }
-            currentState.isAvailable = newValue
-        }
     }
     
     /// The current `LocationState` of the device.
     
-    internal(set) public var locationState: LocationState {
+    public var locationState: LocationState {
         get { return currentState.locationState }
-        set {
-            if newValue == currentState.locationState { return }
-            currentState.locationState = newValue
-        }
     }
     
     /**
@@ -688,20 +634,7 @@ public class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable
      */
     
     public var isDirect: Bool {
-        
-        get {
-            return self.currentState.isDirect
-        }
-        
-        set {
-            if newValue == currentState.isDirect {
-                return
-            }
-            var state = self.currentState
-            state.isDirect = newValue
-            self.currentState = state
-        }
-        
+        get { return self.currentState.isDirect }
     }
 
     public var accountId: String

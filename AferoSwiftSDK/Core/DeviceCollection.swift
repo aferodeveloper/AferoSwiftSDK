@@ -674,7 +674,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                     return
                 }
                 
-                device.update(with: peripheral, attrsOnly: false)
+                device.update(with: peripheral)
                 onDone(device)
             }
             
@@ -730,11 +730,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
             return
         }
         
-        device.isAvailable = status.isAvailable
-        device.isDirect = status.isDirect
+        var state = device.currentState
+        state.connectionState.update(with: status)
+        device.currentState = state
 
-        // TODO: Need to wireup isVisible
-        
     }
     
     /// Handle a `DeviceStreamEvent.deviceOTA` message

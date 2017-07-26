@@ -362,18 +362,21 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         public var attributes: [AttributeId: Attribute]
         public var status: Status
         
-        public var isAvailable: Bool {
+        @available(*, deprecated, message: "Use status.isAvailable instead.")
+        public var isAvailable: Bool? {
             return status.isAvailable
         }
         
-        public var isVisible: Bool {
+        @available(*, deprecated, message: "Use status.isVisible instead.")
+        public var isVisible: Bool? {
             return status.isVisible
         }
         
         /// If true, this peripheral's connection to the Afero service is direct,
         /// rather than through a hub (e.g., Wifi capable devices)
         
-        public var isDirect: Bool {
+        @available(*, deprecated, message: "Use isDirect instead.")
+        public var isDirect: Bool? {
             return status.isDirect
         }
         
@@ -553,103 +556,175 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         // MARK: - DeviceStreamEvent.Peripheral.Status
         
-        /// Peripheral status flags
+        /// Peripheral Status
         ///
         /// For each registered peripheral on an account, conclave tracks the
         /// RSSI (signal strength) and various other status flags (like visibility)
         /// summarizing transient information from each hub, coalescing this data
         /// and re-broadcasting it.
+        ///
+        /// - note: While strucurally similar to `Afero.DeviceModelState`,
+        ///         this structure represents updates. In practice, this means that
+        ///         values are overlaid on top of an `Afero.DeviceModelState` instance's
+        ///         existing values, if and only if they're present in the `Status`
+        ///         instance.
         
         public struct Status: Hashable, AferoJSONCoding, CustomDebugStringConvertible {
 
-            public var flags: Flags = .none
-
-            /// Whether or not the device is currently available. If unknown,
-            /// returns false.
-            public var isAvailable: Bool { return flags.contains(.available) }
-
-            /// Whether or not the device is currently visible. If unknown,
-            /// returns false.
-            public var isVisible: Bool { return flags.contains(.visible) }
+            /// Whether or not the device is available.
+            ///
+            /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
+            ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
+            ///         Generally, application developers only need be concerned with `isAvailable`
+            public var isAvailable: Bool?
             
-            /// Whether or not the device is currently connectable. If unknown,
-            /// returns false.
-            public var isConnectable: Bool { return flags.contains(.connectable) }
+            /// Whether or not a hub can see the device.
+            public var isVisible: Bool?
             
-            /// Whether or not the device is currently connected. If unknown,
-            /// returns false.
-            public var isConnected: Bool { return flags.contains(.connected) }
-
-            /// Whether or not the device has rebooted. If unknown,
-            /// returns false
-            public var isRebooted: Bool { return flags.contains(.rebooted) }
+            /// Whether or not the device rebooted recently.
+            public var isRebooted: Bool?
             
-            public var rssi: Int?
+            /// Whether or not the device is connectable.
+            public var isConnectable: Bool?
             
-            /// If true, this peripheral's connection to the Afero service is direct,
-            /// rather than through a hub (e.g., Wifi capable devices)
-            public var isDirect: Bool { return flags.contains(.direct) }
+            /// Whether or not the device is connected to the Afero cloud.
+            public var isConnected: Bool?
             
-            public init(flags: Flags = .none, rssi: Int? = nil) {
-                self.flags = flags
-                self.rssi = rssi
+            /// If true, the device is connected directly to the Afero cloud. If false,
+            /// the device is connected via a hub.
+            public var isDirect: Bool?
+            
+            /// The device has one or more attributes pending write to the Afero cloud.
+            public var isDirty: Bool?
+            
+            /// The peripheral's current RSSI.
+            public var RSSI: Int?
+            
+            init(isAvailable: Bool? = nil, isVisible: Bool? = nil, isDirty: Bool? = nil, isConnectable: Bool? = nil, isConnected: Bool? = nil, isRebooted: Bool? = nil, isDirect: Bool? = nil, RSSI: Int? = nil) {
+                self.isAvailable = isAvailable
+                self.isVisible = isVisible
+                self.isDirty = isDirty
+                self.isConnectable = isConnectable
+                self.isConnected = isConnected
+                self.isRebooted = isRebooted
+                self.isDirect = isDirect
+                self.RSSI = RSSI
             }
             
             // MARK: <CustomDebugStringConvertible>
             
             public var debugDescription: String {
-                return "<Status> available:\(String(describing: isAvailable)) visible:\(String(describing: isVisible)) rssi:\(String(describing: rssi))"
+                
+                var flags: [String] = []
+                
+                if let isAvailable = isAvailable {
+                    flags.append("isAvailable:\(isAvailable)")
+                }
+
+                if let isVisible = isVisible {
+                    flags.append("isVisible:\(isVisible)")
+                }
+
+                if let isDirty = isDirty {
+                    flags.append("isDirty:\(isDirty)")
+                }
+                
+                if let isConnectable = isConnectable {
+                    flags.append("isConnectable:\(isConnectable)")
+                }
+                
+                if let isConnected = isConnected {
+                    flags.append("isConnected:\(isConnected)")
+                }
+                
+                if let isRebooted = isRebooted {
+                    flags.append("isRebooted:\(isRebooted)")
+                }
+                
+                if let isDirect = isDirect {
+                    flags.append("isDirect:\(isDirect)")
+                }
+                
+                if let rssi = RSSI {
+                    flags.append("rssi:\(rssi)")
+                }
+                
+                if flags.count > 0 {
+                    return "<Status> \(flags.joined(separator: " "))"
+                }
+                return "<Status> (empty)"
+                
             }
             
             // MARK: <Hashable>
             
-            public var hashValue: Int { return flags.rawValue.hashValue ^ (rssi ?? 0).hashValue }
+            public var hashValue: Int {
+                return (isAvailable ?? false).hashValue
+                    ^ (isVisible ?? false).hashValue
+                    ^ (isDirty ?? false).hashValue
+                    ^ (isConnectable ?? false).hashValue
+                    ^ (isConnected ?? false).hashValue
+                    ^ (isRebooted ?? false).hashValue
+                    ^ (isDirect ?? false).hashValue
+                    ^ (RSSI ?? 0).hashValue
+            }
             
             public static func ==(lhs: Status, rhs: Status) -> Bool {
-                return lhs.rssi == rhs.rssi && lhs.flags == rhs.flags
+                return lhs.isAvailable == rhs.isAvailable
+                    && lhs.isVisible == rhs.isVisible
+                    && lhs.isDirty == rhs.isDirty
+                    && lhs.isConnectable == rhs.isConnectable
+                    && lhs.isConnected == rhs.isConnected
+                    && lhs.isRebooted == rhs.isRebooted
+                    && lhs.isDirect == rhs.isDirect
+                    && lhs.RSSI == rhs.RSSI
             }
             
             // MARK: <AferoJSONCoding>
             
             static let CoderKeyAvailable = "available"
             static let CoderKeyVisible = "visible"
+            static let CoderKeyDirty = "dirty"
             static let CoderKeyConnectable = "connectable"
             static let CoderKeyConnected = "connected"
             static let CoderKeyRebooted = "rebooted"
             static let CoderKeyDirect = "direct"
-            
             static let CoderKeyRSSI = "rssi"
             
             public var JSONDict: AferoJSONCodedType? {
 
                 var ret: [String: Any] = [:]
                 
-                if isAvailable {
-                    ret[type(of: self).CoderKeyAvailable] = true
+                if let isAvailable = isAvailable {
+                    ret[type(of: self).CoderKeyAvailable] = isAvailable
                 }
                 
-                if isVisible {
+                if let isVisible = isVisible {
                     ret[type(of: self).CoderKeyVisible] = isVisible
                 }
                 
-                if isConnectable {
+                if let isDirty = isDirty {
+                    ret[type(of: self).CoderKeyDirty] = isDirty
+                }
+
+                if let isConnectable = isConnectable {
                     ret[type(of: self).CoderKeyConnectable] = isConnectable
                 }
                 
-                if isConnected {
+                if let isConnected = isConnected {
                     ret[type(of: self).CoderKeyConnected] = isConnected
                 }
                 
-                if isRebooted {
+                if let isRebooted = isRebooted {
                     ret[type(of: self).CoderKeyRebooted] = isRebooted
                 }
                 
-                if isDirect {
+                if let isDirect = isDirect {
                     ret[type(of: self).CoderKeyDirect] = isDirect
                 }
                 
-                if let rssi = rssi {
-                    ret[type(of: self).CoderKeyRSSI] = rssi
+                if let RSSI = RSSI {
+                    ret[type(of: self).CoderKeyRSSI] = RSSI
                 }
                 
                 return ret
@@ -662,124 +737,16 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     return nil
                 }
                 
-                let rssi = jsonDict[type(of: self).CoderKeyRSSI] as? Int
-                var flags: Flags = .none
-                
-                if (jsonDict[type(of: self).CoderKeyAvailable] as? Bool ?? false) {
-                    flags.formUnion(.available)
-                }
-
-                if (jsonDict[type(of: self).CoderKeyVisible] as? Bool ?? false) {
-                    flags.formUnion(.visible)
-                }
-
-                if (jsonDict[type(of: self).CoderKeyConnectable] as? Bool ?? false) {
-                    flags.formUnion(.connectable)
-                }
-
-                if (jsonDict[type(of: self).CoderKeyConnected] as? Bool ?? false) {
-                    flags.formUnion(.connected)
-                }
-
-                if (jsonDict[type(of: self).CoderKeyRebooted] as? Bool ?? false) {
-                    flags.formUnion(.rebooted)
-                }
-
-                if (jsonDict[type(of: self).CoderKeyDirect] as? Bool ?? false) {
-                    flags.formUnion(.direct)
-                }
-
-                self.init(flags: flags, rssi: rssi)
-                
-            }
-            
-            // MARK: - DeviceStreamEvent.Peripheral.Status.Flags
-            
-            /// Container for optional boolean fields of `Status`.
-            public struct Flags: OptionSet, CustomDebugStringConvertible {
-                
-                // MARK: Actual values
-                
-                /// Emtpy Set
-                public static var none: Flags { return allZeros }
-                
-                /// The peripheral is available.
-                public static var available: Flags { return self.init(bitIndex: 0) }
-                
-                /// The peripheral is visible.
-                public static var visible: Flags { return self.init(bitIndex: 1) }
-                
-                /// The peripheral is connectable.
-                public static var connectable: Flags { return self.init(bitIndex: 2) }
-                
-                /// The peripheral is connected.
-                public static var connected: Flags { return self.init(bitIndex: 3) }
-                
-                /// The peripheral is rebooted.
-                public static var rebooted: Flags { return self.init(bitIndex: 4) }
-                
-                /// The peripheral is directly connected to the Afero service,
-                /// e.g. via wifi, rather than through a hub.
-                
-                public static var direct: Flags { return self.init(bitIndex: 5) }
-                
-                // MARK: Conformance
-                
-                public var debugDescription: String {
-                    var ret: [String] = []
-                    if contains(.available) {
-                        ret.append("available")
-                    }
-                    
-                    if contains(.visible) {
-                        ret.append("visible")
-                    }
-                    
-                    if contains(.connected) {
-                        ret.append("connected")
-                    }
-                    
-                    if contains(.connectable) {
-                        ret.append("connectable")
-                    }
-                    
-                    if contains(.direct) {
-                        ret.append("direct")
-                    }
-                    
-                    if contains(.rebooted) {
-                        ret.append("rebooted")
-                    }
-                    
-                    return "[" + ret.joined(separator: ", ") + "]"
-                }
-                
-                public typealias RawValue = UInt
-                
-                private var value: RawValue = 0
-                
-                public init(rawValue: RawValue) {
-                    self.value = rawValue
-                }
-                
-                static func fromRaw(raw: RawValue) -> Flags {
-                    return self.init(rawValue: raw)
-                }
-                
-                public init(bitIndex: RawValue) {
-                    self.init(rawValue: 0x01 << bitIndex)
-                }
-                
-                public var rawValue: RawValue { return self.value }
-                
-                public static var allZeros: Flags {
-                    return self.init(rawValue: 0)
-                }
-                
-                public static func fromMask(raw: RawValue) -> Flags {
-                    return self.init(rawValue: raw)
-                }
-                
+                self.init(
+                    isAvailable: jsonDict[type(of: self).CoderKeyAvailable] as? Bool,
+                    isVisible: jsonDict[type(of: self).CoderKeyVisible] as? Bool,
+                    isDirty: jsonDict[type(of: self).CoderKeyDirty] as? Bool,
+                    isConnectable: jsonDict[type(of: self).CoderKeyConnectable] as? Bool,
+                    isConnected: jsonDict[type(of: self).CoderKeyConnected] as? Bool,
+                    isRebooted: jsonDict[type(of: self).CoderKeyRebooted] as? Bool,
+                    isDirect: jsonDict[type(of: self).CoderKeyDirect] as? Bool,
+                    RSSI: jsonDict[type(of: self).CoderKeyRSSI] as? Int
+                    )
             }
             
         }
