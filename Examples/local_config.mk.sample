@@ -1,5 +1,0 @@
-# Common name on your developer cert
-XCODE_DEVELOPER_APPSTORE ?= "iPhone Developer: Justin Middleton (RK3R2D9FQS)"
-
-# Common name on your developer cert
-XCODE_DEVELOPER_ENT ?= "iPhone Developer: Justin Middleton (DA7F46NLE7)"
