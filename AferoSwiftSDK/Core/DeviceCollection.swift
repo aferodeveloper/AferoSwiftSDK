@@ -585,7 +585,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         let peripheralsToUpdate = peripherals.filter { deviceIdsToUpdate.contains($0.id) }
         peripheralsToUpdate.forEach {
             updateDevice(with: $0) {
-                device in DDLogDebug("Updated \(device?.id ?? "<nil>"))")
+                device in DDLogDebug("Updated \(device?.deviceId ?? "<nil>"))")
             }
         }
         
@@ -637,7 +637,15 @@ public class DeviceCollection: NSObject, MetricsReportable {
         var device = _devices[deviceId]
         
         if device == nil {
-            device = DeviceModel(id: deviceId, accountId: accountId, profileId: profileId, profile: nil, attributeWriteable: self, profileSource: profileSource, viewingNotificationConsumer: {
+            device = DeviceModel(
+                deviceId: deviceId,
+                accountId: accountId,
+                associationId: nil,
+                profileId: profileId,
+                attributes: [:],
+                attributeWriteable: self,
+                profileSource: profileSource,
+                viewingNotificationConsumer: {
                 [weak self] isViewing, deviceId in
                 self?.notifyIsViewing(isViewing, deviceId: deviceId)
             })
@@ -669,7 +677,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 
                 guard let _ = device.presentation else {
                     DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", peripheral.id), tag: tag)
-                    self?.removeDevice(device.id)
+                    self?.removeDevice(device.deviceId)
                     onDone(nil)
                     return
                 }
@@ -900,7 +908,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
     var deviceIds: [String] {
-        return devices.map { $0.id }
+        return devices.map { $0.deviceId }
     }
     
     /// Get a peripheral for the given id, if available.
@@ -913,7 +921,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     func addOrReplace(peripheral: DeviceModel) {
         let shouldPostNonemptyNotification = _devices.count == 0
-        _devices[peripheral.id] = peripheral
+        _devices[peripheral.deviceId] = peripheral
         if shouldPostNonemptyNotification {
             postNonemptyNotification()
         }

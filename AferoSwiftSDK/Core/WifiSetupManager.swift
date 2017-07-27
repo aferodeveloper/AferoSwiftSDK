@@ -620,13 +620,13 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
     }
     
     var TAG: String {
-        return "WifiSetupManager/\(Unmanaged.passUnretained(self).toOpaque())(\(deviceModel.id)"
+        return "WifiSetupManager/\(Unmanaged.passUnretained(self).toOpaque())(\(deviceModel.deviceId)"
     }
     
     fileprivate(set) var deviceModel: DeviceModelable
     fileprivate var writeAttributeCallback: AferoSofthubWriteAttributeCallback
     
-    var deviceId: String { return deviceModel.id }
+    var deviceId: String { return deviceModel.deviceId }
     
     init(deviceModel: DeviceModelable, writeAttributeCallback: @escaping AferoSofthubWriteAttributeCallback) {
         self.deviceModel = deviceModel

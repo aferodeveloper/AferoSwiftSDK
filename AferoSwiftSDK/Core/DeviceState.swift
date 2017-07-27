@@ -240,6 +240,8 @@ extension DeviceState: SafeSubscriptable {
 /// The set of attributes representing the current state of the device.
 public struct DeviceState: CustomDebugStringConvertible, Hashable {
     
+    // MARK: <CustomDebugStringConvertible>
+    
     public var debugDescription: String {
         return "<DeviceState> profileId: \(String(reflecting: profileId)) isAvailable: \(isAvailable) attributes: \(attributes)"
     }
@@ -492,17 +494,38 @@ public protocol DeviceCommandConsuming: class {
 
 public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSignaling, DeviceCommandConsuming, OfflineScheduleStorage {
     
+    /// The unique ID of the device on the service.
+    var deviceId: String { get }
+    
+    /// The id used for association. Maps 1:1 to `id`, but is only valid for
+    /// performing associatins.
+    var associationId: String? { get }
+    
+    /// The account to which this device is associated.
+    var accountId: String { get }
+    
+    /// The id of the profile for this device.
     var profileId: String? { get set }
-    var presentation: DeviceProfile.Presentation? { get }
+    
+    /// The `DeviceProfile` for this device.
     var profile: DeviceProfile? { get }
+
+    /// The presentation profile for this device. Generally a convenience accessor
+    /// for profile?.presentation
+    var presentation: DeviceProfile.Presentation? { get }
+    
+    /// If `true`, this device is online, linked, and ready to receive changes.
     var isAvailable: Bool { get }
+    
+    /// What we know about the location of this device.
     var locationState: LocationState { get }
+    
+    /// If `true`, then this device is directly
     var isDirect: Bool { get }
+    
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
-    var id: String { get set }
     var friendlyName: String? { get set }
-    var accountId: String { get }
     var attributeWriteable: DeviceBatchActionRequestable? { get }
     var otaProgress: Double? { get }
     var deviceErrors: Set<DeviceErrorStatus> { get }
@@ -511,14 +534,22 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     
 }
 
+public extension DeviceModelable {
+    /// The unique ID of the device on the service.
+    @available(*, deprecated, message: "DeviceModel.id is deprecated; use DeviceModel.deviceId.")
+    public var id: String {
+        get { return deviceId }
+    }
+}
+
 public func <<T> (lhs: T, rhs: T) -> Bool where T: DeviceModelable {
     if lhs.displayName < rhs.displayName { return true }
-    if lhs.displayName == rhs.displayName { return lhs.id < rhs.id }
+    if lhs.displayName == rhs.displayName { return lhs.deviceId < rhs.deviceId }
     return false
 }
 
 public func ==<T>(lhs: T, rhs: T) -> Bool where T: DeviceModelable {
-    return rhs.id == lhs.id
+    return rhs.deviceId == lhs.deviceId
 }
 
 public extension DeviceModelable {
@@ -634,7 +665,7 @@ public extension DeviceModelable {
 public extension DeviceModelable {
     
     public var presentation: DeviceProfile.Presentation? {
-        return profile?.presentation(id)
+        return profile?.presentation(deviceId)
     }
     
     public var readableAttributes: Set<DeviceProfile.AttributeDescriptor> {
@@ -690,10 +721,10 @@ public extension DeviceModelable {
     public func controlIds(_ groupIndex: Int? = nil) -> [Int] {
         
         guard let groupIndex = groupIndex else {
-            return profile?.presentation(id)?.controls?.map { $0.id } ?? []
+            return profile?.presentation(deviceId)?.controls?.map { $0.id } ?? []
         }
         
-        guard let groups = profile?.presentation(id)?.groups else { return [] }
+        guard let groups = profile?.presentation(deviceId)?.groups else { return [] }
         
         if groupIndex >= groups.count { return [] }
         
@@ -777,7 +808,7 @@ public extension DeviceModelable {
     }
 
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
-        return profile?.attributeConfig(attributeId, deviceId: id)
+        return profile?.attributeConfig(attributeId, deviceId: deviceId)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
@@ -837,7 +868,6 @@ public extension DeviceModelable {
     
     func update(with peripheral: DeviceStreamEvent.Peripheral) {
 
-        id = peripheral.id
         profileId = peripheral.profileId
         
         var state = self.currentState
@@ -880,10 +910,6 @@ public extension DeviceModelable {
         DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
         
         // TODO: Refactor this, as the code has evolved beyond the current function sig.
-        
-        if let idValue = deviceData[type(of: self).CoderKeyId] as? String {
-            self.id = idValue
-        }
         
         var state = self.currentState
         
@@ -977,7 +1003,7 @@ public extension DeviceModelable {
             let attributeValue = self.profile?.attributes[attributeId]?.valueForStringLiteral(stringLiteralValue)
             
             if attributeValue == nil {
-                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, id))
+                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, deviceId))
                 return nil
             }
             
@@ -1004,30 +1030,6 @@ public extension DeviceModelable {
         update(attributes, accumulative: accumulative)
     }
     
-    
-    // MARK: - <DeviceCommandConsuming> Default Implementations
-    
-    func handleCommand(_ command: DeviceModelCommand) {
-        
-        DDLogDebug(String(format: "Received DeviceModelCommand %@", String(describing: command)))
-        
-        switch command {
-        case let .postBatchActions(actions, completion):
-            
-            let localOnDone: WriteAttributeOnDone = {
-                results, maybeError in
-                completion(results, maybeError)
-            }
-
-            attributeWriteable?.post(
-                actions: actions,
-                forDeviceId: self.id,
-                withAccountId: accountId,
-                onDone: localOnDone
-            )
-
-        }
-    }
     
     // MARK: - Write commands: request model updates
     
@@ -1085,7 +1087,7 @@ public extension DeviceModelable {
     }
     
     var primaryOperationAttributeOptions: DeviceProfile.Presentation.AttributeOption? {
-        return profile?.presentation(id)?.primaryOperationOption
+        return profile?.presentation(deviceId)?.primaryOperationOption
     }
     
     func togglePrimaryOperation(_ onDone: @escaping WriteAttributeOnDone = { _ in }) {
