@@ -399,16 +399,33 @@ public class DeviceCollection: NSObject, MetricsReportable {
         state = .loading
         
         let trace = isTraceEnabled
-
-        profileSource.fetchProfiles(accountId: accountId) {
-            [weak self] _, _ in self?.eventStream.start(trace) {
-                maybeError in if let error = maybeError {
-                    DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
-                    self?.state = .error(error)
-                    return
+        
+        _ = apiClient.fetchDevices(for: accountId).then {
+            devicesJson -> Void in
+            self.createDevices(with: devicesJson)
+            self.state = .loaded
+            }.then {
+                self.eventStream.start(trace) {
+                    maybeError in if let error = maybeError {
+                        DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
+                        self.state = .error(error)
+                        return
+                    }
                 }
-            }
+            }.catch {
+                err in
+                DDLogError("Unable to fetch devices: \(String(reflecting: err))")
         }
+
+//        profileSource.fetchProfiles(accountId: accountId) {
+//            [weak self] _, _ in self?.eventStream.start(trace) {
+//                maybeError in if let error = maybeError {
+//                    DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
+//                    self?.state = .error(error)
+//                    return
+//                }
+//            }
+//        }
     }
     
     private func stopEventStream() {
@@ -609,6 +626,54 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
+    fileprivate func createDevice(with deviceId: String, profileId: String) {
+        
+        var device = _devices[deviceId]
+        
+        if device == nil {
+            device = DeviceModel(
+                deviceId: deviceId,
+                accountId: accountId,
+                associationId: nil,
+                profileId: profileId,
+                attributes: [:],
+                attributeWriteable: self,
+                profileSource: profileSource,
+                viewingNotificationConsumer: {
+                    [weak self] isViewing, deviceId in
+                    self?.notifyIsViewing(isViewing, deviceId: deviceId)
+            })
+            registerDevice(device!, onDone: nil)
+        }
+        
+    }
+    
+    fileprivate func createDevices(with json: [[String: Any]]) {
+        json.forEach(self.createDevice(with:))
+    }
+    
+    fileprivate func createDevice(with json: [String: Any]) {
+        
+        guard
+            let deviceId = json["deviceId"] as? String,
+            let profileId = json["profileId"] as? String else {
+                DDLogError("No deviceId in json; bailing create.", tag: TAG)
+                return
+        }
+        
+        createDevice(with: deviceId, profileId: profileId)
+        
+        updateDevice(with: json) {
+            [weak self] maybeDevice in
+            guard let device = maybeDevice else {
+                return
+            }
+            self?.postAddedVisibleDeviceNotification()
+            self?.contentsSink?.send(value: .create(device))
+        }
+        
+    }
+    
     /// Create a device, from the given peripheral struct instance.
     ///
     /// - parameter peripheral: The peripheral for which the device should be created.
@@ -632,25 +697,63 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    fileprivate func createDevice(with deviceId: String, profileId: String) {
-
-        var device = _devices[deviceId]
+    fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
         
-        if device == nil {
-            device = DeviceModel(
-                deviceId: deviceId,
-                accountId: accountId,
-                associationId: nil,
-                profileId: profileId,
-                attributes: [:],
-                attributeWriteable: self,
-                profileSource: profileSource,
-                viewingNotificationConsumer: {
-                [weak self] isViewing, deviceId in
-                self?.notifyIsViewing(isViewing, deviceId: deviceId)
-            })
-            registerDevice(device!, onDone: nil)
+        
+        let tag = TAG
+
+        guard
+            let deviceId = json["deviceId"] as? String,
+            let device = _devices[deviceId] else {
+                DDLogWarn("No deviceId or device; bailing", tag: tag)
+                return
         }
+
+        guard
+            let profileId = json["profileId"] as? String,
+            let createdTimestamp = json["createdTimestamp"] as? NSNumber,
+            let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
+            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]),
+            let attributes: [AttributeInstance] = |<(json["attributes"] as? [[String: Any]]) else {
+                DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
+                onDone(nil)
+                return
+        }
+        
+        profileSource.profileCache[profileId] = profile
+
+        device.associationId = json["associationId"] as? String
+        device.currentState.connectionState = modelState
+        device.profileId = profileId
+        
+        device.updateProfile {
+            
+            [weak self, weak device] updateProfileSuccess, maybeError in
+            
+            if updateProfileSuccess {
+                
+                guard let device = device else {
+                    DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
+                    return
+                }
+                
+                guard let _ = device.presentation else {
+                    DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", deviceId), tag: tag)
+                    self?.removeDevice(device.deviceId)
+                    onDone(nil)
+                    return
+                }
+                
+                device.update(with: attributes)
+                onDone(device)
+            }
+            
+            if let error = maybeError {
+                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+            }
+            
+        }
+        
         
     }
     

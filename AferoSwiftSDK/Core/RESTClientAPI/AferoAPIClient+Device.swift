@@ -12,6 +12,30 @@ import CoreLocation
 
 public extension AferoAPIClientProto {
     
+    /// Fetch all devices for an account. Note that this does not
+    /// instantiate DeviceModels; that's done by the DeviceCollection
+    /// itself.
+    ///
+    /// - parameter accountId: The UUID for the account for which to
+    ///                        fetch devices.
+    /// - returns: A `Promise<[[String: Any]]` which resolves to the
+    ///            raw JSON for the device list.
+    
+    func fetchDevices(for accountId: String) -> Promise<[[String: Any]]> {
+        
+        guard let safeAccountId = accountId.pathAllowedURLEncodedString else {
+            return Promise { _, reject in reject("Bad accountId '\(accountId)'.") }
+        }
+            
+        return GET("/v1/accounts/\(safeAccountId)/devices", expansions: [
+            "state", "tags", "attributes", "extendedData", "profile"
+            ])
+        
+    }
+}
+
+public extension AferoAPIClientProto {
+    
     // MARK: - Association / Disassociation -
     
     /// Associate a device.
@@ -168,7 +192,7 @@ public extension AferoAPIClientProto {
                 return Promise { _, reject in reject("Unable to escape deviceId or accountId") }
         }
         
-        return PUT("/v1/accounts/\(safeDeviceId)/devices/\(safeAccountId)/location", object: location)
+        return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/location", object: location)
     }
     
     @available(*, deprecated, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")

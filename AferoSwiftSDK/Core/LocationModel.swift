@@ -95,7 +95,7 @@ public enum LocationState: Equatable, CustomStringConvertible, CustomDebugString
     case located(at: DeviceLocation)
     
     /// If any, the location of the device.
-    var deviceLocation: DeviceLocation? {
+    public var deviceLocation: DeviceLocation? {
         switch self {
         case let .located(location): return location
         default: return nil
@@ -103,12 +103,12 @@ public enum LocationState: Equatable, CustomStringConvertible, CustomDebugString
     }
     
     /// If any, the `CLLocation` representing the device's location.
-    var location: CLLocation? {
+    public var location: CLLocation? {
         return deviceLocation?.location
     }
     
     /// If any, the provenance of the device's location data.
-    var locationSourceType: DeviceLocation.SourceType? {
+    public var locationSourceType: DeviceLocation.SourceType? {
         return deviceLocation?.sourceType
     }
     

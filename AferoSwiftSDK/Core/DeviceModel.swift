@@ -680,6 +680,11 @@ public extension RecordingDeviceModel {
         return modelMap
     }
     
+    public var isAvailable: Bool {
+        get { return currentState.isAvailable }
+        set { currentState.isAvailable = newValue }
+    }
+    
     public class func ModelsFromFilterCriteria(_ models: [DeviceModel], filterCriteria: [DeviceFilterCriterion]) -> [String: FilterCriteriaRecordingDeviceModel] {
         
         var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]

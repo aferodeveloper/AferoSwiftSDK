@@ -112,7 +112,7 @@ public enum DeviceWriteState {
     
 }
 
-typealias DeviceAttributes = Dictionary<Int, AttributeValue>
+public typealias DeviceAttributes = Dictionary<Int, AttributeValue>
 
 // MARK: - Device State
 
@@ -250,7 +250,7 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     public var profileId: String?
     
     /// Internal attributes representation
-    var attributes: DeviceAttributes = [:]
+    internal(set) public var attributes: DeviceAttributes = [:]
     
     var connectionState: DeviceModelState = DeviceModelState()
     
@@ -782,7 +782,7 @@ public extension DeviceModelable {
             let instances = attributes.map { AttributeInstance(id: $0.0, value: $0.1) }
 
             if localOnly {
-                self?.update(instances, accumulative: false)
+                self?.update(with: instances, accumulative: false)
                 fulfill((instances.batchActionRequests ?? []).successfulUnpostedResults)
                 return
             }
@@ -955,7 +955,7 @@ public extension DeviceModelable {
     /// - parameter attributes: The array of `AttributeInstance`s to apply
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ attributeInstances: [AttributeInstance], accumulative: Bool = true) {
+    public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
         
         var state = currentState
         
@@ -982,8 +982,8 @@ public extension DeviceModelable {
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
     /// array of instances.
     
-    public func update(_ attributeInstance: AttributeInstance, accumulative: Bool = true) {
-        update([attributeInstance], accumulative: accumulative)
+    public func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) {
+        update(with: [attributeInstance], accumulative: accumulative)
     }
     
     /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
@@ -1012,7 +1012,7 @@ public extension DeviceModelable {
             return AttributeInstance(id: attributeId, value: attributeValue!)
         }
         
-        update(attributeInstances, accumulative: accumulative)
+        update(with: attributeInstances, accumulative: accumulative)
     }
     
     /// Overlay (or optoinally set) this modelable's state to that indicated by the given `DeviceRuleAction`.
