@@ -1411,9 +1411,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 let partitionSize = Float(self.partitionSize)
                 let offset = Float(self.offset)
                 
-                let partitionOffset = (offset <= partitionSize) ? offset : offset - partitionSize
+                let partitionOffset = (offset < partitionSize) ? offset : offset - partitionSize
                 
-                return partitionOffset / partitionSize
+                return partitionOffset / (partitionSize - 1)
                 
             case .complete: fallthrough
             case .unknown:
