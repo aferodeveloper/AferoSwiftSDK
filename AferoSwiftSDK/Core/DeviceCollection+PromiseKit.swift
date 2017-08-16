@@ -20,6 +20,10 @@ public extension DeviceCollection {
     ///                                        `isOwnershipChangeVerified` is `true`, then the device being scanned
     ///                                        will be disassociated from its existing account prior to being
     ///                                        associated with the new one.
+    /// - parameter timeZone: The timezone to use for the device. Defaults to `TimeZone.current`.
+    /// - parameter timeZoneIsUserOverride: If true, indicates the user has explicitly set the timezone
+    ///                             on this device (rather than it being inferred by location).
+    ///                             If false, timeZone is the default timeZone of the phone.
     ///
     /// ## Ownership Transfer
     /// Some devices are provisioned to have their ownership transfer automatically. If upon an associate attempt

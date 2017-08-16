@@ -1078,7 +1078,7 @@ public extension DeviceCollection {
     ///                                        will be disassociated from its existing account prior to being
     ///                                        associated with the new one.
     /// - parameter timeZone: The timezone to use for the device. Defaults to `TimeZone.current`.
-    /// - parameter isUserOverride: If true, indicates the user has explicitly set the timezone
+    /// - parameter timeZoneIsUserOverride: If true, indicates the user has explicitly set the timezone
     ///                             on this device (rather than it being inferred by location).
     ///                             If false, timeZone is the default timeZone of the phone.
     /// - parameter onDone: The completion handler for the call.
@@ -1140,7 +1140,6 @@ public extension DeviceCollection {
     func removeDevice(with deviceId: String, onDone: @escaping RemoveDeviceOnDone) {
         apiClient.removeDevice(with: deviceId, in: accountId).then {
             ()->Void in
-//            self.removeDevice(deviceId)
             onDone(deviceId, nil)
             }.catch {
                 err in
