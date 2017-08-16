@@ -11,9 +11,10 @@ workspace 'AferoSwiftSDK.xcworkspace'
 # MARK: Prerequisite definitions
 
 def base_pods
-    pod 'CryptoSwift', '0.6.9'
+    pod 'CryptoSwift', :git => 'https://github.com/krzyzanowskim/CryptoSwift.git', :branch => 'swift4'
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
-    pod 'CocoaLumberjack/Swift', '3.2.0'
+    #    pod 'CocoaLumberjack/Swift', '3.2.0'
+    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
     pod 'PromiseKit', '4.1.3'
     pod 'HTTPStatusCodes', '~> 3.1'
     pod 'AferoSwiftLogging', '1.1.5'
@@ -52,7 +53,8 @@ target 'AferoLab' do
 
     pod 'HTTPStatusCodes', '~> 3.1'
     pod 'PromiseKit', '4.1.3'
-    pod 'CocoaLumberjack/Swift', '3.2.0'
+    #    pod 'CocoaLumberjack/Swift', '3.2.0'
+    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
     pod 'LKAlertController', '1.12.1'
     pod 'RSEnvironment', '0.0.3'
     pod 'SVProgressHUD', '1.1.3'

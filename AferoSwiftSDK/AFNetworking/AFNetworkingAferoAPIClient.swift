@@ -101,20 +101,32 @@ public class AFNetworkingAferoAPIClient {
     }
 
     // MARK: - Session Manager... management -
-    lazy fileprivate var sessionManager: AFHTTPSessionManager! = {
-
-        let manager = AFHTTPSessionManager(baseURL: self.apiBaseURL)
-
-        manager.responseSerializer = AferoAFJSONResponseSerializer()
-        manager.requestSerializer = AferoAFJSONRequestSerializer()
-        manager.requestSerializer.setValue("gzip", forHTTPHeaderField: "Accept-Encoding")
-
-        if let credential = self.oauthCredential {
-            manager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
+    
+    private var _sessionManager: AFHTTPSessionManager?
+    fileprivate var sessionManager: AFHTTPSessionManager! {
+        
+        get {
+            if let sessionManager = _sessionManager {
+                return sessionManager
+            }
+            
+            let manager = AFHTTPSessionManager(baseURL: self.apiBaseURL)
+            
+            manager.responseSerializer = AferoAFJSONResponseSerializer()
+            manager.requestSerializer = AferoAFJSONRequestSerializer()
+            manager.requestSerializer.setValue("gzip", forHTTPHeaderField: "Accept-Encoding")
+            
+            if let credential = self.oauthCredential {
+                manager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
+            }
+            
+            _sessionManager = manager
+            return manager
         }
-
-        return manager
-    }()
+        
+        set { _sessionManager = newValue }
+        
+    }
 
 }
 

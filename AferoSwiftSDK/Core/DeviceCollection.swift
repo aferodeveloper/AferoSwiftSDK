@@ -378,9 +378,21 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    lazy fileprivate var metricHelper: MetricHelper! = {
-        return MetricHelper(metricsReportable: self)
-    }()
+    private var _metricHelper: MetricHelper?
+    
+    fileprivate var metricHelper: MetricHelper! {
+        get {
+            if let metricHelper = _metricHelper {
+                return metricHelper
+            }
+            let metricHelper = MetricHelper(metricsReportable: self)
+            _metricHelper = metricHelper
+            return metricHelper
+        }
+        
+        set { _metricHelper = newValue }
+    }
+    
 
     // MARK: Private stream controls
 

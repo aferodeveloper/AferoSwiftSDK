@@ -173,7 +173,7 @@ class JSONStreamSpec: QuickSpec {
 class Mocklave: ConclaveConnection {
     
     // Server to the client
-    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)! = {
+    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>) = {
         return Signal<ConclaveConnectionEvent, NSError>.pipe()
         }()
     
@@ -182,7 +182,7 @@ class Mocklave: ConclaveConnection {
     }
     
     // Client to server
-    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)! = {
+    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>) = {
         return Signal<ConclaveMessage, NSError>.pipe()
         }()
     

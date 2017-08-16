@@ -450,7 +450,7 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
         flush()
     }
     
-    lazy fileprivate var eventPipe: DeviceStreamEventPipe! = {
+    lazy fileprivate var eventPipe: DeviceStreamEventPipe = {
         return Signal.pipe()
     }()
     
