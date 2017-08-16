@@ -16,6 +16,9 @@ import SVProgressHUD
 
 import QRCodeReader
 import AVFoundation
+import HTTPStatusCodes
+
+import LKAlertController
 
 typealias APIClient = AFNetworkingAferoAPIClient
 
@@ -332,8 +335,8 @@ class AccountViewController: UITableViewController {
             fatalError("nil model")
         }
         
-        guard let index = model.indexForDeviceId(device.id) else {
-            fatalError("No device with id \(device.id)")
+        guard let index = model.indexForDeviceId(device.deviceId) else {
+            fatalError("No device with id \(device.deviceId)")
         }
         
         return IndexPath(row: index, section: AccountInfoSection.devices.rawValue)
@@ -444,7 +447,8 @@ class AccountViewController: UITableViewController {
             UITableViewRowAction(
             style: .destructive,
             title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
-                [weak self] action, indexPath in self?.disassociateDevice(at: indexPath)
+                [weak self] action, indexPath in
+                _ = self?.disassociateDevice(at: indexPath)
                 },
         ]
         
@@ -455,13 +459,57 @@ class AccountViewController: UITableViewController {
     @IBOutlet weak var associateDeviceButtonItem: UIBarButtonItem!
 
     @IBAction func associateDeviceTapped(_ sender: UIBarButtonItem) {
+        #if (arch(i386) || arch(x86_64)) && os(iOS) // simulator
+            presentManualAssociationIdEntry()
+        #else
+            presentQRCodeReader()
+        #endif
+    }
+    
+    func presentManualAssociationIdEntry() {
+
+        var textField = UITextField()
+        textField.keyboardType = .asciiCapable
+        textField.autocorrectionType = .no
+        textField.autocapitalizationType = .none
+        textField.adjustsFontSizeToFitWidth = true
+        textField.minimumFontSize = 9.0
+        textField.placeholder = NSLocalizedString("e.g, '5bf1fffff649'", comment: "Manual add device placeholder text")
+        textField.clearButtonMode = .always
+        textField.textAlignment = .center
+
+        Alert(
+            title: NSLocalizedString("Add Device", comment: "Manual add device alert title"),
+            message: NSLocalizedString("Enter the association ID for the device you'd like to add:", comment: "Manual add device alert message")
+            )
+            .addTextField(&textField)
+
+            .addAction(
+                NSLocalizedString("Add", comment: "Manual add device add action title"),
+                style: UIAlertActionStyle.default) {
+                    [weak self] action in
+                    DDLogInfo("Add tapped; association id: \(String(describing: textField.text))")
+                    guard let associationId = textField.text else {
+                        return
+                    }
+                    _ = self?.associateDevice(with: associationId)
+            }
+            
+            .addAction(
+                NSLocalizedString("Cancel", comment: "Manual add device cancel button title"),
+                style: UIAlertActionStyle.cancel) {
+                    action in
+                    DDLogInfo("Cancel tapped.")
+            }
+            .show()
+    }
+        
+    func presentQRCodeReader() {
         readerVC.delegate = self
         readerVC.modalPresentationStyle = .popover
         present(readerVC, animated: true, completion: nil)
     }
     
-    // Good practice: create the reader lazily to avoid cpu overload during the
-    // initialization and each time we need to scan a QRCode
     lazy var readerVC: QRCodeReaderViewController = {
         let builder = QRCodeReaderViewControllerBuilder {
             $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObjectTypeQRCode], captureDevicePosition: .back)
@@ -478,10 +526,10 @@ extension AccountViewController {
     
     func associateDevice(with associationId: String) -> Promise<Void> {
         
-        guard let accountId = accountId else {
-            fatalError("No account id; this should never happen")
+        guard let deviceCollection = model?.deviceCollection else {
+            return Promise { _, reject in reject("No model/deviceCollection.") }
         }
-        
+
         let trimmedAssociationId = associationId.trimmed.replacingOccurrences(of: "-", with: "")
         
         SVProgressHUD.show(
@@ -493,8 +541,8 @@ extension AccountViewController {
             )
         )
         
-        return APIClient.default
-            .associateDevice(with: trimmedAssociationId, to: accountId)
+        return deviceCollection
+            .addDevice(with: associationId)
             .then {
                 device -> Void in
                 DDLogDebug("Successfully associated associationId \(trimmedAssociationId); device: \(String(reflecting: device))")
@@ -508,16 +556,31 @@ extension AccountViewController {
                 )
             }.catch {
                 error in
+                
                 DDLogError("Error associating associationId \(trimmedAssociationId): \(error.localizedDescription)", tag: self.TAG)
-                SVProgressHUD.showError(
-                    withStatus: String(
-                        format: NSLocalizedString(
-                            "Error associating %@:\n%@",
-                            comment: "Assocating device status fmt"
-                        ), trimmedAssociationId, error.localizedDescription
-                    ),
-                    maskType: .gradient
-                )
+                
+                let messageTmplGeneric = NSLocalizedString("Problem associating %@ (no additional info).", comment: "Add device generic error message format")
+                let messageTmplCode = NSLocalizedString("Problem associating %@ (HTTP status %@)", comment: "Add device code error message format")
+                let messageTmplDetail = NSLocalizedString("Problem associating %@. %@ (HTTP status %@)", comment: "Add device detail error message format")
+
+                var message = String(format: messageTmplGeneric, associationId)
+                
+                switch error.httpStatusCodeValue {
+                    
+                case .some(.badRequest):
+                    message = String(
+                        format: messageTmplDetail,
+                        associationId,
+                        NSLocalizedString("Please check the association id and try again.", comment: "check association id and try again error message"),
+                        HTTPStatusCode.badRequest.description
+                    )
+                case .some(let code):
+                    message = String(format: messageTmplCode, associationId, code.description)
+
+                default: break
+                }
+                
+                SVProgressHUD.showError( withStatus: message, maskType: .gradient)
                 
         }
         
@@ -529,8 +592,9 @@ extension AccountViewController {
             return Promise { _, reject in reject("No device at \(indexPath)") }
         }
         
-        let deviceId = device.id
-        let accountId = device.accountId
+        guard let deviceCollection = model?.deviceCollection else {
+            return Promise { _, reject in reject("No model/deviceCollection.") }
+        }
         
         SVProgressHUD.show(
             withStatus: NSLocalizedString(
@@ -539,9 +603,9 @@ extension AccountViewController {
             maskType: .clear
         )
         
-        return APIClient.default.removeDevice(with: deviceId, in: accountId).then {
-            ()->Void in
-            DDLogDebug("Disassociated device \(String(describing: deviceId)) in account \(String(describing: accountId))", tag: self.TAG)
+        return deviceCollection.removeDevice(with: device.deviceId).then {
+            deviceId -> Void in
+            DDLogDebug("Disassociated device \(String(describing: deviceId))", tag: self.TAG)
             SVProgressHUD.showSuccess(
                 withStatus: String(
                     format: NSLocalizedString(
