@@ -40,7 +40,7 @@ public extension DeviceModelable where Self: DeviceActionSource {
         get {
             var ret: [DeviceRuleAction] = []
             if currentState.attributes.count > 0 {
-                ret.append(DeviceRuleAction(deviceId: id, state: currentState))
+                ret.append(DeviceRuleAction(deviceId: deviceId, state: currentState))
             }
             return ret
         }
@@ -48,7 +48,7 @@ public extension DeviceModelable where Self: DeviceActionSource {
         set {
             var state = currentState
             state.attributes = newValue
-                .filter { $0.deviceId == self.id }
+                .filter { $0.deviceId == self.deviceId }
                 .flatMap { $0.attributeDict }
                 .reduce([:]) {
                     (current, next) -> [Int: AttributeValue] in
@@ -83,7 +83,7 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     
     public func update(_ filterCriterion: DeviceFilterCriterion, accumulative: Bool = false) {
         
-        guard filterCriterion.deviceId == id else { return }
+        guard filterCriterion.deviceId == deviceId else { return }
         
         guard let stringValue = filterCriterion.attribute.value.stringValue else {
             DDLogInfo("Unable to determine stringValue for \(filterCriterion.attribute)")
@@ -111,7 +111,7 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
         get {
             return DeviceFilterCriterion.CriteriaFromState(
                 currentState,
-                deviceId: id,
+                deviceId: deviceId,
                 trigger: true,
                 attributeFilterOperations: attributeFilterOperations
             )

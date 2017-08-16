@@ -418,7 +418,31 @@ public extension AferoAPIClientProto {
             return result
         }
     }
+
+    /// GET a path, and return the non-optional marshalled results.
+    ///
+    /// - parameter path: The path (relative to the service host) to GET.
+    ///
+    /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
+    ///
+    /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
+    ///
+    /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
+    ///                          Defaults to the function name.
+    ///
+    /// - returns: A `Promise<[T]>`
+    /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
+    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[[String: Any]]> {
+        
+        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+            (maybeResult: Any?) throws -> [[String: Any]] in guard let result = maybeResult as? [[String: Any]] else {
+                throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
+            }
+            return result
+        }
+    }
+
     /// GET a path, and return the optional raw results.
     ///
     /// - parameter path: The path (relative to the service host) to GET.
@@ -641,6 +665,10 @@ public extension AferoAPIClientProto {
         }
     }
     
+    func PUT<U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
+    }
+    
     func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
         return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
     }
@@ -716,7 +744,7 @@ func withExpansions(_ path: String, expansions: [String]?, additionalParams: [St
     
     var additionalPathParams: [String] = []
     
-    if let expansionsString = expansions?.joined(separator: ",") {
+    if let expansionsString = expansions?.joined(separator: ",").queryAllowedURLEncodedString {
         additionalPathParams.append("expansions" + "=" + expansionsString)
     }
     

@@ -381,7 +381,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
                 
                 do {
                     if
-                        let fixture = try ResourceUtils.readJson(jsonFile),
+                        let fixture = try ResourceUtils.readJson(named: jsonFile),
                         let presentation: DeviceProfile.Presentation = |<fixture {
                         DDLogInfo("Attaching local presentation info for deviceType \(String(reflecting: deviceType)): \(presentation)")
                         self.presentation = presentation

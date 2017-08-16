@@ -16,31 +16,15 @@ class UserTests: QuickSpec {
     
     override func spec() {
 
-        let janeDoe: UserAccount.User
-        let johnSmith: UserAccount.User
-        
-        do {
-            
-            guard
-                let janeDoeJSON = try readJson("userJaneDoe"),
-                let jdo: UserAccount.User = |<janeDoeJSON else {
-                    throw "Read userJaneDoe, but empty result."
-            }
-            
-            janeDoe = jdo
-            
-            guard
-                let johnSmithJSON = try readJson("userJohnSmith"),
-                let jso: UserAccount.User = |<johnSmithJSON else {
-                    throw "Read userJohnSmith, but empty result."
-            }
-            
-            johnSmith = jso
-            
-        } catch {
-            fatalError("Unable to read fixtures: \(String(reflecting: error))")
+        guard
+            let janeDoe: UserAccount.User = try! fixture(named: "userJaneDoe") else {
+                fatalError("Read userJaneDoe, but empty result.")
         }
         
+        guard
+            let johnSmith: UserAccount.User = try! fixture(named: "userJohnSmith") else {
+                fatalError("Read userJohnSmith, but empty result.")
+        }
 
         describe("When performing UserAccount.User equality checks") {
 

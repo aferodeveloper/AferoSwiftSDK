@@ -694,7 +694,7 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 ])
             
-            let deviceModel = RecordingDeviceModel(id: "foo", accountId: "moo", profile: profile)
+            let deviceModel = RecordingDeviceModel(deviceId: "foo", accountId: "moo", profile: profile)
             
             let ts1 = ScheduleEvent.TimeSpecification(dayOfWeek: .sunday, hour: 1, minute: 1, repeats: true)
             let event1 = ScheduleEvent(timeSpecification: ts1, attributes: [
@@ -752,7 +752,7 @@ class OfflineScheduleSpec: QuickSpec {
                     DeviceProfile.AttributeDescriptor(id: 59001, type: .bytes,   operations: [.Read, .Write]), // enabled / flags
                     ])
                 
-                let deviceModel2 = RecordingDeviceModel(id: "foo2", accountId: "moo2", profile: profile2)
+                let deviceModel2 = RecordingDeviceModel(deviceId: "foo2", accountId: "moo2", profile: profile2)
                 expect(deviceModel2.supportsOfflineSchedules).to(beFalse())
 
             }

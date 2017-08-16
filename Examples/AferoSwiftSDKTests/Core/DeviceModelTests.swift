@@ -88,9 +88,22 @@ class DeviceModelSpec: QuickSpec {
         describe("When instantiating a device") {
             
             it("should instantiate correctly") {
-                let deviceModel = DeviceModel(id: "foo", state: [100: false], accountId: accountId, profile: nil, attributeWriteable: nil)
+
+                let deviceModel = BaseDeviceModel(
+                    deviceId: "foo",
+                    accountId: accountId,
+                    associationId: "fooassociation",
+                    state: [100: false],
+                    profile: nil, attributeWriteable: nil)
+                
                 expect(deviceModel.currentState[safe: 100]?.boolValue) == false
+                expect(deviceModel.deviceId) == "foo"
+                expect(deviceModel.accountId) == accountId
+                expect(deviceModel.associationId) == "fooassociation"
+                expect(deviceModel.profileId).to(beNil())
+                expect(deviceModel.attributeWriteable).to(beNil())
             }
+            
             
         }
         
@@ -105,8 +118,16 @@ class DeviceModelSpec: QuickSpec {
                     requestSem.signal()
                 }
                 
-                let deviceModel = DeviceModel(id: "foo", state: [100: false], accountId: accountId, profile: nil, attributeWriteable: nil, profileResolver: resolver)
-                
+                let deviceModel = BaseDeviceModel(
+                    deviceId: "foo",
+                    accountId: accountId,
+                    associationId: "fooassociation",
+                    state: [100: false],
+                    profile: nil,
+                    attributeWriteable: nil,
+                    profileSource: resolver
+                    )
+
                 var writeCount = 0
                 
                 var profileEventCount: Int = 0
@@ -146,7 +167,7 @@ class DeviceModelSpec: QuickSpec {
                 expect(resolver.fetchProfileByProfileIdRequestCount) == 1
                 expect(deviceModel.profile).to(beNil())
                 
-                resolver.profileToReturn = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
+                resolver.profileToReturn = try! self.fixture(named: "profileTest")
                 deviceModel.profileId = "bar"
                 
                 // Now we should succeed.
@@ -167,8 +188,15 @@ class DeviceModelSpec: QuickSpec {
         
         describe("When testing availability") {
             it("should persist availabilty changes") {
-                let device = DeviceModel(id: "foo", accountId: "foofoo")
+                
+                let device = BaseDeviceModel(
+                    deviceId: "foo",
+                    accountId: "foofoo",
+                    associationId: "fooassociation"
+                )
+                
                 let data:[String: Any] = [ DeviceModel.CoderKeyAvailable: 1 ]
+                expect(device.isAvailable).to(beFalse())
                 device.update(data)
                 expect(device.isAvailable).to(beTrue())
             }
@@ -198,7 +226,12 @@ class DeviceModelSpec: QuickSpec {
                 
                 ])
             
-            let deviceModel = DeviceModel(id: "foo", accountId: "moo", profile: profile)
+            let deviceModel = BaseDeviceModel(
+                deviceId: "foo",
+                accountId: "moo",
+                profile: profile
+            )
+            
             let rdeviceModel = RecordingDeviceModel(model: deviceModel)
             
             it("Should correctly show readable attributes") {
@@ -228,8 +261,12 @@ class DeviceModelSpec: QuickSpec {
         describe("When writing attributes to the device") {
             
             let writeSink = MockDeviceBatchActionRequestable()
-            let deviceModel = DeviceModel(id: "foo", accountId: accountId, attributeWriteable: writeSink)
-            deviceModel.profile = |<(try? self.readJson("profileTest")!)
+            let deviceModel = BaseDeviceModel(
+                deviceId: "foo",
+                accountId: accountId,
+                profile: try! self.fixture(named: "profileTest"),
+                attributeWriteable: writeSink
+            )
             
             beforeEach() {
                 writeSink.errorToReturn = nil
@@ -282,8 +319,12 @@ class DeviceModelSpec: QuickSpec {
 //                let resolver = DeviceProfileResolverFixture()
 //                resolver.profileToReturn = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
 
-                let deviceModel = DeviceModel(id: "foo", state: [100: false, 101: "Moo"], accountId: accountId)
-                deviceModel.profile = DeviceProfile(json: (try? self.readJson("profileTest")! as! [String: Any]))
+                let deviceModel = BaseDeviceModel(
+                    deviceId: "foo",
+                    accountId: accountId,
+                    state: [100: false, 101: "Moo"],
+                    profile: try! self.fixture(named: "profileTest")
+                )
                 
                 var writeState: DeviceState? = deviceModel.currentState
                 var writeCount = 0

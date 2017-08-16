@@ -59,7 +59,7 @@ class PresentationSpec: QuickSpec {
         describe("When contemplating coffee makers") {
         
             it("should deserialize correctly.") {
-                if let coffeePresentation: DeviceProfile.Presentation = |<(try? self.readJson("coffeemaker")! as! [String: Any]) {
+                if let coffeePresentation: DeviceProfile.Presentation = try! self.fixture(named: "coffeemaker")  {
                     expect(coffeePresentation.gauge.foreground?.images.count) == 1
                     expect(coffeePresentation.gauge.foreground?.images[0].URI) == "http://tonyhacks.com/icons/3x/devices/devices_coffee.png"
                     
@@ -103,7 +103,7 @@ class PresentationSpec: QuickSpec {
         
         describe("When contemplating a plain old fan") {
             
-            let fanPresentation : DeviceProfile.Presentation! = |<(try? self.readJson("fan")!)
+            let fanPresentation : DeviceProfile.Presentation! = try! fixture(named: "fan")
 
             xit("should deserialize correctly.") {
                 
@@ -174,7 +174,7 @@ class PresentationSpec: QuickSpec {
                 ]
             ]
             
-            let chairPresentation : DeviceProfile.Presentation! = |<(try? self.readJson("massagechair")!)
+            let chairPresentation : DeviceProfile.Presentation! = try! self.fixture(named: "massagechair")
             
             it("Should pick up primaryOperation") {
                 expect(chairPresentation.primaryOperationOption).toNot(beNil())
@@ -447,18 +447,7 @@ class DeviceProfileTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        
-        if let json = try? ResourceUtils.readJson("profileTest", bundle: Bundle(for: classForCoder)) {
-            profile = |<json
-        }
-
-//        if let path = NSBundle(forClass: self.classForCoder).pathForResource("profileTest", ofType: "json") {
-//            if let jsonData = NSData(contentsOfFile:path, options: .DataReadingMappedIfSafe) {
-//                var jsonResult: NSDictionary = NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
-//
-//                self.profile = |<(jsonResult as? [String: Any])
-//            }
-//        }
+        profile = try! fixture(named: "profileTest")
     }
 
     override func tearDown() {

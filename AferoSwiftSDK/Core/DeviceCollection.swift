@@ -10,6 +10,7 @@
 import Foundation
 import ReactiveSwift
 import Result
+import CoreLocation
 
 import CocoaLumberjack
 
@@ -399,16 +400,33 @@ public class DeviceCollection: NSObject, MetricsReportable {
         state = .loading
         
         let trace = isTraceEnabled
-
-        profileSource.fetchProfiles(accountId: accountId) {
-            [weak self] _, _ in self?.eventStream.start(trace) {
-                maybeError in if let error = maybeError {
-                    DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
-                    self?.state = .error(error)
-                    return
+        
+        _ = apiClient.fetchDevices(for: accountId).then {
+            devicesJson -> Void in
+            self.createDevices(with: devicesJson)
+            self.state = .loaded
+            }.then {
+                self.eventStream.start(trace) {
+                    maybeError in if let error = maybeError {
+                        DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
+                        self.state = .error(error)
+                        return
+                    }
                 }
-            }
+            }.catch {
+                err in
+                DDLogError("Unable to fetch devices: \(String(reflecting: err))")
         }
+
+//        profileSource.fetchProfiles(accountId: accountId) {
+//            [weak self] _, _ in self?.eventStream.start(trace) {
+//                maybeError in if let error = maybeError {
+//                    DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
+//                    self?.state = .error(error)
+//                    return
+//                }
+//            }
+//        }
     }
     
     private func stopEventStream() {
@@ -585,7 +603,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         let peripheralsToUpdate = peripherals.filter { deviceIdsToUpdate.contains($0.id) }
         peripheralsToUpdate.forEach {
             updateDevice(with: $0) {
-                device in DDLogDebug("Updated \(device?.id ?? "<nil>"))")
+                device in DDLogDebug("Updated \(device?.deviceId ?? "<nil>"))")
             }
         }
         
@@ -609,6 +627,57 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
+    fileprivate func createDevice(with deviceId: String, profileId: String) {
+        
+        var device = _devices[deviceId]
+        
+        if device == nil {
+            device = DeviceModel(
+                deviceId: deviceId,
+                accountId: accountId,
+                associationId: nil,
+                profileId: profileId,
+                attributes: [:],
+                attributeWriteable: self,
+                profileSource: profileSource,
+                viewingNotificationConsumer: {
+                    [weak self] isViewing, deviceId in
+                    self?.notifyIsViewing(isViewing, deviceId: deviceId)
+            })
+            registerDevice(device!, onDone: nil)
+        }
+        
+    }
+    
+    fileprivate func createDevices(with json: [[String: Any]]) {
+        json.forEach { self.createDevice(with: $0) }
+    }
+    
+    fileprivate func createDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
+        
+        guard
+            let deviceId = json["deviceId"] as? String,
+            let profileId = json["profileId"] as? String else {
+                DDLogError("No deviceId in json; bailing create.", tag: TAG)
+                onDone(nil)
+                return
+        }
+        
+        createDevice(with: deviceId, profileId: profileId)
+        
+        updateDevice(with: json) {
+            [weak self] maybeDevice in
+            guard let device = maybeDevice else {
+                onDone(nil)
+                return
+            }
+            self?.postAddedVisibleDeviceNotification()
+            self?.contentsSink?.send(value: .create(device))
+            onDone(device)
+        }
+        
+    }
+    
     /// Create a device, from the given peripheral struct instance.
     ///
     /// - parameter peripheral: The peripheral for which the device should be created.
@@ -619,15 +688,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         let deviceId = peripheral.id
         
-        var device = _devices[peripheral.id]
-        
-        if device == nil {
-            device = DeviceModel(id: deviceId, accountId: accountId, profileId: peripheral.profileId, profile: nil, attributeWriteable: self, profileResolver: profileSource, viewingNotificationConsumer: {
-                [weak self] isViewing, deviceId in
-                self?.notifyIsViewing(isViewing, deviceId: deviceId)
-            })
-            registerDevice(device!, onDone: nil)
-        }
+        createDevice(with: deviceId, profileId: peripheral.profileId)
         
         updateDevice(with: peripheral) {
             [weak self] maybeDevice in
@@ -637,6 +698,67 @@ public class DeviceCollection: NSObject, MetricsReportable {
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
         }
+        
+    }
+    
+    fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
+        
+        
+        let tag = TAG
+
+        guard
+            let deviceId = json["deviceId"] as? String,
+            let device = _devices[deviceId] else {
+                DDLogWarn("No deviceId or device; bailing", tag: tag)
+                return
+        }
+
+        guard
+            let profileId = json["profileId"] as? String,
+            let createdTimestamp = json["createdTimestamp"] as? NSNumber,
+            let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
+            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]),
+            let attributes: [AttributeInstance] = |<(json["attributes"] as? [[String: Any]]) else {
+                DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
+                onDone(nil)
+                return
+        }
+        
+        profileSource.profileCache[profileId] = profile
+
+        device.associationId = json["associationId"] as? String
+        device.friendlyName = json["friendlyName"] as? String
+        device.currentState.connectionState = modelState
+        device.profileId = profileId
+        
+        device.updateProfile {
+            
+            [weak self, weak device] updateProfileSuccess, maybeError in
+            
+            if updateProfileSuccess {
+                
+                guard let device = device else {
+                    DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
+                    return
+                }
+                
+                guard let _ = device.presentation else {
+                    DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", deviceId), tag: tag)
+                    self?.removeDevice(device.deviceId)
+                    onDone(nil)
+                    return
+                }
+                
+                device.update(with: attributes)
+                onDone(device)
+            }
+            
+            if let error = maybeError {
+                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+            }
+            
+        }
+        
         
     }
     
@@ -663,12 +785,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 
                 guard let _ = device.presentation else {
                     DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", peripheral.id), tag: tag)
-                    self?.removeDevice(device.id)
+                    self?.removeDevice(device.deviceId)
                     onDone(nil)
                     return
                 }
                 
-                device.update(with: peripheral, attrsOnly: false)
+                device.update(with: peripheral)
                 onDone(device)
             }
             
@@ -724,11 +846,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
             return
         }
         
-        device.isAvailable = status.isAvailable
-        device.isDirect = status.isDirect
+        var state = device.currentState
+        state.connectionState.update(with: status)
+        device.currentState = state
 
-        // TODO: Need to wireup isVisible
-        
     }
     
     /// Handle a `DeviceStreamEvent.deviceOTA` message
@@ -794,14 +915,63 @@ public class DeviceCollection: NSObject, MetricsReportable {
         case InvalidationEvent.profiles.rawValue:
             device.profileId = nil
             
-        case "location":
-            device.currentState.locationState = .invalid
-            
+        case InvalidationEvent.location.rawValue:
+            updateLocation(for: peripheralId, retryInterval: 10.0)
+
         default:
             break
         }
     }
     
+    /// Update the location for the given peripheral id, optionally retrying upon failure.
+    ///
+    /// - parameter peripheralId: The id of the peripheral whose location should be updated.
+    /// - parameter retryInterval: If non-`nil`, retry upon failure after `retryInterval` seconds.
+    ///                            If `nil`, do not retry.
+    
+    func updateLocation(for peripheralId: String, retryInterval: TimeInterval? = nil) {
+        
+        guard let peripheral = peripheral(for: peripheralId) else { return }
+        
+        guard peripheral.locationState != .pendingUpdate else {
+            DDLogDebug("We already have an update pending, not trying again.")
+            return
+        }
+        
+        peripheral.locationState = .pendingUpdate
+        
+        _ = apiClient.getLocation(for: peripheralId, in: accountId)
+            .then {
+                
+                [weak peripheral] maybeLocation -> Void in
+                switch maybeLocation {
+                case let .some(location):
+                    peripheral?.locationState = .located(at: location)
+                case .none:
+                    peripheral?.locationState = .notLocated
+                }
+                
+            }.catch {
+                
+                [weak peripheral] error in
+                
+                DDLogError("Error updating location for \(peripheralId): \(String(reflecting: error))", tag: self.TAG)
+                peripheral?.locationState = .invalid(error: error)
+                
+                guard let retryInterval = retryInterval else {
+                    DDLogDebug("Location update for \(peripheralId) failed; not retrying.", tag: self.TAG)
+                    return
+                }
+                
+                DDLogInfo("Retrying location update for \(peripheralId) in \(retryInterval) secs.", tag: self.TAG)
+                
+                after(retryInterval) {
+                    [weak self] in self?.updateLocation(for: peripheralId)
+                }
+        }
+        
+
+    }
 
     // MARK: - Public Stream Controls
 
@@ -846,7 +1016,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
     var deviceIds: [String] {
-        return devices.map { $0.id }
+        return devices.map { $0.deviceId }
     }
     
     /// Get a peripheral for the given id, if available.
@@ -859,7 +1029,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     func addOrReplace(peripheral: DeviceModel) {
         let shouldPostNonemptyNotification = _devices.count == 0
-        _devices[peripheral.id] = peripheral
+        _devices[peripheral.deviceId] = peripheral
         if shouldPostNonemptyNotification {
             postNonemptyNotification()
         }
@@ -892,6 +1062,90 @@ extension DeviceCollection: DeviceInfoSource {
     
     public func displayNameForDeviceId(_ deviceId: String) -> String {
         return peripheral(for: deviceId)?.displayName ?? NSLocalizedString("Unknown device", comment: "Device collection DeviceInfoSource implementation default device displayName")
+    }
+    
+}
+
+public extension DeviceCollection {
+    
+    typealias AddDeviceOnDone = (DeviceModel?, Error?) -> Void
+    
+    /// Add a device to the device collection.
+    ///
+    /// - parameter associationId: The associationId for the device. Note that this is different from the deviceId.
+    /// - parameter location: The location, if any, to associate with the device.
+    /// - parameter isOwnershipChangeVerified: If the device is eligible for ownership change (see note), and
+    ///                                        `isOwnershipChangeVerified` is `true`, then the device being scanned
+    ///                                        will be disassociated from its existing account prior to being
+    ///                                        associated with the new one.
+    /// - parameter timeZone: The timezone to use for the device. Defaults to `TimeZone.current`.
+    /// - parameter timeZoneIsUserOverride: If true, indicates the user has explicitly set the timezone
+    ///                             on this device (rather than it being inferred by location).
+    ///                             If false, timeZone is the default timeZone of the phone.
+    /// - parameter onDone: The completion handler for the call.
+    ///
+    /// ## Ownership Transfer
+    /// Some devices are provisioned to have their ownership transfer automatically. If upon an associate attempt
+    /// with `isOwnershipTransferVerified == false` is made upon a device that's assocaiated with another account,
+    /// and an error is returned with an attached URLResponse with header `transfer-verification-enabled: true`,
+    /// then the call can be retried with `isOwnershipTranferVerified == true`, and the service will disassociate
+    /// said device from its existing account prior to associating it with the new account.
+    
+    func addDevice(with associationId: String, location: CLLocation? = nil, isOwnershipChangeVerified: Bool = false, timeZone: TimeZone = TimeZone.current, timeZoneIsUserOverride: Bool = false, onDone: @escaping AddDeviceOnDone) {
+        
+        apiClient.associateDevice(
+            with: associationId,
+            to: accountId,
+            locatedAt: location,
+            ownershipTransferVerified: isOwnershipChangeVerified
+            ).then {
+                
+                deviceJson in
+                
+                self.createDevice(with: deviceJson) {
+                    
+                    deviceModel in
+                    guard let deviceModel = deviceModel else {
+                        onDone(nil, "No deviceModel returned.")
+                        return
+                    }
+                    
+                    _ = self.apiClient
+                        .setTimeZone(
+                            as: timeZone,
+                            isUserOverride: timeZoneIsUserOverride,
+                            for: deviceModel.deviceId,
+                            in: self.accountId
+                        ).then {
+                            _ in
+                            onDone(deviceModel, nil)
+                        }.catch {
+                            err in
+                            onDone(deviceModel, err)
+                    }
+                }
+                
+            }.catch {
+                err in onDone(nil, err)
+        }
+    }
+    
+    typealias RemoveDeviceOnDone = (String?, Error?) -> Void
+
+    /// Remove a device from the collection.
+    ///
+    /// This call results in a disassociate being called against the Afero service.
+    /// - parameter deviceId: The id of the device to remove.
+    /// - parameter onDone: The completion handler for the call.
+    
+    func removeDevice(with deviceId: String, onDone: @escaping RemoveDeviceOnDone) {
+        apiClient.removeDevice(with: deviceId, in: accountId).then {
+            ()->Void in
+            onDone(deviceId, nil)
+            }.catch {
+                err in
+                onDone(nil, err)
+        }
     }
     
 }

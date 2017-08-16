@@ -54,102 +54,170 @@ extension NSError {
 
 // MARK: - Service-connected device model
 
-open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
-    
-    static let ErrorDomain = "DeviceModel"
-    
-    enum ErrorCode: Int {
-    case timeout = -1
-    }
+public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
 
-    fileprivate(set) open var writeState: DeviceWriteState = .reconciled {
-
-        didSet {
-            switch(writeState) {
-                
-            case .reconciled:
-                self.writeTimer = nil
-                
-            case let .pending(actions):
-                startWriteTimer(actions)
-                
-            default:
-                break
-            }
-            eventSink.send(value: .writeStateChange(newState: writeState))
-        }
-
-    }
+    // MARK: <CustomStringConvertible> <CustomdebugStringConvertible>
     
-    fileprivate var writeTimer: Timer? = nil {
-        willSet {
-            if let writeTimer = writeTimer {
-                writeTimer.invalidate()
-            }
+    public var description: String {
+        get {
+            return "<DeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(deviceId) profileId: \(String(reflecting: profileId))"
         }
     }
     
-    open var writeTimeout: TimeInterval = 10.0
+    public var debugDescription: String { return description }
     
-    fileprivate func startWriteTimer(_ actions: [DeviceBatchAction.Request]) {
+    // MARK: Required stored properties
+    
+    internal(set) public var deviceId: String
+    
+    /// The id used for association. Maps 1:1 to `id`, but is only valid for
+    /// performing associatins.
+    internal(set) public var associationId: String?
+    
+    /// The account to which this device is associated.
+    internal(set) public var accountId: String
+    
+    /// DeviceProfile ID for this device. When setting, will always result in an update sent
+    /// on the `stateSink`. If the profileID differs from current, is non-nil,
+    /// AND the resolver has been configured, this will result in a request to the
+    /// resolver to fetch the profile, which on update will cause a seubsequent send on `stateSink`.
+    
+    init(deviceId: String,
+         accountId: String,
+         associationId: String? = nil,
+         state: DeviceState = DeviceState(),
+         profile: DeviceProfile? = nil,
+         attributeWriteable: DeviceBatchActionRequestable? = nil,
+         profileSource: DeviceProfileSource? = nil
+        ) {
         
-        self.writeTimer = Timer.schedule(repeatInterval: writeTimeout) {
-            [weak self] _ in
-            self?.writeTimer = nil
-            let localizedDescription = NSLocalizedString("Timed out.", comment: "DeviceModel attribute write timeout error description")
-            self?.writeState = .failed(actions: actions, error: NSError(code: .timeout, localizedDescription: localizedDescription))
+        var localState = state
+        
+        if let profileId = profile?.id {
+            localState.profileId = profileId
+        }
+        
+        self.deviceId = deviceId
+        self.accountId = accountId
+        self.associationId = associationId
+        self.currentState = localState
+        self.profile = profile
+        self.profileSource = profileSource
+        self.attributeWriteable = attributeWriteable
+    }
+    
+    convenience init(
+        deviceId: String,
+        accountId: String,
+        associationId: String? = nil,
+        profileId: String,
+        friendlyName: String? = nil,
+        attributes: DeviceAttributes,
+        connectionState: DeviceModelState = DeviceModelState(),
+        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        profileSource: DeviceProfileSource? = nil
+        ) {
+        
+        let state = DeviceState(
+            attributes: attributes,
+            connectionState: connectionState,
+            profileId: profileId,
+            friendlyName: friendlyName
+        )
+        
+        self.init(
+            deviceId: deviceId,
+            accountId: accountId,
+            associationId: associationId,
+            state: state,
+            attributeWriteable: attributeWriteable,
+            profileSource: profileSource
+        )
+    }
+    
+
+    // MARK: <Hashable>
+    
+    public var hashValue: Int { return deviceId.hashValue }
+    
+    // MARK: <DeviceModelable>
+    
+    public var profileId: String? {
+        
+        get { return self.currentState.profileId }
+        
+        set {
+            if newValue == self.currentState.profileId {
+                return
+            }
+            currentState.profileId = newValue
+            updateProfile()
         }
     }
     
-    public init(id: String, state: DeviceState = DeviceState(), accountId: String, profileId: String? = nil, profile: DeviceProfile? = nil, attributeWriteable: DeviceBatchActionRequestable? = nil, profileResolver: DeviceProfileSource? = nil, viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }) {
-        self.id = id
-        self.accountId = accountId
-        self.currentState = state
-        self.profileId = profileId
-        self.profile = profile
-        self.profileSource = profileResolver
-        self.attributeWriteable = attributeWriteable
-        self.viewingNotificationConsumer = viewingNotificationConsumer
+    // MARK: Profile Shortcuts
+    
+    /// The profile associated with this device.
+    public var profile: DeviceProfile? {
+        didSet { eventSink.send(value: .profileUpdate) }
     }
     
-    deinit {
-        commandSignalDisposable = nil
+    // MARK: State
+    
+    /// The current state of the device; canonical storage for isAvailable, attributes, and profileId.
+    public var currentState: DeviceState = [:] {
+        didSet {
+            if oldValue == currentState { return }
+            emitEventsForStateChange(oldValue, newState: currentState)
+        }
+    }
+    
+    fileprivate func emitEventsForStateChange(_ oldState: DeviceState, newState: DeviceState) {
+        eventSink.send(value: .stateUpdate(newState: newState))
+    }
+    
+    public var deleted: Bool = false {
+        didSet {
+            if deleted {
+                eventSink.send(value: .deleted)
+            }
+        }
     }
     
     // MARK: Signals and Pipes
-
-    /**
-    The `DeviceBatchActionRequestable` to which attribute writes are sent. These may
-    go to Conclave or the API, depending upon how things are configured.
-    By default, this is nil, so writes are ignored.
-    */
     
-    weak fileprivate(set) open var attributeWriteable: DeviceBatchActionRequestable? = nil
+    /**
+     The `DeviceBatchActionRequestable` to which attribute writes are sent. These may
+     go to Conclave or the API, depending upon how things are configured.
+     By default, this is nil, so writes are ignored.
+     */
+    
+    weak fileprivate(set) public var attributeWriteable: DeviceBatchActionRequestable? = nil
     
     // MARK: State Signaling
     
     /**
-    `stateChangePipe` handles events coming from wherever The Truth(tm) resides, and 
-    multicasts to anyone interested in the state of this device.
-    */
+     `stateChangePipe` handles events coming from wherever The Truth(tm) resides, and
+     multicasts to anyone interested in the state of this device.
+     */
     
     lazy fileprivate var eventPipe: (DeviceEventSignal, DeviceEventSink) = {
         return DeviceEventSignal.pipe()
     }()
     
     /**
-    The `Signal` on which state changes can be received.
-    */
+     The `Signal` on which state changes can be received.
+     */
     
-    open var eventSignal: DeviceEventSignal {
+    public var eventSignal: DeviceEventSignal {
         return eventPipe.0
     }
     
     /**
-    The `Sink` to which `currentState` is broadcast after being chaned.
-    */
+     The `Sink` to which `currentState` is broadcast after being chaned.
+     */
     
-    open var eventSink: DeviceEventSink {
+    public var eventSink: DeviceEventSink {
         return eventPipe.1
     }
     
@@ -157,7 +225,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
     
     fileprivate var attributePipeTable: [Int: AttributeEventPipe] = [:]
     
-    open func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
+    public func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
         guard let attributeId = attributeId else { return nil }
         
         guard let eventPipe = attributePipeTable[attributeId] else {
@@ -171,12 +239,12 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         return eventPipe
     }
     
-    open func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
+    public func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
         return eventPipeForAttributeId(attributeId)?.signal
     }
     
-    open func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
-
+    public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
+        
         guard let
             attributeDescriptor = descriptorForAttributeId(attributeId) else { return }
         
@@ -184,7 +252,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         
         let event: AttributeEvent = .update(
             accountId: accountId,
-            deviceId: id,
+            deviceId: deviceId,
             attributeId: attributeId,
             attributeDescriptor: attributeDescriptor,
             attributeOption: attributeOption,
@@ -203,44 +271,14 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         attributePipeTable.removeAll()
     }
     
-    // MARK: <DeviceCommandConsuming>
-    
-    fileprivate var commandSignalDisposable: Disposable? = nil {
-        willSet {
-            commandSignalDisposable?.dispose()
-        }
-    }
+    // MARK: - <DeviceCommandConsuming> Default Implementations
     
     lazy fileprivate var commandPipe: (DeviceCommandSignal, DeviceCommandSink) = {
         let ret = DeviceCommandSignal.pipe()
         self.commandSignalDisposable = ret.0
             .observe(on: QueueScheduler.main)
-            .observe {
-            [weak self] event in switch event {
-            case .value(let command):
-
-                switch command {
-                    
-                case let .postBatchActions(actions, completion):
-                    
-                    let localCompletion = {
-                        (results: DeviceBatchAction.Results?, error: Error?) -> Void in
-                        self?.writeTimer = nil
-                        completion(results, error)
-                    }
-                    
-                    let localCommand = DeviceModelCommand.postBatchActions(
-                        actions: actions,
-                        completion: localCompletion
-                    )
-                    
-                    self?.startWriteTimer(actions)
-                    
-                    self?.handleCommand(localCommand)
-                }
-                
-            default: break
-            }
+            .observeValues {
+                [weak self] command in self?.handle(command: command)
         }
         return ret
     }()
@@ -249,77 +287,45 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         return commandPipe.0
     }
     
-    open var commandSink: DeviceCommandSink {
+    public var commandSink: DeviceCommandSink {
         return commandPipe.1
     }
     
-    // MARK: <Hashable>
-    
-    open var hashValue: Int { return id.hashValue }
-    
-    // MARK: State
-    
-    open var id: String
-    
-    fileprivate(set) open var accountId: String
-    
-    open var friendlyName: String? {
-        get { return currentState.friendlyName }
-        set { currentState.friendlyName = newValue }
+    fileprivate var commandSignalDisposable: Disposable? = nil {
+        willSet { commandSignalDisposable?.dispose() }
     }
     
-    /**
-    Whether or not the device is available, according to Conclave.
-    */
-    
-    open var isAvailable: Bool {
-
-        get {
-            return self.currentState.isAvailable
-        }
+    func handle(command: DeviceModelCommand) {
         
-        set {
-            if newValue == currentState.isAvailable {
-                return
+        DDLogDebug(String(format: "Received DeviceModelCommand %@", String(describing: command)))
+        
+        switch command {
+        case let .postBatchActions(actions, completion):
+            
+            let localOnDone: WriteAttributeOnDone = {
+                results, maybeError in
+                completion(results, maybeError)
             }
-            var state = self.currentState
-            state.isAvailable = newValue
-            self.currentState = state
+            
+            attributeWriteable?.post(
+                actions: actions,
+                forDeviceId: self.deviceId,
+                withAccountId: accountId,
+                onDone: localOnDone
+            )
+            
         }
-
     }
 
-    /**
-     True of the device connects directly to Afero, false if it is connected via a hub.
-     */
+    fileprivate var profileSource: DeviceProfileSource?
     
-    open var isDirect: Bool {
-        
-        get {
-            return self.currentState.isDirect
-        }
-        
-        set {
-            if newValue == currentState.isDirect {
-                return
-            }
-            var state = self.currentState
-            state.isDirect = newValue
-            self.currentState = state
-        }
-        
-    }
-
-    public typealias NotifyDeviceViewing = (_ isViewing: Bool, _ deviceId: String) -> Void
-
-    fileprivate var viewingNotificationConsumer: NotifyDeviceViewing = { _, _ in }
-    
-    open func notifyViewing(_ isViewing: Bool) {
-        viewingNotificationConsumer(isViewing, id)
+    deinit {
+        commandSignalDisposable = nil
+        completeAllAttributeSignals()
     }
     
-    open func updateProfile(_ onDone: @escaping (_ success: Bool, _ error: Error?)->Void = { _, _ in }) {
-
+    public func updateProfile(_ onDone: @escaping (_ success: Bool, _ error: Error?)->Void = { _, _ in }) {
+        
         if let profileId = profileId {
             self.profileSource?.fetchProfile(
                 accountId: accountId,
@@ -343,7 +349,7 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         } else {
             self.profileSource?.fetchProfile(
                 accountId: accountId,
-                deviceId: id,
+                deviceId: deviceId,
                 onDone: {
                     [weak self] (maybeProfile, maybeError) in asyncMain {
                         
@@ -361,84 +367,170 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
                 }
             )
         }
-
+        
     }
     
-    fileprivate var profileSource: DeviceProfileSource?
+    // MARK: Error reporting
     
-    /**
-    DeviceProfile ID for this device. When setting, will always result in an update sent
-    on the `stateSink`. If the profileID differs from current, is non-nil,
-    AND the resolver has been configured, this will result in a request to the resolver to fetch the profile,
-    which on update will cause a seubsequent send on `stateSink`.
-    */
+    static var ErrorDomain: String { return "DeviceModel" }
     
-    open var profileId: String? {
+    enum ErrorCode: Int {
+        case timeout = -1
+    }
+    
+    public var deviceErrors = Set<DeviceErrorStatus>()
+    
+    public func error(_ error: DeviceError) {
+        deviceErrors.insert(error.status)
+        eventSink.send(value: .error(error))
+    }
+    
+    public func dismissError(_ status: DeviceErrorStatus) {
+        deviceErrors.removeAll()
+        eventSink.send(value: .errorResolved(status: status))
+    }
+    
+}
 
-        get {
-            return self.currentState.profileId
+/// A DeviceModelable which is connected to the Afero cloud.
+
+public class DeviceModel: BaseDeviceModel {
+    
+    init(
+        deviceId: String,
+        accountId: String,
+        associationId: String? = nil,
+        state: DeviceState = DeviceState(),
+        profile: DeviceProfile? = nil,
+        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        profileSource: DeviceProfileSource? = nil,
+        viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
+        ) {
+        
+        self.viewingNotificationConsumer = viewingNotificationConsumer
+        
+        super.init(
+            deviceId: deviceId,
+            accountId: accountId,
+            associationId: associationId,
+            state: state,
+            profile: profile,
+            attributeWriteable: attributeWriteable,
+            profileSource: profileSource
+        )
+    }
+    
+    convenience init(
+        deviceId: String,
+        accountId: String,
+        associationId: String? = nil,
+        profileId: String,
+        friendlyName: String? = nil,
+        attributes: DeviceAttributes,
+        connectionState: DeviceModelState = DeviceModelState(),
+        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        profileSource: DeviceProfileSource? = nil,
+        viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
+        ) {
+        
+        let state = DeviceState(
+            attributes: attributes,
+            connectionState: connectionState,
+            profileId: profileId,
+            friendlyName: friendlyName
+        )
+        
+        self.init(
+            deviceId: deviceId,
+            accountId: accountId,
+            associationId: associationId,
+            state: state,
+            attributeWriteable: attributeWriteable,
+            profileSource: profileSource,
+            viewingNotificationConsumer: viewingNotificationConsumer
+        )
+    }
+    
+
+    // MARK: <DeviceCommandConsuming>
+    
+    /// The current state of the device; canonical storage for isAvailable, attributes, and profileId.
+    override public var currentState: DeviceState {
+        didSet { writeState = .reconciled }
+    }
+
+    fileprivate(set) public var writeState: DeviceWriteState = .reconciled {
+        
+        didSet {
+            switch(writeState) {
+                
+            case .reconciled:
+                self.writeTimer = nil
+                
+            case let .pending(actions):
+                startWriteTimer(actions)
+                
+            default:
+                break
+            }
+            eventSink.send(value: .writeStateChange(newState: writeState))
         }
         
-        set {
-
-            if newValue == self.currentState.profileId {
-                return
-            }
-            
-            currentState.profileId = newValue
-            updateProfile()
-        }
     }
     
-    // MARK: Profile Shortcuts
-
-    /**
-    The profile associated with this device.
-    */
-    
-    open var profile: DeviceProfile? {
-        didSet {
-            eventSink.send(value: .profileUpdate)
-        }
-    }
-    
-    // MARK: State
-    
-    /**
-    The current state of the device; canonical storage for isAvailable, attributes, and profileId.
-    */
-    
-    open var currentState: DeviceState = [:] {
-        didSet {
-            
-            if oldValue == currentState { return }
-            
-            emitEventsForStateChange(oldValue, newState: currentState)
-            writeState = .reconciled
-        }
-    }
-    
-    fileprivate func emitEventsForStateChange(_ oldState: DeviceState, newState: DeviceState) {
-        eventSink.send(value: .stateUpdate(newState: newState))
-    }
-    
-    open var deleted: Bool = false {
-        didSet {
-            if deleted {
-                eventSink.send(value: .deleted)
+    fileprivate var writeTimer: Timer? = nil {
+        willSet {
+            if let writeTimer = writeTimer {
+                writeTimer.invalidate()
             }
         }
     }
     
-    // MARK: Printable
+    public var writeTimeout: TimeInterval = 10.0
     
-    open var description: String {
-        get {
-            return "<DeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(id) profileId: \(String(reflecting: profileId))"
+    fileprivate func startWriteTimer(_ actions: [DeviceBatchAction.Request]) {
+        
+        self.writeTimer = Timer.schedule(repeatInterval: writeTimeout) {
+            [weak self] _ in
+            self?.writeTimer = nil
+            let localizedDescription = NSLocalizedString("Timed out.", comment: "DeviceModel attribute write timeout error description")
+            self?.writeState = .failed(actions: actions, error: NSError(code: .timeout, localizedDescription: localizedDescription))
         }
     }
     
-    open var debugDescription: String { return description }
+    override func handle(command: DeviceModelCommand) {
+
+        let localCommand: DeviceModelCommand
+        
+        switch command {
+            
+        case let .postBatchActions(actions, completion):
+            
+            let localCompletion = {
+                [weak self] (results: DeviceBatchAction.Results?, error: Error?) -> Void in
+                self?.writeTimer = nil
+                completion(results, error)
+            }
+            
+            localCommand = DeviceModelCommand.postBatchActions(
+                actions: actions,
+                completion: localCompletion
+            )
+            
+            startWriteTimer(actions)
+            
+        }
+        
+        super.handle(command: localCommand)
+    }
+    
+    public typealias NotifyDeviceViewing = (_ isViewing: Bool, _ deviceId: String) -> Void
+
+    fileprivate var viewingNotificationConsumer: NotifyDeviceViewing = { _, _ in }
+    
+    public func notifyViewing(_ isViewing: Bool) {
+        viewingNotificationConsumer(isViewing, deviceId)
+    }
     
     // MARK: OTA Handling
     
@@ -448,9 +540,9 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         }
     }
     
-    open var pendingOTAVersion: String?
+    public var pendingOTAVersion: String?
     
-    open var otaProgress: Float? {
+    public var otaProgress: Float? {
         
         didSet {
             
@@ -477,270 +569,46 @@ open class DeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comp
         }
     }
     
-    // MARK: Error reporting
-    open var deviceErrors = Set<DeviceErrorStatus>()
-    
-    open func error(_ error: DeviceError) {
-        deviceErrors.insert(error.status)
-        eventSink.send(value: .error(error))
-    }
-    
-    open func dismissError(_ status: DeviceErrorStatus) {
-        deviceErrors.removeAll()
-        eventSink.send(value: .errorResolved(status: status))
-    }
 }
 
 // MARK: RecordingDeviceModel
-
-public extension RecordingDeviceModel {
-    
-    public class func ModelsFromActions(_ models: [DeviceModel],  actions: [DeviceRuleAction]) -> [String : RecordingDeviceModel] {
-        
-        var actionMap: [String: DeviceRuleAction] = [:]
-        for action in actions {
-            actionMap[action.deviceId] = action
-        }
-        
-        var modelMap: [String: RecordingDeviceModel] = [:]
-        for model in models {
-            if let action = actionMap[model.id] {
-                let recordingModel = RecordingDeviceModel(model: model, copyState: false)
-                recordingModel.update(action)
-                recordingModel.isAvailable = true
-                modelMap[model.id] = recordingModel
-                DDLogDebug("Added recording model \(String(reflecting: modelMap[model.id]))")
-            }
-        }
-        
-        return modelMap
-    }
-    
-    public class func ModelsFromFilterCriteria(_ models: [DeviceModel], filterCriteria: [DeviceFilterCriterion]) -> [String: FilterCriteriaRecordingDeviceModel] {
-
-        var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]
-        for model in models {
-            let criteria = filterCriteria.filter { $0.deviceId == model.id && (model.profile?.attributeHasControls($0.attribute.id) ?? false) }
-            if criteria.count == 0 { continue }
-            let recordingModel = FilterCriteriaRecordingDeviceModel(model: model, copyState: false)
-            recordingModel.filterCriteria = criteria
-            recordingModel.isAvailable = true
-            modelMap[model.id] = recordingModel
-            DDLogDebug("Added recording model \(String(reflecting: modelMap[model.id]))")
-        }
-        
-        return modelMap
-    }
-}
 
 /**
 A "Dummy" device model which records writeAttribute() in its `currentState`, acknowledges them, and emits DeviceActions.
 */
 
-open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, CustomDebugStringConvertible, Hashable, Comparable {
+public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible {
     
     // MARK: CustomDebugStringConvertible
     
-    open var debugDescription: String {
-        return "<RecordingDeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(id) profileId: \(String(reflecting: profileId)) currentState: \(currentState)"
-    }
-    
-    // MARK: Hashable
-    
-    open var hashValue: Int { return id.hashValue }
-    
-    /**
-     `stateChangePipe` handles events coming from wherever The Truth(tm) resides, and
-     multicasts to anyone interested in the state of this device.
-     */
-    
-    lazy fileprivate var eventPipe: (DeviceEventSignal, DeviceEventSink) = {
-        return DeviceEventSignal.pipe()
-    }()
-    
-    /**
-     The `Signal` on which state changes can be received.
-     */
-    
-    open var eventSignal: DeviceEventSignal {
-        return eventPipe.0
-    }
-    
-    /**
-     The `Sink` to which `currentState` is broadcast after being changed.
-     */
-    
-    open var eventSink: DeviceEventSink {
-        return eventPipe.1
-    }
-    
-    // MARK: Attribute signaling
-    
-    fileprivate var attributePipeTable: [Int: AttributeEventPipe] = [:]
-    
-    open func eventPipeForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
-        guard let attributeId = attributeId else { return nil }
-        
-        guard let eventPipe = attributePipeTable[attributeId] else {
-            let eventPipe = AttributeEventPipe()
-            attributePipeTable[attributeId] = eventPipe
-            return eventPipe
-        }
-        
-        return eventPipe
-    }
-    
-    open func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal? {
-        return eventPipeForAttributeId(attributeId)?.signal
-    }
-    
-    fileprivate func eventSinkForAttributeId(_ attributeId: Int?) -> AttributeEventPipe? {
-        return eventPipeForAttributeId(attributeId)
-    }
-    
-    open func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
-        
-        guard let
-            attributeDescriptor = descriptorForAttributeId(attributeId) else { return }
-        
-        let attributeOption = attributeOptionForAttributeId(attributeId)
-
-        let event: AttributeEvent = .update(
-            accountId: accountId,
-            deviceId: id,
-            attributeId: attributeId,
-            attributeDescriptor: attributeDescriptor,
-            attributeOption: attributeOption,
-            attributeValue: value
-        )
-        
-        DDLogDebug("Signaling AttributeEvent \(event)", tag: TAG)
-        eventSinkForAttributeId(attributeId)?.sendNext(event)
-    }
-    
-    fileprivate func completeAllAttributeSignals() {
-        attributePipeTable.forEach {
-            id, pipe in
-            pipe.sendCompleted()
-        }
-        attributePipeTable.removeAll()
-    }
-    
-    // MARK: <DeviceCommandConsuming>
-    
-    fileprivate var commandSignalDisposable: Disposable? = nil {
-        willSet {
-            commandSignalDisposable?.dispose()
-        }
-    }
-    
-    lazy fileprivate var commandPipe: (DeviceCommandSignal, DeviceCommandSink) = {
-        let ret = DeviceCommandSignal.pipe()
-        self.commandSignalDisposable = ret.0
-            .observe(on: QueueScheduler.main)
-            .observe {
-                event in switch event {
-                case .value(let command): self.handleCommand(command)
-                default: break
-                }
-        }
-        return ret
-    }()
-    
-    fileprivate var commandSignal: DeviceCommandSignal {
-        return commandPipe.0
-    }
-    
-    open var commandSink: DeviceCommandSink {
-        return commandPipe.1
+   override public var debugDescription: String {
+        return "<RecordingDeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(deviceId) profileId: \(String(reflecting: profileId)) currentState: \(currentState)"
     }
     
     // MARK: <DeviceModelable>
     
-    
-    open var attributeWriteable: DeviceBatchActionRequestable? {
-        return self
-    }
-    
-    /**
-    Whether or not the device is available, according to Conclave.
-    */
-    
-    open var isAvailable: Bool {
-        
-        get {
-            return self.currentState.isAvailable
-        }
-        
-        set {
-            if newValue == currentState.isAvailable {
-                return
-            }
-            var state = self.currentState
-            state.isAvailable = newValue
-            self.currentState = state
-        }
-        
-    }
-    
-    /**
-     True of the device connects directly to Afero, false if it is connected via a hub.
-     - warning: This is only included in `RecordingDeviceModel` for protocol compliance,
-                and is not used anywhere else.
-     */
-    
-    open var isDirect: Bool {
-        
-        get {
-            return self.currentState.isDirect
-        }
-        
-        set {
-            if newValue == currentState.isDirect {
-                return
-            }
-            var state = self.currentState
-            state.isDirect = newValue
-            self.currentState = state
-        }
-        
-    }
-
-    open var accountId: String
-    open var id: String
-    open var profileId: String?
-    open var profile: DeviceProfile?
-    open var friendlyName: String?
-    open var deviceErrors = Set<DeviceErrorStatus>()
-    
-    open var currentState: DeviceState = [:] {
-        didSet {
-            emitEventsForStateChange(oldValue, newState: currentState)
-        }
-    }
-    
-    fileprivate func emitEventsForStateChange(_ oldState: DeviceState, newState: DeviceState) {
-        eventSink.send(value: .stateUpdate(newState: newState))
-    }
-    
-    open func clearAttributes() {
+    public func clearAttributes() {
         var state = currentState
         state.attributes.removeAll()
         currentState = state
     }
+
+    /// Whether or not writes to this device cause state to accumulate. This value
+    /// is used as the `accumulative` argument to underlying `update(*)` calls.
     
-    public required init(id: String, accountId: String, profile: DeviceProfile? = nil, profileId: String? = nil, friendlyName: String? = nil, initialState: DeviceState? = nil) {
-        
-        self.id = id
-        self.accountId = accountId
-        self.profile = profile
-        self.profileId = profileId ?? profile?.id
-        self.friendlyName = friendlyName
-        self.currentState = initialState ?? DeviceState()
-    }
+    var accumulative: Bool = true
     
     public convenience init(model: DeviceModelable, copyState: Bool = false) {
-        self.init(id: model.id, accountId: model.accountId, profile: model.profile, profileId: model.profileId, friendlyName: model.friendlyName, initialState: (copyState ? model.currentState : nil))
+        
+        self.init(
+            deviceId: model.deviceId,
+            accountId: model.accountId,
+            associationId: model.associationId,
+            state: (copyState ? model.currentState : DeviceState(profileId: model.profileId ?? model.profile?.id, friendlyName: model.friendlyName)),
+            profile: model.profile
+        )
+        
+        attributeWriteable = self
     }
     
     deinit {
@@ -748,16 +616,15 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         completeAllAttributeSignals()
     }
 
-    /// Whether or not writes to this device cause state to accumulate. This value
-    /// is used as the `accumulative` argument to underlying `update(*)` calls.
-    
-    var accumulative: Bool = true
+}
 
-    // MARK: <DeviceBatchActionRequestable>
-    
-    // We masquerade as a DeviceBatchActionRequestable so that we're able to be wired directly
-    // to ProfileControls, which in turn allows us to both record and publish state changes
-    // without going through a service.
+// MARK: RecordingDeviceModel - <DeviceBatchActionRequestable>
+
+extension RecordingDeviceModel: DeviceBatchActionRequestable {
+
+    /// We masquerade as a DeviceBatchActionRequestable so that we're able to be wired directly
+    /// to ProfileControls, which in turn allows us to both record and publish state changes
+    /// without going through a service.
     
     public func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
         
@@ -768,8 +635,8 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
             return
         }
         
-        if deviceId != self.id {
-            onDone(nil, "Incorrect deviceId \(deviceId) (expected \(self.id))")
+        if deviceId != self.deviceId {
+            onDone(nil, "Incorrect deviceId \(deviceId) (expected \(self.deviceId))")
             return
         }
         
@@ -787,14 +654,59 @@ open class RecordingDeviceModel: DeviceModelable, DeviceBatchActionRequestable, 
         
         asyncMain { onDone(results, nil) }
     }
-    
+
 }
 
-open class FilterCriteriaRecordingDeviceModel: RecordingDeviceModel, DeviceFilterCriteriaSource {
+public extension RecordingDeviceModel {
+    
+    public class func ModelsFromActions(_ models: [DeviceModel],  actions: [DeviceRuleAction]) -> [String : RecordingDeviceModel] {
+        
+        var actionMap: [String: DeviceRuleAction] = [:]
+        for action in actions {
+            actionMap[action.deviceId] = action
+        }
+        
+        var modelMap: [String: RecordingDeviceModel] = [:]
+        for model in models {
+            if let action = actionMap[model.deviceId] {
+                let recordingModel = RecordingDeviceModel(model: model, copyState: false)
+                recordingModel.update(action)
+                recordingModel.isAvailable = true
+                modelMap[model.deviceId] = recordingModel
+                DDLogDebug("Added recording model \(String(reflecting: modelMap[model.deviceId]))")
+            }
+        }
+        
+        return modelMap
+    }
+    
+    public var isAvailable: Bool {
+        get { return currentState.isAvailable }
+        set { currentState.isAvailable = newValue }
+    }
+    
+    public class func ModelsFromFilterCriteria(_ models: [DeviceModel], filterCriteria: [DeviceFilterCriterion]) -> [String: FilterCriteriaRecordingDeviceModel] {
+        
+        var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]
+        for model in models {
+            let criteria = filterCriteria.filter { $0.deviceId == model.deviceId && (model.profile?.attributeHasControls($0.attribute.id) ?? false) }
+            if criteria.count == 0 { continue }
+            let recordingModel = FilterCriteriaRecordingDeviceModel(model: model, copyState: false)
+            recordingModel.filterCriteria = criteria
+            recordingModel.isAvailable = true
+            modelMap[model.deviceId] = recordingModel
+            DDLogDebug("Added recording model \(String(reflecting: modelMap[model.deviceId]))")
+        }
+        
+        return modelMap
+    }
+}
+
+public class FilterCriteriaRecordingDeviceModel: RecordingDeviceModel, DeviceFilterCriteriaSource {
 
     // MARK: <DeviceFilterCriteriaOperable>
     
-    open var attributeFilterOperations: [Int : DeviceFilterCriterion.Operation] = [:]
+    public var attributeFilterOperations: [Int : DeviceFilterCriterion.Operation] = [:]
 }
 
 // MARK: Presentation helpers

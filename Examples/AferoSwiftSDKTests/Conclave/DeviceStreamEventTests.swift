@@ -71,45 +71,177 @@ class DeviceStreamEventTests: QuickSpec {
         describe("DeviceStreamEvent.Peripheral.Status instances") {
             
             let s1 = DeviceStreamEvent.Peripheral.Status()
-            let s2 = DeviceStreamEvent.Peripheral.Status(flags: .available)
-            let s3 = DeviceStreamEvent.Peripheral.Status(flags: .visible)
-            let s4 = DeviceStreamEvent.Peripheral.Status(flags: [.available, .visible, .connected, .direct], rssi: 20)
             
+            let s2 = DeviceStreamEvent.Peripheral.Status(isAvailable: true)
+            let s2f = DeviceStreamEvent.Peripheral.Status(isAvailable: false)
+            
+            let s3 = DeviceStreamEvent.Peripheral.Status(isVisible: true)
+            let s3f = DeviceStreamEvent.Peripheral.Status(isVisible: false)
+            
+            let s4 = DeviceStreamEvent.Peripheral.Status(isDirty: true)
+            let s4f = DeviceStreamEvent.Peripheral.Status(isDirty: false)
+            
+            let s5 = DeviceStreamEvent.Peripheral.Status(isConnectable: true)
+            let s5f = DeviceStreamEvent.Peripheral.Status(isConnectable: false)
+            
+            let s6 = DeviceStreamEvent.Peripheral.Status(isConnected: true)
+            let s6f = DeviceStreamEvent.Peripheral.Status(isConnected: false)
+            
+            let s7 = DeviceStreamEvent.Peripheral.Status(isRebooted: true)
+            let s7f = DeviceStreamEvent.Peripheral.Status(isRebooted: false)
+            
+            let s8 = DeviceStreamEvent.Peripheral.Status(isDirect: true)
+            let s8f = DeviceStreamEvent.Peripheral.Status(isDirect: false)
+            
+            let s9 = DeviceStreamEvent.Peripheral.Status(RSSI: 100)
+
             // MARK: .. should initialize
             
             it("should initialize properly") {
                 
-                expect(s1.isAvailable).to(beFalse())
-                expect(s1.isVisible).to(beFalse())
-                expect(s1.isConnected).to(beFalse())
-                expect(s1.isDirect).to(beFalse())
-                expect(s1.isRebooted).to(beFalse())
-                expect(s1.isConnectable).to(beFalse())
-                expect(s1.rssi).to(beNil())
+                expect(s1.isAvailable).to(beNil())
+                expect(s1.isVisible).to(beNil())
+                expect(s1.isConnected).to(beNil())
+                expect(s1.isDirect).to(beNil())
+                expect(s1.isDirty).to(beNil())
+                expect(s1.isRebooted).to(beNil())
+                expect(s1.isConnectable).to(beNil())
+                expect(s1.RSSI).to(beNil())
 
                 expect(s2.isAvailable).to(beTrue())
-                expect(s2.isVisible).to(beFalse())
-                expect(s2.isConnected).to(beFalse())
-                expect(s2.isDirect).to(beFalse())
-                expect(s2.isRebooted).to(beFalse())
-                expect(s2.isConnectable).to(beFalse())
-                expect(s2.rssi).to(beNil())
-                
-                expect(s3.isAvailable).to(beFalse())
+                expect(s2.isVisible).to(beNil())
+                expect(s2.isConnected).to(beNil())
+                expect(s2.isDirect).to(beNil())
+                expect(s2.isDirty).to(beNil())
+                expect(s2.isRebooted).to(beNil())
+                expect(s2.isConnectable).to(beNil())
+                expect(s2.RSSI).to(beNil())
+
+                expect(s2f.isAvailable).to(beFalse())
+                expect(s2f.isVisible).to(beNil())
+                expect(s2f.isConnected).to(beNil())
+                expect(s2f.isDirect).to(beNil())
+                expect(s2f.isDirty).to(beNil())
+                expect(s2f.isRebooted).to(beNil())
+                expect(s2f.isConnectable).to(beNil())
+                expect(s2f.RSSI).to(beNil())
+
+                expect(s3.isAvailable).to(beNil())
                 expect(s3.isVisible).to(beTrue())
-                expect(s3.isConnected).to(beFalse())
-                expect(s3.isDirect).to(beFalse())
-                expect(s3.isRebooted).to(beFalse())
-                expect(s3.isConnectable).to(beFalse())
-                expect(s3.rssi).to(beNil())
+                expect(s3.isConnected).to(beNil())
+                expect(s3.isDirect).to(beNil())
+                expect(s3.isDirty).to(beNil())
+                expect(s3.isRebooted).to(beNil())
+                expect(s3.isConnectable).to(beNil())
+                expect(s3.RSSI).to(beNil())
                 
-                expect(s4.isAvailable).to(beTrue())
-                expect(s4.isVisible).to(beTrue())
-                expect(s4.isConnected).to(beTrue())
-                expect(s4.isDirect).to(beTrue())
-                expect(s4.isRebooted).to(beFalse())
-                expect(s4.isConnectable).to(beFalse())
-                expect(s4.rssi) == 20
+                expect(s3f.isAvailable).to(beNil())
+                expect(s3f.isVisible).to(beFalse())
+                expect(s3f.isConnected).to(beNil())
+                expect(s3f.isDirect).to(beNil())
+                expect(s3f.isDirty).to(beNil())
+                expect(s3f.isRebooted).to(beNil())
+                expect(s3f.isConnectable).to(beNil())
+                expect(s3f.RSSI).to(beNil())
+                
+                expect(s4.isAvailable).to(beNil())
+                expect(s4.isVisible).to(beNil())
+                expect(s4.isConnected).to(beNil())
+                expect(s4.isDirect).to(beNil())
+                expect(s4.isDirty).to(beTrue())
+                expect(s4.isRebooted).to(beNil())
+                expect(s4.isConnectable).to(beNil())
+                expect(s4.RSSI).to(beNil())
+                
+                expect(s4f.isAvailable).to(beNil())
+                expect(s4f.isVisible).to(beNil())
+                expect(s4f.isConnected).to(beNil())
+                expect(s4f.isDirect).to(beNil())
+                expect(s4f.isDirty).to(beFalse())
+                expect(s4f.isRebooted).to(beNil())
+                expect(s4f.isConnectable).to(beNil())
+                expect(s4f.RSSI).to(beNil())
+                
+                expect(s5.isAvailable).to(beNil())
+                expect(s5.isVisible).to(beNil())
+                expect(s5.isConnected).to(beNil())
+                expect(s5.isDirect).to(beNil())
+                expect(s5.isDirty).to(beNil())
+                expect(s5.isRebooted).to(beNil())
+                expect(s5.isConnectable).to(beTrue())
+                expect(s5.RSSI).to(beNil())
+                
+                expect(s5f.isAvailable).to(beNil())
+                expect(s5f.isVisible).to(beNil())
+                expect(s5f.isConnected).to(beNil())
+                expect(s5f.isDirect).to(beNil())
+                expect(s5f.isDirty).to(beNil())
+                expect(s5f.isRebooted).to(beNil())
+                expect(s5f.isConnectable).to(beFalse())
+                expect(s5f.RSSI).to(beNil())
+                
+                expect(s6.isAvailable).to(beNil())
+                expect(s6.isVisible).to(beNil())
+                expect(s6.isConnected).to(beTrue())
+                expect(s6.isDirect).to(beNil())
+                expect(s6.isDirty).to(beNil())
+                expect(s6.isRebooted).to(beNil())
+                expect(s6.isConnectable).to(beNil())
+                expect(s6.RSSI).to(beNil())
+                
+                expect(s6f.isAvailable).to(beNil())
+                expect(s6f.isVisible).to(beNil())
+                expect(s6f.isConnected).to(beFalse())
+                expect(s6f.isDirect).to(beNil())
+                expect(s6f.isDirty).to(beNil())
+                expect(s6f.isRebooted).to(beNil())
+                expect(s6f.isConnectable).to(beNil())
+                expect(s6f.RSSI).to(beNil())
+                
+                expect(s7.isAvailable).to(beNil())
+                expect(s7.isVisible).to(beNil())
+                expect(s7.isConnected).to(beNil())
+                expect(s7.isDirect).to(beNil())
+                expect(s7.isDirty).to(beNil())
+                expect(s7.isRebooted).to(beTrue())
+                expect(s7.isConnectable).to(beNil())
+                expect(s7.RSSI).to(beNil())
+                
+                expect(s7f.isAvailable).to(beNil())
+                expect(s7f.isVisible).to(beNil())
+                expect(s7f.isConnected).to(beNil())
+                expect(s7f.isDirect).to(beNil())
+                expect(s7f.isDirty).to(beNil())
+                expect(s7f.isRebooted).to(beFalse())
+                expect(s7f.isConnectable).to(beNil())
+                expect(s7f.RSSI).to(beNil())
+                
+                expect(s8.isAvailable).to(beNil())
+                expect(s8.isVisible).to(beNil())
+                expect(s8.isConnected).to(beNil())
+                expect(s8.isDirect).to(beTrue())
+                expect(s8.isDirty).to(beNil())
+                expect(s8.isRebooted).to(beNil())
+                expect(s8.isConnectable).to(beNil())
+                expect(s8.RSSI).to(beNil())
+                
+                expect(s8f.isAvailable).to(beNil())
+                expect(s8f.isVisible).to(beNil())
+                expect(s8f.isConnected).to(beNil())
+                expect(s8f.isDirect).to(beFalse())
+                expect(s8f.isDirty).to(beNil())
+                expect(s8f.isRebooted).to(beNil())
+                expect(s8f.isConnectable).to(beNil())
+                expect(s8f.RSSI).to(beNil())
+                
+                expect(s9.isAvailable).to(beNil())
+                expect(s9.isVisible).to(beNil())
+                expect(s9.isConnected).to(beNil())
+                expect(s9.isDirect).to(beNil())
+                expect(s9.isDirty).to(beNil())
+                expect(s9.isRebooted).to(beNil())
+                expect(s9.isConnectable).to(beNil())
+                expect(s9.RSSI) == 100
             }
             
             // MARK: .. should compare
@@ -117,39 +249,329 @@ class DeviceStreamEventTests: QuickSpec {
             it("should compare properly") {
                 expect(s1).to(equal(s1))
                 expect(s1).toNot(equal(s2))
+                expect(s1).toNot(equal(s2f))
                 expect(s1).toNot(equal(s3))
+                expect(s1).toNot(equal(s3f))
                 expect(s1).toNot(equal(s4))
-                
-                expect(s2).to(equal(s2))
+                expect(s1).toNot(equal(s4f))
+                expect(s1).toNot(equal(s5))
+                expect(s1).toNot(equal(s5f))
+                expect(s1).toNot(equal(s6))
+                expect(s1).toNot(equal(s6f))
+                expect(s1).toNot(equal(s7))
+                expect(s1).toNot(equal(s7f))
+                expect(s1).toNot(equal(s8))
+                expect(s1).toNot(equal(s8f))
+                expect(s1).toNot(equal(s9))
+
                 expect(s2).toNot(equal(s1))
+                expect(s2).to(equal(s2))
+                expect(s2).toNot(equal(s2f))
                 expect(s2).toNot(equal(s3))
+                expect(s2).toNot(equal(s3f))
                 expect(s2).toNot(equal(s4))
+                expect(s2).toNot(equal(s4f))
+                expect(s2).toNot(equal(s5))
+                expect(s2).toNot(equal(s5f))
+                expect(s2).toNot(equal(s6))
+                expect(s2).toNot(equal(s6f))
+                expect(s2).toNot(equal(s7))
+                expect(s2).toNot(equal(s7f))
+                expect(s2).toNot(equal(s8))
+                expect(s2).toNot(equal(s8f))
+                expect(s2).toNot(equal(s9))
+
+                expect(s2f).toNot(equal(s1))
+                expect(s2f).toNot(equal(s2))
+                expect(s2f).to(equal(s2f))
+                expect(s2f).toNot(equal(s3))
+                expect(s2f).toNot(equal(s3f))
+                expect(s2f).toNot(equal(s4))
+                expect(s2f).toNot(equal(s4f))
+                expect(s2f).toNot(equal(s5))
+                expect(s2f).toNot(equal(s5f))
+                expect(s2f).toNot(equal(s6))
+                expect(s2f).toNot(equal(s6f))
+                expect(s2f).toNot(equal(s7))
+                expect(s2f).toNot(equal(s7f))
+                expect(s2f).toNot(equal(s8))
+                expect(s2f).toNot(equal(s8f))
+                expect(s2f).toNot(equal(s9))
                 
-                expect(s3).to(equal(s3))
                 expect(s3).toNot(equal(s1))
                 expect(s3).toNot(equal(s2))
+                expect(s3).toNot(equal(s2f))
+                expect(s3).to(equal(s3))
+                expect(s3).toNot(equal(s3f))
                 expect(s3).toNot(equal(s4))
+                expect(s3).toNot(equal(s4f))
+                expect(s3).toNot(equal(s5))
+                expect(s3).toNot(equal(s5f))
+                expect(s3).toNot(equal(s6))
+                expect(s3).toNot(equal(s6f))
+                expect(s3).toNot(equal(s7))
+                expect(s3).toNot(equal(s7f))
+                expect(s3).toNot(equal(s8))
+                expect(s3).toNot(equal(s8f))
+                expect(s3).toNot(equal(s9))
                 
-                expect(s4).to(equal(s4))
+                expect(s3f).toNot(equal(s1))
+                expect(s3f).toNot(equal(s2))
+                expect(s3f).toNot(equal(s2f))
+                expect(s3f).toNot(equal(s3))
+                expect(s3f).to(equal(s3f))
+                expect(s3f).toNot(equal(s4))
+                expect(s3f).toNot(equal(s4f))
+                expect(s3f).toNot(equal(s5))
+                expect(s3f).toNot(equal(s5f))
+                expect(s3f).toNot(equal(s6))
+                expect(s3f).toNot(equal(s6f))
+                expect(s3f).toNot(equal(s7))
+                expect(s3f).toNot(equal(s7f))
+                expect(s3f).toNot(equal(s8))
+                expect(s3f).toNot(equal(s8f))
+                expect(s3f).toNot(equal(s9))
+                
                 expect(s4).toNot(equal(s1))
                 expect(s4).toNot(equal(s2))
+                expect(s4).toNot(equal(s2f))
                 expect(s4).toNot(equal(s3))
+                expect(s4).toNot(equal(s3f))
+                expect(s4).to(equal(s4))
+                expect(s4).toNot(equal(s4f))
+                expect(s4).toNot(equal(s5))
+                expect(s4).toNot(equal(s5f))
+                expect(s4).toNot(equal(s6))
+                expect(s4).toNot(equal(s6f))
+                expect(s4).toNot(equal(s7))
+                expect(s4).toNot(equal(s7f))
+                expect(s4).toNot(equal(s8))
+                expect(s4).toNot(equal(s8f))
+                expect(s4).toNot(equal(s9))
+                
+                expect(s4f).toNot(equal(s1))
+                expect(s4f).toNot(equal(s2))
+                expect(s4f).toNot(equal(s2f))
+                expect(s4f).toNot(equal(s3))
+                expect(s4f).toNot(equal(s3f))
+                expect(s4f).toNot(equal(s4))
+                expect(s4f).to(equal(s4f))
+                expect(s4f).toNot(equal(s5))
+                expect(s4f).toNot(equal(s5f))
+                expect(s4f).toNot(equal(s6))
+                expect(s4f).toNot(equal(s6f))
+                expect(s4f).toNot(equal(s7))
+                expect(s4f).toNot(equal(s7f))
+                expect(s4f).toNot(equal(s8))
+                expect(s4f).toNot(equal(s8f))
+                expect(s4f).toNot(equal(s9))
+                
+                expect(s5).toNot(equal(s1))
+                expect(s5).toNot(equal(s2))
+                expect(s5).toNot(equal(s2f))
+                expect(s5).toNot(equal(s3))
+                expect(s5).toNot(equal(s3f))
+                expect(s5).toNot(equal(s4))
+                expect(s5).toNot(equal(s4f))
+                expect(s5).to(equal(s5))
+                expect(s5).toNot(equal(s5f))
+                expect(s5).toNot(equal(s6))
+                expect(s5).toNot(equal(s6f))
+                expect(s5).toNot(equal(s7))
+                expect(s5).toNot(equal(s7f))
+                expect(s5).toNot(equal(s8))
+                expect(s5).toNot(equal(s8f))
+                expect(s5).toNot(equal(s9))
+                
+                expect(s5f).toNot(equal(s1))
+                expect(s5f).toNot(equal(s2))
+                expect(s5f).toNot(equal(s2f))
+                expect(s5f).toNot(equal(s3))
+                expect(s5f).toNot(equal(s3f))
+                expect(s5f).toNot(equal(s4))
+                expect(s5f).toNot(equal(s4f))
+                expect(s5f).toNot(equal(s5))
+                expect(s5f).to(equal(s5f))
+                expect(s5f).toNot(equal(s6))
+                expect(s5f).toNot(equal(s6f))
+                expect(s5f).toNot(equal(s7))
+                expect(s5f).toNot(equal(s7f))
+                expect(s5f).toNot(equal(s8))
+                expect(s5f).toNot(equal(s8f))
+                expect(s5f).toNot(equal(s9))
+                
+                expect(s6).toNot(equal(s1))
+                expect(s6).toNot(equal(s2))
+                expect(s6).toNot(equal(s2f))
+                expect(s6).toNot(equal(s3))
+                expect(s6).toNot(equal(s3f))
+                expect(s6).toNot(equal(s4))
+                expect(s6).toNot(equal(s4f))
+                expect(s6).toNot(equal(s5))
+                expect(s6).toNot(equal(s5f))
+                expect(s6).to(equal(s6))
+                expect(s6).toNot(equal(s6f))
+                expect(s6).toNot(equal(s7))
+                expect(s6).toNot(equal(s7f))
+                expect(s6).toNot(equal(s8))
+                expect(s6).toNot(equal(s8f))
+                expect(s6).toNot(equal(s9))
+                
+                expect(s6f).toNot(equal(s1))
+                expect(s6f).toNot(equal(s2))
+                expect(s6f).toNot(equal(s2f))
+                expect(s6f).toNot(equal(s3))
+                expect(s6f).toNot(equal(s3f))
+                expect(s6f).toNot(equal(s4))
+                expect(s6f).toNot(equal(s4f))
+                expect(s6f).toNot(equal(s5))
+                expect(s6f).toNot(equal(s5f))
+                expect(s6f).toNot(equal(s6))
+                expect(s6f).to(equal(s6f))
+                expect(s6f).toNot(equal(s7))
+                expect(s6f).toNot(equal(s7f))
+                expect(s6f).toNot(equal(s8))
+                expect(s6f).toNot(equal(s8f))
+                expect(s6f).toNot(equal(s9))
+                
+                expect(s7).toNot(equal(s1))
+                expect(s7).toNot(equal(s2))
+                expect(s7).toNot(equal(s2f))
+                expect(s7).toNot(equal(s3))
+                expect(s7).toNot(equal(s3f))
+                expect(s7).toNot(equal(s4))
+                expect(s7).toNot(equal(s4f))
+                expect(s7).toNot(equal(s5))
+                expect(s7).toNot(equal(s5f))
+                expect(s7).toNot(equal(s6))
+                expect(s7).toNot(equal(s6f))
+                expect(s7).to(equal(s7))
+                expect(s7).toNot(equal(s7f))
+                expect(s7).toNot(equal(s8))
+                expect(s7).toNot(equal(s8f))
+                expect(s7).toNot(equal(s9))
+                
+                expect(s7f).toNot(equal(s1))
+                expect(s7f).toNot(equal(s2))
+                expect(s7f).toNot(equal(s2f))
+                expect(s7f).toNot(equal(s3))
+                expect(s7f).toNot(equal(s3f))
+                expect(s7f).toNot(equal(s4))
+                expect(s7f).toNot(equal(s4f))
+                expect(s7f).toNot(equal(s5))
+                expect(s7f).toNot(equal(s5f))
+                expect(s7f).toNot(equal(s6))
+                expect(s7f).toNot(equal(s6f))
+                expect(s7f).toNot(equal(s7))
+                expect(s7f).to(equal(s7f))
+                expect(s7f).toNot(equal(s8))
+                expect(s7f).toNot(equal(s8f))
+                expect(s7f).toNot(equal(s9))
+                
+                expect(s8).toNot(equal(s1))
+                expect(s8).toNot(equal(s2))
+                expect(s8).toNot(equal(s2f))
+                expect(s8).toNot(equal(s3))
+                expect(s8).toNot(equal(s3f))
+                expect(s8).toNot(equal(s4))
+                expect(s8).toNot(equal(s4f))
+                expect(s8).toNot(equal(s5))
+                expect(s8).toNot(equal(s5f))
+                expect(s8).toNot(equal(s6))
+                expect(s8).toNot(equal(s6f))
+                expect(s8).toNot(equal(s7))
+                expect(s8).toNot(equal(s7f))
+                expect(s8).to(equal(s8))
+                expect(s8).toNot(equal(s8f))
+                expect(s8).toNot(equal(s9))
+                
+                expect(s8f).toNot(equal(s1))
+                expect(s8f).toNot(equal(s2))
+                expect(s8f).toNot(equal(s2f))
+                expect(s8f).toNot(equal(s3))
+                expect(s8f).toNot(equal(s3f))
+                expect(s8f).toNot(equal(s4))
+                expect(s8f).toNot(equal(s4f))
+                expect(s8f).toNot(equal(s5))
+                expect(s8f).toNot(equal(s5f))
+                expect(s8f).toNot(equal(s6))
+                expect(s8f).toNot(equal(s6f))
+                expect(s8f).toNot(equal(s7))
+                expect(s8f).toNot(equal(s7f))
+                expect(s8f).toNot(equal(s8))
+                expect(s8f).to(equal(s8f))
+                expect(s8f).toNot(equal(s9))
+                
+                expect(s9).toNot(equal(s1))
+                expect(s9).toNot(equal(s2))
+                expect(s9).toNot(equal(s2f))
+                expect(s9).toNot(equal(s3))
+                expect(s9).toNot(equal(s3f))
+                expect(s9).toNot(equal(s4))
+                expect(s9).toNot(equal(s4f))
+                expect(s9).toNot(equal(s5))
+                expect(s9).toNot(equal(s5f))
+                expect(s9).toNot(equal(s6))
+                expect(s9).toNot(equal(s6f))
+                expect(s9).toNot(equal(s7))
+                expect(s9).toNot(equal(s7f))
+                expect(s9).toNot(equal(s8))
+                expect(s9).toNot(equal(s8f))
+                expect(s9).to(equal(s9))
             }
             
             // MARK: .. should JSON-roundtrip
             
             it("should JSON-roundtrip properly") {
+
                 let s1b: DeviceStreamEvent.Peripheral.Status? = |<s1.JSONDict
                 expect(s1b) == s1
 
                 let s2b: DeviceStreamEvent.Peripheral.Status? = |<s2.JSONDict
                 expect(s2b) == s2
 
+                let s2fb: DeviceStreamEvent.Peripheral.Status? = |<s2f.JSONDict
+                expect(s2fb) == s2f
+                
                 let s3b: DeviceStreamEvent.Peripheral.Status? = |<s3.JSONDict
                 expect(s3b) == s3
-
+                
+                let s3fb: DeviceStreamEvent.Peripheral.Status? = |<s3f.JSONDict
+                expect(s3fb) == s3f
+                
                 let s4b: DeviceStreamEvent.Peripheral.Status? = |<s4.JSONDict
                 expect(s4b) == s4
+                
+                let s4fb: DeviceStreamEvent.Peripheral.Status? = |<s4f.JSONDict
+                expect(s4fb) == s4f
+                
+                let s5b: DeviceStreamEvent.Peripheral.Status? = |<s5.JSONDict
+                expect(s5b) == s5
+                
+                let s5fb: DeviceStreamEvent.Peripheral.Status? = |<s5f.JSONDict
+                expect(s5fb) == s5f
+                
+                let s6b: DeviceStreamEvent.Peripheral.Status? = |<s6.JSONDict
+                expect(s6b) == s6
+                
+                let s6fb: DeviceStreamEvent.Peripheral.Status? = |<s6f.JSONDict
+                expect(s6fb) == s6f
+                
+                let s7b: DeviceStreamEvent.Peripheral.Status? = |<s7.JSONDict
+                expect(s7b) == s7
+                
+                let s7fb: DeviceStreamEvent.Peripheral.Status? = |<s7f.JSONDict
+                expect(s7fb) == s7f
+
+                let s8b: DeviceStreamEvent.Peripheral.Status? = |<s8.JSONDict
+                expect(s8b) == s8
+                
+                let s8fb: DeviceStreamEvent.Peripheral.Status? = |<s8f.JSONDict
+                expect(s8fb) == s8f
+
+                let s9b: DeviceStreamEvent.Peripheral.Status? = |<s9.JSONDict
+                expect(s9b) == s9
+                
             }
         }
         
@@ -321,7 +743,7 @@ class DeviceStreamEventTests: QuickSpec {
                 expect(interrupted?.code) == 1
 
                 let unknownUUID = UpdateState(maybeStateCode: 2)
-                expect(unknownUUID) == UpdateState.unknownUUID
+                expect(unknownUUID) == UpdateState.unknownAttribute
                 expect(unknownUUID?.code) == 2
                 
                 let lengthExceeded = UpdateState(maybeStateCode: 3)
@@ -406,7 +828,7 @@ class DeviceStreamEventTests: QuickSpec {
                     Attribute(id: 22, data: "0200", value: "2"),
                     Attribute(id: 23, data: "0300", value: "3"),
                 ],
-                status: Status(flags: [.available, .visible]),
+                status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName1",
                 virtual: true,
                 locationState: .known(l1),
@@ -424,7 +846,7 @@ class DeviceStreamEventTests: QuickSpec {
                     Attribute(id: 5, data: "0500", value: "5"),
                     Attribute(id: 6, data: "0600", value: "6"),
                 ],
-                status: Status(flags: [.available, .visible]),
+                status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName2",
                 virtual: true,
                 locationState: .known(l2),
@@ -442,7 +864,7 @@ class DeviceStreamEventTests: QuickSpec {
                     Attribute(id: 8, data: "0800", value: "8"),
                     Attribute(id: 9, data: "0900", value: "9"),
                 ],
-                status: Status(flags: [.available, .visible]),
+                status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName3",
                 virtual: true,
                 locationState: .known(l3),
@@ -460,7 +882,7 @@ class DeviceStreamEventTests: QuickSpec {
                     Attribute(id: 11, data: "0b00", value: "11"),
                     Attribute(id: 12, data: "0c00", value: "12"),
                 ],
-                status: Status(flags: [.available, .visible]),
+                status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName4",
                 virtual: true,
                 locationState: .known(l4),
@@ -478,7 +900,7 @@ class DeviceStreamEventTests: QuickSpec {
                     Attribute(id: 14, data: "0e00", value: "14"),
                     Attribute(id: 15, data: "0f00", value: "15"),
                 ],
-                status: Status(flags: [.available, .visible]),
+                status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName5",
                 virtual: true,
                 tags: [
@@ -498,9 +920,9 @@ class DeviceStreamEventTests: QuickSpec {
                 expect(p1.attribute(for: 22)) == Attribute(id: 22, data: "0200", value: "2")
                 expect(p1.attribute(for: 23)) == Attribute(id: 23, data: "0300", value: "3")
                 expect(p1.attribute(for: 0)).to(beNil())
-                expect(p1.status) == Status(flags: [.available, .visible])
-                expect(p1.isAvailable).to(beTrue())
-                expect(p1.isVisible).to(beTrue())
+                expect(p1.status) == Status(isAvailable: true, isVisible: true)
+                expect(p1.status.isAvailable).to(beTrue())
+                expect(p1.status.isVisible).to(beTrue())
                 expect(p1.friendlyName) == "friendlyName1"
                 expect(p1.virtual) == true
                 expect(p1.tags.count) == 1
@@ -817,7 +1239,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
 
                 do {
-                    fixture = (try self.readJson("conclave_peripheralList")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave_peripheralList"))!
                 } catch {
                     fatalError("Unable to read fixture conclave_peripheralList: \(String(reflecting: error))")
                 }
@@ -846,13 +1268,13 @@ class DeviceStreamEventTests: QuickSpec {
                         expect(peripherals[0].attribute(for: 1024)?.value).to(beNil())
                         expect(peripherals[0].createdTimestampMs) == 1476119789875
                         expect(peripherals[0].created) == Date.dateWithMillisSince1970(peripherals[0].createdTimestampMs)
-                        expect(peripherals[0].isDirect).to(beTrue())
+                        expect(peripherals[0].status.isDirect).to(beTrue())
 
                         expect(peripherals[1].attribute(for: 1024)?.data) == "0100"
                         expect(peripherals[1].attribute(for: 1024)?.value) == "1"
                         expect(peripherals[1].createdTimestampMs) == 123456789022
                         expect(peripherals[1].created) == Date.dateWithMillisSince1970( peripherals[1].createdTimestampMs)
-                        expect(peripherals[1].isDirect).to(beFalse())
+                        expect(peripherals[1].status.isDirect).to(beFalse())
 
                         expect(currentSeq) == 100
                         
@@ -870,7 +1292,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-attributeUpdate-attr_change")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-attributeUpdate-attr_change"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-attributeUpdate-attr_change: \(String(reflecting: error))")
                 }
@@ -897,7 +1319,7 @@ class DeviceStreamEventTests: QuickSpec {
                         expect(seq).to(beNil())
                         expect(requestId) == 19
                         expect(peripheralId) == "ffffffff"
-                        expect(state) == DeviceStreamEvent.Peripheral.UpdateState.unknownUUID
+                        expect(state) == DeviceStreamEvent.Peripheral.UpdateState.unknownAttribute
                         expect(reason) == DeviceStreamEvent.Peripheral.UpdateReason.mcuInitiated
                         expect(attribute.id) == 1000
                         expect(attribute.data) == "0100"
@@ -918,7 +1340,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-statusUpdate-status_change")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-statusUpdate-status_change"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-statusUpdate-status_change: \(String(reflecting: error))")
                 }
@@ -947,10 +1369,10 @@ class DeviceStreamEventTests: QuickSpec {
                         expect(status.isVisible).to(beTrue())
                         expect(status.isAvailable).to(beFalse())
                         
-                        if let rssi = status.rssi {
-                            expect(rssi) == -33
+                        if let RSSI = status.RSSI {
+                            expect(RSSI) == -33
                         } else {
-                            fail("Expected rssi to not be nil.")
+                            fail("Expected RSSI to not be nil.")
                         }
                         
                     default:
@@ -969,7 +1391,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-OTA-device_ota")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-OTA-device_ota"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-OTA-device_ota: \(String(reflecting: error))")
                 }
@@ -1022,7 +1444,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-start")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-start"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-start: \(String(reflecting: error))")
                     }
@@ -1065,7 +1487,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-inProgress")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-inProgress"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-inProgress: \(String(reflecting: error))")
                     }
@@ -1109,7 +1531,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-complete")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-complete"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-complete: \(String(reflecting: error))")
                     }
@@ -1152,7 +1574,7 @@ class DeviceStreamEventTests: QuickSpec {
                     let fixture: [String: Any]
                     
                     do {
-                        fixture = (try self.readJson("conclave-OTA-ota_progress-unknown")) as! [String: Any]
+                        fixture = (try self.fixture(named: "conclave-OTA-ota_progress-unknown"))!
                     } catch {
                         fatalError("Unable to read fixture conclave-OTA-ota_progress-unknown: \(String(reflecting: error))")
                     }
@@ -1188,13 +1610,13 @@ class DeviceStreamEventTests: QuickSpec {
                 
                 
                 do {
-                    fixtureAccounts = (try self.readJson("conclave-invalidate-accounts")) as! [String: Any]
-                    fixtureLocation = (try self.readJson("conclave-invalidate-location")) as! [String: Any]
-                    fixtureProfilesId = (try self.readJson("conclave-invalidate-profiles-id")) as! [String: Any]
-                    fixtureProfilesDeviceId = (try self.readJson("conclave-invalidate-profiles-deviceId")) as! [String: Any]
-                    fixtureProfilesIdAndDeviceId = (try self.readJson("conclave-invalidate-profiles-id-and-deviceId")) as! [String: Any]
-                    fixtureInvitations = (try self.readJson("conclave-invalidate-invitations")) as! [String: Any]
-                    fixtureNoKind = (try self.readJson("conclave-invalidate-nokind")) as! [String: Any]
+                    fixtureAccounts = (try self.fixture(named: "conclave-invalidate-accounts"))!
+                    fixtureLocation = (try self.fixture(named: "conclave-invalidate-location"))!
+                    fixtureProfilesId = (try self.fixture(named: "conclave-invalidate-profiles-id"))!
+                    fixtureProfilesDeviceId = (try self.fixture(named: "conclave-invalidate-profiles-deviceId"))!
+                    fixtureProfilesIdAndDeviceId = (try self.fixture(named: "conclave-invalidate-profiles-id-and-deviceId"))!
+                    fixtureInvitations = (try self.fixture(named: "conclave-invalidate-invitations"))!
+                    fixtureNoKind = (try self.fixture(named: "conclave-invalidate-nokind"))!
                 } catch {
                     fatalError("Unable to read fixture: \(String(reflecting: error))")
                 }
@@ -1317,7 +1739,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [[String: Any]]
                 
                 do {
-                    fixture = (try self.readJson("conclave-error-device_error")) as! [[String: Any]]
+                    fixture = (try self.fixture(named: "conclave-error-device_error"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-error-device_error: \(String(reflecting: error))")
                 }
@@ -1423,7 +1845,7 @@ class DeviceStreamEventTests: QuickSpec {
                 let fixture: [String: Any]
                 
                 do {
-                    fixture = (try self.readJson("conclave-rate-device_mute")) as! [String: Any]
+                    fixture = (try self.fixture(named: "conclave-rate-device_mute"))!
                 } catch {
                     fatalError("Unable to read fixture conclave-rate-device_mute: \(String(reflecting: error))")
                 }

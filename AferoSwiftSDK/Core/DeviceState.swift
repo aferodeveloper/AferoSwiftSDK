@@ -112,51 +112,168 @@ public enum DeviceWriteState {
     
 }
 
+public typealias DeviceAttributes = Dictionary<Int, AttributeValue>
+
 // MARK: - Device State
 
+extension DeviceState {
+
+    /// Whether or not the device is available.
+    ///
+    /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
+    ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
+    ///         Generally, application developers only need be concerned with `isAvailable`
+    internal(set) public var isAvailable: Bool {
+        get { return connectionState.isAvailable }
+        set { connectionState.isAvailable = newValue }
+    }
+    
+    /// Whether or not a hub can see the device.
+    internal(set) public var isVisible: Bool {
+        get { return connectionState.isVisible }
+        set { connectionState.isVisible = newValue }
+    }
+    
+    /// Whether or not the device rebooted recently.
+    internal(set) public var isRebooted: Bool {
+        get { return connectionState.isRebooted }
+        set { connectionState.isRebooted = newValue }
+    }
+    
+    /// Whether or not the device is connectable.
+    internal(set) public var isConnectable: Bool {
+        get { return connectionState.isConnectable }
+        set { connectionState.isConnectable = newValue }
+    }
+    
+    /// Whether or not the device is connected to the Afero cloud.
+    internal(set) public var isConnected: Bool {
+        get { return connectionState.isConnected }
+        set { connectionState.isConnected = newValue }
+    }
+    
+    /// Whether or not the device is currently linked and communicating
+    /// with the Afero cloud.
+    internal(set) public var isLinked: Bool {
+        get { return connectionState.isLinked }
+        set { connectionState.isLinked = newValue }
+    }
+    
+    /// If true, the device is connected directly to the Afero cloud. If false,
+    /// the device is connected via a hub.
+    internal(set) public var isDirect: Bool {
+        get { return connectionState.isDirect }
+        set { connectionState.isDirect = newValue }
+    }
+    
+    /// The device has one or more attributes pending write to the Afero cloud.
+    internal(set) public var isDirty: Bool {
+        get { return connectionState.isDirty }
+        set { connectionState.isDirty = newValue }
+    }
+    
+    /// The RSSI of the device's connection to its hub, or to the Afero cloud
+    /// if direct.
+    internal(set) public var RSSI: Int {
+        get { return connectionState.RSSI }
+        set { connectionState.RSSI = newValue }
+    }
+    
+    /// The location state of the device.
+    internal(set) public var locationState: LocationState {
+        get { return connectionState.locationState ?? .notLocated }
+        set { connectionState.locationState = newValue }
+    }
+    
+    /// The timestamp of the most recent update.
+    public var updatedTimestamp: Date {
+        get { return connectionState.updatedTimestamp }
+    }
+    
+}
+
+// MARK: ExpressibleByDictionaryLiteral
+
+extension DeviceState:  ExpressibleByDictionaryLiteral {
+
+    public typealias Element = AttributeInstance
+    
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        self.init(elements: elements)
+    }
+
+
+    public init(elements: [(Key, Value)]) {
+        var d = [Key: Value]()
+        for (k, v) in elements {
+            d[k] = v
+        }
+        self.init(attributes: d, profileId: nil, friendlyName: nil)
+    }
+
+}
+
+// MARK: SafeSubscriptable
+
+extension DeviceState: SafeSubscriptable {
+    
+    public typealias Key = Int
+    public typealias Value = AttributeValue
+    
+    public subscript(safe key: Key?) -> Value? {
+        get {
+            if let key = key {
+                return attributes[key]
+            }
+            return nil
+        }
+        
+        set {
+            if let key = key {
+                attributes[key] = newValue
+            }
+        }
+    }
+
+}
+
 /// The set of attributes representing the current state of the device.
-public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebugStringConvertible, Hashable, SafeSubscriptable {
+public struct DeviceState: CustomDebugStringConvertible, Hashable {
+    
+    // MARK: <CustomDebugStringConvertible>
     
     public var debugDescription: String {
         return "<DeviceState> profileId: \(String(reflecting: profileId)) isAvailable: \(isAvailable) attributes: \(attributes)"
     }
     
-    public typealias Key = Int
-    public typealias Value = AttributeValue
-    public typealias Element = AttributeInstance
-    
-    public var isAvailable: Bool
-    public var isDirect: Bool
-    
     public var friendlyName: String?
     public var profileId: String?
     
-    public var locationState: LocationState = .none
-
-    public var attributes: [Key: Value]
+    /// Internal attributes representation
+    internal(set) public var attributes: DeviceAttributes = [:]
     
-    public var attributeInstances: [AttributeInstance] {
-        return attributes.map { AttributeInstance(id: $0, value: $1) }
-    }
+    var connectionState: DeviceModelState = DeviceModelState()
     
-    public init(attributes: [Key: Value], isAvailable: Bool = false, isDirect: Bool = false, profileId: String? = nil, friendlyName: String? = nil) {
+    init(attributes: DeviceAttributes = [:], connectionState: DeviceModelState = DeviceModelState(), profileId: String?, friendlyName: String?) {
         self.attributes = attributes
-        self.isAvailable = isAvailable
-        self.isDirect = isDirect
+        self.connectionState = connectionState
         self.friendlyName = friendlyName
         self.profileId = profileId
     }
     
-    public init(elements: [(Key, Value)], isAvailable: Bool = false, profileId: String? = nil) {
-        var d = [Key: Value]()
-        for (k, v) in elements {
-            d[k] = v
-        }
-        self.init(attributes: d, isAvailable: isAvailable)
-    }
-    
-    public init(dictionaryLiteral elements: (Key, Value)...) {
-        self.init(elements: elements)
+    init(attributes: DeviceAttributes = [:], isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?) {
+        
+        let connectionState = DeviceModelState(
+            isAvailable: isAvailable,
+            isVisible: isDirect
+        )
+        
+        self.init(
+            attributes: attributes,
+                  connectionState: connectionState,
+                  profileId: profileId,
+                  friendlyName: friendlyName
+        )
     }
     
     // MARK: Hashable
@@ -174,21 +291,6 @@ public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebu
         return attributes.count
     }
     
-    // MARK: SafeSubscriptable
-    public subscript(safe key: Key?) -> Value? {
-        get {
-            if let key = key {
-                return attributes[key]
-            }
-            return nil
-        }
-        
-        set {
-            if let key = key {
-                attributes[key] = newValue
-            }
-        }
-    }
     
     public mutating func update(_ attributeInstance: AttributeInstance?) {
         guard let attributeInstance = attributeInstance else { return }
@@ -198,6 +300,12 @@ public struct DeviceState: ExpressibleByDictionaryLiteral, Equatable, CustomDebu
     public mutating func reset() {
         attributes.removeAll(keepingCapacity: true)
     }
+    
+    public var attributeInstances: [AttributeInstance] {
+        return attributes.map { AttributeInstance(id: $0, value: $1) }
+    }
+    
+
 }
 
 extension DeviceState: AferoJSONCoding {
@@ -386,16 +494,38 @@ public protocol DeviceCommandConsuming: class {
 
 public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSignaling, DeviceCommandConsuming, OfflineScheduleStorage {
     
+    /// The unique ID of the device on the service.
+    var deviceId: String { get }
+    
+    /// The id used for association. Maps 1:1 to `id`, but is only valid for
+    /// performing associatins.
+    var associationId: String? { get }
+    
+    /// The account to which this device is associated.
+    var accountId: String { get }
+    
+    /// The id of the profile for this device.
     var profileId: String? { get set }
-    var presentation: DeviceProfile.Presentation? { get }
+    
+    /// The `DeviceProfile` for this device.
     var profile: DeviceProfile? { get }
-    var isAvailable: Bool { get set }
-    var isDirect: Bool { get set }
+
+    /// The presentation profile for this device. Generally a convenience accessor
+    /// for profile?.presentation
+    var presentation: DeviceProfile.Presentation? { get }
+    
+    /// If `true`, this device is online, linked, and ready to receive changes.
+    var isAvailable: Bool { get }
+    
+    /// What we know about the location of this device.
+    var locationState: LocationState { get }
+    
+    /// If `true`, then this device is directly
+    var isDirect: Bool { get }
+    
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
-    var id: String { get set }
     var friendlyName: String? { get set }
-    var accountId: String { get }
     var attributeWriteable: DeviceBatchActionRequestable? { get }
     var otaProgress: Double? { get }
     var deviceErrors: Set<DeviceErrorStatus> { get }
@@ -404,14 +534,22 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     
 }
 
+public extension DeviceModelable {
+    /// The unique ID of the device on the service.
+    @available(*, deprecated, message: "DeviceModel.id is deprecated; use DeviceModel.deviceId.")
+    public var id: String {
+        get { return deviceId }
+    }
+}
+
 public func <<T> (lhs: T, rhs: T) -> Bool where T: DeviceModelable {
     if lhs.displayName < rhs.displayName { return true }
-    if lhs.displayName == rhs.displayName { return lhs.id < rhs.id }
+    if lhs.displayName == rhs.displayName { return lhs.deviceId < rhs.deviceId }
     return false
 }
 
 public func ==<T>(lhs: T, rhs: T) -> Bool where T: DeviceModelable {
-    return rhs.id == lhs.id
+    return rhs.deviceId == lhs.deviceId
 }
 
 public extension DeviceModelable {
@@ -440,10 +578,94 @@ public extension DeviceModelable {
     }
 }
 
+// MARK: - DeviceModelState Aliases -
+
+public extension DeviceModelable {
+    
+    public var friendlyName: String? {
+        get { return currentState.friendlyName }
+        set { currentState.friendlyName = newValue }
+    }
+    
+    /// Whether or not the device is available.
+    ///
+    /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
+    ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
+    ///         Generally, application developers only need be concerned with `isAvailable`
+    
+    internal(set) public var isAvailable: Bool {
+        get { return currentState.isAvailable }
+        set { currentState.isAvailable = newValue }
+    }
+    
+    /// Whether or not a hub can see the device.
+    internal(set) public var isVisible: Bool {
+        get { return currentState.isVisible }
+        set { currentState.isVisible = newValue }
+    }
+    
+    /// Whether or not the device rebooted recently.
+    internal(set) public var isRebooted: Bool {
+        get { return currentState.isRebooted }
+        set { currentState.isRebooted = newValue }
+    }
+    
+    /// Whether or not the device is connectable.
+    internal(set) public var isConnectable: Bool {
+        get { return currentState.isConnectable }
+        set { currentState.isConnectable = newValue }
+    }
+    
+    /// Whether or not the device is connected to the Afero cloud.
+    internal(set) public var isConnected: Bool {
+        get { return currentState.isConnected }
+        set { currentState.isConnected = newValue }
+    }
+    
+    /// Whether or not the device is currently linked and communicating
+    /// with the Afero cloud.
+    internal(set) public var isLinked: Bool {
+        get { return currentState.isLinked }
+        set { currentState.isLinked = newValue }
+    }
+    
+    /// If true, the device is connected directly to the Afero cloud. If false,
+    /// the device is connected via a hub.
+    internal(set) public var isDirect: Bool {
+        get { return currentState.isDirect }
+        set { currentState.isDirect = newValue }
+    }
+    
+    /// The device has one or more attributes pending write to the Afero cloud.
+    internal(set) public var isDirty: Bool {
+        get { return currentState.isDirty }
+        set { currentState.isDirty = newValue }
+    }
+    
+    /// The RSSI of the device's connection to its hub, or to the Afero cloud
+    /// if direct.
+    internal(set) public var RSSI: Int {
+        get { return currentState.RSSI }
+        set { currentState.RSSI = newValue }
+    }
+    
+    /// The location state of the device.
+    internal(set) public var locationState: LocationState {
+        get { return currentState.locationState }
+        set { currentState.locationState = newValue }
+    }
+    
+    /// The timestamp of the most recent update.
+    public var updatedTimestamp: Date {
+        get { return currentState.updatedTimestamp }
+    }
+
+}
+
 public extension DeviceModelable {
     
     public var presentation: DeviceProfile.Presentation? {
-        return profile?.presentation(id)
+        return profile?.presentation(deviceId)
     }
     
     public var readableAttributes: Set<DeviceProfile.AttributeDescriptor> {
@@ -499,10 +721,10 @@ public extension DeviceModelable {
     public func controlIds(_ groupIndex: Int? = nil) -> [Int] {
         
         guard let groupIndex = groupIndex else {
-            return profile?.presentation(id)?.controls?.map { $0.id } ?? []
+            return profile?.presentation(deviceId)?.controls?.map { $0.id } ?? []
         }
         
-        guard let groups = profile?.presentation(id)?.groups else { return [] }
+        guard let groups = profile?.presentation(deviceId)?.groups else { return [] }
         
         if groupIndex >= groups.count { return [] }
         
@@ -560,7 +782,7 @@ public extension DeviceModelable {
             let instances = attributes.map { AttributeInstance(id: $0.0, value: $0.1) }
 
             if localOnly {
-                self?.update(instances, accumulative: false)
+                self?.update(with: instances, accumulative: false)
                 fulfill((instances.batchActionRequests ?? []).successfulUnpostedResults)
                 return
             }
@@ -586,7 +808,7 @@ public extension DeviceModelable {
     }
 
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
-        return profile?.attributeConfig(attributeId, deviceId: id)
+        return profile?.attributeConfig(attributeId, deviceId: deviceId)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
@@ -644,36 +866,32 @@ public extension DeviceModelable {
     
     // MARK: - Update Methods: Handle external model updates
     
-    public func update(with peripheral: DeviceStreamEvent.Peripheral, attrsOnly: Bool = true) {
+    func update(with peripheral: DeviceStreamEvent.Peripheral) {
 
-        id = peripheral.id
         profileId = peripheral.profileId
         
         var state = self.currentState
 
-        if !attrsOnly {
-            state.friendlyName = peripheral.friendlyName
-            state.isAvailable = peripheral.isAvailable
-            state.isDirect = peripheral.isDirect
-        }
+        state.friendlyName = peripheral.friendlyName
+        state.connectionState.update(with: peripheral.status)
         
         currentState = state
         
         update(with: peripheral.attributes.values)
     }
     
-    public func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
+    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
         update(with: [attribute])
     }
     
-    public func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
         update(with: attributes.flatMap {
             v in return (v.id, v.value)
         })
     }
     
-    public func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == (Int, String?) {
             update(attributes.reduce([Int: String]()) {
                 curr, next in
@@ -692,10 +910,6 @@ public extension DeviceModelable {
         DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
         
         // TODO: Refactor this, as the code has evolved beyond the current function sig.
-        
-        if let idValue = deviceData[type(of: self).CoderKeyId] as? String {
-            self.id = idValue
-        }
         
         var state = self.currentState
         
@@ -741,7 +955,7 @@ public extension DeviceModelable {
     /// - parameter attributes: The array of `AttributeInstance`s to apply
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ attributeInstances: [AttributeInstance], accumulative: Bool = true) {
+    public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
         
         var state = currentState
         
@@ -768,8 +982,8 @@ public extension DeviceModelable {
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
     /// array of instances.
     
-    public func update(_ attributeInstance: AttributeInstance, accumulative: Bool = true) {
-        update([attributeInstance], accumulative: accumulative)
+    public func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) {
+        update(with: [attributeInstance], accumulative: accumulative)
     }
     
     /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
@@ -789,7 +1003,7 @@ public extension DeviceModelable {
             let attributeValue = self.profile?.attributes[attributeId]?.valueForStringLiteral(stringLiteralValue)
             
             if attributeValue == nil {
-                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, id))
+                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, deviceId))
                 return nil
             }
             
@@ -798,7 +1012,7 @@ public extension DeviceModelable {
             return AttributeInstance(id: attributeId, value: attributeValue!)
         }
         
-        update(attributeInstances, accumulative: accumulative)
+        update(with: attributeInstances, accumulative: accumulative)
     }
     
     /// Overlay (or optoinally set) this modelable's state to that indicated by the given `DeviceRuleAction`.
@@ -816,30 +1030,6 @@ public extension DeviceModelable {
         update(attributes, accumulative: accumulative)
     }
     
-    
-    // MARK: - <DeviceCommandConsuming> Default Implementations
-    
-    func handleCommand(_ command: DeviceModelCommand) {
-        
-        DDLogDebug(String(format: "Received DeviceModelCommand %@", String(describing: command)))
-        
-        switch command {
-        case let .postBatchActions(actions, completion):
-            
-            let localOnDone: WriteAttributeOnDone = {
-                results, maybeError in
-                completion(results, maybeError)
-            }
-
-            attributeWriteable?.post(
-                actions: actions,
-                forDeviceId: self.id,
-                withAccountId: accountId,
-                onDone: localOnDone
-            )
-
-        }
-    }
     
     // MARK: - Write commands: request model updates
     
@@ -897,7 +1087,7 @@ public extension DeviceModelable {
     }
     
     var primaryOperationAttributeOptions: DeviceProfile.Presentation.AttributeOption? {
-        return profile?.presentation(id)?.primaryOperationOption
+        return profile?.presentation(deviceId)?.primaryOperationOption
     }
     
     func togglePrimaryOperation(_ onDone: @escaping WriteAttributeOnDone = { _ in }) {

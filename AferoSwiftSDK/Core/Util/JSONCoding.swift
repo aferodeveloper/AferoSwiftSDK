@@ -46,19 +46,14 @@ If any failed, nil.
 
 public func FromJSON<T: AferoJSONCoding>(_ json: [Any]?) -> [T]? {
     
-    let ret: [T] = json?.map() {
-            return T(json: $0)
-        }.filter() {
-            $0 != nil
-        }.map() {
-            $0!
-        } ?? []
+    let ret: [T] = json?.flatMap() { return T(json: $0) } ?? []
     
-    if ret.count == json?.count {
-        return ret
+    if ret.count != json?.count {
+        NSLog("Warning: expected \(json?.count ?? 0) results, got \(ret.count)")
     }
     
-    return nil
+    return ret
+    
 }
 
 public func FromJSON<T: OptionSetJSONCoding>(_ json: [AferoJSONCodedType]?) -> T {

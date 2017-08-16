@@ -1,0 +1,21 @@
+{
+    "__DESCRIPTION__": "DeviceModelState test fixture",
+    "direct": false,
+    "rebooted": false,
+    "connectable": false,
+    "dirty": false,
+    "setupState": "PENDING",
+    "rssi": 0,
+    "updatedTimestamp": 1500828122154,
+    "connected": false,
+    "available": false,
+    "location":
+    {
+        "longitude": "-122.5349",
+        "latitude": "37.8488",
+        "lastUpdatedTimestamp": 1500828122154,
+        "locationSourceType": "CLIENT_IP_ESTIMATE"
+    },
+    "linked": true,
+    "visible": false
+}
