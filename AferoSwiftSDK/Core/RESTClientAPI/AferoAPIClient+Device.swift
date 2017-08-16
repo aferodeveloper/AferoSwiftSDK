@@ -213,3 +213,25 @@ public extension AferoAPIClientProto {
     
 }
 
+public extension AferoAPIClientProto {
+    
+    typealias SetTimezoneResult = (deviceId: String, tz: TimeZone, isUserOverride: Bool)
+    
+    /// Set the timezone for a device.
+    /// - parameter timeZone: The timezone to associate with the device.
+    /// - parameter isUserOverride: If true, indicates the user has explicitly set the timezone
+    ///                             on this device (rather than it being inferred by location).
+    ///                             If false, timeZone is the default timeZone of the phone.
+
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool = false, for deviceId: String, in accountId: String) -> Promise<SetTimezoneResult> {
+        let parameters: Parameters = [
+            "userOverride": isUserOverride,
+            "timezone": timeZone.identifier
+        ]
+        return PUT("/v1/accounts/\(accountId)/devices/\(deviceId)/timezone", parameters: parameters).then {
+            () -> SetTimezoneResult in
+            return (deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride)
+        }
+    }
+}
+

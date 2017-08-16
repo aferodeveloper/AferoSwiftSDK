@@ -10,6 +10,7 @@
 import Foundation
 import ReactiveSwift
 import Result
+import CoreLocation
 
 import CocoaLumberjack
 
@@ -649,15 +650,16 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
     fileprivate func createDevices(with json: [[String: Any]]) {
-        json.forEach(self.createDevice(with:))
+        json.forEach { self.createDevice(with: $0) }
     }
     
-    fileprivate func createDevice(with json: [String: Any]) {
+    fileprivate func createDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
         
         guard
             let deviceId = json["deviceId"] as? String,
             let profileId = json["profileId"] as? String else {
                 DDLogError("No deviceId in json; bailing create.", tag: TAG)
+                onDone(nil)
                 return
         }
         
@@ -666,10 +668,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
         updateDevice(with: json) {
             [weak self] maybeDevice in
             guard let device = maybeDevice else {
+                onDone(nil)
                 return
             }
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
+            onDone(device)
         }
         
     }
@@ -1057,6 +1061,91 @@ extension DeviceCollection: DeviceInfoSource {
     
     public func displayNameForDeviceId(_ deviceId: String) -> String {
         return peripheral(for: deviceId)?.displayName ?? NSLocalizedString("Unknown device", comment: "Device collection DeviceInfoSource implementation default device displayName")
+    }
+    
+}
+
+public extension DeviceCollection {
+    
+    typealias AddDeviceOnDone = (DeviceModel?, Error?) -> Void
+    
+    /// Add a device to the device collection.
+    ///
+    /// - parameter associationId: The associationId for the device. Note that this is different from the deviceId.
+    /// - parameter location: The location, if any, to associate with the device.
+    /// - parameter isOwnershipChangeVerified: If the device is eligible for ownership change (see note), and
+    ///                                        `isOwnershipChangeVerified` is `true`, then the device being scanned
+    ///                                        will be disassociated from its existing account prior to being
+    ///                                        associated with the new one.
+    /// - parameter timeZone: The timezone to use for the device. Defaults to `TimeZone.current`.
+    /// - parameter isUserOverride: If true, indicates the user has explicitly set the timezone
+    ///                             on this device (rather than it being inferred by location).
+    ///                             If false, timeZone is the default timeZone of the phone.
+    /// - parameter onDone: The completion handler for the call.
+    ///
+    /// ## Ownership Transfer
+    /// Some devices are provisioned to have their ownership transfer automatically. If upon an associate attempt
+    /// with `isOwnershipTransferVerified == false` is made upon a device that's assocaiated with another account,
+    /// and an error is returned with an attached URLResponse with header `transfer-verification-enabled: true`,
+    /// then the call can be retried with `isOwnershipTranferVerified == true`, and the service will disassociate
+    /// said device from its existing account prior to associating it with the new account.
+    
+    func addDevice(with associationId: String, location: CLLocation? = nil, isOwnershipChangeVerified: Bool = false, timeZone: TimeZone = TimeZone.current, timeZoneIsUserOverride: Bool = false, onDone: @escaping AddDeviceOnDone) {
+        
+        apiClient.associateDevice(
+            with: associationId,
+            to: accountId,
+            locatedAt: location,
+            ownershipTransferVerified: isOwnershipChangeVerified
+            ).then {
+                
+                deviceJson in
+                
+                self.createDevice(with: deviceJson) {
+                    
+                    deviceModel in
+                    guard let deviceModel = deviceModel else {
+                        onDone(nil, "No deviceModel returned.")
+                        return
+                    }
+                    
+                    _ = self.apiClient
+                        .setTimeZone(
+                            as: timeZone,
+                            isUserOverride: timeZoneIsUserOverride,
+                            for: deviceModel.deviceId,
+                            in: self.accountId
+                        ).then {
+                            _ in
+                            onDone(deviceModel, nil)
+                        }.catch {
+                            err in
+                            onDone(deviceModel, err)
+                    }
+                }
+                
+            }.catch {
+                err in onDone(nil, err)
+        }
+    }
+    
+    typealias RemoveDeviceOnDone = (String?, Error?) -> Void
+
+    /// Remove a device from the collection.
+    ///
+    /// This call results in a disassociate being called against the Afero service.
+    /// - parameter deviceId: The id of the device to remove.
+    /// - parameter onDone: The completion handler for the call.
+    
+    func removeDevice(with deviceId: String, onDone: @escaping RemoveDeviceOnDone) {
+        apiClient.removeDevice(with: deviceId, in: accountId).then {
+            ()->Void in
+//            self.removeDevice(deviceId)
+            onDone(deviceId, nil)
+            }.catch {
+                err in
+                onDone(nil, err)
+        }
     }
     
 }
