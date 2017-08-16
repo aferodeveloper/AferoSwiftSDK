@@ -727,6 +727,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         profileSource.profileCache[profileId] = profile
 
         device.associationId = json["associationId"] as? String
+        device.friendlyName = json["friendlyName"] as? String
         device.currentState.connectionState = modelState
         device.profileId = profileId
         
