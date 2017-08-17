@@ -2,12 +2,12 @@ PODS:
   - AferoSofthub (1.0.1)
   - AferoSwiftLogging (1.1.5):
     - CocoaLumberjack (~> 3.2)
-  - AferoSwiftSDK/AFNetworking (0.7.0):
+  - AferoSwiftSDK/AFNetworking (0.7.1):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
     - PromiseKit (~> 4.1)
-  - AferoSwiftSDK/Core (0.7.0):
+  - AferoSwiftSDK/Core (0.7.1):
     - AferoSofthub (~> 1.0)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
@@ -82,8 +82,8 @@ DEPENDENCIES:
   - AferoSofthub
   - AferoSwiftLogging (= 1.1.5)
   - AferoSwiftSDK/AFNetworking (from `..`)
-  - CocoaLumberjack/Swift (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`, commit `d9bed4d739d47fee8f17ae918a0665829f2f1736`)
-  - CryptoSwift (from `https://github.com/krzyzanowskim/CryptoSwift.git`, branch `swift4`)
+  - CocoaLumberjack/Swift (= 3.2.0)
+  - CryptoSwift (= 0.6.9)
   - HTTPStatusCodes (~> 3.1)
   - LKAlertController (= 1.12.1)
   - Nimble
@@ -98,30 +98,16 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   AferoSwiftSDK:
     :path: ".."
-  CocoaLumberjack:
-    :commit: d9bed4d739d47fee8f17ae918a0665829f2f1736
-    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
-  CryptoSwift:
-    :branch: swift4
-    :git: https://github.com/krzyzanowskim/CryptoSwift.git
-
-CHECKOUT OPTIONS:
-  CocoaLumberjack:
-    :commit: d9bed4d739d47fee8f17ae918a0665829f2f1736
-    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
-  CryptoSwift:
-    :commit: 451042009badca8a3dd75c002fdfe04770d54d9c
-    :git: https://github.com/krzyzanowskim/CryptoSwift.git
 
 SPEC CHECKSUMS:
   AferoSofthub: f6f391de033d8be320bb9708ed52766661a2124e
   AferoSwiftLogging: 421df7af3ec52ab38a15b9b5fc629eb20de451a7
-  AferoSwiftSDK: b7ccf804216ce7a6ac1f4ddd882806fa10ad5477
+  AferoSwiftSDK: 1fa3ba04d0d3e7f6e557d29da2181f2ce7744b8a
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
-  CocoaLumberjack: 0d8cb05e834c1b391771fb3397d9a553accd33a9
+  CocoaLumberjack: 9b4aed7073d242f29cc2f62068d995faf67f703a
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: 138d0ffbc0c5ee40f7b7fc7b073c0f41e5d36dba
+  CryptoSwift: a22f6ba238e9ce4d26ee7bf45b9ed82e7122d4a0
   HTTPStatusCodes: 88155ba36826366a898a7b4f34d311f49083d546
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
   Nimble: 657d000e11df8aebe27cdaf9d244de7f30ed87f7
@@ -134,6 +120,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 11d0712a03edec950e25d1efe2783bf51bc69a2f
+PODFILE CHECKSUM: 567e51a12c01548100e0ff0a21ab2e24bf70a3a0
 
 COCOAPODS: 1.2.1
