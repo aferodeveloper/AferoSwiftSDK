@@ -197,7 +197,7 @@ public func floatDenormalize<T>(_ min: T?, max: T?, current: Float?, t2f: (T?)->
 }
 
 
-public extension SignedNumber {
+public extension Comparable {
     
     public func clamp(_ min: Self, max: Self) -> Self {
         if self < min { return min }
@@ -205,18 +205,6 @@ public extension SignedNumber {
         return self
     }
 }
-
-public extension UnsignedInteger {
-
-    public func clamp(_ min: Self, max: Self) -> Self {
-        if self < min { return min }
-        if self > max { return max }
-        return self
-    }
-    
-}
-
-
 
 // Debounce triggers the action after a delay. 
 // Subsequent calls to the debounce within the delay will overtake 

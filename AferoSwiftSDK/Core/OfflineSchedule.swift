@@ -580,10 +580,20 @@ open class OfflineSchedule: NSObject {
         )
     }
     
+    private var _collatedEvents: [OfflineSchedule.ScheduleEvent]?
+    
     /// A cache for collated (sorted) events.
-    lazy fileprivate var collatedEvents: [OfflineSchedule.ScheduleEvent]! = {
-        return self.collator.scheduleEvents(self)
-    }()
+    fileprivate var collatedEvents: [OfflineSchedule.ScheduleEvent]! {
+
+        get {
+            if let collatedEvents = _collatedEvents { return collatedEvents }
+            let collatedEvents = self.collator.scheduleEvents(self)
+            _collatedEvents = collatedEvents
+            return collatedEvents
+        }
+        
+        set { _collatedEvents = newValue }
+    }
     
     /// Set an event for a given index by attributeId
     open func setEvent(event newEvent: ScheduleEvent?, forAttributeId newAttributeId: Int) {

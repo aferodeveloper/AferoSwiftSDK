@@ -173,7 +173,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
     // Observer Interface
     // "application-level" events are emitted through this interface.
     
-    lazy fileprivate var eventPipe: (Signal<ClientEvent, NSError>, Observer<ClientEvent, NSError>)! = {
+    lazy fileprivate var eventPipe: (Signal<ClientEvent, NSError>, Observer<ClientEvent, NSError>) = {
         let ret: (Signal<ClientEvent, NSError>, Observer<ClientEvent, NSError>) = Signal.pipe()
         
         return Signal.pipe()
@@ -696,7 +696,7 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
     }
     
     // MARK: Server to the client
-    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)! = {
+    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>) = {
         return Signal<ConclaveConnectionEvent, NSError>.pipe()
         }()
     
@@ -713,7 +713,7 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
     }
     
     // MARK: Client to server
-    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)! = {
+    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>) = {
         return Signal<ConclaveMessage, NSError>.pipe()
         }()
     
@@ -839,7 +839,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     let inputStream: InputStream
     var streamProcessor: StreamProcessor = PureStreamProcessor
     
-    lazy fileprivate var pipe: (Signal<JSONStreamEvent, NSError>, Observer<JSONStreamEvent, NSError>)! = {
+    lazy fileprivate var pipe: (Signal<JSONStreamEvent, NSError>, Observer<JSONStreamEvent, NSError>) = {
         return Signal<JSONStreamEvent, NSError>.pipe()
         }()
 
@@ -1092,7 +1092,7 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     
     let outputStream: OutputStream
     
-    lazy fileprivate var pipe: JSONStreamWriterPipe! = {
+    lazy fileprivate var pipe: JSONStreamWriterPipe = {
         return Signal.pipe()
         }()
     
