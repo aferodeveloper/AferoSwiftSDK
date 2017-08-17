@@ -173,18 +173,36 @@ class JSONStreamSpec: QuickSpec {
 class Mocklave: ConclaveConnection {
     
     // Server to the client
-    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>) = {
-        return Signal<ConclaveConnectionEvent, NSError>.pipe()
-        }()
+    
+    private var _serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)?
+    fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)! {
+        get {
+            if let ret = _serverToClientPipe { return ret }
+            let ret = Signal<ConclaveConnectionEvent, NSError>.pipe()
+            _serverToClientPipe = ret
+            return ret
+        }
+        
+        set { _serverToClientPipe = newValue }
+    }
     
     var serverOutboundSink: Observer<ConclaveConnectionEvent, NSError> {
         return serverToClientPipe.1
     }
     
     // Client to server
-    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>) = {
-        return Signal<ConclaveMessage, NSError>.pipe()
-        }()
+    private var _clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)?
+    fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)! {
+        get {
+            if let ret = _clientToServerPipe { return ret }
+            let ret = Signal<ConclaveMessage, NSError>.pipe()
+            _clientToServerPipe = ret
+            return ret
+        }
+        
+        set { _clientToServerPipe = newValue }
+        
+    }
     
     var serverInboundSignal: Signal<ConclaveMessage, NSError> {
         return clientToServerPipe.0
