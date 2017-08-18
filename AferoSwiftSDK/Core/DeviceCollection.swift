@@ -200,6 +200,8 @@ struct DeviceRequestId: Hashable {
 }
 
 
+// MARK: - DeviceCollection -
+
 /// A collection of Afero peripheral devices
 
 public class DeviceCollection: NSObject, MetricsReportable {
@@ -304,11 +306,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     deinit {
         DDLogDebug("Deinitializing deviceCollection for accountId: \(accountId)")
+        unregisterFromAppStateNotifications()
         stopEventStream()
         eventSignalDisposable = nil
     }
     
-    // MARK: Contents Observation
+    // MARK: - Contents Messaging
     
     public enum ContentsChange {
         case create(DeviceModel)
@@ -394,12 +397,14 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
 
-    // MARK: Private stream controls
+    // MARK: - Private stream controls
 
     private func startEventStream() {
 
         let TAG = self.TAG
         
+        metricHelper.resetWakeUpTime()
+
         if state == .loaded {
             DDLogDebug("EventStream already started; bailing.", tag: TAG)
             return
@@ -442,6 +447,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
     private func stopEventStream() {
+        metricHelper = nil
         eventStream.stop()
         state = .unloaded
         for entry in _devices {
@@ -485,7 +491,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    // EventStream Observation
+    // MARK: - EventStream Observation
     
     fileprivate var eventSignalDisposable: Disposable? = nil {
         willSet { eventSignalDisposable?.dispose() }
@@ -519,7 +525,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         eventSignalDisposable = nil
     }
     
-    // MARK: - Stream event handlers
+    // MARK: Stream event handlers
     
     /// Handle a DeviceStreamEvent.
     /// - parameter event: The event to handle
@@ -993,17 +999,26 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
 
     // MARK: - Public stream controls
+
+    private var shouldBeRunning: Bool = false {
+        didSet {
+            if shouldBeRunning {
+                registerForAppStateNotifications()
+                return
+            }
+            unregisterFromAppStateNotifications()
+        }
+    }
     
     public func start() {
-        metricHelper.resetWakeUpTime()
+        shouldBeRunning = true
         startEventStream()
     }
     
     public func stop() {
-        metricHelper = nil
+        shouldBeRunning = false
         stopEventStream()
     }
-    
     
     public func reset() {
         eventStream.stop()
@@ -1049,6 +1064,46 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     func removePeripheral(for id: String) {
         _devices.removeValue(forKey: id)
+    }
+    
+    // MARK: App State Observation
+    
+    func registerForAppStateNotifications() {
+
+        #if os(iOS) || os(tvOS)
+            
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(handleEnteredBackgroundNotification),
+                name: .UIApplicationDidEnterBackground,
+                object: nil
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleEnteredForegroundNotification),
+                name: .UIApplicationWillEnterForeground,
+                object: nil
+            )
+        
+        #endif
+
+    }
+    
+    func unregisterFromAppStateNotifications() {
+        #if os(iOS)
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillEnterForeground, object: nil)
+        #endif
+    }
+    
+    func handleEnteredBackgroundNotification() {
+        DDLogInfo("Notified entered background", tag: TAG)
+        stopEventStream()
+    }
+    
+    func handleEnteredForegroundNotification() {
+        DDLogInfo("Notified entered foreground", tag: TAG)
+        startEventStream()
     }
     
     // MARK: View Notification
