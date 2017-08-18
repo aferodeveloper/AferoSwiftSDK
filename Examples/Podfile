@@ -10,15 +10,20 @@ workspace 'AferoSwiftSDK.xcworkspace'
 # MARK: -
 # MARK: Prerequisite definitions
 
+XCODE_VERSION = (`xcodebuild -version`.scan /^Xcode\s+(\S+)$/)[0][0]
+puts "Using Xcode version: #{XCODE_VERSION}"
+
 def base_pods
 
-    # If on XCode 8.3/Swift 3, use:
-    pod 'CryptoSwift', '0.6.9'
-    pod 'CocoaLumberjack/Swift', '3.2.0'
-    
     # Else if on XCode 9/Swift 4, use:
-    #pod 'CryptoSwift', :git => 'https://github.com/krzyzanowskim/CryptoSwift.git', :branch => 'swift4'
-    #pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
+    if XCODE_VERSION.start_with?("9")
+        pod 'CryptoSwift', :git => 'https://github.com/krzyzanowskim/CryptoSwift.git', :branch => 'swift4'
+        pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
+    else
+        pod 'CryptoSwift', '0.6.9'
+        pod 'CocoaLumberjack/Swift', '3.2.0'
+    end
+
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'PromiseKit', '4.1.3'
@@ -52,11 +57,11 @@ target 'AferoLab' do
 
     project 'AferoLab/AferoLab.xcodeproj'
     
-    # If on XCode 8.3/Swift 3, use:
-    pod 'CocoaLumberjack/Swift', '3.2.0'
-    
-    # Else if on XCode 9/Swift 4, use:
-    #pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
+    if XCODE_VERSION.start_with?("9")
+        pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git', :commit => 'd9bed4d739d47fee8f17ae918a0665829f2f1736'
+    else
+        pod 'CocoaLumberjack/Swift', '3.2.0'
+    end
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'AferoSwiftSDK/AFNetworking', :path => ".."
