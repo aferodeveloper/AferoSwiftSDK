@@ -8,6 +8,7 @@
 
 import Foundation
 import PromiseKit
+import CocoaLumberjack
 
 public extension AferoAPIClientProto {
     
@@ -124,6 +125,12 @@ public extension AferoAPIClientProto {
         
         if let maybeToken = apnsToken {
             json["pushId"] = maybeToken.base64EncodedString(options: NSData.Base64EncodingOptions())
+        }
+        
+        if let appId = AferoAppEnvironment.appIdentifier {
+            json["appId"] = appId
+        } else {
+            DDLogError("Unable to determine appId!", tag: TAG)
         }
         
         let path = "/v1/users/\(safeUserId)/mobileDevices"

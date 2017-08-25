@@ -84,7 +84,7 @@ public class AFNetworkingAferoAPIClient {
         
     }
 
-    let TAG = "AferoAPIClient"
+    public var TAG: String { return "AFNetworkingAferoAPIClient" }
 
     var apiBaseURL: URL { return config.apiBaseURL }
     var oauthClientId: String { return config.oauthClientId }

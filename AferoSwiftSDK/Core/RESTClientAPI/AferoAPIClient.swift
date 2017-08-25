@@ -16,6 +16,8 @@ import CoreLocation
 
 public protocol AferoAPIClientProto: class, DeviceBatchActionRequestable, DeviceAccountProfilesSource {
     
+    var TAG: String { get }
+    
     typealias AferoAPIClientProtoSuccess = ((URLSessionDataTask, Any?) -> Void)
     typealias AferoAPIClientProtoFailure = ((URLSessionDataTask?, Error) -> Void)
     
@@ -63,6 +65,11 @@ public protocol AferoAPIClientProto: class, DeviceBatchActionRequestable, Device
     
     func doSignOut(error: Error?, completion: @escaping ()->Void)
     
+}
+
+extension AferoAPIClientProto {
+    
+    var TAG: String { return "\(type(of: self))" }
 }
 
 // MARK: - OAuth Refresh/Retry -
