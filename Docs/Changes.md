@@ -16,6 +16,7 @@ author: Justin Middleton <jrmiddle@afero.io>
 * DeviceCollection now fetches all app and profile state directly from the ClientAPI
   on startup, improving startup time.
 * An off-by-one has been corrected in OTA progress calculation.
+* 0.7.2 / IOS-1440: Added an `appId` field to body sent to `/v1/accounts/.../mobileDevices`.
 
 ### API Changes
 
