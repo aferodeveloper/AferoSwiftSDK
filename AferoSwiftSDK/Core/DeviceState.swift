@@ -894,21 +894,79 @@ public extension DeviceModelable {
         }
 
     }
-    
+
+    @available(*, deprecated, message: "Use attributeConfig(for: Int) instead.")
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
+        return attributeConfig(forAttributeId: attributeId)
+    }
+    
+    public func attributeConfigs(isIncluded: (DeviceProfile.AttributeConfig)->Bool = { _ in true })
+        -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+            return profile?.attributeConfigs(on: deviceId, isIncluded: isIncluded)
+    }
+    
+    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+        return profile?.attributeConfigs(on: deviceId, withIdsIn: range)
+    }
+    
+    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+        return attributeConfigs(withIdsIn: range.range)
+    }
+    
+    public func attributeConfig(for attributeId: Int) -> DeviceProfile.AttributeConfig? {
         return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
     
+    /// Comprises an attribute value and all type and presentation info.
+    public typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig)
+    
+    /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
+    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyRandomAccessCollection<[Attribute]>? {
+        return attributeConfigs()?
+            .flatMap {
+            config -> Attribute? in
+            guard let value = self.value(for: config.descriptor) else {
+                return nil
+            }
+            return (value: value, config: config)
+        }.lazy
+    }
+    
+    public func attributes(in range: ClosedRange<Int>) -> LazyRandomAccessCollection<[Attribute]>? {
+        return attributeConfigs(withIdsIn: range)?
+            .flatMap {
+                config -> Attribute? in
+                guard let value = self.value(for: config.descriptor) else {
+                    return nil
+                }
+                return (value: value, config: config)
+            }.lazy
+    }
+    
+    public func attributes(in range: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[Attribute]>? {
+        return attributes(in: range.range)
+    }
+    
+    /// Get the value and all metadata associated with an `attributeId`, if any.
+    public func attribute(for attributeId: Int) -> Attribute? {
+        guard
+            let value = value(for: attributeId),
+            let config = attributeConfig(for: attributeId) else {
+            return nil
+        }
+        return (value: value, config: config)
+    }
+    
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
-        return attributeConfig(forAttributeId: attributeId)?.descriptor
+        return attributeConfig(for: attributeId)?.descriptor
     }
     
     public func attributeOptionForAttributeId(_ attributeId: Int) -> DeviceProfile.Presentation.AttributeOption? {
-        return attributeConfig(forAttributeId: attributeId)?.presentation
+        return attributeConfig(for: attributeId)?.presentation
     }
     
     public func attributeConfig(for semanticType: String) -> DeviceProfile.AttributeConfig? {
-        return profile?.attributeConfig(for: semanticType, on: deviceId)
+        return attributeConfigs { $0.descriptor.semanticType == semanticType }?.first
     }
     
     public func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {

@@ -277,6 +277,9 @@ public extension DeviceProfile {
     }
     
     public func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
+
+        // Note that we don't use attributeConfigs(on:isIncluded:) here, because we
+        // can index directly into attributes using attributeId.
         
         guard let descriptor = descriptor(for: attributeId) else {
             return nil
@@ -286,12 +289,31 @@ public extension DeviceProfile {
     }
     
     public func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
-        guard let descriptor = descriptor(for: semanticType) else {
-            return nil
-        }
-        return (descriptor: descriptor, presentation: presentation(deviceId)?[descriptor.id])
+        return attributeConfigs(on: deviceId) { $0.descriptor.semanticType == semanticType }.first
+    }
+    
+    /// Returns attributeConfigs filtered by `isIncluded`.
+    /// - parameter isIncluded: The predicate to use for filtering configs. If unspecified, defaults to `{ _ in true }`, therefore
+    ///                         including all configs in the result.
+    /// - returns: A `LazyRandomAccessCollection<[AttributeConfig]>` which matches all results.
+    
+    public func attributeConfigs(on deviceId: String? = nil, isIncluded: (AttributeConfig)->Bool = { _ in true }) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        let ret = descriptors()
+            .map {
+            descriptor in
+                return (descriptor: descriptor, presentation: self.presentation(deviceId)?[descriptor.id])
+        }.filter(isIncluded).lazy
+        return ret
     }
 
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        return attributeConfigs(on: deviceId) { range.contains($0.descriptor.id) }
+    }
+    
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        return attributeConfigs(on: deviceId, withIdsIn: platformAttributeRange.range)
+    }
+    
 }
 
 /**
@@ -505,6 +527,17 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         get { return descriptor(for: attributeId) }
     }
     
+    /// Return a lazy collection of all attribute descriptors matching the given predicate.
+    /// - parameter isIncluded: The predicate used to indicate whether or not a descriptor
+    ///                         should be included.
+    /// - returns: A `LazyRandomAccessCollection<[AttributeDescriptor]>` which contains all
+    ///            of the attributes in this profile filtered by `isIncluded`.
+    
+    public func descriptors(isIncluded: (AttributeDescriptor)->Bool  = { _ in return true})
+        -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+            return attributes.values.filter(isIncluded).lazy
+    }
+    
     /// Get the `AttributeDescriptor` for the given `attributeId`, if any.
     /// - parameter attributeId: The attributeId for which to get the descriptor.
     ///
@@ -533,7 +566,6 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         get { return Array(descriptors(for: semanticType)) }
     }
     
-    
     /// Return the first `AttributeDescriptor` matching the given `semanticType`.
     /// - parameter semanticType: The `semanticType` for which to search.
     ///
@@ -556,12 +588,8 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > since this is enforced by APE, and is transformed into a unique `#define`
     /// > in `device_description.h`, used by firmware developers.
     
-    public func descriptors(for semanticType: String) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
-        return descriptors(matching: { $0.semanticType == semanticType })
-    }
-    
-    public func descriptors(matching predicate: @escaping (AttributeDescriptor)->Bool) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
-        return attributes.values.filter(predicate)
+    public func descriptors(for semanticType: String) -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+        return descriptors(isIncluded: { $0.semanticType == semanticType })
     }
     
     // MARK: Presentation convenience accessors
