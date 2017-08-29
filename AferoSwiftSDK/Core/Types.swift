@@ -1256,8 +1256,37 @@ public struct DateTypes {
             return "<Time> \(hour):\(minute):\(seconds) \(timeZone.abbreviation)"
         }
         
+        private var componentsCache = NSCache<NSTimeZone, NSDateComponents>()
+
         /// The primary model for all component storage.
-        private(set) public var components: DateComponents
+        private(set) public var components: DateComponents {
+            didSet {
+                if oldValue == components { return }
+                componentsCache.removeAllObjects()
+            }
+        }
+
+        /// Get the components for this Date in the given timezone. Results
+        /// are cached.
+        
+        public func components(in timeZone: TimeZone) -> DateComponents {
+            
+            if self.components.timeZone == timeZone {
+                return self.components
+            }
+            
+            if let ret = componentsCache.object(forKey: timeZone as NSTimeZone) {
+                return ret as DateComponents
+            }
+            
+            var calendar = Calendar.autoupdatingCurrent
+            calendar.timeZone = timeZone
+            var ret = calendar.dateComponents([.year, .month, .day, .weekday, .hour, .minute, .second, .timeZone], from: date)
+            ret.calendar = Calendar.autoupdatingCurrent
+            
+            componentsCache.setObject(ret as NSDateComponents, forKey: timeZone as NSTimeZone)
+            return ret
+        }
 
         public typealias Second = Int
         
@@ -1316,11 +1345,7 @@ public struct DateTypes {
         /// `DateComponents` in UTC with the current calendar.
         
         public var utcComponents: DateComponents {
-            var calendar = Calendar.autoupdatingCurrent
-            calendar.timeZone = TimeZone(abbreviation: "UTC")!
-            var ret = calendar.dateComponents([.year, .month, .day, .weekday, .hour, .minute, .second, .timeZone], from: date)
-            ret.calendar = Calendar.autoupdatingCurrent
-            return ret
+            return components(in: .UTC)
         }
         
         public var utcHour: Hour {
