@@ -18,19 +18,29 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter accountId: The UUID for the account for which to
     ///                        fetch devices.
+    /// - parameter expansions: The expansions to fetch for a device.
     /// - returns: A `Promise<[[String: Any]]` which resolves to the
     ///            raw JSON for the device list.
+    ///
+    /// # Valid Expansions
+    /// By default, all expansions below are included. Optionally the caller
+    /// can specify a subset.
+    /// * `state`: Include the device's connection state.
+    /// * `tags`: Include all `deviceTags`.
+    /// * `attributes`: Include all attributes.
+    /// * `extendedData`: Include extended data.
+    /// * `profile`: Include the device's profile.
+    /// * `timezone`: Include the device's timezone state.
     
-    func fetchDevices(for accountId: String) -> Promise<[[String: Any]]> {
+    func fetchDevices(for accountId: String, expansions: Set<String> = [
+        "state", "tags", "attributes", "extendedData", "profile", "timezone",
+        ]) -> Promise<[[String: Any]]> {
         
         guard let safeAccountId = accountId.pathAllowedURLEncodedString else {
             return Promise { _, reject in reject("Bad accountId '\(accountId)'.") }
         }
-            
-        return GET("/v1/accounts/\(safeAccountId)/devices", expansions: [
-            "state", "tags", "attributes", "extendedData", "profile"
-            ])
         
+        return GET("/v1/accounts/\(safeAccountId)/devices", expansions: Array(expansions))
     }
 }
 
