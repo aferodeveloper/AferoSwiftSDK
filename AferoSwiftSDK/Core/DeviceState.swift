@@ -243,8 +243,10 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     // MARK: <CustomDebugStringConvertible>
     
     public var debugDescription: String {
-        return "<DeviceState> profileId: \(String(reflecting: profileId)) isAvailable: \(isAvailable) attributes: \(attributes)"
+        return "<DeviceState> profileId: \(String(reflecting: profileId)) connectionState: \(String(reflecting: connectionState)) timeZoneState: \(String(reflecting: timeZoneState)) attributes: \(attributes)"
     }
+    
+    public var timeZoneState: TimeZoneState = .invalid(error: nil)
     
     public var friendlyName: String?
     public var profileId: String?
@@ -254,14 +256,15 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     
     var connectionState: DeviceModelState = DeviceModelState()
     
-    init(attributes: DeviceAttributes = [:], connectionState: DeviceModelState = DeviceModelState(), profileId: String?, friendlyName: String?) {
+    init(attributes: DeviceAttributes = [:], connectionState: DeviceModelState = DeviceModelState(), profileId: String?, friendlyName: String?, timeZoneState: TimeZoneState = .invalid(error: nil)) {
         self.attributes = attributes
         self.connectionState = connectionState
         self.friendlyName = friendlyName
         self.profileId = profileId
+        self.timeZoneState = timeZoneState
     }
     
-    init(attributes: DeviceAttributes = [:], isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?) {
+    init(attributes: DeviceAttributes = [:], isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?, timeZoneState: TimeZoneState = .invalid(error: nil)) {
         
         let connectionState = DeviceModelState(
             isAvailable: isAvailable,
@@ -270,9 +273,10 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
         
         self.init(
             attributes: attributes,
-                  connectionState: connectionState,
-                  profileId: profileId,
-                  friendlyName: friendlyName
+            connectionState: connectionState,
+            profileId: profileId,
+            friendlyName: friendlyName,
+            timeZoneState: timeZoneState
         )
     }
     
@@ -284,6 +288,7 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
             && lhs.attributes == rhs.attributes
             && lhs.friendlyName == rhs.friendlyName
             && lhs.locationState == rhs.locationState
+            && lhs.timeZoneState == rhs.timeZoneState
             && lhs.profileId == rhs.profileId
     }
 
@@ -520,8 +525,13 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     /// What we know about the location of this device.
     var locationState: LocationState { get }
     
+    var timeZoneState: TimeZoneState { get }
+    
     /// If `true`, then this device is directly
     var isDirect: Bool { get }
+    
+    /// The local timezone of the device, if set.
+    var timeZone: TimeZone? { get }
     
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
@@ -653,6 +663,17 @@ public extension DeviceModelable {
     internal(set) public var locationState: LocationState {
         get { return currentState.locationState }
         set { currentState.locationState = newValue }
+    }
+    
+    /// the TimeZoneState of the device.
+    internal(set) public var timeZoneState: TimeZoneState {
+        get { return currentState.timeZoneState }
+        set { currentState.timeZoneState = newValue }
+    }
+    
+    /// The device's TimeZone, if set.
+    public var timeZone: TimeZone? {
+        return timeZoneState.timeZone
     }
     
     /// The timestamp of the most recent update.

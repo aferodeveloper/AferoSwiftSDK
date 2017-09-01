@@ -9,6 +9,7 @@
 import Foundation
 import PromiseKit
 import CoreLocation
+import CocoaLumberjack
 
 public extension AferoAPIClientProto {
     
@@ -242,6 +243,24 @@ public extension AferoAPIClientProto {
             () -> SetTimezoneResult in
             return (deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride)
         }
+    }
+    
+    /// Get the timezone for a device.
+    /// - parameter deviceId: The id of the device for which to fetch the timezone.
+    /// - parameter accountId: The accountId for the device for which to fetch the timezone.
+    /// - returns: A Promise<TimeZoneState> which resolves to a timezone state.
+    
+    func getTimeZone(for deviceId: String, in accountId: String) -> Promise<TimeZoneState> {
+
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString else {
+                let msg = "Unable to safely encode deviceId=`\(deviceId)' or accountId='\(accountId)'"
+                DDLogError(msg, tag: TAG)
+                return Promise { _, reject in reject(msg) }
+        }
+        
+        return GET("/v1/accounts/\(safeAccountId)/device/\(safeDeviceId)/timezone")
     }
 }
 

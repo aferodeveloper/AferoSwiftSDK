@@ -927,6 +927,11 @@ public struct DeviceRule: Equatable, CustomDebugStringConvertible {
         public var dayOfWeek: Set<DateTypes.DayOfWeek>
         public var time: DateTypes.Time
         
+        public var timeZone: TimeZone {
+            get { return time.timeZone }
+            set { time.timeZone = newValue }
+        }
+        
         /// Default constructor; initializes schedule with all seven days of the week,
         /// current time, and current timezone.
         

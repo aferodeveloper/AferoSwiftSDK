@@ -721,7 +721,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
         
-        
         let tag = TAG
 
         guard
@@ -743,6 +742,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
         
         profileSource.profileCache[profileId] = profile
+        
+        if let timeZoneState: TimeZoneState = |<(json["timezone"] as? [String: Any]) {
+            device.timeZoneState = timeZoneState
+        }
 
         device.associationId = json["associationId"] as? String
         device.friendlyName = json["friendlyName"] as? String
@@ -935,6 +938,9 @@ public class DeviceCollection: NSObject, MetricsReportable {
             
         case InvalidationEvent.location.rawValue:
             updateLocation(for: peripheralId, retryInterval: 10.0)
+            
+        case InvalidationEvent.timezone.rawValue:
+            updateTimeZoneState(for: peripheralId, retryInterval: 10.0)
 
         default:
             break
@@ -943,7 +949,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     /// Update the location for the given peripheral id, optionally retrying upon failure.
     ///
-    /// - parameter peripheralId: The id of the peripheral whose location should be updated.
+    /// - parameter peripheralId: The id of the peripheral whose `locationState` should be updated.
     /// - parameter retryInterval: If non-`nil`, retry upon failure after `retryInterval` seconds.
     ///                            If `nil`, do not retry.
     
@@ -952,7 +958,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         guard let peripheral = peripheral(for: peripheralId) else { return }
         
         guard peripheral.locationState != .pendingUpdate else {
-            DDLogDebug("We already have an update pending, not trying again.")
+            DDLogDebug("We already have a location pending, not trying again.")
             return
         }
         
@@ -986,8 +992,54 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 after(retryInterval) {
                     [weak self] in self?.updateLocation(for: peripheralId)
                 }
+            }.always {
+                [weak peripheral] in
+                DDLogDebug("After locationState update of \(peripheralId): \(String(reflecting: peripheral))", tag: self.TAG)
+        }
+
+    }
+    
+    /// Update the timeZoneState for the given peripheral id, optionally retrying upon failure.
+    ///
+    /// - parameter peripheralId: The id of the peripheral whose `timeZoneState` should be updated.
+    /// - parameter retryInterval: If non-`nil`, retry upon failure after `retryInterval` seconds.
+    ///                            If `nil`, do not retry.
+    func updateTimeZoneState(for peripheralId: String, retryInterval: TimeInterval? = nil) {
+
+        guard let peripheral = peripheral(for: peripheralId) else { return }
+        
+        guard peripheral.timeZoneState != .pendingUpdate else {
+            DDLogDebug("We already have a timezone update pending, not trying again.")
+            return
         }
         
+        peripheral.timeZoneState = .pendingUpdate
+        
+        _ = apiClient.getTimeZone(for: peripheralId, in: accountId)
+            .then {
+                [weak peripheral] timeZoneState -> Void in
+                peripheral?.timeZoneState = timeZoneState
+            }.catch {
+                
+                [weak peripheral] error in
+                
+                DDLogError("Error updating timeZoneState for \(peripheralId): \(String(reflecting: error))", tag: self.TAG)
+                peripheral?.timeZoneState = .invalid(error: error)
+                
+                guard let retryInterval = retryInterval else {
+                    DDLogDebug("TimeZoneState update for \(peripheralId) failed; not retrying.", tag: self.TAG)
+                    return
+                }
+                
+                DDLogInfo("Retrying timeZoneState update for \(peripheralId) in \(retryInterval) secs.", tag: self.TAG)
+                
+                after(retryInterval) {
+                    [weak self] in self?.updateTimeZoneState(for: peripheralId)
+                }
+            }.always {
+                [weak peripheral] in
+                DDLogDebug("After timeZoneState update of \(peripheralId): \(String(reflecting: peripheral))", tag: self.TAG)
+        }
 
     }
 

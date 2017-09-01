@@ -20,6 +20,7 @@ public enum InvalidationEvent: String {
     case invitations = "invitations"
     case profiles = "profiles"
     case location = "location"
+    case timezone = "timezone"
     
     public init?(notificationName: String) {
         switch notificationName {
@@ -37,6 +38,7 @@ public enum InvalidationEvent: String {
         case .invitations: return "InvalidationKindInvitations"
         case .profiles: return "InvalidationKindProfiles"
         case .location: return "InvalidationKindLocation"
+        case .timezone: return "InvalidationKindTimeZone"
         }
     }
     
