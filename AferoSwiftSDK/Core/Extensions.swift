@@ -152,78 +152,62 @@ extension DateComponents {
         set { weekday = newValue?.dayNumber }
     }
     
-    /// Compute a DateComponents object suitable for weekly calculations.
-    static func weekly(calendar: Calendar = .autoupdatingCurrent, timeZone: TimeZone? = nil) -> DateComponents {
-        let myTimeZone = timeZone ?? calendar.timeZone
-        var ret = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear, .timeZone, .calendar], from: Date())
-        ret.calendar = calendar
-        ret.hour = 0
-        ret.minute = 0
-        ret.second = 0
-        ret.nanosecond = 0
-        ret.dayOfWeek = .sunday
+    /// Compute a DateComponents object suitable for daily (hh:mm:ss) calculations.
+    /// - parameter calendar: The calendar to use. Defaults to `.autoupdatingCurrent`.
+    /// - parameter timeZone: The timeZone to use; if present, overrides any timeZone in `calendar`. Defaults to `nil`.
+    /// - parameter dayOfWeek: The `DateTypes.DayOfWeek` to use. Defaults to `.sunday`.
+    /// - parameter hour: The hour to use. Defaults to `0`.
+    /// - parameter minute: The minute to use. Defaults to `0`.
+    /// - parameter second: The second to use. Defaults to `0`.
+    /// - parameter nanosecond: The nanosecond to use. Defaults to `0`.
+    
+    public static func daily(calendar: Calendar? = nil, timeZone: TimeZone? = nil, hour: Int = 0, minute: Int = 0, second: Int = 0, nanosecond: Int = 0) -> DateComponents {
+        
+        let myCalendar = calendar ?? .current
+        var ret = myCalendar.dateComponents([.yearForWeekOfYear, .weekOfYear, .timeZone, .calendar], from: Date())
+        
+        let myTimeZone = timeZone ?? myCalendar.timeZone
+        
+        ret.calendar = myCalendar
         ret.timeZone = myTimeZone
-        return ret
-    }
-    
-    /// Translate the receiver as a "weekly" components instance to a `DateComponents` instance
-    /// in a different calendar, optionally with a reference date.
-    ///
-    /// By default:
-    /// * The calendar used will be the calendar associated with the receiver. If not provided,
-    ///   it will come from the `to:` param, which defaults to `.autoupdatingCurrent.
-    /// * The `referenceDate` used will be the date computed from the receiver using
-    ///   the calendar derived above, or the explicitly stated `referenceDate` if nil,
-    ///   and finally `Date()` if both of the former are nil.
-    /// * `.yearForWeekOfYear` and `.weekOfYear` will be taken from the computed referenceDate.
-    /// * `weekday` will default to `1` if nil on the receiver.
-    /// * `hour`, `minute`, `second`, and `nanosecond` will default to `0` if nil on the receiver.
-    /// * `timeZone` will come from the receiver's `timeZone`, or the computed calendar's `timeZone`.
-    ///
-    /// - parameter from: The calendar whence to convert, if unspecified by the receiver.
-    /// - parameter to: The calendar to which to convert
-    /// - parameter with: The reference `Date` to use for the conversion
-    
-    func translateWeekly(from fromCalendar: Calendar? = nil, to toCalendar: Calendar, with referenceDate: Date = Date()) -> DateComponents? {
         
-        let localFromCalendar = calendar ?? fromCalendar ?? Calendar.autoupdatingCurrent
-        let localReferenceDate = localFromCalendar.date(from: self) ?? referenceDate
-        
-        var nowComponents = localFromCalendar.dateComponents([.yearForWeekOfYear, .weekOfYear,], from: localReferenceDate)
-        
-        nowComponents.year              = nil
-        nowComponents.yearForWeekOfYear = yearForWeekOfYear ?? nowComponents.yearForWeekOfYear
-        nowComponents.weekOfYear        = weekOfYear ?? nowComponents.weekOfYear
-        nowComponents.weekday           = weekday ?? 1
-        nowComponents.hour              = hour ?? 0
-        nowComponents.minute            = minute ?? 0
-        nowComponents.second            = second ?? 0
-        nowComponents.nanosecond        = nanosecond ?? 0
-        nowComponents.calendar          = localFromCalendar
-        nowComponents.timeZone          = timeZone ?? localFromCalendar.timeZone
-        
-        guard let toDate = toCalendar.date(from: nowComponents) else {
-            print("Unable to translate \(self) from \(localFromCalendar) to \(toCalendar): returned date is nil")
-            return nil
-        }
-        
-        var ret = toCalendar.dateComponents([.yearForWeekOfYear, .weekOfYear, .weekday, .hour, .minute, .second, .nanosecond, .timeZone], from: toDate)
-        ret.calendar = toCalendar
+        ret.hour = hour
+        ret.minute = minute
+        ret.second = second
+        ret.nanosecond = nanosecond
         
         return ret
     }
     
-    func translateWeekly(from fromTimeZone: TimeZone = TimeZone(abbreviation: "UTC")!, to toTimeZone: TimeZone = .autoupdatingCurrent, with referenceDate: Date = Date()) -> DateComponents? {
+    
+    /// Compute a DateComponents object suitable for weekly calculations.
+    /// - parameter calendar: The calendar to use. Defaults to `.autoupdatingCurrent`.
+    /// - parameter timeZone: The timeZone to use; if present, overrides any timeZone in `calendar`. Defaults to `nil`.
+    /// - parameter dayOfWeek: The `DateTypes.DayOfWeek` to use. Defaults to `.sunday`.
+    /// - parameter hour: The hour to use. Defaults to `0`.
+    /// - parameter minute: The minute to use. Defaults to `0`.
+    /// - parameter second: The second to use. Defaults to `0`.
+    /// - parameter nanosecond: The nanosecond to use. Defaults to `0`.
+    
+    public static func weekly(calendar: Calendar? = nil, timeZone: TimeZone? = nil, dayOfWeek: DateTypes.DayOfWeek = .sunday, hour: Int = 0, minute: Int = 0, second: Int = 0, nanosecond: Int = 0) -> DateComponents {
         
-        var fromCalendar = calendar ?? .autoupdatingCurrent
-        let fromTimeZone = timeZone ?? calendar?.timeZone ?? fromTimeZone
-        fromCalendar.timeZone = fromTimeZone
+        let myCalendar = calendar ?? .current
+        var ret = myCalendar.dateComponents([.yearForWeekOfYear, .weekOfYear, .timeZone, .calendar], from: Date())
         
-        var toCalendar = Calendar.autoupdatingCurrent
-        toCalendar.timeZone = toTimeZone
+        let myTimeZone = timeZone ?? myCalendar.timeZone
         
-        return translateWeekly(from: fromCalendar, to: toCalendar, with: referenceDate)
+        ret.timeZone = myTimeZone
+        
+        ret.dayOfWeek = dayOfWeek
+        ret.hour = hour
+        ret.minute = minute
+        ret.second = second
+        ret.nanosecond = nanosecond
+        
+        return ret
     }
+
+
 }
 
 public extension Date {

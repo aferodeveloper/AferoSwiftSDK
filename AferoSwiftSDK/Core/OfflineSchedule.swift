@@ -683,9 +683,7 @@ open class OfflineSchedule: NSObject {
         
         public var TAG: String { return "ScheduleEvent" }
         
-        public var hashValue: Int {
-            return flags.hashValue ^ repeats.hashValue ^ utcDayOfWeek.hashValue ^ utcHour.hashValue ^ utcMinute.hashValue
-        }
+        public var hashValue: Int { return timeSpecification.hashValue }
         
         public var flags: TimeSpecification.Flags {
             get { return timeSpecification.flags }
@@ -698,42 +696,44 @@ open class OfflineSchedule: NSObject {
             set { timeSpecification.repeats = newValue }
         }
         
-        /// Accessor for the `timeSpecification`'s UTC day of week, starting with Sunday == 1, ending with Saturday == 7
-        public var utcDayOfWeek: TimeSpecification.DayOfWeek {
-            get { return timeSpecification.utcDayOfWeek }
-            set { timeSpecification.utcDayOfWeek = newValue }
-        }
-        
-        /// Accessor for the UTC hour of the `timeSpecification`.
-        public var utcHour: TimeSpecification.Hour {
-            get { return timeSpecification.utcHour }
-            set { timeSpecification.utcHour = newValue }
-        }
-        
-        /// Accessor for the UTC minute of the `timeSpecification`
-        public var utcMinute: TimeSpecification.Minute {
-            get { return timeSpecification.utcMinute }
-            set { timeSpecification.utcMinute = newValue }
-        }
-        
         /// Accessor for the `timeSpecification`'s local-timezone day of week, starting with Sunday == 1, ending with Saturday == 7
+        public var dayOfWeek: TimeSpecification.DayOfWeek {
+            get { return timeSpecification.dayOfWeek }
+            set { timeSpecification.dayOfWeek = newValue }
+        }
+        
+        @available(*, deprecated, message: "Use `dayOfWeek` instead.")
         public var localDayOfWeek: TimeSpecification.DayOfWeek {
-            get { return timeSpecification.localDayOfWeek }
-            set { timeSpecification.localDayOfWeek = newValue }
+            get { return dayOfWeek }
+            set { dayOfWeek = newValue }
         }
         
         /// Accessor for the local-timezone hour of the `timeSpecification`. Assumed UTC.
+        public var hour: TimeSpecification.Hour {
+            get { return timeSpecification.hour }
+            set { timeSpecification.hour = newValue }
+        }
+
+        /// Accessor for the local-timezone hour of the `timeSpecification`. Assumed UTC.
+        @available(*, deprecated, message: "Use `hour` instead.")
         public var localHour: TimeSpecification.Hour {
-            get { return timeSpecification.localHour }
-            set { timeSpecification.localHour = newValue }
+            get { return hour }
+            set { hour = newValue }
         }
-        
+
         /// Accessor for the local-timezone minute of the `timeSpecification`
-        public var localMinute: TimeSpecification.Minute {
-            get { return timeSpecification.localMinute }
-            set { timeSpecification.localMinute = newValue }
+        public var minute: TimeSpecification.Minute {
+            get { return timeSpecification.minute }
+            set { timeSpecification.minute = newValue }
         }
-        
+
+        /// Accessor for the local-timezone minute of the `timeSpecification`
+        @available(*, deprecated, message: "Use `minute` instead.")
+        public var localMinute: TimeSpecification.Minute {
+            get { return minute }
+            set { minute = newValue }
+        }
+
         /// Describes the schedule on which this event runs.
         public var timeSpecification: TimeSpecification
         
@@ -752,46 +752,35 @@ open class OfflineSchedule: NSObject {
             
             public var TAG: String { return "TimeSpecification" }
             
-            public typealias DayOfWeek = DateTypes.DayOfWeek
             public typealias Repeats = Bool
+            public typealias UsesDeviceTimezone = Bool
+
+            public typealias DayOfWeek = DateTypes.DayOfWeek
             public typealias Hour = UInt8
             public typealias Minute = UInt8
             
-            private(set) public var utcComponents: DateComponents
-            
-            private var localComponents: DateComponents {
-                get { return utcComponents.translateWeekly(to: TimeZone.autoupdatingCurrent)! }
-                set { utcComponents = newValue.translateWeekly(to: TimeZone.UTC)! }
-            }
-            
-            public var utcDayOfWeek: DayOfWeek {
-                get { return DayOfWeek(dayNumber: utcComponents.weekday!)! }
-                set { utcComponents.weekday = newValue.dayNumber }
-            }
-            
+            public var dayOfWeek: DayOfWeek
+
+            @available(*, deprecated, message: "Use `dayOfWeek` instead.")
             public var localDayOfWeek: DayOfWeek {
-                get { return localComponents.dayOfWeek! }
-                set { localComponents.dayOfWeek = newValue }
+                get { return dayOfWeek }
+                set { dayOfWeek = newValue }
             }
             
-            public var utcHour: Hour {
-                get { return UInt8(utcComponents.hour!) }
-                set { utcComponents.hour = Int(newValue) }
-            }
-            
+            public var hour: Hour
+
+            @available(*, deprecated, message: "Use `hour` instead.")
             public var localHour: Hour {
-                get { return UInt8(localComponents.hour!) }
-                set { localComponents.hour = Int(newValue) }
+                get { return UInt8(hour) }
+                set { hour = newValue }
             }
+
+            public var minute: Minute
             
-            public var utcMinute: Minute {
-                get { return UInt8(utcComponents.minute!) }
-                set { utcComponents.minute = Int(newValue) }
-            }
-            
+            @available(*, deprecated, message: "Use `minute` instead.")
             public var localMinute: Minute {
-                get { return UInt8(localComponents.minute!) }
-                set { localComponents.minute = Int(newValue) }
+                get { return minute }
+                set { minute = newValue }
             }
             
             public var flags: Flags = .none
@@ -803,54 +792,61 @@ open class OfflineSchedule: NSObject {
                     else { flags.remove(.repeats) }
                 }
             }
-            
+
+            public var usesDeviceTimezone: UsesDeviceTimezone {
+                get { return flags.contains(.usesDeviceTimezone) }
+                set {
+                    if newValue { flags.insert(.usesDeviceTimezone) }
+                    else { flags.remove(.usesDeviceTimezone) }
+                }
+            }
+
             public var hashValue: Int {
-                return utcComponents.hashValue ^ repeats.hashValue
+                return dayOfWeek.hashValue | hour.hashValue | minute.hashValue ^ flags.hashValue
             }
             
-            public init() {
-                utcComponents = DateComponents.weekly(timeZone: .UTC)
+            public init(dayOfWeek: DayOfWeek = .sunday, hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimezone]) {
+                self.dayOfWeek = dayOfWeek
+                self.hour = hour
+                self.minute = minute
+                self.flags = flags
             }
             
-            public init(dayOfWeek: DayOfWeek = .sunday, hour: Hour = 0, minute: Minute = 0, repeats: Repeats = true) {
-                self.init()
-                self.utcDayOfWeek = dayOfWeek
-                self.utcHour = hour
-                self.utcMinute = minute
-                self.repeats = repeats
-            }
-            
-            public init(localDayOfWeek: DayOfWeek = .sunday, localHour: Int = 0, localMinute: Int = 0, repeats: Repeats = true) {
-                self.init()
-                self.localDayOfWeek = localDayOfWeek
-                self.localHour = UInt8(localHour)
-                self.localMinute = UInt8(localMinute)
-                self.repeats = repeats
-            }
+            public init(dayOfWeek: DayOfWeek, hour: Hour, minute: Minute, repeats: Repeats, usesDeviceTimezone: UsesDeviceTimezone) {
+                
+                var flags: Flags = .none
 
-            public init(schedule: DeviceRule.Schedule, repeats: Repeats = true, sourceTimezone: TimeZone = TimeZone.autoupdatingCurrent) {
-                
-                let utcComponents = schedule.time.utcComponents
-                var dayOfWeek = schedule.firstDayOfWeek
-
-                // If we cross midnight GMT, then we need  to bump the day (since it will actually
-                // run on the following day GMT)
-                
-                let utcHourDelta = utcComponents.hour! + (sourceTimezone.secondsFromGMT() / 3600)
-                
-                if utcHourDelta >= 24 {
-                    dayOfWeek = dayOfWeek?.yesterday
+                if repeats {
+                    flags.insert(.repeats)
                 }
                 
-                if utcHourDelta < 0 {
-                    dayOfWeek = dayOfWeek?.tomorrow
+                if usesDeviceTimezone {
+                    flags.insert(.usesDeviceTimezone)
                 }
                 
-                self.init(dayOfWeek: dayOfWeek ?? .sunday, hour: Hour(utcComponents.hour!), minute: Minute(utcComponents.minute!), repeats: repeats)
+                self.init(dayOfWeek: dayOfWeek, hour: hour, minute: minute, flags: flags)
+                
             }
-            
+
         }
 
+    }
+    
+}
+
+public extension OfflineSchedule.ScheduleEvent.TimeSpecification {
+
+    init(schedule: DeviceRule.Schedule, repeats: Repeats = true, targetTimezone: TimeZone? = nil, usesDeviceTimezone: Bool = true) {
+        
+        let localComponents: DateComponents
+        
+        if let targetTimezone = targetTimezone {
+            localComponents = schedule.time.components(in: targetTimezone)
+        } else {
+            localComponents = schedule.time.components
+        }
+        
+        self.init(dayOfWeek: schedule.firstDayOfWeek ?? .sunday, hour: Hour(localComponents.hour!), minute: Minute(localComponents.minute!), repeats: repeats, usesDeviceTimezone: true)
     }
     
 }
@@ -879,15 +875,6 @@ public extension OfflineSchedule {
         })
     }
     
-    /// THe UTC days-of-week with available event slots
-    public var availableUTCDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
-        return Set(utcDayEventCounts.filter {
-            $0.value < self.numberOfSupportedEventsPerDay
-            }.map {
-                return $0.key
-        })
-    }
-    
     /// A map of `DayOfWeek` to the number of events currently scheduled on that local day.
     public var localDayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
         return ScheduleEvent.TimeSpecification.DayOfWeek.allDays.reduce([:]) {
@@ -898,33 +885,6 @@ public extension OfflineSchedule {
         }
     }
 
-    /// A map of `DayOfWeek` to the number of events currently scheduled on that UTC day.
-    public var utcDayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
-        return ScheduleEvent.TimeSpecification.DayOfWeek.allDays.reduce([:]) {
-            curr, next in
-            var ret = curr
-            ret[next] = self.events(forUTCDayOfWeek: next).count
-            return ret
-        }
-    }
-
-    /// Return all events for a given UTC day of week
-    /// - parameter utcDayOfWeek: The UTC day of week for which to query.
-    
-    public func events(forUTCDayOfWeek utcDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent] {
-        return eventFilterResults(forUTCDayOfWeek: utcDayOfWeek).map {
-            (result: EventFilterResult) -> ScheduleEvent in result.event
-        }
-    }
-    
-    /// Return all events whose UTC day of week is in `utcDaysOfWeek`
-    /// - parameter utcDaysOfWeek: The UTC days for which to filter
-    
-    public func events<T: Sequence>(forUTCDaysOfWeek utcDaysOfWeek: T) -> [ScheduleEvent]
-        where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
-            return events(matching: { $0.utcDayOfWeek ∈ utcDaysOfWeek })
-    }
-    
     /// Return all events for a given local day of week
     /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
     
@@ -968,32 +928,33 @@ public extension OfflineSchedule {
     /// Return an `[EventFilterResult]` for all events on the given local-timezone day.
     /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
     
+    fileprivate func eventFilterResults(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [EventFilterResult] {
+        return eventFilterResults(forDaysOfWeek: [dayOfWeek])
+    }
+
+    /// Return an `[EventFilterResult]` for all events on the given local-timezone day.
+    /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
+    @available(*, deprecated, message: "Use `eventFilterResults(forDayOfWeek:)` instead.")
     fileprivate func eventFilterResults(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [EventFilterResult] {
         return eventFilterResults(forLocalDaysOfWeek: [localDayOfWeek])
     }
     
     /// Return an `[EventFilterResult]` for all events on the given local-timezone days.
     /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
+    
+    fileprivate func eventFilterResults<T: Sequence>(forDaysOfWeek daysOfWeek: T) -> [EventFilterResult]
+        where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
+            return eventFilterResults { $0.dayOfWeek ∈ daysOfWeek }
+    }
 
+    /// Return an `[EventFilterResult]` for all events on the given local-timezone days.
+    /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
+    @available(*, deprecated, message: "Use `eventFilterResults(forDaysOfWeek:)` instead.")
     fileprivate func eventFilterResults<T: Sequence>(forLocalDaysOfWeek localDaysOfWeek: T) -> [EventFilterResult]
         where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
             return eventFilterResults { $0.localDayOfWeek ∈ localDaysOfWeek }
     }
     
-    /// Return an `[EventFilterResult]` for all events on the given UTC day.
-    /// - parameter utcDayOfWeek: The UTC day of week for which to query.
-    
-    fileprivate func eventFilterResults(forUTCDayOfWeek utcDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [EventFilterResult] {
-        return eventFilterResults(forUTCDaysOfWeek: [utcDayOfWeek])
-    }
-    
-    /// Return an `[EventFilterResult]` for all events on the given UTC days.
-    /// - parameter utcDayOfWeek: The UTC day of week for which to query.
-    
-    fileprivate func eventFilterResults<T: Sequence>(forUTCDaysOfWeek utcDaysOfWeek: T) -> [EventFilterResult]
-        where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
-            return eventFilterResults { $0.utcDayOfWeek ∈ utcDaysOfWeek }
-    }
     
     typealias ScheduleEventPredicate = (ScheduleEvent) -> Bool
 
@@ -1025,38 +986,38 @@ public extension OfflineSchedule {
     
     /// Remove all events for a given `localDayOfWeek`, and commit the removal.
     
+    public func removeEvents(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
+        return removeEvents(forDaysOfWeek: [dayOfWeek])
+    }
+
+    /// Remove all events for a given `localDayOfWeek`, and commit the removal.
+    @available(*, deprecated, message: "Use `removeEvents(forDayOfWeek:) instead.")
     public func removeEvents(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
         return removeEvents(forLocalDaysOfWeek: [localDayOfWeek])
     }
     
     /// Remove all events with `localDayOfWeek` in the given sequence, and commit the removal.
     
+    public func removeEvents<T>(forDaysOfWeek daysOfWeek: T) -> Promise<Void>
+        where T: Sequence, T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
+            return commitEvents(forAttributeIds: eventFilterResults(forDaysOfWeek: daysOfWeek).map {
+                (result: EventFilterResult) -> Int in
+                removeEvent(result.attributeId)
+                return result.attributeId
+            }).then { _ -> Void in }
+    }
+
+    /// Remove all events with `localDayOfWeek` in the given sequence, and commit the removal.
+    @available(*, deprecated, message: "Use `removeEvents(forDaysOfWeek:) instead.")
     public func removeEvents<T>(forLocalDaysOfWeek localDaysOfWeek: T) -> Promise<Void>
         where T: Sequence, T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
-            return commitEvents(forAttributeIds: eventFilterResults(forLocalDaysOfWeek: localDaysOfWeek).map {
+            return commitEvents(forAttributeIds: eventFilterResults(forDaysOfWeek: localDaysOfWeek).map {
                 (result: EventFilterResult) -> Int in
                 removeEvent(result.attributeId)
                 return result.attributeId
             }).then { _ -> Void in }
     }
     
-    /// Remove all events with the given `utcDayOfWeek`, and commit the removal.
-    
-    public func removeEvents(forUTCDayOfWeek utcDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
-        return removeEvents(forUTCDaysOfWeek: [utcDayOfWeek])
-    }
-    
-    /// Remove all events with `utcDayOfWeek` in the given sequence, and commit the removal.
-
-    public func removeEvents<T>(forUTCDaysOfWeek utcDaysOfWeek: T) -> Promise<Void>
-        where T: Sequence, T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
-            return commitEvents(forAttributeIds: eventFilterResults(forUTCDaysOfWeek: utcDaysOfWeek).map {
-                (result: EventFilterResult) -> Int in
-                removeEvent(result.attributeId)
-                return result.attributeId
-            }).then { _ -> Void in }
-    }
-
     /// Remove all events with `utcDayOfWeek` in the given sequence, and commit the removal.
     /// - parameter predicate: The predicate for which matching events will be removed.
     /// - note: Because of the destructive nature of this operation, there is no default
@@ -1076,8 +1037,8 @@ public extension DateTypes.Time {
     
     public init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
         self.init(
-            hour: Int(timeSpecification.utcHour),
-            minute: Int(timeSpecification.utcMinute),
+            hour: Int(timeSpecification.hour),
+            minute: Int(timeSpecification.minute),
             seconds: 0,
             timeZone: timeZone
         )
@@ -1088,7 +1049,7 @@ public extension DeviceRule.Schedule {
     
     public init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
         self.init(
-            dayOfWeek: [timeSpecification.utcDayOfWeek],
+            dayOfWeek: [timeSpecification.dayOfWeek],
             time: DateTypes.Time(timeSpecification: timeSpecification, timeZone: timeZone)
         )
     }
@@ -1115,7 +1076,7 @@ public extension OfflineSchedule.ScheduleEvent {
         
         get {
             return DeviceRule.Schedule(
-                dayOfWeek: Set([timeSpecification.localDayOfWeek]),
+                dayOfWeek: Set([timeSpecification.dayOfWeek]),
                 time: DateTypes.Time(
                     timeSpecification: timeSpecification,
                     timeZone: TimeZone(abbreviation: "UTC")!
@@ -1138,7 +1099,7 @@ public extension OfflineSchedule.ScheduleEvent {
             return ret
         }
         
-        let timeSpec = TimeSpecification(schedule: schedule, repeats: repeats)
+        let timeSpec = TimeSpecification(schedule: schedule, repeats: repeats, usesDeviceTimezone: false)
         self.init(timeSpecification: timeSpec, attributes: attributes)
     }
     
@@ -1229,19 +1190,26 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
     
         public var debugDescription: String {
             var lflags: [String] = []
-            if contains(.repeats) {
-                lflags.append("Repeats")
+            if contains(.usesDeviceTimezone) {
+                lflags.append("UsesDeviceTimezone(\(Flags.usesDeviceTimezone.rawValue))")
             }
-            return "<OfflineSchedule.ScheduleEvent.TimeSpecification.Flags> [\(lflags.joined(separator: ", "))]"
+            if contains(.repeats) {
+                lflags.append("Repeats(\(Flags.repeats.rawValue))")
+            }
+            return "<OfflineSchedule.ScheduleEvent.TimeSpecification.Flags> \(rawValue) [\(lflags.joined(separator: ", "))]"
         }
         
         // MARK: Actual values
         
         /// Emtpy Set
-        
         public static var none: Flags { return allZeros }
         
+        /// The schedule repeats.
         public static var repeats: Flags { return self.init(bitIndex: 0) }
+        
+        /// The schedule is in the timezone associated with the device, rather
+        /// than UTC.
+        public static var usesDeviceTimezone: Flags { return self.init(bitIndex: 1) }
         
         // Yes, this is what a bitfield looks like in Swift :(
         
@@ -1314,9 +1282,9 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
         
         return [
             flags.bytes,
-            [UInt8(utcDayOfWeek.dayNumber)],
-            [utcHour],
-            [utcMinute],
+            [UInt8(dayOfWeek.dayNumber)],
+            [hour],
+            [minute],
             ].flatMap { $0 }
         
     }
@@ -1353,21 +1321,21 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
             return nil
         }
         
-        utcDayOfWeek = dayOfWeek
+        self.dayOfWeek = dayOfWeek
         
         guard (0...23).contains(bytes[type(of: self).HourOffset]) else {
             DDLogError("Unexpected value \(bytes[type(of: self).HourOffset]) for encoded 'hour'")
             return nil
         }
         
-        utcHour = bytes[type(of: self).HourOffset]
+        self.hour = bytes[type(of: self).HourOffset]
         
         guard (0...59).contains(bytes[type(of: self).MinuteOffset]) else {
             DDLogError("Unexpected value \(bytes[type(of: self).MinuteOffset]) for encoded 'minute'")
             return nil
         }
         
-        utcMinute = bytes[type(of: self).MinuteOffset]
+        self.minute = bytes[type(of: self).MinuteOffset]
     }
     
     public init?(slice: ArraySlice<UInt8>) {
@@ -1384,23 +1352,23 @@ public func ==(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: Offlin
 
 public func <(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
 
-    if lhs.utcDayOfWeek < rhs.utcDayOfWeek {
+    if lhs.dayOfWeek < rhs.dayOfWeek {
         return true
     }
     
-    if lhs.utcDayOfWeek == rhs.utcDayOfWeek {
+    if lhs.dayOfWeek == rhs.dayOfWeek {
         
-        if lhs.utcHour < rhs.utcHour {
+        if lhs.hour < rhs.hour {
             return true
         }
 
-        if lhs.utcHour == rhs.utcHour {
+        if lhs.hour == rhs.hour {
 
-            if lhs.utcMinute < rhs.utcMinute {
+            if lhs.minute < rhs.minute {
                 return true
             }
 
-            if lhs.utcMinute == rhs.utcMinute {
+            if lhs.minute == rhs.minute {
                 if lhs.repeats && !rhs.repeats { return true }
             }
         }
@@ -1629,6 +1597,126 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
         return (event: event, consumed: consumed)
     }
     
+    
+}
+
+extension OfflineSchedule.ScheduleEvent.TimeSpecification {
+    
+    /// Get this TimeSpecification as `DateComponents` using the given
+    /// calendar/timezone.
+    /// - parameter calendar: The calendar to use. Defaults to `.autoupdatingCurrent`.
+    /// - parameter timeZone: The timeZone to use; if present, overrides any timeZone in `calendar`. Defaults to `nil`.
+    /// - returns: A "weekly" `DateComponents` instance representing this timespec.
+    
+    func components(with calendar: Calendar? = nil, in timeZone: TimeZone? = nil) -> DateComponents {
+
+        return DateComponents.weekly(
+            calendar: calendar,
+            timeZone: timeZone,
+            dayOfWeek: dayOfWeek,
+            hour: Int(hour),
+            minute: Int(minute)
+        )
+        
+    }
+    
+    /// Get this TimeSpecification as a `Date` using the given
+    /// calendar/timezone.
+    /// - parameter calendar: The calendar to use. Defaults to `.autoupdatingCurrent`.
+    /// - parameter timeZone: The timeZone to use; if present, overrides any timeZone in `calendar`. Defaults to `nil`.
+    /// - returns: A `Date` instance representing the time this specification represents in the current week.
+    
+    func date(with calendar: Calendar? = nil, in timeZone: TimeZone? = nil) -> Date? {
+        return components(with: calendar, in: timeZone).date
+    }
+    
+    /// Return a copy of this `TimeSpecification` converted to "device local time",
+    /// if necessary. If already converted, simply returns self.
+    /// - parameter timeZone: The `TimeZone` to which to convert. This should be
+    ///                       acquired from the schedule storage object that houses
+    ///                       this entry.
+    /// - returns: A `TimeSpecification` converted to "device local time" as per the
+    ///            provided `TimeZone`, if necessary.
+    /// - throws: If there are any errors in date arithmetic.
+    
+    func asDeviceLocalTimeSpecification(in timeZone: TimeZone) throws -> OfflineSchedule.ScheduleEvent.TimeSpecification {
+        
+        if usesDeviceTimezone { return self } // Already conveted; no work to do.
+        
+        let fromComponents = DateComponents.weekly(
+            timeZone: .UTC,
+            dayOfWeek: dayOfWeek,
+            hour: Int(hour),
+            minute: Int(minute)
+        )
+        
+        guard let date = fromComponents.date else {
+            let msg = "Unable to convert \(String(describing: self)) to date (components: \(String(reflecting: fromComponents))"
+            
+            DDLogError(msg, tag: TAG)
+            throw msg
+        }
+        
+        
+        let toComponents = Calendar.autoupdatingCurrent.dateComponents(in: timeZone, from: date)
+
+        guard
+            let dayOfWeek = toComponents.dayOfWeek,
+            let hour = toComponents.hour,
+            let minute = toComponents.minute else {
+                let msg = "Unable to get dayOfWeek, hour, or minute from \(String(reflecting: toComponents))"
+                DDLogError(msg, tag: TAG)
+                throw msg
+        }
+        
+        let newTimeSpec = OfflineSchedule.ScheduleEvent.TimeSpecification(
+            dayOfWeek: dayOfWeek,
+            hour: UInt8(hour),
+            minute: UInt8(minute),
+            flags: flags.union([.usesDeviceTimezone])
+        )
+        
+        return newTimeSpec
+        
+    }
+    
+    /// Convert this `TimeSpecification` to "device local time",
+    /// if necessary. If already converted, does nothing.
+    /// - parameter timeZone: The `TimeZone` to which to convert. This should be
+    ///                       acquired from the schedule storage object that houses
+    ///                       this entry.
+    /// - returns: A `Bool` indicating whether or not conversion took place:
+    ///            If `true`, conversion took place.
+    ///            If `false`, no conversion took place.
+    /// - throws: If there are any errors in date arithmetic.
+    
+    mutating func convertToLocalTime(in timeZone: TimeZone) throws -> Bool {
+        let newValue = try asDeviceLocalTimeSpecification(in: timeZone)
+        if newValue == self { return false }
+        self = newValue
+        return true
+    }
+    
+}
+
+extension OfflineSchedule.ScheduleEvent {
+    
+    /// Convert a schedule event, possibly with a UTC timespec, and produce an event with a localtime
+    /// timespec.
+    /// - parameter timeZone: The `TimeZone` to which to convert. This should be
+    ///                       acquired from the schedule storage object that houses
+    ///                       this entry.
+    /// - returns: A ScheduleEvent with converted time. The event's `timeSpecification` will
+    ///            at the very least have its `.usesDeviceTimeZone` flag set.
+    /// - throws: If any underlying calls throw (e.g. date arithmetic)
+    
+    func asDeviceLocalTimeEvent(in timeZone: TimeZone) throws -> OfflineSchedule.ScheduleEvent {
+        guard !timeSpecification.usesDeviceTimezone else { return self }
+        
+        var ret = self
+        _ = try ret.timeSpecification.convertToLocalTime(in: timeZone)
+        return ret
+    }
     
 }
 
