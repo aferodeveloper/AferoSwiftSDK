@@ -102,11 +102,11 @@ class OfflineScheduleSpec: QuickSpec {
             // MARK: • Should plug in custom values
             
             it("should plug in custom values") {
-                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimezone: true)
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimeZone: true)
                 
                 expect(schedule.repeats) == true
-                expect(schedule.usesDeviceTimezone) == true
-                expect(schedule.flags.intersection([.repeats, .usesDeviceTimezone])) == [.repeats, .usesDeviceTimezone]
+                expect(schedule.usesDeviceTimeZone) == true
+                expect(schedule.flags.intersection([.repeats, .usesDeviceTimeZone])) == [.repeats, .usesDeviceTimeZone]
                 expect(schedule.dayOfWeek) == DayOfWeek.wednesday
                 expect(schedule.hour) == 16
                 expect(schedule.minute) == 20
@@ -116,25 +116,25 @@ class OfflineScheduleSpec: QuickSpec {
             
             it("should encode as expected") {
 
-                let timeSpec1 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimezone: true)
+                let timeSpec1 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: true)
                 
                 let encoded1 = timeSpec1.bytes
                 
                 expect(encoded1[0]) == 2 // flags is [0x00, 0x00]
                 expect(timeSpec1.repeats).to(beFalse())
-                expect(timeSpec1.usesDeviceTimezone).to(beTrue())
+                expect(timeSpec1.usesDeviceTimeZone).to(beTrue())
                 
                 expect(encoded1[1]) == UInt8(DayOfWeek.wednesday.dayNumber)
                 expect(encoded1[2]) == 16 // hour
                 expect(encoded1[3]) == 20 // minute
 
-                let timeSpec2 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimezone: true)
+                let timeSpec2 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimeZone: true)
                 
                 let encoded2 = timeSpec2.bytes
                 
                 expect(encoded2[0]) == 3 // flags is [0x00, 0x00]
                 expect(timeSpec2.repeats).to(beTrue())
-                expect(timeSpec2.usesDeviceTimezone).to(beTrue())
+                expect(timeSpec2.usesDeviceTimeZone).to(beTrue())
                 
                 expect(encoded2[1]) == UInt8(DayOfWeek.wednesday.dayNumber)
                 expect(encoded2[2]) == 16 // hour
@@ -146,7 +146,7 @@ class OfflineScheduleSpec: QuickSpec {
             // MARK: • Should roundtrip
             
             it("should roundtrip") {
-                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimezone: true)
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: true)
                 let schedule2 = OfflineSchedule.ScheduleEvent.TimeSpecification(bytes: schedule.bytes)
                 expect(schedule) == schedule2
             }
@@ -175,17 +175,17 @@ class OfflineScheduleSpec: QuickSpec {
 
                 let sunday0000RepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .repeats)
 
-                let sunday0000NoRepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .usesDeviceTimezone)
+                let sunday0000NoRepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .usesDeviceTimeZone)
                 
-                let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimezone])
+                let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
 
                 let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
                 
                 let saturday2300RepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .repeats)
 
-                let saturday2300NoRepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .usesDeviceTimezone)
+                let saturday2300NoRepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .usesDeviceTimeZone)
                 
-                let saturday2300RepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimezone])
+                let saturday2300RepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
 
                 it("should not perform an conversion if already in local time.") {
                     
@@ -219,7 +219,7 @@ class OfflineScheduleSpec: QuickSpec {
                         expect(azot.hour) == 23
                         expect(azot.minute) == sunday0000RepeatUTCSpec.minute
                         expect(azot.flags).toNot(equal(sunday0000RepeatUTCSpec.flags))
-                        expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimezone)
+                        expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
                         
                         try expect(sunday0000RepeatUTCSpec.asDeviceLocalTimeSpecification(in: utcPlus1).dayOfWeek) == sunday0000RepeatUTCSpec.dayOfWeek
                         
@@ -228,7 +228,7 @@ class OfflineScheduleSpec: QuickSpec {
                         expect(cet.hour) == 0
                         expect(cet.minute) == saturday2300RepeatUTCSpec.minute
                         expect(cet.flags).toNot(equal(saturday2300RepeatUTCSpec.flags))
-                        expect(cet.flags) == saturday2300RepeatUTCSpec.flags.union(.usesDeviceTimezone)
+                        expect(cet.flags) == saturday2300RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
                         
                     } catch {
                         fail(String(reflecting: error))
@@ -245,7 +245,7 @@ class OfflineScheduleSpec: QuickSpec {
                     expect(azot.hour) == 23
                     expect(azot.minute) == sunday0000RepeatUTCSpec.minute
                     expect(azot.flags).toNot(equal(sunday0000RepeatUTCSpec.flags))
-                    expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimezone)
+                    expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
                     
                 }
                 
@@ -311,7 +311,7 @@ class OfflineScheduleSpec: QuickSpec {
                 schedule.attributes[1] = .boolean(false)
                 
                 expect(schedule.serialized.bytes) == [
-                    0x02, // schedule: flags[0] (2 == [.usesDeviceTimezone]
+                    0x02, // schedule: flags[0] (2 == [.usesDeviceTimeZone]
                     0x01, // schedule: day
                     0x00, // schedule: hour
                     0x00, // schedule: minute
@@ -329,7 +329,11 @@ class OfflineScheduleSpec: QuickSpec {
             
             it("should decode properly") {
                 
-                let encoded: [UInt8] = [
+                let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    0x19: .boolean
+                ]
+                
+                let encoded1: [UInt8] = [
                     0x00, // flags[0]
                     0x03, // schedule: day
                     0x17, // schedule: hour
@@ -338,34 +342,183 @@ class OfflineScheduleSpec: QuickSpec {
                     0x00, // attribute: id[1]
                     0x01, // attribute: value.bytes (true)
                 ]
-                
-                let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
-                    0x19: .boolean
+
+                let encoded2: [UInt8] = [
+                    0x03, // flags[0]
+                    0x03, // schedule: day
+                    0x17, // schedule: hour
+                    0x14, // schedule: minute
+                    0x19, // attribute: id[0]
+                    0x00, // attribute: id[1]
+                    0x01, // attribute: value.bytes (true)
                 ]
 
                 var parseResult: (event: OfflineSchedule.ScheduleEvent?, consumed: Int) = (nil, 0)
                 
                 expect {
-                    parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
+                    parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded1, types: types)
                     }.toNot(throwError())
                 
-                expect(parseResult.consumed) == encoded.count
+                expect(parseResult.consumed) == encoded1.count
                 
-                guard let scheduleEvent = parseResult.event else {
+                guard let scheduleEvent1 = parseResult.event else {
                     fail("Expected scheduleEvent to not be nil.")
                     return
                 }
                 
-                expect(scheduleEvent.repeats) == false
-                expect(scheduleEvent.dayOfWeek) == DayOfWeek.tuesday
-                expect(scheduleEvent.hour) == 23
-                expect(scheduleEvent.minute) == 20
-                expect(scheduleEvent.attributes.count) == 1
-                expect(scheduleEvent.attributes[25]).toNot(beNil())
-                expect(scheduleEvent.attributes[25]!.boolValue) == true
+                expect(scheduleEvent1.repeats) == false
+                expect(scheduleEvent1.usesDeviceTimeZone).to(beFalse())
+                expect(scheduleEvent1.dayOfWeek) == DayOfWeek.tuesday
+                expect(scheduleEvent1.hour) == 23
+                expect(scheduleEvent1.minute) == 20
+                expect(scheduleEvent1.attributes.count) == 1
+                expect(scheduleEvent1.attributes[25]).toNot(beNil())
+                expect(scheduleEvent1.attributes[25]!.boolValue) == true
+
+                expect {
+                    parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded2, types: types)
+                    }.toNot(throwError())
+                
+                expect(parseResult.consumed) == encoded1.count
+                
+                guard let scheduleEvent2 = parseResult.event else {
+                    fail("Expected scheduleEvent to not be nil.")
+                    return
+                }
+                
+                expect(scheduleEvent2.repeats).to(beTrue())
+                expect(scheduleEvent2.usesDeviceTimeZone).to(beTrue())
+                expect(scheduleEvent2.dayOfWeek) == DayOfWeek.tuesday
+                expect(scheduleEvent2.hour) == 23
+                expect(scheduleEvent2.minute) == 20
+                expect(scheduleEvent2.attributes.count) == 1
+                expect(scheduleEvent2.attributes[25]).toNot(beNil())
+                expect(scheduleEvent2.attributes[25]!.boolValue) == true
                 
             }
             
+            describe("When converting from UTC to Device Local time") {
+                
+                typealias TimeSpecification = OfflineSchedule.ScheduleEvent.TimeSpecification
+                
+                /*
+                 
+                 * midnight UTC -> UTC-1, should go back a day
+                 * 23:00 UTC -> UTC+1, should go forward a day
+                 * in all cases, should wrap around.
+                 
+                 */
+                
+                // UTC+1 (e.g. CET)
+                let utcPlus1 = TimeZone(secondsFromGMT: 3600)!
+                
+                // UTC-1 (e.g. Azores)
+                let utcMinus1 = TimeZone(secondsFromGMT: -3600)!
+                
+                let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
+                let sunday0000NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatUTCSpec, attributes: [0: false])
+                
+                let sunday0000RepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .repeats)
+                let sunday0000RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatUTCSpec, attributes: [0: false])
+                
+                let sunday0000NoRepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .usesDeviceTimeZone)
+                let sunday0000NoRepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatLTSpec, attributes: [0: false])
+                
+                let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                let sunday0000RepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatLTSpec, attributes: [0: false])
+                
+                let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
+                let saturday2300NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatUTCSpec, attributes: [0: false])
+                
+                let saturday2300RepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .repeats)
+                let saturday2300RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300RepeatUTCSpec, attributes: [0: false])
+                
+                let saturday2300NoRepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .usesDeviceTimeZone)
+                let saturday2300NoRepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatLTSpec, attributes: [0: false])
+                
+                let saturday2300RepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                let saturday2300RepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300RepeatLTSpec, attributes: [0: false])
+                
+                
+                it("should not perform an conversion if already in local time.") {
+                    
+                    do {
+                        try expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000NoRepeatLTEvent
+                        try expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000RepeatLTEvent
+                        try expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcMinus1)) == saturday2300NoRepeatLTEvent
+                        try expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC)) == saturday2300RepeatLTEvent
+                    } catch {
+                        fail(String(reflecting: error))
+                    }
+                }
+                
+                it("should only modify the .usesDeviceLocaltime if converting from UTC→UTC") {
+                    do {
+                        try expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000NoRepeatLTEvent.timeSpecification
+                        try expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000RepeatLTEvent.timeSpecification
+                        try expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300NoRepeatLTEvent.timeSpecification
+                        try expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300RepeatLTEvent.timeSpecification
+                    } catch {
+                        fail(String(reflecting: error))
+                    }
+                }
+                
+                it("should update dayOfWeek if crossing a day boundary.") {
+                    
+                    do {
+                        
+                        let azot = try sunday0000RepeatUTCEvent.asDeviceLocalTimeEvent(in: utcMinus1)
+                        expect(azot.dayOfWeek) == DayOfWeek.saturday
+                        expect(azot.hour) == 23
+                        expect(azot.minute) == sunday0000RepeatUTCSpec.minute
+                        expect(azot.flags).toNot(equal(sunday0000RepeatUTCSpec.flags))
+                        expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
+                        
+                        try expect(sunday0000RepeatUTCEvent.asDeviceLocalTimeEvent(in: utcPlus1).dayOfWeek) == sunday0000RepeatUTCEvent.dayOfWeek
+                        
+                        let cet = try saturday2300RepeatUTCEvent.asDeviceLocalTimeEvent(in: utcPlus1)
+                        expect(cet.dayOfWeek) == DayOfWeek.sunday
+                        expect(cet.hour) == 0
+                        expect(cet.minute) == saturday2300RepeatUTCSpec.minute
+                        expect(cet.flags).toNot(equal(saturday2300RepeatUTCSpec.flags))
+                        expect(cet.flags) == saturday2300RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
+                        
+                    } catch {
+                        fail(String(reflecting: error))
+                    }
+                }
+                
+                it("should have made a change if in-place conversion returns true.") {
+                    
+                    var azot = sunday0000RepeatUTCEvent
+                    
+                    let converted = try? azot.convertToLocalTime(in: utcMinus1)
+                    expect(converted).to(beTrue())
+                    expect(azot.dayOfWeek) == DayOfWeek.saturday
+                    expect(azot.hour) == 23
+                    expect(azot.minute) == sunday0000RepeatUTCSpec.minute
+                    expect(azot.flags).toNot(equal(sunday0000RepeatUTCSpec.flags))
+                    expect(azot.flags) == sunday0000RepeatUTCSpec.flags.union(.usesDeviceTimeZone)
+                    
+                }
+                
+                it("should not have made a change if in-place conversion returns false.") {
+                    
+                    var azot = sunday0000RepeatUTCEvent
+                    let converted = try? azot.convertToLocalTime(in: utcMinus1)
+                    expect(converted).to(beTrue())
+                    
+                    var azot2 = azot
+                    let converted2 = try? azot2.convertToLocalTime(in: utcMinus1)
+                    expect(converted2).to(beFalse())
+                    expect(azot2.dayOfWeek) == azot.dayOfWeek
+                    expect(azot2.hour) == azot.hour
+                    expect(azot2.minute) == azot.minute
+                    expect(azot2.flags) == azot.flags
+                }
+                
+            }
+        
             // MARK: - When handling bad data -
             
             describe("when handling bad data") {
@@ -623,105 +776,6 @@ class OfflineScheduleSpec: QuickSpec {
 
             }
             
-//            xit("should be able to decode a stream of ScheduleEvents") {
-//                
-//                let int32val: Int32 = 1234
-//                let int32arr = toByteArray(int32val)!
-//                
-//                let q1516val: Double = 130.435
-//                let q1516arr: [UInt8] = doubleToQ(q1516val, n: 16, t: Int32.self)
-//
-//                let encoded: [UInt8] = [
-//                    
-//                    // event 1 — Bool
-//                    0x00, // schedule: repeats
-//                    0x03, // schedule: day
-//                    0x17, // schedule: hour
-//                    0x14, // schedule: minute
-//                    0x19, // attribute: id[0]
-//                    0x00, // attribute: id[1] (0x1900 = 25)
-//                    0x01, // attribute: value.bytes (true)
-//
-//                    // event 2 — Int32
-//                    1, // schedule: repeats
-//                    6, // schedule: day (friday)
-//                    12, // schedule: hour
-//                    32, // schedule: minute
-//                    0xBE, // attribute: id[0]
-//                    0xEF, // attribute: id[1] (0xBEEF = 61_374)
-//                    int32arr[0], // attribute: value.bytes (true)
-//                    int32arr[1], // attribute: value.bytes (true)
-//                    int32arr[2], // attribute: value.bytes (true)
-//                    int32arr[3], // attribute: value.bytes (true)
-//
-//                    // event 3 — .Q1516
-//                    0, // schedule: repeats
-//                    7, // schedule: day (saturday)
-//                    10, // schedule: hour
-//                    11, // schedule: minute
-//                    0xFE, // attribute: id[0]
-//                    0xCA, // attribute: id[1] (0xFECA = 51_966)
-//                    q1516arr[0],
-//                    q1516arr[1],
-//                    q1516arr[2],
-//                    q1516arr[3], // attribute: .Q1516 (57_005.74583)
-//                    
-//                    // residue
-//                    0x01,
-//                    0x02,
-//                    0x03,
-//                    0x04,
-//
-//                ]
-//                
-//                let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
-//                    25: .Boolean,
-//                    61374: .SInt32,
-//                    51966: .Q1516,
-//                    47806: .UTF8S,
-//                ]
-//                
-//                var results: OfflineSchedule.ScheduleEvent.ScheduleEventsFromBytes = ([], 0, [])
-//                
-//                expect {
-//                    results = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-//                }.toNot(throwError())
-//                
-//                let scheduleEvents = results.events
-//                
-//                expect(results.residue.count) == 4
-//                expect(results.consumed) == encoded.count - 4
-//                expect(scheduleEvents.count) == 3
-//                
-//                let boolEvent = scheduleEvents[0]
-//                expect(boolEvent.repeats) == false
-//                expect(boolEvent.dayOfWeek) == DayOfWeek.Tuesday
-//                expect(boolEvent.hour) == 23
-//                expect(boolEvent.minute) == 20
-//                expect(boolEvent.attributes.count) == 1
-//                expect(boolEvent.attributes[25]).toNot(beNil())
-//                expect(boolEvent.attributes[25]!.boolValue) == true
-//
-//                let i32Event = scheduleEvents[1]
-//                expect(i32Event.repeats) == true
-//                expect(i32Event.dayOfWeek) == DayOfWeek.Friday
-//                expect(i32Event.hour) == 12
-//                expect(i32Event.minute) == 32
-//                expect(boolEvent.attributes.count) == 1
-//                expect(i32Event.attributes[61_374]).toNot(beNil())
-//                expect(i32Event.attributes[61_374]!.int32Value) == int32val
-//
-//                let q1516Event = scheduleEvents[2]
-//                expect(q1516Event.repeats) == false
-//                expect(q1516Event.dayOfWeek) == DayOfWeek.Saturday
-//                expect(q1516Event.hour) == 10
-//                expect(q1516Event.minute) == 11
-//                expect(boolEvent.attributes.count) == 1
-//                expect(q1516Event.attributes[51_966]).toNot(beNil())
-//                expect(q1516Event.attributes[51_966]!.doubleValue).to(beCloseTo(q1516val, within: 0.0001))
-//
-//            }
-            
             // MARK: • Should be able to encode a stream of ScheduleEvents
             
             it("should be able to encode a stream of ScheduleEvents") {
@@ -761,26 +815,22 @@ class OfflineScheduleSpec: QuickSpec {
 
         }
         
-//        describe("when handling OfflineScheduleFlags") {
-//            
-//            it("should initialize and encode properly") {
-//                
-//                let flagsNoEnabled = OfflineSchedule.Flags(rawValue: 0)
-//                expect(flagsNoEnabled.contains(.enabled)).to(beFalse())
-//                expect(flagsNoEnabled.bytes) == [0x00, 0x00]
-//                expect(flagsNoEnabled) == OfflineSchedule.Flags.none
-//                
-//                let flagsNoEnabled2 = OfflineSchedule.Flags.none
-//                expect(flagsNoEnabled2.contains(.enabled)).to(beFalse())
-//                expect(flagsNoEnabled2.bytes) == [0x00, 0x00]
-//                
-//                let flagsEnabled = OfflineSchedule.Flags(rawValue: 1)
-//                expect(flagsEnabled.contains(.enabled)).to(beTrue())
-//                expect(flagsEnabled.bytes) == [0x01, 0x00]
-//                expect(flagsEnabled) == OfflineSchedule.Flags.enabled
-//
-//            }
-//        }
+        describe("when handling OfflineScheduleFlags") {
+            
+            it("should initialize and encode properly") {
+                
+                let flagsNoEnabled = OfflineSchedule.Flags(rawValue: 0)
+                expect(flagsNoEnabled.contains(.enabled)).to(beFalse())
+                expect(flagsNoEnabled.rawValue) == 0x00
+                expect(flagsNoEnabled) == OfflineSchedule.Flags.none
+                
+                let flagsEnabled = OfflineSchedule.Flags(rawValue: 1)
+                expect(flagsEnabled.contains(.enabled)).to(beTrue())
+                expect(flagsEnabled.rawValue) == 0x01
+                expect(flagsEnabled) == OfflineSchedule.Flags.enabled
+
+            }
+        }
         
         // MARK: - OfflineSchedule structs -
         
@@ -808,12 +858,14 @@ class OfflineScheduleSpec: QuickSpec {
                 DeviceProfile.AttributeDescriptor(id: 59007, type: .bytes,   operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 59036, type: .bytes,   operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 59037, type: .bytes,   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59038, type: .bytes,   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59039, type: .bytes,   operations: [.Read, .Write]),
                 
                 ])
             
             let deviceModel = RecordingDeviceModel(deviceId: "foo", accountId: "moo", profile: profile)
             
-            let ts1 = ScheduleEvent.TimeSpecification(dayOfWeek: .sunday, hour: 1, minute: 1, repeats: true, usesDeviceTimezone: true)
+            let ts1 = ScheduleEvent.TimeSpecification(dayOfWeek: .sunday, hour: 1, minute: 4, repeats: true, usesDeviceTimeZone: true)
             let event1 = ScheduleEvent(timeSpecification: ts1, attributes: [
                 50: .boolean(false),
                 100: .signedInt32(5000),
@@ -821,30 +873,29 @@ class OfflineScheduleSpec: QuickSpec {
                 70: .q3132(444.555),
                 ])
 
-            let ts2 = ScheduleEvent.TimeSpecification(dayOfWeek: .monday, hour: 1, minute: 1, repeats: true, usesDeviceTimezone: true)
+            let ts2 = ScheduleEvent.TimeSpecification(dayOfWeek: .monday, hour: 2, minute: 1, repeats: true, usesDeviceTimeZone: true)
             let event2 = ScheduleEvent(timeSpecification: ts2, attributes: [
                 90: .boolean(true),
                 101: .signedInt64(-999),
                 ])
 
-            let ts3 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 1, minute: 1, repeats: true, usesDeviceTimezone: true)
+            let ts3 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 3, minute: 1, repeats: true, usesDeviceTimeZone: false)
             let event3 = ScheduleEvent(timeSpecification: ts3, attributes: [
                 201: .signedInt64(-1999),
                 204: .signedInt8(-10),
                 ])
             
+            guard let schedule = OfflineSchedule(storage: deviceModel) else {
+                fatalError("Expected to initialize an offlineSchedule fixture.")
+            }
+            
+            afterEach {
+                _ = schedule.removeAllEvents()
+            }
+            
             // MARK: • Should default-initialize properly
 
             it("should default-initialize properly") {
-
-                let maybeSchedule = OfflineSchedule(storage: deviceModel)
-                expect(maybeSchedule).toNot(beNil())
-                
-                guard let schedule = maybeSchedule else {
-                    fail("Schedule was nil; cannot continue.")
-                    return
-                }
-                
                 expect(schedule.enabled) == false
                 expect(schedule.numberOfEvents) == 0
             }
@@ -852,7 +903,6 @@ class OfflineScheduleSpec: QuickSpec {
             // MARK: • Should detect offline schedule availabilty properly.
             
             it("should detect offline schedule availability properly") {
-                
                 expect(deviceModel.supportsOfflineSchedules).to(beTrue())
                 let profile2 = DeviceProfile(attributes: [
                     
@@ -871,33 +921,104 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 let deviceModel2 = RecordingDeviceModel(deviceId: "foo2", accountId: "moo2", profile: profile2)
                 expect(deviceModel2.supportsOfflineSchedules).to(beFalse())
-
             }
             
             // MARK: • Should custom-initialize properly
             
-            it("should custom-initialize properly") {
+            it("should set and clear attributes properly") {
 
-                let maybeSchedule = OfflineSchedule(storage: deviceModel)
-                expect(maybeSchedule).toNot(beNil())
-                
-                guard let schedule = maybeSchedule else {
-                    fail("Schedule was nil; cannot continue.")
-                    return
-                }
-                
                 expect(schedule.enabled).to(beFalse())
                 
                 expect(schedule.events().count) == 0
+                expect(schedule.numberOfEvents) == 0
+
                 schedule.setEvent(event: event1, forAttributeId: 59002)
                 expect(schedule.events().count) == 1
+                expect(schedule.numberOfEvents) == 1
                 expect(schedule.events().first) == event1
                 
                 expect(deviceModel.valueForAttributeId(59004)).to(beNil())
                 schedule.setEvent(event: event2, forAttributeId: 59004)
                 expect(schedule.events().count) == 2
+                expect(schedule.numberOfEvents) == 2
                 expect(schedule.events().last) == event2
+                
+                expect(deviceModel.valueForAttributeId(59007)).to(beNil())
+                schedule.setEvent(event: event3, forAttributeId: 59007)
+                expect(schedule.events().count) == 3
+                expect(schedule.numberOfEvents) == 3
+                expect(schedule.events().last) == event3
+                
+                _ = schedule.removeAllEvents()
+                
+                expect(schedule.events().count) == 0
+                expect(schedule.numberOfEvents) == 0
+                expect(schedule.events().last).to(beNil())
+                expect(deviceModel.valueForAttributeId(59002)).to(beNil())
+                expect(deviceModel.valueForAttributeId(59004)).to(beNil())
+                expect(deviceModel.valueForAttributeId(59007)).to(beNil())
 
+            }
+            
+            it("should report supported event counts properly") {
+                expect(schedule.numberOfSupportedEvents) == 7
+                expect(schedule.numberOfSupportedEventsPerDay) == 1
+            }
+            
+            describe("when querying events") {
+                
+                beforeEach {
+                    schedule.setEvent(event: event1, forAttributeId: 59002)
+                    schedule.setEvent(event: event2, forAttributeId: 59004)
+                    schedule.setEvent(event: event3, forAttributeId: 59007)
+                }
+
+                it("should filter events properly") {
+                    let allEvents = schedule.events { _ in return true }
+                    expect(allEvents) == schedule.events()
+                    expect(allEvents.count) == 3
+                    
+                    expect(schedule.events { $0.dayOfWeek == .sunday }) == [event1]
+                    expect(schedule.events { $0.dayOfWeek == .monday }) == [event2]
+                    expect(schedule.events { $0.dayOfWeek == .tuesday }) == [event3]
+                    
+                    expect(schedule.events { $0.usesDeviceTimeZone }) == [event1, event2]
+                    expect(schedule.events { !$0.usesDeviceTimeZone }) == [event3]
+
+                    expect(schedule.events { $0.hour == 1 }) == [event1]
+                    expect(schedule.events { $0.hour == 2 }) == [event2]
+                    expect(schedule.events { $0.hour == 3 }) == [event3]
+
+                    expect(schedule.events { $0.minute == 1 }) == [event2, event3]
+                    expect(schedule.events { $0.minute == 4 }) == [event1]
+                }
+                
+                it("should report the expected available and unavailable days.") {
+                    expect(schedule.availableDays) == [.wednesday, .thursday, .friday, .saturday]
+                    expect(schedule.unavailableDays) == [.sunday, .monday, .tuesday]
+                }
+                
+                it("should report the expected day/event counts") {
+                    let counts = schedule.dayEventCounts
+                    expect(counts) == [.sunday: 1, .monday: 1, .tuesday: 1, .wednesday: 0, .thursday: 0, .friday: 0, .saturday: 0]
+                }
+                
+                it("should report the expected events for days of week") {
+                    
+                    expect(schedule.events(forDayOfWeek: .sunday)) == [event1]
+                    expect(schedule.events(forDayOfWeek: .monday)) == [event2]
+                    expect(schedule.events(forDayOfWeek: .tuesday)) == [event3]
+                    expect(schedule.events(forDayOfWeek: .wednesday)) == []
+                    expect(schedule.events(forDayOfWeek: .thursday)) == []
+                    expect(schedule.events(forDayOfWeek: .friday)) == []
+                    expect(schedule.events(forDayOfWeek: .saturday)) == []
+                    
+                    expect(schedule.events(forDaysOfWeek: [.wednesday, .thursday, .friday, .saturday])) == []
+                    expect(schedule.events(forDaysOfWeek: [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday])) == [event1, event2, event3]
+                    expect(schedule.events(forDaysOfWeek: [.sunday, .monday, .tuesday])) == [event1, event2, event3]
+                    expect(schedule.events(forDaysOfWeek: [.sunday, .monday])) == [event1, event2]
+                }
+                
             }
             
             // MARK: • Should commit only the events that were changed.
