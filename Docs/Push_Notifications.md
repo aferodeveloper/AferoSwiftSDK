@@ -53,6 +53,11 @@ Cloud Messenger (GCM). In addition to configuring your app for push notification
 with your OS vendor (not covered here), there are a number of steps you must take
 to enable Afero to send push notifications to your apps.
 
+> **NOTE**
+>
+> At present, only Production APNS is supported by the Afero cloud; Sandbox APNS
+> is **not** currently supported.
+
 ## Configure Your App
 
 Enabling notifications on our app comprises four steps:
