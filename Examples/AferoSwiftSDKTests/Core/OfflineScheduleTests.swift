@@ -902,7 +902,7 @@ class OfflineScheduleSpec: QuickSpec {
             }
             
             afterEach {
-//                _ = schedule.removeAllEvents()
+                _ = schedule.removeAllEvents()
             }
             
             // MARK: • Should default-initialize properly
@@ -1036,11 +1036,7 @@ class OfflineScheduleSpec: QuickSpec {
             describe("when migrating UTC events to localTime") {
                 
                 beforeEach {
-                    schedule.setEvent(event: event1, forAttributeId: 59002)
-                    schedule.setEvent(event: event2, forAttributeId: 59004)
-                    schedule.setEvent(event: event3, forAttributeId: 59007)
-                    schedule.setEvent(event: event4, forAttributeId: 59036)
-                    schedule.setEvent(event: event5, forAttributeId: 59037)
+                    _ = schedule.addScheduleEvents([event1, event2, event3, event4, event5], commit: true)
                 }
                 
                 afterEach {
@@ -1096,6 +1092,18 @@ class OfflineScheduleSpec: QuickSpec {
                     expect(result?.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.5)
                     expect(result?.count).toNotEventually(beGreaterThan(3), timeout: 5.0, pollInterval: 0.5)
                     expect(error == nil).toNotEventually(beFalse())
+                }
+                
+                fit("should perform a full migration at intervals.") {
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.5)
+                    deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    var doneCount: Int = 0
+                    _ = deviceModel.migrateUTCOfflineScheduleEvents(maxBatchSize: 1, waitBetweenBatches: 1).then {
+                        ()->Void in
+                        doneCount += 1
+                    }
+                    expect(doneCount).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
+                    expect(doneCount).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
                 }
 
                 

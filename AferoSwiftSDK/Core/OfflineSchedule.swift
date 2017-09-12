@@ -62,6 +62,19 @@ extension DeviceModelable {
         }
         
     }
+    
+    /// If this `DeviceModelable` supports offline schedules, then this returns an
+    /// offline schedule instance. Otherwise, returns nil.
+    /// - parameter collator: An `OfflineScheduleCollator` instance. If omitted, defaults to
+    ///                       a `DefaultOfflineScheduleCollator` instance.
+    
+    public func offlineSchedule(with collator: OfflineScheduleCollator =  DefaultOfflineScheduleCollator()) -> OfflineSchedule? {
+        guard supportsOfflineSchedules else {
+            return nil
+        }
+        
+        return OfflineSchedule(storage: self)
+    }
 
 }
 
@@ -1893,3 +1906,77 @@ extension OfflineSchedule {
     
 }
 
+extension DeviceModelable {
+    
+    /// Migrate any UTC offline schedules events for this device to the device's local time.
+    /// - parameter maxBatchSize: the maximum number of events to convert at a time. Must be > 0,
+    ///                           or the method will assert.
+    /// - parameter waitBetweenBatches: The number of seconds to wait after one batch completes
+    ///                                 before attempting another batch. Must be >= 0, or
+    ///                                 the method will assert.
+    /// - returns: A `Promise` that resolves when all batches have been committed.
+    ///
+    /// ## Notes
+    /// * The method will assedrt if `maxBatchSize <= 0` or `waitBetweenBatches` < 0.
+    /// * The returned `Promise` will resolve with no effect if:
+    ///   - the `timeZone` is `nil`
+    ///   - `offlineSchedule()` returns `nil`
+    ///   - `offlineSchedule()?.utcEvents.counts == 0`
+    
+    func migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 5, waitBetweenBatches: TimeInterval = 5.0, batchNumber: Int = 1) -> Promise<Void> {
+
+        assert(maxBatchSize > 0, "maxBatchSize must be > 0")
+        assert(waitBetweenBatches >= 0, "waitBetweenBatchesmust be >= 0")
+        
+        guard timeZone != nil else {
+            DDLogInfo("Device \(deviceId) has no timeZone; not migrating UTC events.", tag: TAG)
+            return Promise { fulfill, _ in fulfill() }
+        }
+        
+        guard let schedule = offlineSchedule() else {
+            DDLogInfo("Offline schedules unsupported for device \(deviceId); not migrating UTC events.", tag: TAG)
+            return Promise { fulfill, _ in fulfill() }
+        }
+        
+        guard schedule.utcEvents.count > 0 else {
+            DDLogInfo("No UTC events to migrate for device \(deviceId); bailing.", tag: TAG)
+            return Promise { fulfill, _ in fulfill() }
+        }
+
+        let preCount = schedule.utcEvents.count
+
+        DDLogInfo("Migrating UTC \(min(preCount, maxBatchSize)) events for device \(deviceId) (batch \(batchNumber)")
+
+        return Promise {
+            fulfill, reject in
+            _ = schedule.migrateUTCEvents(maxCount: maxBatchSize)
+                .then {
+                    
+                    results -> Void in
+                    
+                    DDLogInfo("Offline schedule UTC migration: migrated \(results.count) events in batch \(batchNumber), with \(preCount - results.count) remaining.")
+                    
+                    guard schedule.utcEvents.count > 0 else {
+                        DDLogInfo("Offline schedule UTC migration for device \(self.deviceId): done.", tag: self.TAG)
+                        fulfill()
+                        return
+                    }
+                    
+                    after(waitBetweenBatches) {
+                        _ = self.migrateUTCOfflineScheduleEvents(maxBatchSize: maxBatchSize, waitBetweenBatches: waitBetweenBatches, batchNumber: batchNumber + 1)
+                            .then {
+                                ()->Void in
+                                DDLogInfo("Offline schedule UTC migration for device \(self.deviceId) batch \(batchNumber) unwind.", tag: self.TAG)
+                                fulfill()
+                        }
+                    }
+                    
+                    DDLogInfo("Offline schedule UTC migration for \(self.deviceId): scheduled batch \(batchNumber + 1) for \(waitBetweenBatches) from now.", tag: self.TAG)
+                    
+                }.catch {
+                    err in reject(err)
+            }
+        }
+        
+    }
+}
