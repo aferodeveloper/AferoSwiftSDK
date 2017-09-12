@@ -307,7 +307,13 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
                 completion(results, maybeError)
             }
             
-            attributeWriteable?.post(
+            guard let attributeWriteable = attributeWriteable else {
+                DDLogDebug("No attributeWriteable; bailing.", tag: TAG)
+                localOnDone(nil, "No attributeWriteable configured.")
+                return
+            }
+            
+            attributeWriteable.post(
                 actions: actions,
                 forDeviceId: self.deviceId,
                 withAccountId: accountId,
@@ -597,6 +603,28 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
     /// is used as the `accumulative` argument to underlying `update(*)` calls.
     
     var accumulative: Bool = true
+    
+    override init(deviceId: String,
+                  accountId: String,
+                  associationId: String? = nil,
+                  state: DeviceState = DeviceState(),
+                  profile: DeviceProfile? = nil,
+                  attributeWriteable: DeviceBatchActionRequestable? = nil,
+                  profileSource: DeviceProfileSource? = nil
+        ) {
+        
+        super.init(
+            deviceId: deviceId,
+            accountId: accountId,
+            associationId: associationId,
+            state: state,
+            profile: profile,
+            attributeWriteable: attributeWriteable,
+            profileSource: profileSource
+        )
+        
+        self.attributeWriteable = self
+    }
     
     public convenience init(model: DeviceModelable, copyState: Bool = false) {
         
