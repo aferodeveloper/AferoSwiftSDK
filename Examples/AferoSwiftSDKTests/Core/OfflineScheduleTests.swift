@@ -39,6 +39,20 @@ class OfflineScheduleSpec: QuickSpec {
     
     override func spec() {
         
+        /*
+         
+         * midnight UTC -> UTC-1, should go back a day
+         * 23:00 UTC -> UTC+1, should go forward a day
+         * in all cases, should wrap around.
+         
+         */
+        
+        // UTC+1 (e.g. CET)
+        let utcPlus1 = TimeZone(secondsFromGMT: 3600)!
+        
+        // UTC-1 (e.g. Azores)
+        let utcMinus1 = TimeZone(secondsFromGMT: -3600)!
+        
         // MARK: - Days of the Week -
         
         describe("When handling days of week") {
@@ -156,20 +170,6 @@ class OfflineScheduleSpec: QuickSpec {
             describe("When converting from UTC to Device Local time") {
                 
                 typealias TimeSpecification = OfflineSchedule.ScheduleEvent.TimeSpecification
-                
-                /*
-                 
-                 * midnight UTC -> UTC-1, should go back a day
-                 * 23:00 UTC -> UTC+1, should go forward a day
-                 * in all cases, should wrap around.
-                 
-                 */
-                
-                // UTC+1 (e.g. CET)
-                let utcPlus1 = TimeZone(secondsFromGMT: 3600)!
-                
-                // UTC-1 (e.g. Azores)
-                let utcMinus1 = TimeZone(secondsFromGMT: -3600)!
                 
                 let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
 
@@ -734,7 +734,7 @@ class OfflineScheduleSpec: QuickSpec {
                 it("should bail on truncated timespec.") {
                     
                     let encoded: [UInt8] = [
-                        0x00, // schedule: repeats
+                        0x00, // schedule: flags
                         0x03, // schedule: day
                         0x17, // schedule: hour
                     ]
@@ -849,7 +849,7 @@ class OfflineScheduleSpec: QuickSpec {
                 DeviceProfile.AttributeDescriptor(id: 90,    type: .boolean, operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 101,   type: .sInt64,  operations: [.Read]),
                 DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt64,  operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt8,   operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 204,   type: .sInt8,   operations: [.Read]),
                 
                 // OfflineSchedule attributes
                 DeviceProfile.AttributeDescriptor(id: 59001, type: .bytes,   operations: [.Read, .Write]), // enabled / flags
@@ -884,13 +884,25 @@ class OfflineScheduleSpec: QuickSpec {
                 201: .signedInt64(-1999),
                 204: .signedInt8(-10),
                 ])
-            
+
+            let ts4 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 4, minute: 1, repeats: true, usesDeviceTimeZone: false)
+            let event4 = ScheduleEvent(timeSpecification: ts4, attributes: [
+                201: .signedInt64(-1999),
+                204: .signedInt8(-10),
+                ])
+
+            let ts5 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 5, minute: 1, repeats: true, usesDeviceTimeZone: false)
+            let event5 = ScheduleEvent(timeSpecification: ts5, attributes: [
+                201: .signedInt64(-1999),
+                204: .signedInt8(-10),
+                ])
+
             guard let schedule = OfflineSchedule(storage: deviceModel) else {
                 fatalError("Expected to initialize an offlineSchedule fixture.")
             }
             
             afterEach {
-                _ = schedule.removeAllEvents()
+//                _ = schedule.removeAllEvents()
             }
             
             // MARK: • Should default-initialize properly
@@ -1018,6 +1030,74 @@ class OfflineScheduleSpec: QuickSpec {
                     expect(schedule.events(forDaysOfWeek: [.sunday, .monday, .tuesday])) == [event1, event2, event3]
                     expect(schedule.events(forDaysOfWeek: [.sunday, .monday])) == [event1, event2]
                 }
+                
+            }
+            
+            describe("when migrating UTC events to localTime") {
+                
+                beforeEach {
+                    schedule.setEvent(event: event1, forAttributeId: 59002)
+                    schedule.setEvent(event: event2, forAttributeId: 59004)
+                    schedule.setEvent(event: event3, forAttributeId: 59007)
+                    schedule.setEvent(event: event4, forAttributeId: 59036)
+                    schedule.setEvent(event: event5, forAttributeId: 59037)
+                }
+                
+                afterEach {
+                    deviceModel.timeZoneState = .none
+                }
+
+                it("should report the appropriate number of UTC events") {
+                    expect(schedule.utcEvents) == [event3, event4, event5]
+                }
+                
+                it("shouldn't migrate anything if no timeZone is set on storage.") {
+                    expect(schedule.utcEvents.count) == 3
+                    var result: [OfflineSchedule.OfflineScheduleMigrationResult]? = nil
+                    _ = schedule.migrateUTCEvents(maxCount: 1).then {
+                        results in result = results
+                    }
+                    expect(result?.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
+                }
+                
+                it("should migrate only the max number of events per call") {
+                    expect(schedule.utcEvents.count) == 3
+
+                    deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    var error: Error? = nil
+                    var result: [OfflineSchedule.OfflineScheduleMigrationResult]? = nil
+                    _ = schedule.migrateUTCEvents(maxCount: 1).then {
+                        r -> Void in result = r
+                        }.catch {
+                            e in error = e
+                    }
+                    
+                    expect(schedule.utcEvents.count).toEventually(equal(2))
+                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.5)
+                    expect(result?.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
+                    expect(result?.count).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
+                    expect(error == nil).toNotEventually(beFalse())
+                }
+                
+                it("should migrate all even ts if number of UTC events is less than maxCount") {
+                    expect(schedule.utcEvents.count) == 3
+                    
+                    deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    var error: Error? = nil
+                    var result: [OfflineSchedule.OfflineScheduleMigrationResult]? = nil
+                    _ = schedule.migrateUTCEvents(maxCount: 4).then {
+                        r -> Void in result = r
+                        }.catch {
+                            e in error = e
+                    }
+                    
+                    expect(schedule.utcEvents.count).toEventually(equal(0))
+                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(0), timeout: 5.0, pollInterval: 0.5)
+                    expect(result?.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.5)
+                    expect(result?.count).toNotEventually(beGreaterThan(3), timeout: 5.0, pollInterval: 0.5)
+                    expect(error == nil).toNotEventually(beFalse())
+                }
+
                 
             }
             

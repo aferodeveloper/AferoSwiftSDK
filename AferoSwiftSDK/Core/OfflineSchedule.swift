@@ -27,6 +27,7 @@ public protocol OfflineScheduleStorage: class {
     var types: [Int: DeviceProfile.AttributeDescriptor.DataType] { get }
     
     var offlineScheduleFlags: OfflineSchedule.Flags { get }
+    var timeZone: TimeZone? { get }
     func setOfflineScheduleFlags(_ flags: OfflineSchedule.Flags) -> Promise<OfflineSchedule.Flags>
     
 }
@@ -402,13 +403,13 @@ extension OfflineSchedule {
             }
             
             let instances = attributeIds.enumerated().map {
-                [weak self] idx, attributeId -> AttributeInstance in
+                idx, attributeId -> AttributeInstance in
 
                 DDLogDebug("Will commit value for schedule idx \(idx) attributeId \(attributeId)", tag: "OfflineSchedule")
                 
                 var value: AttributeValue = .rawBytes([0x00])
                 
-                if let event = self?.attributeIdEventMap[attributeId] {
+                if let event = attributeIdEventMap[attributeId] {
                     DDLogDebug("Will commit \(event) for attribueId \(attributeId)", tag: "OfflineSchedule")
                     value = .rawBytes(event.serialized.bytes)
                 } else {
@@ -674,7 +675,6 @@ open class OfflineSchedule: NSObject {
     
     open var flags: Flags = .enabled
     
-    
     // MARK: - End Public Interface
     
     /// Represents a scheduled setting of an attribute
@@ -748,7 +748,7 @@ open class OfflineSchedule: NSObject {
         /// Represents the time (possibly repeating) when an attribute will be set
         /// in an offline schedule.
         
-        public struct TimeSpecification: Hashable {
+        public struct TimeSpecification: Hashable, Comparable {
             
             public var TAG: String { return "TimeSpecification" }
             
@@ -801,10 +801,6 @@ open class OfflineSchedule: NSObject {
                 }
             }
 
-            public var hashValue: Int {
-                return dayOfWeek.hashValue | hour.hashValue | minute.hashValue ^ flags.hashValue
-            }
-            
             public init(dayOfWeek: DayOfWeek = .sunday, hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimeZone]) {
                 self.dayOfWeek = dayOfWeek
                 self.hour = hour
@@ -827,6 +823,47 @@ open class OfflineSchedule: NSObject {
                 self.init(dayOfWeek: dayOfWeek, hour: hour, minute: minute, flags: flags)
                 
             }
+
+            // MARK: Hashable
+            
+            public static func ==(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
+                return lhs.hour == rhs.hour && lhs.minute == rhs.minute && lhs.flags == rhs.flags
+            }
+            
+            public var hashValue: Int {
+                return dayOfWeek.hashValue | hour.hashValue | minute.hashValue ^ flags.hashValue
+            }
+            
+            // MARK: Comparable
+            
+            public static func <(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
+                
+                if lhs.dayOfWeek < rhs.dayOfWeek {
+                    return true
+                }
+                
+                if lhs.dayOfWeek == rhs.dayOfWeek {
+                    
+                    if lhs.hour < rhs.hour {
+                        return true
+                    }
+                    
+                    if lhs.hour == rhs.hour {
+                        
+                        if lhs.minute < rhs.minute {
+                            return true
+                        }
+                        
+                        if lhs.minute == rhs.minute {
+                            return lhs.flags.rawValue < rhs.flags.rawValue
+                        }
+                    }
+                    
+                }
+                
+                return false
+            }
+
 
         }
 
@@ -1380,42 +1417,6 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
     
 }
 
-extension OfflineSchedule.ScheduleEvent.TimeSpecification: Comparable { }
-
-public func ==(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
-    return lhs.bytes == rhs.bytes
-}
-
-public func <(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
-
-    if lhs.dayOfWeek < rhs.dayOfWeek {
-        return true
-    }
-    
-    if lhs.dayOfWeek == rhs.dayOfWeek {
-        
-        if lhs.hour < rhs.hour {
-            return true
-        }
-
-        if lhs.hour == rhs.hour {
-
-            if lhs.minute < rhs.minute {
-                return true
-            }
-
-            if lhs.minute == rhs.minute {
-                if lhs.repeats && !rhs.repeats { return true }
-            }
-        }
-        
-    }
-    
-    return false
-    
-    
-}
-
 extension OfflineSchedule.ScheduleEvent: Comparable { }
 
 public func ==<T>(lhs: T, rhs: T) -> Bool where T: OfflineScheduleEventSerializable {
@@ -1591,10 +1592,12 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
             // then that's an error and we throw.
             
             guard let valueType = types[Int(id)] else {
-                DDLogDebug("Parsed type id \(id) from range \(idRange) of bytes \(bytes)")
-                DDLogError("No type for id \(id)", tag: TAG)
+                DDLogError("No type for id \(id) in range \(idRange) of bytes \(bytes)", tag: TAG)
                 throw(NSError(domain: "OfflineSchedule.ScheduleEvent", code: -1007, userInfo: nil))
             }
+            
+            DDLogDebug("Parsed type \(valueType) for id \(id) from range \(idRange) of bytes \(bytes)")
+
             
             // Check to see that the type is fixed-length. If not, that's
             // an error and we throw.
@@ -1776,6 +1779,116 @@ extension OfflineSchedule.ScheduleEvent {
         if newValue == self { return false }
         self = newValue
         return true
+    }
+    
+}
+
+extension OfflineSchedule {
+    
+    /// An array of UTC-based events in this schedule which need migration
+    /// to `storage.timeZone`.
+    
+    var utcEvents: [ScheduleEvent] {
+        return events(matching: { !$0.usesDeviceTimeZone } )
+    }
+    
+    typealias OfflineScheduleMigrationResult = (from: ScheduleEvent, to: ScheduleEvent)
+    
+    /// Migrate UTC events to storage local timezone, up to `maxCount`.
+    ///
+    /// - parameter maxCount: The maximum number of events to migrate.
+    /// - returns: A Promise<[OfflineScheduleMigrationResult]> which resolves to the successful
+    ///            migrations.
+    ///
+    /// - note: If `storage.timeZone == nil`, then this will immediately resolve to an empty
+    ///         result set.
+    /// - warning: There should only ever be one pending `migrateUTCEvents(_:)` result pending,
+    ///            as this ensures that only `maxCount` are being migrated at the same time.
+    
+    func migrateUTCEvents(maxCount: Int = 5) -> Promise<[OfflineScheduleMigrationResult]> {
+        
+        guard let _ = storage?.timeZone else {
+            // This isn't fatal, so we'll just fulfill with empty results.
+            DDLogInfo("Storage has no timeZone set; not migrating events.", tag: self.TAG)
+            return Promise { fulfill, _ in fulfill([]) }
+        }
+
+        let events = utcEvents.prefix(maxCount)
+        let promises: [Promise<OfflineScheduleMigrationResult>] = events.map {
+            event -> Promise<OfflineScheduleMigrationResult> in
+            return self.migrateUTCEvent(event: event)
+        }
+        
+        return when(resolved: promises)
+            .then {
+                results -> [OfflineScheduleMigrationResult] in
+                results.flatMap {
+                    result -> OfflineScheduleMigrationResult? in
+                    switch result {
+                    case let .fulfilled(value):
+                        DDLogInfo("Successfully migrated \(String(describing: value))", tag: self.TAG)
+                        return value
+                    case let .rejected(error):
+                        DDLogError("Rejected migration: \(String(describing: error))", tag: self.TAG)
+                        return nil
+                    }
+                }
+        }
+        
+    }
+    
+    /// Migrate a single UTC event to storage local timeZone.
+    ///
+    /// - parameter event: The event to migrate.
+    /// - returns: a Promise<OfflineScheduleMigrationResult> containing the from/to migration
+    ///            upon success. See *Resolution Rules* below for interpretation.
+    ///
+    /// ## Resolution Rules
+    ///
+    /// ### Rejections
+    /// * If no `storage.timeZone` is present, then the migration will reject.
+    /// * If the event isn't found in this schedule, then the migration will reject.
+    /// * If there is an arithmetic problem converting the event from UTC to localTime,
+    ///   then the migration will reject.
+    ///
+    /// ### Fulfillment
+    /// * If the event is already in local time, then the migration will fulfill,
+    ///   but changes will be made.
+    /// * If the event is able to be transformed to local time and written, then
+    ///   the migration will fulfill.
+    
+    func migrateUTCEvent(event: OfflineSchedule.ScheduleEvent) -> Promise<OfflineScheduleMigrationResult> {
+
+        guard let timeZone = storage?.timeZone else {
+            let msg = "No timeZone for storage; bailing on migration"
+            DDLogWarn(msg, tag: self.TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        guard !event.usesDeviceTimeZone else {
+            let msg = "Event \(String(describing: event)) already uses device timeZone; bailing."
+            DDLogInfo(msg, tag: TAG)
+            return Promise { fulfill, _ in fulfill((from: event, to: event))}
+        }
+        guard let _ = eventIndex(for: event) else {
+            let msg = "Attempting to migrate event not present in storage: \(String(describing: event))"
+            DDLogWarn(msg, tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        
+        let migratedEvent: ScheduleEvent
+        
+        do {
+            migratedEvent = try event.asDeviceLocalTimeEvent(in: timeZone)
+        } catch {
+            return Promise { _, reject in reject(error) }
+        }
+        
+        return replaceScheduleEvent(event, with: migratedEvent).then {
+            results -> OfflineScheduleMigrationResult in
+            return (from: event, to: migratedEvent)
+        }
     }
     
 }
