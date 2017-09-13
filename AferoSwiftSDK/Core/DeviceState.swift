@@ -997,7 +997,8 @@ public extension DeviceModelable {
             self.signalAttributeUpdate($0.id, value: $0.value)
         }
         
-        currentState = state
+        _ = migrateUTCOfflineScheduleEvents()
+        
     }
     
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
