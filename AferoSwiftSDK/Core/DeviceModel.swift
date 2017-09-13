@@ -62,6 +62,16 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         }
     }
     
+    internal var shouldAttemptAutomaticUTCMigration: Bool = false {
+        didSet {
+            DDLogInfo("Offline Schedule UTC migration should attempt: \(shouldAttemptAutomaticUTCMigration)", tag: TAG)
+            guard oldValue != shouldAttemptAutomaticUTCMigration else { return }
+            if shouldAttemptAutomaticUTCMigration {
+                _ = migrateUTCOfflineScheduleEvents()
+            }
+        }
+    }
+    
     // MARK: <CustomStringConvertible> <CustomdebugStringConvertible>
     
     public var description: String {

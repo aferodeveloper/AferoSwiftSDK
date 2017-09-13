@@ -668,7 +668,12 @@ public extension DeviceModelable {
     /// the TimeZoneState of the device.
     internal(set) public var timeZoneState: TimeZoneState {
         get { return currentState.timeZoneState }
-        set { currentState.timeZoneState = newValue }
+        set {
+            currentState.timeZoneState = newValue
+            if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
+                _ = migrateUTCOfflineScheduleEvents()
+            }
+        }
     }
     
     /// The device's TimeZone, if set.
@@ -977,6 +982,12 @@ public extension DeviceModelable {
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
     public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
+
+        defer {
+            if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
+                _ = migrateUTCOfflineScheduleEvents()
+            }
+        }
         
         var state = currentState
         
@@ -992,12 +1003,13 @@ public extension DeviceModelable {
         
         if state == currentState { return }
         
+        currentState = state
+
         attributeInstances.forEach {
             DDLogDebug(String(format: "Signaling update for attribute: %@", $0.debugDescription), tag: TAG)
             self.signalAttributeUpdate($0.id, value: $0.value)
         }
         
-        _ = migrateUTCOfflineScheduleEvents()
         
     }
     

@@ -839,6 +839,9 @@ class OfflineScheduleSpec: QuickSpec {
             typealias ScheduleEvent = OfflineSchedule.ScheduleEvent
             typealias TimeSpec = ScheduleEvent.TimeSpecification
             
+            var deviceModel: RecordingDeviceModel!
+            var schedule: OfflineSchedule!
+
             let profile = DeviceProfile(attributes: [
                 
                 // Values that can be modified
@@ -862,8 +865,6 @@ class OfflineScheduleSpec: QuickSpec {
                 DeviceProfile.AttributeDescriptor(id: 59039, type: .bytes,   operations: [.Read, .Write]),
                 
                 ])
-            
-            let deviceModel = RecordingDeviceModel(deviceId: "foo", accountId: "moo", profile: profile)
             
             let ts1 = ScheduleEvent.TimeSpecification(dayOfWeek: .sunday, hour: 1, minute: 4, repeats: true, usesDeviceTimeZone: true)
             let event1 = ScheduleEvent(timeSpecification: ts1, attributes: [
@@ -897,8 +898,12 @@ class OfflineScheduleSpec: QuickSpec {
                 204: .signedInt8(-10),
                 ])
 
-            guard let schedule = OfflineSchedule(storage: deviceModel) else {
-                fatalError("Expected to initialize an offlineSchedule fixture.")
+            beforeEach {
+                deviceModel = RecordingDeviceModel(deviceId: "foo", accountId: "moo", profile: profile)
+                guard let maybeSchedule = OfflineSchedule(storage: deviceModel) else {
+                    fatalError("Expected to initialize an offlineSchedule fixture.")
+                }
+                schedule = maybeSchedule
             }
             
             afterEach {
@@ -1036,6 +1041,7 @@ class OfflineScheduleSpec: QuickSpec {
             describe("when migrating UTC events to localTime") {
                 
                 beforeEach {
+                    deviceModel.shouldAttemptAutomaticUTCMigration = false
                     _ = schedule.addScheduleEvents([event1, event2, event3, event4, event5], commit: true)
                 }
                 
@@ -1095,6 +1101,7 @@ class OfflineScheduleSpec: QuickSpec {
                 }
                 
                 it("should perform a full migration at intervals.") {
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     var doneCount: Int = 0
@@ -1106,6 +1113,29 @@ class OfflineScheduleSpec: QuickSpec {
                     expect(doneCount).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
                     expect(doneCount).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
                     expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: 5.0, pollInterval: 0.5)
+                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
+                }
+                
+                it("shouldn't perform an automatic on timeZone change migration unless allowed.") {
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
+                    expect(deviceModel.shouldAttemptAutomaticUTCMigration).to(beFalse())
+                    expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
+                    deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toNotEventually(beLessThan(3), timeout: 5.0, pollInterval: 0.5)
+                }
+                
+                it("should perform an automatic on timeZone change migration if allowed.") {
+                    
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
+                    expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
+                    deviceModel.shouldAttemptAutomaticUTCMigration = true
+                    expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
+                    deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    expect(deviceModel.utcMigrationIsInProgress).to(beTrue())
+                    
+                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: 5.0, pollInterval: 0.5)
+                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
                 }
 
                 

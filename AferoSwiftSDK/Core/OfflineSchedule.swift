@@ -30,7 +30,6 @@ public protocol OfflineScheduleStorage: class {
     var timeZone: TimeZone? { get }
     func setOfflineScheduleFlags(_ flags: OfflineSchedule.Flags) -> Promise<OfflineSchedule.Flags>
     
-    var utcMigrationIsInProgress: Bool { get }
 }
 
 extension DeviceModelable {
@@ -1918,7 +1917,7 @@ extension DeviceModelable {
     /// - returns: A `Promise` that resolves when all batches have been committed.
     ///
     /// ## Notes
-    /// * The method will assedrt if `maxBatchSize <= 0` or `waitBetweenBatches` < 0.
+    /// * The method will assert if `maxBatchSize <= 0` or `waitBetweenBatches` < 0.
     /// * The returned `Promise` will resolve with no effect if:
     ///   - the `timeZone` is `nil`
     ///   - `offlineSchedule()` returns `nil`
@@ -1927,7 +1926,7 @@ extension DeviceModelable {
     
     func migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 5, waitBetweenBatches: TimeInterval = 5.0) -> Promise<Void> {
 
-        guard !utcMigrationIsInProgress else {
+        guard !((self as? BaseDeviceModel)?.utcMigrationIsInProgress ?? false) else {
             DDLogWarn("Offline Schedule UTC migration currently in progress for \(deviceId); bailing.", tag: TAG)
             return Promise { fulfill, _ in fulfill() }
         }
