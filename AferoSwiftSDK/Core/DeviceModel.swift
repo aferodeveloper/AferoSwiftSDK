@@ -56,6 +56,12 @@ extension NSError {
 
 public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
 
+    internal(set) public var utcMigrationIsInProgress: Bool = false {
+        didSet {
+            DDLogInfo("Offline Schedule UTC migration in progress: \(utcMigrationIsInProgress)", tag: TAG)
+        }
+    }
+    
     // MARK: <CustomStringConvertible> <CustomdebugStringConvertible>
     
     public var description: String {

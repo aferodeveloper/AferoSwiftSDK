@@ -1094,16 +1094,18 @@ class OfflineScheduleSpec: QuickSpec {
                     expect(error == nil).toNotEventually(beFalse())
                 }
                 
-                fit("should perform a full migration at intervals.") {
-                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.5)
+                it("should perform a full migration at intervals.") {
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
+                    expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     var doneCount: Int = 0
                     _ = deviceModel.migrateUTCOfflineScheduleEvents(maxBatchSize: 1, waitBetweenBatches: 1).then {
                         ()->Void in
                         doneCount += 1
                     }
+                    expect(deviceModel.utcMigrationIsInProgress).to(beTrue())
                     expect(doneCount).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
                     expect(doneCount).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
+                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: 5.0, pollInterval: 0.5)
                 }
 
                 
