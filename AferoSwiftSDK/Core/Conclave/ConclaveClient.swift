@@ -618,14 +618,14 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
             
             if let msg: ConclaveMessage = |<obj {
                 let event = ConclaveConnectionEvent.message(msg)
-                DDLogDebug("Forwarding to readSignalSubscribers: \(event)", tag: TAG)
+                DDLogVerbose("Forwarding to readSignalSubscribers: \(event)", tag: TAG)
                 serverOutboundSink.send(value: event)
                 return
             }
             
             if let error = error {
                 let event = ConclaveConnectionEvent.transientError(error)
-                DDLogDebug("Forwarding to readSignalSubscribers: \(event)", tag: TAG)
+                DDLogVerbose("Forwarding to readSignalSubscribers: \(event)", tag: TAG)
                 serverOutboundSink.send(value: event)
                 return
             }
@@ -978,7 +978,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             } else {
                 let error = stream.streamError
                 let status = stream.streamStatus
-                DDLogInfo("ERROR: Read failure (err: \(String(describing: error)) status: \(status)). Bailing.", tag: TAG)
+                DDLogError("ERROR: Read failure (err: \(String(describing: error)) status: \(status)). Bailing.", tag: TAG)
             }
         }
         
@@ -1043,7 +1043,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             
             let data = Data(bytes: UnsafePointer<UInt8>(Array(bytes)), count: bytes.count)
             let line = NSString(data: data, encoding: String.Encoding.utf8.rawValue) ?? "<nil>"
-            DDLogDebug("line: \(line)", tag: TAG)
+            DDLogVerbose("line: \(line)", tag: TAG)
             
             let obj: Any?
             
@@ -1275,7 +1275,7 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
                 
                 self.outBuffer = Data(outBuffer.subdata(in: 0..<(outBuffer.count - len)))
                 
-                DDLogDebug("outBuffer now \(String(describing: self.outBuffer))", tag: TAG)
+                DDLogVerbose("outBuffer now \(String(describing: self.outBuffer))", tag: TAG)
             }
         }
     }

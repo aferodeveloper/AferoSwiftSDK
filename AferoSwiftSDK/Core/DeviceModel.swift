@@ -245,13 +245,13 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         guard let attributeId = attributeId else { return nil }
         
         guard let eventPipe = attributePipeTable[attributeId] else {
-            DDLogDebug("Creating new eventPipe for attribute id \(attributeId)", tag: TAG)
+            DDLogVerbose("Creating new eventPipe for attribute id \(attributeId)", tag: TAG)
             let eventPipe = AttributeEventPipe()
             attributePipeTable[attributeId] = eventPipe
             return eventPipe
         }
         
-        DDLogDebug("Found pre-existing eventPipe for attributeId \(attributeId)", tag: TAG)
+        DDLogVerbose("Found pre-existing eventPipe for attributeId \(attributeId)", tag: TAG)
         return eventPipe
     }
     
@@ -275,7 +275,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
             attributeValue: value
         )
         
-        DDLogDebug("Signaling AttributeEvent \(event)", tag: TAG)
+        DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)
         eventPipeForAttributeId(attributeId)?.sendNext(event)
     }
     

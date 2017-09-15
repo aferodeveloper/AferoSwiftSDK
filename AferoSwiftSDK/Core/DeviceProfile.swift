@@ -387,7 +387,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
                         self.presentation = presentation
                     }
                 } catch {
-                    DDLogInfo("No local presentation JSON resource \(jsonFile).json: \(error)")
+                    DDLogVerbose("No local presentation JSON resource \(jsonFile).json: \(error)")
                 }
         }
         

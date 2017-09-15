@@ -423,7 +423,7 @@ extension DeviceLocation: AferoJSONCoding {
     public init?(json: AferoJSONCodedType?) {
 
         guard let jsonDict = json as? [String: Any] else {
-            DDLogError("Unable to decode Location: \(String(reflecting: json))")
+            DDLogVerbose("Unable to decode Location: \(String(reflecting: json))")
             return nil
         }
         

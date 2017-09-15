@@ -1027,7 +1027,7 @@ extension AttributeInstance: AferoJSONCoding {
     
     public var JSONDict: AferoJSONCodedType? {
         
-        DDLogDebug("*** encoding attributeInstance \(self.debugDescription) value \(value) debug \(value.debugDescription)", tag: TAG)
+        DDLogVerbose("*** encoding attributeInstance \(self.debugDescription) value \(value) debug \(value.debugDescription)", tag: TAG)
         
         return [
             type(of: self).CoderKeyId: id,
@@ -1047,7 +1047,7 @@ extension AttributeInstance: AferoJSONCoding {
             }
         }
         
-        DDLogInfo("Invalid Attribute JSON: \(String(reflecting: json))")
+        DDLogVerbose("Invalid Attribute JSON: \(String(reflecting: json))")
         return nil
     }
     
