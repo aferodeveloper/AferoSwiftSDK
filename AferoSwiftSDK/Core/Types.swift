@@ -587,31 +587,27 @@ public func ~==(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
 
 public func ==(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
     
-    if (lhs.hashValue != rhs.hashValue) {
-        return false
-    }
-    
     // At this point we know that our hash values are the same, and that
     // we're of the same type.
     
     switch(lhs) {
         
     case .rawBytes(let v):
-        guard let rv = rhs.value as? [UInt8] else { return false }
-        return v == rv
+        return v == rhs.byteArray
         
     case .boolean(let v):
-        return v == (rhs.value as? Bool)
+        return v == rhs.boolValue
         
-    case .utf8S(let v):         return v == (rhs.value as? String)
-    case .signedInt8(let v):    return v == (rhs.value as? Int8)
-    case .signedInt16(let v):   return v == (rhs.value as? Int16)
-    case .signedInt32(let v):   return v == (rhs.value as? Int32)
-    case .signedInt64(let v):   return v == (rhs.value as? Int64)
-    case .float32(let v):       return v == (rhs.value as? Float)
-    case .float64(let v):       return v == (rhs.value as? Double)
-    case .q1516: return lhs.byteArray == AttributeValue.q1516(rhs.doubleValue!).byteArray
-    case .q3132: return lhs.byteArray == AttributeValue.q3132(rhs.doubleValue!).byteArray
+    case .utf8S(let v):         return v == rhs.stringValue
+        
+    case .signedInt8: fallthrough
+    case .signedInt16: fallthrough
+    case .signedInt32: fallthrough
+    case .signedInt64: fallthrough
+    case .float32: fallthrough
+    case .float64: fallthrough
+    case .q1516: fallthrough
+    case .q3132: return lhs.number == rhs.number
     }
 }
 

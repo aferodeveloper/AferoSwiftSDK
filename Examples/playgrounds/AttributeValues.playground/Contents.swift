@@ -155,5 +155,15 @@ two < two_oh_two
 two > two_oh_two
 
 
+let maybeFalse = AttributeValue("false")
+let reallyFalse = AttributeValue(false)
 
+maybeFalse == reallyFalse
+maybeFalse ~== reallyFalse
+
+maybeFalse.boolValue
+reallyFalse.stringValue
+maybeFalse.stringValue
+maybeFalse.hashValue
+reallyFalse.hashValue
 
