@@ -532,7 +532,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func handleEvent(_ event: DeviceStreamEvent) {
         
-        DDLogDebug(String(format: "DeviceCollection got event: %@", String(reflecting: event)), tag: TAG)
+        DDLogVerbose(String(format: "DeviceCollection got event: %@", String(reflecting: event)), tag: TAG)
         
         switch (event) {
 
@@ -764,7 +764,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 }
                 
                 guard let _ = device.presentation else {
-                    DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", deviceId), tag: tag)
+                    DDLogVerbose(String(format: "No presentation for device: \(device); bailing.", deviceId), tag: tag)
                     self?.removeDevice(device.deviceId)
                     onDone(nil)
                     return
@@ -805,7 +805,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 }
                 
                 guard let _ = device.presentation else {
-                    DDLogDebug(String(format: "No profile or presentation for device: \(device); bailing.", peripheral.id), tag: tag)
+                    DDLogVerbose(String(format: "No presentation for device: \(device); bailing.", peripheral.id), tag: tag)
                     self?.removeDevice(device.deviceId)
                     onDone(nil)
                     return
