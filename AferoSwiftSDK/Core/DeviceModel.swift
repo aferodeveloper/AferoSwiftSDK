@@ -698,6 +698,11 @@ extension RecordingDeviceModel: DeviceBatchActionRequestable {
         
         asyncMain { onDone(results, nil) }
     }
+    
+    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+        self.timeZoneState = .some(timeZone: timeZone, isUserOverride: isUserOverride)
+        onDone((deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride), nil)
+    }
 
 }
 

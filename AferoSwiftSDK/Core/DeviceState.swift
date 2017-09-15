@@ -466,14 +466,6 @@ public extension AttributeEventSignaling {
 
 }
 
-// MARK: DeviceBatchActionRequestable
-
-public typealias WriteAttributeOnDone = (DeviceBatchAction.Results?, Error?) -> Void
-
-public protocol DeviceBatchActionRequestable: class {
-    func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone)
-}
-
 public enum DeviceModelCommand {
     
     /// Write an attribute to the device.
@@ -686,6 +678,44 @@ public extension DeviceModelable {
         get { return currentState.updatedTimestamp }
     }
 
+}
+
+public extension DeviceModelable {
+
+    /// Set this device's timezone. Upon success, the timeZone will be immediately set on this device
+    /// (a conclave invalidation will also be handled), and a device state update will be signaled.
+    
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
+
+        guard let attributeWriteable = attributeWriteable else {
+            return Promise { _, reject in reject("No attribute writeable") }
+        }
+        
+        return Promise {
+            fulfill, reject in
+            
+            attributeWriteable.setTimeZone(
+                as: timeZone,
+                isUserOverride: isUserOverride,
+                for: deviceId,
+                in: accountId) {
+                    [weak self] maybeResult, maybeError in
+                    if let error = maybeError {
+                        reject(error)
+                        return
+                    }
+                    
+                    if let result = maybeResult {
+                        (self as? BaseDeviceModel)?.timeZoneState = .some(timeZone: result.tz, isUserOverride: result.isUserOverride)
+                        fulfill(result)
+                        return
+                    }
+                    
+                    reject("Missing response.")
+            }
+        }
+        
+    }
 }
 
 public extension DeviceModelable {
@@ -1006,7 +1036,7 @@ public extension DeviceModelable {
         currentState = state
 
         attributeInstances.forEach {
-            DDLogDebug(String(format: "Signaling update for attribute: %@", $0.debugDescription), tag: TAG)
+            DDLogVerbose(String(format: "Signaling update for attribute: %@", $0.debugDescription), tag: TAG)
             self.signalAttributeUpdate($0.id, value: $0.value)
         }
         

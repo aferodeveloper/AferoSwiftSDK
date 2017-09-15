@@ -18,14 +18,24 @@ import HTTPStatusCodes
 
 class MockDeviceBatchActionRequestable: DeviceBatchActionRequestable {
     
-    var resultsToReturn: DeviceBatchAction.Results?
-    var errorToReturn: Error?
+    var setTimezoneWasInvoked: Bool = false
+    var setTimeZoneResultToReturn: SetTimeZoneResult?
+    var settimeZoneErrorToReturn: Error?
+    
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+        setTimezoneWasInvoked = true
+        onDone(setTimeZoneResultToReturn, settimeZoneErrorToReturn)
+    }
+
+    
+    var postResultsToReturn: DeviceBatchAction.Results?
+    var postErrorToReturn: Error?
     
     var writeWasInvoked: Bool = false
     
     func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
         writeWasInvoked = true
-        onDone(resultsToReturn, errorToReturn)
+        onDone(postResultsToReturn, postErrorToReturn)
     }
     
 }

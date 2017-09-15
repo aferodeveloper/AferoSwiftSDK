@@ -226,7 +226,24 @@ public extension AferoAPIClientProto {
 
 public extension AferoAPIClientProto {
     
-    typealias SetTimezoneResult = (deviceId: String, tz: TimeZone, isUserOverride: Bool)
+    public func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
+        POST("/v1/accounts/\(accountId)/devices/\(deviceId)/requests", parameters: actions.JSONDict)
+            .then {
+                (responses: [DeviceBatchAction.Response]) -> Void in
+                let ret = DeviceBatchAction.Results(requests: actions, responses: responses)
+                onDone(ret, nil)
+            }.catch {
+                error -> Void in onDone(nil, error)
+        }
+    }
+    
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+        setTimeZone(as: timeZone, isUserOverride: isUserOverride, for: deviceId, in: accountId).then {
+            result in onDone(result, nil)
+            }.catch {
+                err in onDone(nil, err)
+        }
+    }
     
     /// Set the timezone for a device.
     /// - parameter timeZone: The timezone to associate with the device.
@@ -234,13 +251,22 @@ public extension AferoAPIClientProto {
     ///                             on this device (rather than it being inferred by location).
     ///                             If false, timeZone is the default timeZone of the phone.
 
-    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool = false, for deviceId: String, in accountId: String) -> Promise<SetTimezoneResult> {
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool = false, for deviceId: String, in accountId: String) -> Promise<SetTimeZoneResult> {
+
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString else {
+                let msg = "Unable to safely encode deviceId=`\(deviceId)' or accountId='\(accountId)'"
+                DDLogError(msg, tag: TAG)
+                return Promise { _, reject in reject(msg) }
+        }
+
         let parameters: Parameters = [
             "userOverride": isUserOverride,
             "timezone": timeZone.identifier
         ]
-        return PUT("/v1/accounts/\(accountId)/devices/\(deviceId)/timezone", parameters: parameters).then {
-            () -> SetTimezoneResult in
+        return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/timezone", parameters: parameters).then {
+            () -> SetTimeZoneResult in
             return (deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride)
         }
     }
@@ -260,7 +286,8 @@ public extension AferoAPIClientProto {
                 return Promise { _, reject in reject(msg) }
         }
         
-        return GET("/v1/accounts/\(safeAccountId)/device/\(safeDeviceId)/timezone")
+        return GET("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/timezone")
     }
 }
+
 

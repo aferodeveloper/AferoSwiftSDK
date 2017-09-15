@@ -269,7 +269,7 @@ class DeviceModelSpec: QuickSpec {
             )
             
             beforeEach() {
-                writeSink.errorToReturn = nil
+                writeSink.postErrorToReturn = nil
                 writeSink.writeWasInvoked = false
             }
             
@@ -278,7 +278,7 @@ class DeviceModelSpec: QuickSpec {
                 expect(writeSink.writeWasInvoked).to(beFalse())
                 expect(deviceModel.attributeWriteable) === writeSink
                 expect(writeSink.writeWasInvoked).to(beFalse())
-                expect(writeSink.errorToReturn).to(beNil())
+                expect(writeSink.postErrorToReturn).to(beNil())
                 
                 var error: Error? = nil
                 
@@ -295,12 +295,12 @@ class DeviceModelSpec: QuickSpec {
                 expect(writeSink.writeWasInvoked).to(beFalse())
                 expect(deviceModel.attributeWriteable) === writeSink
                 expect(writeSink.writeWasInvoked).to(beFalse())
-                expect(writeSink.errorToReturn).to(beNil())
+                expect(writeSink.postErrorToReturn).to(beNil())
                 
                 var error: Error? = nil
                 
-                writeSink.errorToReturn = NSError(domain: "test error fixture", code: 666, userInfo: ["foo": "bar"])
-                expect(writeSink.errorToReturn).toNot(beNil())
+                writeSink.postErrorToReturn = NSError(domain: "test error fixture", code: 666, userInfo: ["foo": "bar"])
+                expect(writeSink.postErrorToReturn).toNot(beNil())
                 
                 deviceModel.attributeWriteable?.post(actions: [.attributeWrite(attributeId: 100, value: "false")] , forDeviceId: "test", withAccountId: "test") {
                     error = $1
@@ -308,7 +308,7 @@ class DeviceModelSpec: QuickSpec {
                 
                 expect(writeSink.writeWasInvoked).to(beTrue())
                 expect(error).toNot(beNil())
-                expect(error as NSError?) == writeSink.errorToReturn! as NSError
+                expect(error as NSError?) == writeSink.postErrorToReturn! as NSError
             }
         }
 

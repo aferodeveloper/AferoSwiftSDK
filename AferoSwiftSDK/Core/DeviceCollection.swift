@@ -187,6 +187,11 @@ extension DeviceCollection: DeviceBatchActionRequestable {
         }
         
     }
+    
+    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+        apiClient.setTimeZone(as: timeZone, isUserOverride: isUserOverride, for: deviceId, in: accountId, onDone: onDone)
+    }
+    
 }
 
 

@@ -12,21 +12,6 @@ import CoreLocation
 import CocoaLumberjack
 
 extension AferoAPIClientProto {
-    
-    public func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
-        POST("/v1/accounts/\(accountId)/devices/\(deviceId)/requests", parameters: actions.JSONDict)
-            .then {
-                (responses: [DeviceBatchAction.Response]) -> Void in
-                let ret = DeviceBatchAction.Results(requests: actions, responses: responses)
-                onDone(ret, nil)
-            }.catch {
-                error -> Void in onDone(nil, error)
-        }
-    }
-
-}
-
-extension AferoAPIClientProto {
 
     // MARK: - Device Profiles
     

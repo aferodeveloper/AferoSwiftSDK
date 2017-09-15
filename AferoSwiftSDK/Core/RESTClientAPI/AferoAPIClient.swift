@@ -134,25 +134,6 @@ extension AferoAPIClientProto {
     
 }
 
-extension AferoAPIClientProto {
-    
-    public typealias PostDeviceBatchActionsPromise = Promise<DeviceBatchAction.Results>
-    
-    /// Post an array of `DeviceActionRequest`s against the given `accountId` and `deviceId`
-    /// to the service, and return a `Promise` for the corresponding results.
-    
-    func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String) -> PostDeviceBatchActionsPromise {
-        return POST("/v1/accounts/\(accountId)/devices/\(deviceId)/requests", parameters: actions.JSONDict)
-            .then {
-                (responses: [DeviceBatchAction.Response]) -> DeviceBatchAction.Results in
-                let ret = DeviceBatchAction.Results(requests: actions, responses: responses)
-                return ret
-        }
-    }
-    
-    
-}
-
 // MARK: - Method Primitives -
 
 extension AferoAPIClientProto {
