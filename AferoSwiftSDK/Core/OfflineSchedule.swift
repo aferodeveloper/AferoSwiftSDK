@@ -840,7 +840,10 @@ open class OfflineSchedule: NSObject {
             // MARK: Hashable
             
             public static func ==(lhs: OfflineSchedule.ScheduleEvent.TimeSpecification, rhs: OfflineSchedule.ScheduleEvent.TimeSpecification) -> Bool {
-                return lhs.hour == rhs.hour && lhs.minute == rhs.minute && lhs.flags == rhs.flags
+                return lhs.dayOfWeek == rhs.dayOfWeek
+                    && lhs.hour == rhs.hour
+                    && lhs.minute == rhs.minute
+                    && lhs.flags == rhs.flags
             }
             
             public var hashValue: Int {
@@ -1569,9 +1572,8 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
         
         guard bytes.count >= minSize else {
             if bytes.count == 1 && bytes[0] == 0 {
-                DDLogWarn("Got zero length, scheduleEntry, ignoring")
-            }
-            else {
+                DDLogWarn("Got zero length scheduleEntry, ignoring")
+            } else {
                 DDLogError("Not enough data to parse scheduleEntry: (have \(bytes.count), need \(minSize)", tag: TAG)
             }
             return (event: nil, consumed: 0)

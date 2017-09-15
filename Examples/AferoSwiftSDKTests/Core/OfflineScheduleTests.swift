@@ -126,6 +126,61 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(schedule.minute) == 20
             }
             
+            // MARK: • Should compare as expected
+            
+            it("should compare as expected") {
+                
+                let timeSpec1 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: true)
+                let timeSpec2 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .thursday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: true)
+                let timeSpec3 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 17, minute: 20, repeats: false, usesDeviceTimeZone: true)
+                let timeSpec4 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 21, repeats: false, usesDeviceTimeZone: true)
+                let timeSpec5 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimeZone: true)
+                let timeSpec6 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: false)
+                
+                expect(timeSpec1) == timeSpec1
+                expect(timeSpec1) != timeSpec2
+                expect(timeSpec1) != timeSpec3
+                expect(timeSpec1) != timeSpec4
+                expect(timeSpec1) != timeSpec5
+                expect(timeSpec1) != timeSpec6
+                
+                expect(timeSpec2) != timeSpec1
+                expect(timeSpec2) == timeSpec2
+                expect(timeSpec2) != timeSpec3
+                expect(timeSpec2) != timeSpec4
+                expect(timeSpec2) != timeSpec5
+                expect(timeSpec2) != timeSpec6
+                
+                expect(timeSpec3) != timeSpec1
+                expect(timeSpec3) != timeSpec2
+                expect(timeSpec3) == timeSpec3
+                expect(timeSpec3) != timeSpec4
+                expect(timeSpec3) != timeSpec5
+                expect(timeSpec3) != timeSpec6
+                
+                expect(timeSpec4) != timeSpec1
+                expect(timeSpec4) != timeSpec2
+                expect(timeSpec4) != timeSpec3
+                expect(timeSpec4) == timeSpec4
+                expect(timeSpec4) != timeSpec5
+                expect(timeSpec4) != timeSpec6
+                
+                expect(timeSpec5) != timeSpec1
+                expect(timeSpec5) != timeSpec2
+                expect(timeSpec5) != timeSpec3
+                expect(timeSpec5) != timeSpec4
+                expect(timeSpec5) == timeSpec5
+                expect(timeSpec5) != timeSpec6
+                
+                expect(timeSpec6) != timeSpec1
+                expect(timeSpec6) != timeSpec2
+                expect(timeSpec6) != timeSpec3
+                expect(timeSpec6) != timeSpec4
+                expect(timeSpec6) != timeSpec5
+                expect(timeSpec6) == timeSpec6
+                
+            }
+            
             // MARK: • Should encode as expected
             
             it("should encode as expected") {
