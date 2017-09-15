@@ -29,6 +29,17 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
     
     fileprivate var profileCache: [String: DeviceProfile] = [:]
     
+    func containsProfile(for profileId: String) -> Bool {
+        return profileCache[profileId] != nil
+    }
+    
+    func add(profile: DeviceProfile) {
+        guard let profileId = profile.id else { return }
+        if !containsProfile(for: profileId) {
+            profileCache[profileId] = profile
+        }
+    }
+    
     func reset() {
         profileCache.removeAll(keepingCapacity: false)
     }
@@ -74,7 +85,7 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
                     return
                 }
                 
-                self?.profileCache[profileId] = profile
+                self?.add(profile: profile)
                 self?.hasVisibleDevices = nil
                 
                 DDLogDebug(String(format: "Added profile %@: %@", profileId, profile.debugDescription), tag: TAG)
@@ -110,7 +121,7 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
                     return
                 }
                 
-                self?.profileCache[profileId] = profile
+                self?.add(profile: profile)
                 self?.hasVisibleDevices = nil
                 
                 DDLogDebug(String(format: "Added profile %@: %@", profileId, profile.debugDescription), tag: TAG)
@@ -148,8 +159,7 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
             
             profiles.forEach {
                 profile in
-                guard let profileId = profile.id else { return }
-                self?.profileCache[profileId] = profile
+                self?.add(profile: profile)
                 self?.hasVisibleDevices = nil
             }
             
@@ -681,6 +691,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 return
         }
         
+        if !profileSource.containsProfile(for: profileId),
+            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]) {
+            profileSource.add(profile: profile)
+        }
+        
         createDevice(with: deviceId, profileId: profileId)
         
         updateDevice(with: json) {
@@ -740,8 +755,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 onDone(nil)
                 return
         }
-        
-        profileSource.profileCache[profileId] = profile
         
         if let timeZoneState: TimeZoneState = |<(json["timezone"] as? [String: Any]) {
             device.timeZoneState = timeZoneState
