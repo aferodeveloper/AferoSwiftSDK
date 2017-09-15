@@ -755,7 +755,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             let createdTimestamp = json["createdTimestamp"] as? NSNumber,
             let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
             let profile: DeviceProfile = |<(json["profile"] as? [String: Any]),
-            let attributes: [AttributeInstance] = |<(json["attributes"] as? [[String: Any]]) else {
+            let attributes = json["attributes"] as? [[String: Any]] else {
                 DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
                 onDone(nil)
                 return

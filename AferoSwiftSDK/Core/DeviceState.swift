@@ -1050,6 +1050,20 @@ public extension DeviceModelable {
         update(with: [attributeInstance], accumulative: accumulative)
     }
     
+    public func update(with attributes: [[String: Any]], accumulative: Bool = true) {
+        
+        let attrs: [Int: String] = attributes.reduce([:]) {
+            curr, next in
+            guard
+                let id = next["id"] as? Int, let value = next["value"] as? String else { return curr }
+            var ret = curr
+            ret[id] = value
+            return ret
+        }
+        
+        update(attrs, accumulative: accumulative)
+    }
+    
     /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
     /// then the current state will be modified. If `accumulative` is `false`, then
     /// the modelable's state will be replaced with new attributes.
