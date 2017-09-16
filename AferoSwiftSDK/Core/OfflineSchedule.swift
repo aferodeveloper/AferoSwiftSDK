@@ -1564,7 +1564,7 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
         let hdrSize = timeSpecSize + idSize
         let minSize = hdrSize + MemoryLayout<UInt8>.size
         
-        DDLogDebug("timeSpecSize: \(timeSpecSize) idSize: \(idSize) hdrSize: \(hdrSize) minSize: \(minSize)", tag: TAG)
+        DDLogVerbose("timeSpecSize: \(timeSpecSize) idSize: \(idSize) hdrSize: \(hdrSize) minSize: \(minSize)", tag: TAG)
         
         // Verify we have at least enough data to parse a header and the smallest
         // attribute value. If we don't, its not a failure... we may just be seeing an
@@ -1572,7 +1572,7 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
         
         guard bytes.count >= minSize else {
             if bytes.count == 1 && bytes[0] == 0 {
-                DDLogWarn("Got zero length scheduleEntry, ignoring")
+                DDLogVerbose("Got zero length scheduleEntry, ignoring")
             } else {
                 DDLogError("Not enough data to parse scheduleEntry: (have \(bytes.count), need \(minSize)", tag: TAG)
             }
@@ -1590,7 +1590,7 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
             throw NSError(domain: "OfflineSchedule.ScheduleEvent", code: -1010, userInfo: nil)
         }
         
-        DDLogDebug("timeSpecOffs: \(timeSpecOffset) timeSpecSize: \(timeSpecSize) timeSpecRange: \(timeSpecRange) attributeStartOffset: \(attributeStartOffset)")
+        DDLogVerbose("timeSpecOffs: \(timeSpecOffset) timeSpecSize: \(timeSpecSize) timeSpecRange: \(timeSpecRange) attributeStartOffset: \(attributeStartOffset)")
         
         var event = OfflineSchedule.ScheduleEvent(timeSpecification: timeSpecification)
         var consumed = 0
@@ -1824,7 +1824,7 @@ extension OfflineSchedule {
         
         guard let _ = storage?.timeZone else {
             // This isn't fatal, so we'll just fulfill with empty results.
-            DDLogInfo("Storage has no timeZone set; not migrating events.", tag: self.TAG)
+            DDLogVerbose("Storage has no timeZone set; not migrating events.", tag: self.TAG)
             return Promise { fulfill, _ in fulfill([]) }
         }
 
@@ -1876,21 +1876,22 @@ extension OfflineSchedule {
 
         guard let timeZone = storage?.timeZone else {
             let msg = "No timeZone for storage; bailing on migration"
-            DDLogWarn(msg, tag: self.TAG)
+            DDLogVerbose(msg, tag: self.TAG)
             return Promise { _, reject in reject(msg) }
         }
         
         guard !event.usesDeviceTimeZone else {
             let msg = "Event \(String(describing: event)) already uses device timeZone; bailing."
-            DDLogInfo(msg, tag: TAG)
+            DDLogVerbose(msg, tag: TAG)
             return Promise { fulfill, _ in fulfill((from: event, to: event))}
         }
         guard let _ = eventIndex(for: event) else {
-            let msg = "Attempting to migrate event not present in storage: \(String(describing: event))"
-            DDLogWarn(msg, tag: TAG)
+            let msg = "Attempting to migrate event not present in storage: \(String(describing: event)); bailing."
+            DDLogError(msg, tag: TAG)
             return Promise { _, reject in reject(msg) }
         }
         
+        DDLogInfo("Offline Schedule UTC Migration: migrating from UTC to \(String(describing: timeZone)) (UTC offset \(timeZone.secondsFromGMT())), event: \(String(describing: event))", tag: TAG)
         
         let migratedEvent: ScheduleEvent
         
@@ -1899,6 +1900,8 @@ extension OfflineSchedule {
         } catch {
             return Promise { _, reject in reject(error) }
         }
+        
+        DDLogDebug("Offline Schedule UTC Migration: new localTime event: \(String(describing: migratedEvent))", tag: TAG)
         
         return replaceScheduleEvent(event, with: migratedEvent).then {
             results -> OfflineScheduleMigrationResult in
@@ -1929,12 +1932,12 @@ extension DeviceModelable {
     func migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 5, waitBetweenBatches: TimeInterval = 5.0) -> Promise<Void> {
 
         guard !((self as? BaseDeviceModel)?.utcMigrationIsInProgress ?? false) else {
-            DDLogWarn("Offline Schedule UTC migration currently in progress for \(deviceId); bailing.", tag: TAG)
+            DDLogVerbose("Offline Schedule UTC migration currently in progress for \(deviceId); bailing.", tag: TAG)
             return Promise { fulfill, _ in fulfill() }
         }
         
         guard timeZone != nil else {
-            DDLogInfo("Device \(deviceId) has no timeZone; not migrating UTC events.", tag: TAG)
+            DDLogVerbose("Device \(deviceId) has no timeZone; not migrating UTC events.", tag: TAG)
             return Promise { fulfill, _ in fulfill() }
         }
         
@@ -1964,22 +1967,24 @@ extension DeviceModelable {
     
     fileprivate func _migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 5, waitBetweenBatches: TimeInterval = 5.0, batchNumber: Int = 1) -> Promise<Void> {
 
+        let TAG = self.TAG
+        
         assert(maxBatchSize > 0, "maxBatchSize must be > 0")
         assert(waitBetweenBatches >= 0, "waitBetweenBatchesmust be >= 0")
 
         guard let schedule = offlineSchedule() else {
-            DDLogInfo("Offline schedules unsupported for device \(deviceId); not migrating UTC events.", tag: TAG)
+            DDLogVerbose("Offline schedules unsupported for device \(deviceId); not migrating UTC events.", tag: TAG)
             return Promise { fulfill, _ in fulfill() }
         }
         
         guard schedule.utcEvents.count > 0 else {
-            DDLogInfo("No UTC events to migrate for device \(deviceId); bailing.", tag: TAG)
+            DDLogVerbose("No UTC events to migrate for device \(deviceId); bailing.", tag: TAG)
             return Promise { fulfill, _ in fulfill() }
         }
         
         let preCount = schedule.utcEvents.count
 
-        DDLogInfo("Migrating UTC \(min(preCount, maxBatchSize)) events for device \(deviceId) (batch \(batchNumber)")
+        DDLogDebug("Migrating UTC \(min(preCount, maxBatchSize)) events for device \(deviceId) (batch \(batchNumber)", tag: TAG)
 
         return Promise {
             fulfill, reject in
@@ -1988,10 +1993,10 @@ extension DeviceModelable {
                     
                     results -> Void in
                     
-                    DDLogInfo("Offline schedule UTC migration: migrated \(results.count) events in batch \(batchNumber), with \(preCount - results.count) remaining.")
+                    DDLogDebug("Offline schedule UTC migration: migrated \(results.count) events in batch \(batchNumber), with \(preCount - results.count) remaining.", tag: TAG)
                     
                     guard schedule.utcEvents.count > 0 else {
-                        DDLogInfo("Offline schedule UTC migration for device \(self.deviceId): done.", tag: self.TAG)
+                        DDLogDebug("Offline schedule UTC migration for device \(self.deviceId): done.", tag: self.TAG)
                         fulfill()
                         return
                     }
@@ -2000,12 +2005,12 @@ extension DeviceModelable {
                         _ = self._migrateUTCOfflineScheduleEvents(maxBatchSize: maxBatchSize, waitBetweenBatches: waitBetweenBatches, batchNumber: batchNumber + 1)
                             .then {
                                 ()->Void in
-                                DDLogInfo("Offline schedule UTC migration for device \(self.deviceId) batch \(batchNumber) unwind.", tag: self.TAG)
+                                DDLogVerbose("Offline schedule UTC migration for device \(self.deviceId) batch \(batchNumber) unwind.", tag: self.TAG)
                                 fulfill()
                         }
                     }
                     
-                    DDLogInfo("Offline schedule UTC migration for \(self.deviceId): scheduled batch \(batchNumber + 1) for \(waitBetweenBatches) from now.", tag: self.TAG)
+                    DDLogVerbose("Offline schedule UTC migration for \(self.deviceId): scheduled batch \(batchNumber + 1) for \(waitBetweenBatches) from now.", tag: self.TAG)
                     
                 }.catch {
                     err in reject(err)

@@ -160,7 +160,7 @@
 		CBA2A05B1AE83DD90035C58D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CBA97AF51B192F4100AA216E /* profileTest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profileTest.json; sourceTree = "<group>"; };
 		CBA97AF61B192F4100AA216E /* ruleTest1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ruleTest1.json; sourceTree = "<group>"; };
-		CBA97B321B1CF01700AA216E /* AttributeValues.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = AttributeValues.playground; sourceTree = "<group>"; };
+		CBA97B321B1CF01700AA216E /* AttributeValues.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = AttributeValues.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		CBA993711EE750F50066213B /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		CBB10EC01DB6D419008297FB /* afrac-profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "afrac-profile.json"; sourceTree = "<group>"; };
 		CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userJohnSmith.json; sourceTree = "<group>"; };

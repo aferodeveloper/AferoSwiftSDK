@@ -58,13 +58,13 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
 
     internal(set) public var utcMigrationIsInProgress: Bool = false {
         didSet {
-            DDLogInfo("Offline Schedule UTC migration in progress: \(utcMigrationIsInProgress)", tag: TAG)
+            DDLogVerbose("Offline Schedule UTC migration in progress: \(utcMigrationIsInProgress)", tag: TAG)
         }
     }
     
     internal var shouldAttemptAutomaticUTCMigration: Bool = false {
         didSet {
-            DDLogInfo("Offline Schedule UTC migration should attempt: \(shouldAttemptAutomaticUTCMigration)", tag: TAG)
+            DDLogVerbose("Offline Schedule UTC migration should attempt: \(shouldAttemptAutomaticUTCMigration)", tag: TAG)
             guard oldValue != shouldAttemptAutomaticUTCMigration else { return }
             if shouldAttemptAutomaticUTCMigration {
                 _ = migrateUTCOfflineScheduleEvents()
