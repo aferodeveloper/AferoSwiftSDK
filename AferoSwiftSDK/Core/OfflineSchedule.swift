@@ -1965,7 +1965,7 @@ extension DeviceModelable {
     ///   - `offlineSchedule()` returns `nil`
     ///   - `offlineSchedule()?.utcEvents.counts == 0`
     
-    fileprivate func _migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 5, waitBetweenBatches: TimeInterval = 5.0, batchNumber: Int = 1) -> Promise<Void> {
+    fileprivate func _migrateUTCOfflineScheduleEvents(maxBatchSize: Int = 3, waitBetweenBatches: TimeInterval = 5.0, batchNumber: Int = 1) -> Promise<Void> {
 
         let TAG = self.TAG
         
