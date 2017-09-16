@@ -857,6 +857,8 @@ public extension DeviceModelable {
                     return
                 }
                 
+                self?.update(with: instances)
+                
                 fulfill(results)
             }
         }
