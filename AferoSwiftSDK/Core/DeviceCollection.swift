@@ -677,6 +677,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                     [weak self] isViewing, deviceId in
                     self?.notifyIsViewing(isViewing, deviceId: deviceId)
             })
+            device?.shouldAttemptAutomaticUTCMigration = true
             registerDevice(device!, onDone: nil)
         }
         
