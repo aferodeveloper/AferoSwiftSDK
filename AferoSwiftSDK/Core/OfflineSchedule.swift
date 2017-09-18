@@ -316,52 +316,45 @@ extension OfflineSchedule {
             }
     }
     
+    public typealias ReplaceEventResult = (oldEvent: OfflineSchedule.ScheduleEvent, newEvent: OfflineSchedule.ScheduleEvent, attributeId: Int)
+    
+    public typealias EventReplacement = (oldEvent: OfflineSchedule.ScheduleEvent, newEvent: OfflineSchedule.ScheduleEvent)
+
+    
     /// Replace one event with another, essentially "updating" the event.
     /// - parameter oldEvent: The event to replace
     /// - parameter newEvent: The replacement event
     /// - parameter commit: If true, automatically commit results. If false, do not, and have the returned
     ///                     promise resolve the attributeIds that need to be committed.
     
-    public func replaceScheduleEvent(_ oldEvent: OfflineSchedule.ScheduleEvent, with newEvent: OfflineSchedule.ScheduleEvent, commit: Bool = true) -> Promise<Set<Int>> {
+    public func replaceScheduleEvent(_ oldEvent: OfflineSchedule.ScheduleEvent, with newEvent: OfflineSchedule.ScheduleEvent, commit: Bool = true) -> Promise<ReplaceEventResult> {
+        
+        guard let attributeIdForOldEvent = attributeId(for: oldEvent) else {
+            let msg = "No attributeId for event \(String(describing: oldEvent)); bailing."
+            DDLogWarn(msg, tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        let ret = (oldEvent: oldEvent, newEvent: newEvent, attributeId: attributeIdForOldEvent)
         
         if oldEvent == newEvent {
             DDLogDebug("Replacing old event with equivalent event; no work to do (oldEvent: \(String(describing: oldEvent)) newEvent: \(String(describing: newEvent)))", tag: TAG)
-            return Promise { fulfill, _ in fulfill([]) }
+            return Promise { fulfill, _ in fulfill(ret) }
         }
         
-        var attributeIdsToCommit: Set<Int> = []
+        self.setEvent(event: newEvent, forAttributeId: attributeIdForOldEvent)
         
-        return removeScheduleEvent(oldEvent, commit: false)
+        guard commit else {
+            DDLogDebug("Skipping autocommit; returning \(attributeIdForOldEvent) for manual replace commit", tag: TAG)
+            return Promise { fulfill, _ in fulfill(ret) }
+        }
+            
+        DDLogDebug("Commit requested; committing attributeIds \(String(describing: [attributeIdForOldEvent]))", tag: TAG)
+        return commitEvents(forAttributeIds: [attributeIdForOldEvent])
             .then {
-                
-                removedAttributeIds -> Promise<Set<Int>> in
-                attributeIdsToCommit.formUnion(removedAttributeIds)
-                
-                DDLogDebug("Removed old event as part of replacement; attrIdsToCommit now \(String(reflecting: attributeIdsToCommit))", tag: self.TAG)
-                
-                return self.addScheduleEvent(newEvent, commit: false)
-                
-            }.then {
-                
-                addedAttributeIds -> Promise<Set<Int>> in
-                attributeIdsToCommit.formUnion(addedAttributeIds)
-                
-                DDLogDebug("Added new event as part of replacement; attrIdsToCommit now \(String(reflecting: attributeIdsToCommit))", tag: self.TAG)
-
-                guard commit else {
-                    
-                    DDLogDebug("Skipping autocommit; returning \(String(describing: attributeIdsToCommit)) for manual commit.", tag: self.TAG)
-                    
-                    return Promise { fulfill, _ in fulfill(attributeIdsToCommit) }
-                }
-                
-                DDLogDebug("Autocommitting attributeIds \(String(describing: attributeIdsToCommit))", tag: self.TAG)
-                
-                return self.commitEvents(forAttributeIds: attributeIdsToCommit).then {
-                    instances in
-                    return Set(instances.map { $0.id })
-                }
+                _ in return ret
         }
+
     }
     
     /// Replace the event at the given event index with a new event.
@@ -370,9 +363,74 @@ extension OfflineSchedule {
     /// - parameter commit: If true, automatically commit results. If false, do not, and have the returned
     ///                     promise resolve the attributeIds that need to be committed.
     
-    public func replaceScheduleEvent(at index: Int, with newEvent: OfflineSchedule.ScheduleEvent, commit: Bool = true) -> Promise<Set<Int>> {
-        
+    public func replaceScheduleEvent(at index: Int, with newEvent: OfflineSchedule.ScheduleEvent, commit: Bool = true) -> Promise<ReplaceEventResult> {
         return replaceScheduleEvent(event(index), with: newEvent, commit: commit)
+    }
+    
+    /// Perform a series of of event replacements.
+    ///
+    /// - parameter replacements: A `Collection` of `EventReplacement` instances.
+    ///             Each of these will be performed; unsuccessful results
+    ///             will be filtered out.
+    ///
+    /// - parameter commit: If true, automatically commit after completion. If false,
+    ///                     do not commit changes.
+    
+    public func performReplacements<T: Collection> (_ replacements: T, commit: Bool = true) -> Promise<[ReplaceEventResult]> where T.Iterator.Element == EventReplacement {
+        
+        
+        return when(resolved: replacements.map {
+            (oldEvent, newEvent) -> Promise<ReplaceEventResult> in
+            return replaceScheduleEvent(oldEvent, with: newEvent, commit: false)
+            }
+            ).then {
+                results -> [ReplaceEventResult] in
+                return results.flatMap {
+                    result in switch result {
+                    case .fulfilled(let replaceResult): return replaceResult
+                    case .rejected: return nil
+                    }
+                }
+            }.then {
+                results -> Promise<[ReplaceEventResult]> in
+                
+                guard commit else {
+                    return Promise { fulfill, _ in fulfill(results) }
+                }
+                
+                return self.commitEvents(forAttributeIds: results.map { $0.attributeId})
+                    .then {
+                        _ -> [ReplaceEventResult] in return results
+                }
+        }
+        
+    }
+    
+    /// Pairwise replace events in `oldEvents` with those in `newEvents`.
+    ///
+    /// - parameter oldEvents: A `Collection` of `OfflineScheduleEvent`s which will
+    ///             be replaced.
+    ///
+    /// - parameter newEvents: A `Collection` of `OfflineScheduleEvent`s which will replace
+    ///             those in `oldEvents`.
+    ///
+    /// - parameter commit: If true, automatically commit after completion. If false,
+    ///                     do not commit changes.
+    
+    func replace<T: Collection>(oldEvents: T, with newEvents: T, commit: Bool = false) -> Promise<[ReplaceEventResult]> where T.Iterator.Element == OfflineSchedule.ScheduleEvent {
+        
+        guard oldEvents.count == newEvents.count else {
+            let msg = "Number of oldEvents must equal number of new events; oldEvents.count == \(oldEvents.count); newEvents.count == \(newEvents.count)"
+            DDLogError(msg, tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        return performReplacements(
+            Array(zip(oldEvents, newEvents).map {
+                return (oldEvent: $0, newEvent: $1)
+            }),
+            commit: commit
+        )
     }
     
     /// Commit schedule events identified by event index (as per the collator).
@@ -1822,33 +1880,49 @@ extension OfflineSchedule {
     
     func migrateUTCEvents(maxCount: Int = 5) -> Promise<[OfflineScheduleMigrationResult]> {
         
-        guard let _ = storage?.timeZone else {
+        guard let timeZone = storage?.timeZone else {
             // This isn't fatal, so we'll just fulfill with empty results.
             DDLogVerbose("Storage has no timeZone set; not migrating events.", tag: self.TAG)
             return Promise { fulfill, _ in fulfill([]) }
         }
 
-        let events = utcEvents.prefix(maxCount)
-        let promises: [Promise<OfflineScheduleMigrationResult>] = events.map {
-            event -> Promise<OfflineScheduleMigrationResult> in
-            return self.migrateUTCEvent(event: event)
+        let replacements: [OfflineSchedule.EventReplacement]
+        
+        do {
+            replacements = try utcEvents.prefix(maxCount).map {
+                (oldEvent: $0, newEvent: try $0.asDeviceLocalTimeEvent(in: timeZone))
+            }
+        } catch {
+            return Promise { _, reject in reject(error) }
         }
         
-        return when(resolved: promises)
-            .then {
-                results -> [OfflineScheduleMigrationResult] in
-                results.flatMap {
-                    result -> OfflineScheduleMigrationResult? in
-                    switch result {
-                    case let .fulfilled(value):
-                        DDLogInfo("Successfully migrated \(String(describing: value))", tag: self.TAG)
-                        return value
-                    case let .rejected(error):
-                        DDLogError("Rejected migration: \(String(describing: error))", tag: self.TAG)
-                        return nil
-                    }
-                }
+        return performReplacements(replacements).then {
+            replacements -> [OfflineScheduleMigrationResult] in
+            return replacements.map {
+                (from: $0.0, to: $0.1)
+            }
         }
+        
+//        let promises: [Promise<OfflineScheduleMigrationResult>] = events.map {
+//            event -> Promise<OfflineScheduleMigrationResult> in
+//            return self.migrateUTCEvent(event: event)
+//        }
+//        
+//        return when(resolved: promises)
+//            .then {
+//                results -> [OfflineScheduleMigrationResult] in
+//                results.flatMap {
+//                    result -> OfflineScheduleMigrationResult? in
+//                    switch result {
+//                    case let .fulfilled(value):
+//                        DDLogInfo("Successfully migrated \(String(describing: value))", tag: self.TAG)
+//                        return value
+//                    case let .rejected(error):
+//                        DDLogError("Rejected migration: \(String(describing: error))", tag: self.TAG)
+//                        return nil
+//                    }
+//                }
+//        }
         
     }
     
