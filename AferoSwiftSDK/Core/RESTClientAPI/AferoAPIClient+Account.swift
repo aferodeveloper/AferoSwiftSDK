@@ -10,6 +10,8 @@ import Foundation
 import PromiseKit
 import CocoaLumberjack
 
+// MARK: - Users and Accounts -
+
 public extension AferoAPIClientProto {
     
     /// Fetch a users's account info.
@@ -17,8 +19,6 @@ public extension AferoAPIClientProto {
     public func fetchAccountInfo() -> Promise<UserAccount.User> {
         return GET("/v1/users/me")
     }
-    
-    // MARK: - Users
     
     /**
      Request a password reset for the given `credentialId` (email).
@@ -86,9 +86,10 @@ public extension AferoAPIClientProto {
 
 }
 
+// MARK: - Remote Notification and Mobile Client Info -
+
 public extension AferoAPIClientProto {
     
-    // MARK: - Remote Notification and Mobile Info
     
     /// Send device environment info to the service, return a promise.
     ///
@@ -166,16 +167,33 @@ public extension AferoAPIClientProto {
 
 }
 
-public extension AferoAPIClientProto {
+// MARK: - Conclave Access -
+
+extension AferoAPIClientProto {
     
-    public func authConclave(accountId: String, userId: String, mobileDeviceId: String, onDone: @escaping AuthConclaveOnDone) {
-        _ = authConclave(accountId: accountId, userId: userId, mobileDeviceId: mobileDeviceId).then {
-            access in onDone(access, nil)
-            }.catch {
-                err in onDone(nil, err)
+    /// Acquire a Conclave access token.
+
+    public func authConclave(accountId: String) -> Promise<ConclaveAccess> {
+        
+        guard let escapedAccountId = accountId.pathAllowedURLEncodedString else {
+            
+            return Promise {
+                _, reject in
+                let msg = "Unable to escape accountId '\(accountId)'"
+                DDLogError("\(msg); bailing.", tag: TAG)
+                reject(msg)
+            }
+            
         }
+        
+        let body: [String: Any] = [
+            "user": true
+        ]
+        
+        return POST("/v1/accounts/\(escapedAccountId)/conclaveAccess", parameters: body)
     }
     
+    @available(*, deprecated, message: "Use authConclave(with accountId:) instead.")
     public func authConclave(accountId: String, userId: String, mobileDeviceId: String) -> Promise<ConclaveAccess> {
         
         guard
@@ -204,7 +222,7 @@ public extension AferoAPIClientProto {
 
 }
 
-// MARK: - Activity
+// MARK: - Activity -
 
 public extension AferoAPIClientProto {
     

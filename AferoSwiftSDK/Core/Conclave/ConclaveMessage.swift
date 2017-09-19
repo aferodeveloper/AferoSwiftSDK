@@ -18,7 +18,7 @@ public typealias AuthConclaveOnDone = (ConclaveAccess?, Error?) -> Void
 public protocol ConclaveAuthable: class {
     var conclaveClientVersion: String { get }
     var conclaveClientType: String { get }
-    func authConclave(accountId: String, userId: String, mobileDeviceId: String, onDone: @escaping AuthConclaveOnDone)
+    func authConclave(accountId: String, onDone: @escaping AuthConclaveOnDone)
 }
 
 public extension ConclaveAuthable {
@@ -164,6 +164,8 @@ extension ConclaveHosts: AferoJSONCoding {
 
 public struct ConclaveAccess: CustomDebugStringConvertible {
 
+    public var TAG: String { return "\(type(of: self))" }
+    
     public var conclaveHosts: ConclaveHosts
     public var tokens: [Token]
     
@@ -173,29 +175,36 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
     
     public struct Token: Hashable, CustomDebugStringConvertible {
         
+        public var TAG: String { return "\(type(of: self))" }
+
         public enum Client: Hashable, CustomDebugStringConvertible {
             
-            case hub(type: String, deviceId: String)
-            case mobile(type: String, mobileDeviceId: String)
+            public var TAG: String { return "\(type(of: self))" }
+
+            case user(userId: String)
             
             public var debugDescription: String {
                 
                 switch self {
-                case let .hub(type, deviceId):
-                    return "Client.Hub type: \(type) deviceId: \(deviceId)"
-                case let .mobile(type, mobileDeviceId):
-                    return "Client.MobileDevice type: \(type) mobileDeviceId: \(mobileDeviceId)"
+                case let .user(userId):
+                    return "Client.User userId: \(userId)"
+                }
+            }
+            
+            // MARK: Hashable
+            
+            public static func ==(lhs: ConclaveAccess.Token.Client, rhs: ConclaveAccess.Token.Client) -> Bool {
+                switch (lhs, rhs) {
+                case let (.user(luid), .user(ruid)): return luid == ruid
+                default:
+                    return false
                 }
             }
             
             public var hashValue: Int {
                 switch self {
-                    
-                case let .hub(type, deviceId):
-                    return "Hub".hashValue ^ type.hashValue ^ deviceId.hashValue
-                    
-                case let .mobile(type, mobileDeviceId):
-                    return "Mobile".hashValue ^ type.hashValue ^ mobileDeviceId.hashValue
+                case let .user(userId):
+                    return "User".hashValue ^ userId.hashValue
                 }
             }
             
@@ -213,21 +222,10 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
             self.client = client
         }
         
-        public var mobileDeviceId: String? {
+        public var userId: String? {
             switch client {
-            case .mobile(_, let mobileDeviceId):
-                return mobileDeviceId
-            default:
-                return nil
-            }
-        }
-        
-        public var deviceId: String? {
-            switch client {
-            case .hub(_, let deviceId):
-                return deviceId
-            default:
-                return nil
+            case let .user(userId): return userId
+            default: return nil
             }
         }
         
@@ -239,31 +237,16 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
             return token.hashValue ^ channelId.hashValue ^ expires.hashValue ^ client.hashValue
         }
         
+        public static func ==(lhs: ConclaveAccess.Token, rhs: ConclaveAccess.Token) -> Bool {
+            return lhs.client == rhs.client
+                && lhs.channelId == rhs.channelId
+                && lhs.token == rhs.token
+                && lhs.expires == rhs.expires
+        }
+        
     }
 
-    public func tokenForMobileDeviceId(_ mobileDeviceId: String?) -> Token? {
-        guard let mobileDeviceId = mobileDeviceId else { return nil }
-        return tokens.filter { $0.mobileDeviceId == mobileDeviceId }.first
-    }
-}
-
-public func ==(lhs: ConclaveAccess.Token.Client, rhs: ConclaveAccess.Token.Client) -> Bool {
-    switch (lhs, rhs) {
-    case (.hub(let ltype, let ldid), .hub(let rtype, let rdid)):
-        return ltype == rtype && ldid == rdid
-    case (.mobile(let ltype, let lmdid), .mobile(let rtype, let rmdid)):
-        return ltype == rtype && lmdid == rmdid
-    default:
-        return false
-    }
-}
-
-public func ==(lhs: ConclaveAccess.Token, rhs: ConclaveAccess.Token) -> Bool {
-    return lhs.client == rhs.client
-        && lhs.channelId == rhs.channelId
-        && lhs.deviceId == rhs.deviceId
-        && lhs.expires == rhs.expires
-        && lhs.mobileDeviceId == rhs.mobileDeviceId
+    public var token: Token? { return tokens.first }
 }
 
 extension ConclaveAccess.Token: AferoJSONCoding {
@@ -306,23 +289,16 @@ extension ConclaveAccess.Token: AferoJSONCoding {
 extension ConclaveAccess.Token.Client: AferoJSONCoding {
     
     static let CoderKeyType = "type"
-    static let CoderKeyDeviceId = "deviceId"
-    static let CoderKeyMobileDeviceId = "mobileDeviceId"
+    static let CoderKeyUserId = "userId"
     
     public var JSONDict: AferoJSONCodedType? {
         
         switch self {
 
-        case let .hub(type, deviceId):
+        case let .user(userId):
             return [
-                type(of: self).CoderKeyType: type,
-                type(of: self).CoderKeyDeviceId: deviceId
-            ]
-
-        case let .mobile(type, mobileDeviceId):
-            return [
-                type(of: self).CoderKeyType: type,
-                type(of: self).CoderKeyMobileDeviceId: mobileDeviceId
+                type(of: self).CoderKeyType: "user",
+                type(of: self).CoderKeyUserId: userId,
             ]
 
         }
@@ -330,19 +306,18 @@ extension ConclaveAccess.Token.Client: AferoJSONCoding {
 
     public init?(json: AferoJSONCodedType?) {
 
+        let TAG = "\(type(of: self))"
+        
         guard let
-            jsonDict = json as? [String: Any],
-            let type = jsonDict[type(of: self).CoderKeyType] as? String else {
-                DDLogError("Unable to decode ConclaveAccess.Token.Client: \(String(describing: json))", tag: "ConclaveAccess.Token.Client")
+            jsonDict = json as? [String: Any] else {
+                DDLogError("Unable to decode ConclaveAccess.Token.Client: \(String(describing: json))", tag: TAG)
                 return nil
         }
         
-        if let mobileDeviceId = jsonDict[type(of: self).CoderKeyMobileDeviceId] as? String {
-            self = .mobile(type: type, mobileDeviceId: mobileDeviceId)
-        } else if let deviceId = jsonDict[type(of: self).CoderKeyDeviceId] as? String {
-            self = .hub(type: type, deviceId: deviceId)
+        if let userId = jsonDict[type(of: self).CoderKeyUserId] as? String {
+            self = .user(userId: userId)
         } else {
-            DDLogError("Unable to decode ConclaveAccess.Token.Client (no deviceId or mobileDeviceId): \(String(describing: json))", tag: "ConclaveAccess.Token.Client")
+            DDLogError("Unable to decode ConclaveAccess.Token.Client (no deviceId or mobileDeviceId): \(String(describing: json))", tag: TAG)
             return nil
         }
         

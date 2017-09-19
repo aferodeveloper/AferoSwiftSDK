@@ -149,7 +149,7 @@ class AccountViewController: UITableViewController {
             networkStatus = .connecting
             
             if let accountId = accountId, let userId = userId {
-                authConclave(accountId: accountId, userId: userId, mobileDeviceId: conclaveMobileDeviceId)
+                authConclave(accountId: accountId)
             }
             
         }
@@ -664,25 +664,22 @@ extension AccountViewController: ConclaveAuthable {
     var conclaveClientType: String { return "ios" }
     
     @discardableResult
-    func authConclave(accountId: String, userId: String, mobileDeviceId: String) -> Promise<ConclaveAccess> {
+    func authConclave(accountId: String) -> Promise<ConclaveAccess> {
         
         if let conclaveAccess = conclaveAccess {
             return Promise { fulfill, _ in fulfill(conclaveAccess) }
         }
         
-        return APIClient.default.authConclave(
-            accountId: accountId,
-            userId: userId,
-            mobileDeviceId: conclaveMobileDeviceId
-            ).then {
+        return APIClient.default.authConclave(accountId: accountId)
+            .then {
                 conclaveAccess -> ConclaveAccess in
                 self.conclaveAccess = conclaveAccess
                 return conclaveAccess
         }
     }
 
-    func authConclave(accountId: String, userId: String, mobileDeviceId: String, onDone: @escaping AuthConclaveOnDone) {
-        authConclave(accountId: accountId, userId: userId, mobileDeviceId: mobileDeviceId)
+    func authConclave(accountId: String, onDone: @escaping AuthConclaveOnDone) {
+        authConclave(accountId: accountId)
             .then {
                 onDone($0, nil)
             }.catch {

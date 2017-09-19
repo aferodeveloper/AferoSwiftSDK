@@ -67,7 +67,7 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
     
     /// The curent Conclave connection token being used. `nil` if not connected.
     open var connectionToken: ConclaveAccess.Token? {
-        return conclaveAccess?.tokenForMobileDeviceId(clientId)
+        return conclaveAccess?.token
     }
     
     open var host: ConclaveHost? {
@@ -282,7 +282,7 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
         
         let tag = TAG
         
-        conclaveAuthable.authConclave(accountId: accountId, userId: userId, mobileDeviceId: clientId) {
+        conclaveAuthable.authConclave(accountId: accountId) {
             [weak self] maybeInfo, maybeError in asyncMain {
                 switch (maybeInfo, maybeError) {
                     

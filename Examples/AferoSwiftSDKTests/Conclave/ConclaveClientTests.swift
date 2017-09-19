@@ -359,7 +359,7 @@ class ConclaveClientSpec: QuickSpec {
                     token: "nubar",
                     channelId: "coobar",
                     expires: Date(),
-                    client: ConclaveAccess.Token.Client.mobile(type: "ios", mobileDeviceId: "foo")
+                    client: ConclaveAccess.Token.Client.user(userId: "foouser")
                 )
                 
                 let client = ConclaveClient(
@@ -430,7 +430,7 @@ class ConclaveClientSpec: QuickSpec {
                 
                 clientConnection = ConclaveStreamConnection(inputStream: serverToClient.input, outputStream: clientToServer.output)
                 
-                let token = ConclaveAccess.Token(token: "nubar", channelId: "coobar", expires: Date(), client: ConclaveAccess.Token.Client.mobile(type: "ios", mobileDeviceId: "foo"))
+                let token = ConclaveAccess.Token(token: "nubar", channelId: "coobar", expires: Date(), client: ConclaveAccess.Token.Client.user(userId: "foouser"))
                 
                 client = ConclaveClient(token:token, type:"poobar", deviceId: "floobar", mobileDeviceId: "clientfu", version: "voobar")
                 client.heartbeatSlack = 1
@@ -549,7 +549,7 @@ class ConclaveClientSpec: QuickSpec {
             var connection: Mocklave! = nil
             
             beforeEach {
-                let token = ConclaveAccess.Token(token: "nubar", channelId: "coobar", expires: Date(), client: ConclaveAccess.Token.Client.mobile(type: "ios", mobileDeviceId: "foo"))
+                let token = ConclaveAccess.Token(token: "nubar", channelId: "coobar", expires: Date(), client: ConclaveAccess.Token.Client.user(userId: "foouser"))
 
                 client = ConclaveClient(token:token, type:"poobar", deviceId: "floobar", mobileDeviceId: "clientfu", version: "voobar")
                 connection = Mocklave()

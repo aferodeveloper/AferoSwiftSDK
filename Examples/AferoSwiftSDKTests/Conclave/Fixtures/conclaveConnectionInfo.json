@@ -11,18 +11,8 @@
                "channelId": "mychannelid",
                "expiresTimestamp": 0,
                "client": {
-               "type": "sunnyd",
-               "deviceId": "01234"
-               },
-               "createdTimestamp": 0
-               },
-               {
-               "token": "mytoken2",
-               "channelId": "mychannelid2",
-               "expiresTimestamp": 0,
-               "client": {
-               "type": "minutemaid",
-               "mobileDeviceId": "56789"
+               "type": "user",
+               "userId": "foouser"
                },
                "createdTimestamp": 0
                }

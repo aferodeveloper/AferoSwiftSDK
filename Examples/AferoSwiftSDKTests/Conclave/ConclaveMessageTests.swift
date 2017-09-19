@@ -32,25 +32,16 @@ class ConclaveConnectionInfoSpec: QuickSpec {
                     return
                 }
                 
-                expect(connectionInfo.tokens.count) == 2
+                expect(connectionInfo.tokens.count) == 1
 
-                let client0 = ConclaveAccess.Token.Client.hub(type: "sunnyd", deviceId: "01234")
+                let client0 = ConclaveAccess.Token.Client.user(userId: "foouser")
                 let token0 = ConclaveAccess.Token(
                     token: "mytoken",
                     channelId: "mychannelid",
                     expires: Date(timeIntervalSince1970: 0),
                     client: client0
                 )
-                expect(connectionInfo.tokens[0]) == token0
-                
-                let client1 = ConclaveAccess.Token.Client.mobile(type: "minutemaid", mobileDeviceId: "56789")
-                let token1 = ConclaveAccess.Token(
-                    token: "mytoken2",
-                    channelId: "mychannelid2",
-                    expires: Date(timeIntervalSince1970: 0),
-                    client: client1
-                )
-                expect(connectionInfo.tokens[1]) == token1
+                expect(connectionInfo.token) == token0
                 
                 let httpHosts = connectionInfo.conclaveHosts.hostsForType("http")
                 expect(httpHosts.count) == 1
@@ -78,9 +69,9 @@ class ConclaveConnectionInfoSpec: QuickSpec {
                         return
                 }
                 
-                expect(nuConnectionInfo.tokens.count) == 2
+                expect(nuConnectionInfo.tokens.count) == 1
                 
-                let client0 = ConclaveAccess.Token.Client.hub(type: "sunnyd", deviceId: "01234")
+                let client0 = ConclaveAccess.Token.Client.user(userId: "foouser")
                 let token0 = ConclaveAccess.Token(
                     token: "mytoken",
                     channelId: "mychannelid",
@@ -88,15 +79,6 @@ class ConclaveConnectionInfoSpec: QuickSpec {
                     client: client0
                 )
                 expect(nuConnectionInfo.tokens[0]) == token0
-                
-                let client1 = ConclaveAccess.Token.Client.mobile(type: "minutemaid", mobileDeviceId: "56789")
-                let token1 = ConclaveAccess.Token(
-                    token: "mytoken2",
-                    channelId: "mychannelid2",
-                    expires: Date(timeIntervalSince1970: 0),
-                    client: client1
-                )
-                expect(nuConnectionInfo.tokens[1]) == token1
                 
                 let httpHosts = nuConnectionInfo.conclaveHosts.hostsForType("http")
                 expect(httpHosts.count) == 1
