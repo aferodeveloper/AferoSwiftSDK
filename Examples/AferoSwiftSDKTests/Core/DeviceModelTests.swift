@@ -94,14 +94,14 @@ class DeviceModelSpec: QuickSpec {
                     accountId: accountId,
                     associationId: "fooassociation",
                     state: [100: false],
-                    profile: nil, attributeWriteable: nil)
+                    profile: nil, deviceActionable: nil)
                 
                 expect(deviceModel.currentState[safe: 100]?.boolValue) == false
                 expect(deviceModel.deviceId) == "foo"
                 expect(deviceModel.accountId) == accountId
                 expect(deviceModel.associationId) == "fooassociation"
                 expect(deviceModel.profileId).to(beNil())
-                expect(deviceModel.attributeWriteable).to(beNil())
+                expect(deviceModel.deviceActionable).to(beNil())
             }
             
             
@@ -124,7 +124,7 @@ class DeviceModelSpec: QuickSpec {
                     associationId: "fooassociation",
                     state: [100: false],
                     profile: nil,
-                    attributeWriteable: nil,
+                    deviceActionable: nil,
                     profileSource: resolver
                     )
 
@@ -265,7 +265,7 @@ class DeviceModelSpec: QuickSpec {
                 deviceId: "foo",
                 accountId: accountId,
                 profile: try! self.fixture(named: "profileTest"),
-                attributeWriteable: writeSink
+                deviceActionable: writeSink
             )
             
             beforeEach() {
@@ -276,13 +276,13 @@ class DeviceModelSpec: QuickSpec {
             it("Should forward the update to its writeSink") {
                 
                 expect(writeSink.writeWasInvoked).to(beFalse())
-                expect(deviceModel.attributeWriteable) === writeSink
+                expect(deviceModel.deviceActionable) === writeSink
                 expect(writeSink.writeWasInvoked).to(beFalse())
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
                 var error: Error? = nil
                 
-                deviceModel.attributeWriteable?.post(actions: [.attributeWrite(attributeId: 100, value: "false")] , forDeviceId: "test", withAccountId: accountId) {
+                deviceModel.deviceActionable?.post(actions: [.attributeWrite(attributeId: 100, value: "false")] , forDeviceId: "test", withAccountId: accountId) {
                     error = $1
                 }
                 
@@ -293,7 +293,7 @@ class DeviceModelSpec: QuickSpec {
             it("Should forward errors.") {
                 
                 expect(writeSink.writeWasInvoked).to(beFalse())
-                expect(deviceModel.attributeWriteable) === writeSink
+                expect(deviceModel.deviceActionable) === writeSink
                 expect(writeSink.writeWasInvoked).to(beFalse())
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
@@ -302,7 +302,7 @@ class DeviceModelSpec: QuickSpec {
                 writeSink.postErrorToReturn = NSError(domain: "test error fixture", code: 666, userInfo: ["foo": "bar"])
                 expect(writeSink.postErrorToReturn).toNot(beNil())
                 
-                deviceModel.attributeWriteable?.post(actions: [.attributeWrite(attributeId: 100, value: "false")] , forDeviceId: "test", withAccountId: "test") {
+                deviceModel.deviceActionable?.post(actions: [.attributeWrite(attributeId: 100, value: "false")] , forDeviceId: "test", withAccountId: "test") {
                     error = $1
                 }
                 

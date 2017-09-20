@@ -170,31 +170,6 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
     
 }
 
-// This maps our `DeviceBatchActionRequestable` so that we can report metrics.
-
-extension DeviceCollection: DeviceBatchActionRequestable {
-    
-    public func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
-        
-        let startTime = mach_absolute_time()
-        
-        apiClient.post(actions: actions, forDeviceId: deviceId, withAccountId: accountId) {
-            maybeResults, maybeError in
-            maybeResults?.requestIds.forEach {
-                self.metricHelper.begin(requestId: $0, accountId: accountId, deviceId: deviceId, time: startTime)
-            }
-            onDone(maybeResults, maybeError)
-        }
-        
-    }
-    
-    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
-        apiClient.setTimeZone(as: timeZone, isUserOverride: isUserOverride, for: deviceId, in: accountId, onDone: onDone)
-    }
-    
-}
-
-
 typealias DeviceEventHandler = (_ sender: String, _ event: String, _ data: [String: Any]) -> ()
 
 struct DeviceRequestId: Hashable {
@@ -398,7 +373,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     private var _metricHelper: MetricHelper?
     
-    fileprivate var metricHelper: MetricHelper! {
+    var metricHelper: MetricHelper! {
         get {
             if let metricHelper = _metricHelper {
                 return metricHelper
@@ -671,7 +646,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 associationId: nil,
                 profileId: profileId,
                 attributes: [:],
-                attributeWriteable: self,
+                deviceActionable: self,
                 profileSource: profileSource,
                 viewingNotificationConsumer: {
                     [weak self] isViewing, deviceId in

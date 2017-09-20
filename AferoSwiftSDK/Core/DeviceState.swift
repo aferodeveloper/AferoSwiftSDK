@@ -528,7 +528,7 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
     var friendlyName: String? { get set }
-    var attributeWriteable: DeviceBatchActionRequestable? { get }
+    var deviceActionable: DeviceActionable? { get }
     var otaProgress: Double? { get }
     var deviceErrors: Set<DeviceErrorStatus> { get }
     
@@ -687,14 +687,14 @@ public extension DeviceModelable {
     
     func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
 
-        guard let attributeWriteable = attributeWriteable else {
+        guard let deviceActionable = deviceActionable else {
             return Promise { _, reject in reject("No attribute writeable") }
         }
         
         return Promise {
             fulfill, reject in
             
-            attributeWriteable.setTimeZone(
+            deviceActionable.setTimeZone(
                 as: timeZone,
                 isUserOverride: isUserOverride,
                 for: deviceId,

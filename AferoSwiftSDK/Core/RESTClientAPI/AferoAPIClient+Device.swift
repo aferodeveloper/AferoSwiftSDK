@@ -211,17 +211,6 @@ public extension AferoAPIClientProto {
         return setLocation(as: location, with: locationSourceType, formattedAddressLines: formattedAddressLines, for: deviceId, in: accountId)
     }
     
-    public func setLocation(as location: CLLocation, with sourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil, for deviceId: String, in accountId: String) -> Promise<Void> {
-        
-        let location = DeviceLocation(
-            location: location,
-            sourceType: sourceType,
-            formattedAddressLines: formattedAddressLines
-        )
-        
-        return setLocation(as: location, for: deviceId, in: accountId)
-    }
-    
 }
 
 public extension AferoAPIClientProto {
@@ -237,13 +226,6 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
-        setTimeZone(as: timeZone, isUserOverride: isUserOverride, for: deviceId, in: accountId).then {
-            result in onDone(result, nil)
-            }.catch {
-                err in onDone(nil, err)
-        }
-    }
     
     /// Set the timezone for a device.
     /// - parameter timeZone: The timezone to associate with the device.
@@ -268,6 +250,14 @@ public extension AferoAPIClientProto {
         return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/timezone", parameters: parameters).then {
             () -> SetTimeZoneResult in
             return (deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride)
+        }
+    }
+    
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+        setTimeZone(as: timeZone, isUserOverride: isUserOverride, for: deviceId, in: accountId).then {
+            result in onDone(result, nil)
+            }.catch {
+                err in onDone(nil, err)
         }
     }
     

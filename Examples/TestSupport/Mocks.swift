@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PromiseKit
 import OHHTTPStubs
 import ReactiveSwift
 import HTTPStatusCodes
@@ -16,15 +17,38 @@ import HTTPStatusCodes
 
 // MARK: - MockDeviceBatchActionRequestable
 
-class MockDeviceBatchActionRequestable: DeviceBatchActionRequestable {
+class MockDeviceBatchActionRequestable: DeviceActionable {
+    
+    var setLocationWasInvoked: Bool = false
+    var lastSetLocationArgsProvided: (location: DeviceLocation?, deviceId: String, accountId: String)?
+    var setLocationErrorToReturn: Error?
+    
+    func setLocation(as location: DeviceLocation?, for deviceId: String, in accountId: String) -> Promise<Void> {
+        setLocationWasInvoked = true
+        
+        if let error = setLocationErrorToReturn {
+            return Promise { _, reject in reject(error) }
+        }
+        
+        return Promise { fulfill, _ in fulfill() }
+    }
     
     var setTimezoneWasInvoked: Bool = false
     var setTimeZoneResultToReturn: SetTimeZoneResult?
     var settimeZoneErrorToReturn: Error?
     
-    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String) -> Promise<SetTimeZoneResult> {
         setTimezoneWasInvoked = true
-        onDone(setTimeZoneResultToReturn, settimeZoneErrorToReturn)
+        
+        if let error = settimeZoneErrorToReturn {
+            return Promise { _, reject in reject(error) }
+        }
+        
+        guard let result = setTimeZoneResultToReturn else {
+            return Promise { _, reject in reject("Missing both result and error; pathological case.") }
+        }
+        
+        return Promise { fulfill, _ in fulfill(result) }
     }
 
     
@@ -35,6 +59,7 @@ class MockDeviceBatchActionRequestable: DeviceBatchActionRequestable {
     
     func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
         writeWasInvoked = true
+        
         onDone(postResultsToReturn, postErrorToReturn)
     }
     

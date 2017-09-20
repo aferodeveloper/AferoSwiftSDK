@@ -8,6 +8,7 @@
 
 import Foundation
 import ReactiveSwift
+import PromiseKit
 import Result
 import CocoaLumberjack
 
@@ -103,7 +104,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
          associationId: String? = nil,
          state: DeviceState = DeviceState(),
          profile: DeviceProfile? = nil,
-         attributeWriteable: DeviceBatchActionRequestable? = nil,
+         deviceActionable: DeviceBatchActionRequestable? = nil,
          profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -119,7 +120,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         self.currentState = localState
         self.profile = profile
         self.profileSource = profileSource
-        self.attributeWriteable = attributeWriteable
+        self.deviceActionable = deviceActionable
     }
     
     convenience init(
@@ -130,7 +131,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceBatchActionRequestable? = nil,
         profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -146,7 +147,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
             accountId: accountId,
             associationId: associationId,
             state: state,
-            attributeWriteable: attributeWriteable,
+            deviceActionable: deviceActionable,
             profileSource: profileSource
         )
     }
@@ -208,7 +209,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
      By default, this is nil, so writes are ignored.
      */
     
-    weak fileprivate(set) public var attributeWriteable: DeviceBatchActionRequestable? = nil
+    weak fileprivate(set) public var deviceActionable: DeviceBatchActionRequestable? = nil
     
     // MARK: State Signaling
     
@@ -323,13 +324,13 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
                 completion(results, maybeError)
             }
             
-            guard let attributeWriteable = attributeWriteable else {
-                DDLogDebug("No attributeWriteable; bailing.", tag: TAG)
-                localOnDone(nil, "No attributeWriteable configured.")
+            guard let deviceActionable = deviceActionable else {
+                DDLogDebug("No deviceActionable; bailing.", tag: TAG)
+                localOnDone(nil, "No deviceActionable configured.")
                 return
             }
             
-            attributeWriteable.post(
+            deviceActionable.post(
                 actions: actions,
                 forDeviceId: self.deviceId,
                 withAccountId: accountId,
@@ -424,7 +425,7 @@ public class DeviceModel: BaseDeviceModel {
         associationId: String? = nil,
         state: DeviceState = DeviceState(),
         profile: DeviceProfile? = nil,
-        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceBatchActionRequestable? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -437,7 +438,7 @@ public class DeviceModel: BaseDeviceModel {
             associationId: associationId,
             state: state,
             profile: profile,
-            attributeWriteable: attributeWriteable,
+            deviceActionable: deviceActionable,
             profileSource: profileSource
         )
     }
@@ -450,7 +451,7 @@ public class DeviceModel: BaseDeviceModel {
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        attributeWriteable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceBatchActionRequestable? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -467,7 +468,7 @@ public class DeviceModel: BaseDeviceModel {
             accountId: accountId,
             associationId: associationId,
             state: state,
-            attributeWriteable: attributeWriteable,
+            deviceActionable: deviceActionable,
             profileSource: profileSource,
             viewingNotificationConsumer: viewingNotificationConsumer
         )
@@ -625,7 +626,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
                   associationId: String? = nil,
                   state: DeviceState = DeviceState(),
                   profile: DeviceProfile? = nil,
-                  attributeWriteable: DeviceBatchActionRequestable? = nil,
+                  deviceActionable: DeviceBatchActionRequestable? = nil,
                   profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -635,11 +636,11 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
             associationId: associationId,
             state: state,
             profile: profile,
-            attributeWriteable: attributeWriteable,
+            deviceActionable: deviceActionable,
             profileSource: profileSource
         )
         
-        self.attributeWriteable = self
+        self.deviceActionable = self
     }
     
     public convenience init(model: DeviceModelable, copyState: Bool = false) {
@@ -652,7 +653,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
             profile: model.profile
         )
         
-        attributeWriteable = self
+        deviceActionable = self
     }
     
     deinit {
@@ -699,11 +700,35 @@ extension RecordingDeviceModel: DeviceBatchActionRequestable {
         asyncMain { onDone(results, nil) }
     }
     
-    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String, onDone: @escaping SetTimeZoneOnDone) {
+     public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool, for deviceId: String, in accountId: String) -> Promise<SetTimeZoneResult> {
+        
+        guard deviceId == self.deviceId, accountId == self.accountId else {
+            let msg = "Incorrect deviceId (\(deviceId)) or accountId (got: \(accountId), expected: \(self.accountId)."
+            DDLogError(msg + " Bailing.", tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
         self.timeZoneState = .some(timeZone: timeZone, isUserOverride: isUserOverride)
-        onDone((deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride), nil)
+        return Promise { fulfill, _ in fulfill((deviceId: deviceId, tz: timeZone, isUserOverride: isUserOverride)) }
     }
+    
+    public func setLocation(as location: DeviceLocation?, for deviceId: String, in accountId: String) -> Promise<Void> {
 
+        guard deviceId == self.deviceId, accountId == self.accountId else {
+            let msg = "Incorrect deviceId (\(deviceId)) or accountId (got: \(accountId), expected: \(self.accountId)."
+            DDLogError(msg + " Bailing.", tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        if let location = location {
+            locationState = .located(at: location)
+        } else {
+            locationState = .notLocated
+        }
+        
+        return Promise { fulfill, _ in fulfill() }
+    }
+    
 }
 
 public extension RecordingDeviceModel {
