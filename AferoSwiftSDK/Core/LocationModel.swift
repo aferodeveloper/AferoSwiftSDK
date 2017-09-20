@@ -288,7 +288,7 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     /// - note:  `formattedAddressLines` content may differ from what could
     ///           be obtained with `CLGeocoder.reverseGeocodeLocation(_:_:)`.
     
-    init(location: CLLocation = CLLocation(), sourceType: SourceType = SourceType.clientIPEstimate, formattedAddressLines: [String]? = nil) {
+    public init(location: CLLocation = CLLocation(), sourceType: SourceType = SourceType.clientIPEstimate, formattedAddressLines: [String]? = nil) {
         self.location = location.copy() as! CLLocation
         self.sourceType = sourceType
         self.formattedAddressLines = formattedAddressLines
