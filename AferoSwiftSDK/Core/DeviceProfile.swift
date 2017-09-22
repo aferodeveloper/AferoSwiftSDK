@@ -271,13 +271,25 @@ public extension DeviceProfile {
     
     public typealias AttributeConfig = (descriptor: DeviceProfile.AttributeDescriptor, presentation: DeviceProfile.Presentation.AttributeOption?)
     
+    @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
     public func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
+        return attributeConfig(for: id, on: deviceId)
+    }
+    
+    public func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
         
-        guard let attributeDescriptor = self[id] else {
+        guard let descriptor = descriptor(for: attributeId) else {
             return nil
         }
         
-        return (descriptor: attributeDescriptor, presentation: presentation(deviceId)?[id])
+        return (descriptor: descriptor, presentation: presentation(deviceId)?[attributeId])
+    }
+    
+    public func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
+        guard let descriptor = descriptor(for: semanticType) else {
+            return nil
+        }
+        return (descriptor: descriptor, presentation: presentation(deviceId)?[descriptor.id])
     }
 
 }

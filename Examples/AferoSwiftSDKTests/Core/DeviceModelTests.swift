@@ -350,15 +350,15 @@ class DeviceModelSpec: QuickSpec {
 
                 deviceModel.update([2000: "Hi!"])
                 expect(deviceModel.isAvailable).to(beFalse())
-                expect(deviceModel.valueForAttributeId(100)) == false
-                expect(deviceModel.valueForAttributeId(2000)) == "Hi!"
+                expect(deviceModel.value(for: 100)) == false
+                expect(deviceModel.value(for: 2000)) == "Hi!"
                 expect(writeCount).toEventually(equal(1))
                 
                 deviceModel.isAvailable = true
                 expect(writeState?.isAvailable).toEventually(beTrue())
                 expect(writeState?.isDirect).toEventually(beFalse())
-                expect(deviceModel.valueForAttributeId(100)) == false
-                expect(deviceModel.valueForAttributeId(2000)) == "Hi!"
+                expect(deviceModel.value(for: 100)) == false
+                expect(deviceModel.value(for: 2000)) == "Hi!"
                 expect(writeCount).toEventually(equal(2))
                 
                 deviceModel.isDirect = true

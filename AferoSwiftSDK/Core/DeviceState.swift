@@ -537,6 +537,15 @@ public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSign
 }
 
 public extension DeviceModelable {
+
+    /// If false, this device doesn't have a presentation profile, and is therefore
+    /// not expected to be visible to users in a consumer device (e.g., a softhub).
+    /// In every other way it's treated as a regular device.
+    
+    var isPresentable: Bool { return presentation != nil }
+}
+
+public extension DeviceModelable {
     /// The unique ID of the device on the service.
     @available(*, deprecated, message: "DeviceModel.id is deprecated; use DeviceModel.deviceId.")
     public var id: String {
@@ -793,9 +802,26 @@ public extension DeviceModelable {
 
     /// Fetch an attribute by id
     /// - parameter attributeId: The id of the attribute to fetch
-
+    @available(*, deprecated, message: "Use value(for:) instead.")
     public func valueForAttributeId(_ attributeId: Int) -> AttributeValue? {
-        return self[attributeId: attributeId]
+        return value(for: attributeId)
+    }
+    
+    /// Fetch an attribute by id
+    /// - parameter attributeId: The id of the attribute to fetch
+    public func value(for attributeId: Int) -> AttributeValue? {
+        return currentState[safe: attributeId]
+    }
+    
+    public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
+        return value(for: descriptor.id)
+    }
+    
+    public func value(for semanticType: String) -> AttributeValue? {
+        guard let id = attributeId(for: semanticType) else {
+            return nil
+        }
+        return value(for: id)
     }
     
     public func set(value: AttributeValue, forAttributeId attributeId: Int) -> Promise<DeviceBatchAction.Results> {
@@ -866,7 +892,7 @@ public extension DeviceModelable {
     }
 
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
-        return profile?.attributeConfig(attributeId, deviceId: deviceId)
+        return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
@@ -877,11 +903,28 @@ public extension DeviceModelable {
         return attributeConfig(forAttributeId: attributeId)?.presentation
     }
     
+    public func attributeConfig(for semanticType: String) -> DeviceProfile.AttributeConfig? {
+        return profile?.attributeConfig(for: semanticType, on: deviceId)
+    }
+    
+    public func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {
+        return attributeConfig(for: semanticType)?.descriptor
+    }
+    
+    public func attributeId(for semanticType: String) -> Int? {
+        return descriptor(for: semanticType)?.id
+    }
+    
+    public func attributeOption(for semanticType: String) -> DeviceProfile.Presentation.AttributeOption? {
+        return attributeConfig(for: semanticType)?.presentation
+    }
+    
     public func defaultValueForAttributeId(_ id: Int) -> AttributeValue? {
         guard let defaultString = descriptorForAttributeId(id)?.defaultValue else { return nil }
         return AttributeValue(stringLiteral: defaultString)
     }
     
+    @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, for: Int) instead.")
     public subscript(attributeId id: Int) -> AttributeValue? {
         
         get {
@@ -900,6 +943,7 @@ public extension DeviceModelable {
         }
     }
     
+    @available(*, deprecated, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
     public subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
         get {
             return self[attributeId: attributeDescriptor.id]
@@ -1233,5 +1277,27 @@ public extension DeviceModelable {
         
     }
 }
+
+public extension DeviceModelable {
+    
+    /// Returns true if the device is an Afero softhub and
+    /// the given `clientId` can be found in its `Hubby Hardware Info`
+    /// attribute (`51101`).
+    
+    func hardwareIdentifierMatches(predicate: (String)->Bool) -> Bool {
+        
+        let semanticType = "Hubby Hardware Info"
+        
+        guard let value = value(for: semanticType)?.stringValue else {
+            DDLogVerbose("\(deviceId) has no value for semanticType '\(semanticType)'.", tag: TAG)
+            return false
+        }
+        
+        return predicate(value)
+    }
+    
+}
+
+
 
 

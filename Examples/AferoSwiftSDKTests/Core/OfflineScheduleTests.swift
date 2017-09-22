@@ -1009,13 +1009,13 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(schedule.numberOfEvents) == 1
                 expect(schedule.events().first) == event1
                 
-                expect(deviceModel.valueForAttributeId(59004)).to(beNil())
+                expect(deviceModel.value(for: 59004)).to(beNil())
                 schedule.setEvent(event: event2, forAttributeId: 59004)
                 expect(schedule.events().count) == 2
                 expect(schedule.numberOfEvents) == 2
                 expect(schedule.events().last) == event2
                 
-                expect(deviceModel.valueForAttributeId(59007)).to(beNil())
+                expect(deviceModel.value(for: 59007)).to(beNil())
                 schedule.setEvent(event: event3, forAttributeId: 59007)
                 expect(schedule.events().count) == 3
                 expect(schedule.numberOfEvents) == 3
@@ -1026,9 +1026,9 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(schedule.events().count) == 0
                 expect(schedule.numberOfEvents) == 0
                 expect(schedule.events().last).to(beNil())
-                expect(deviceModel.valueForAttributeId(59002)).to(beNil())
-                expect(deviceModel.valueForAttributeId(59004)).to(beNil())
-                expect(deviceModel.valueForAttributeId(59007)).to(beNil())
+                expect(deviceModel.value(for: 59002)).to(beNil())
+                expect(deviceModel.value(for: 59004)).to(beNil())
+                expect(deviceModel.value(for: 59007)).to(beNil())
 
             }
             

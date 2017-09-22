@@ -23,14 +23,14 @@ class PresentationSpec: QuickSpec {
             let profile = DeviceProfile(attributes: [
                 
                 // Values that can be modified
-                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 100,   type: .sInt32,  operations: [.Read]),
-                DeviceProfile.AttributeDescriptor(id: 20,    type: .q1516,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 70,    type: .q3132,   operations: [.Read]),
-                DeviceProfile.AttributeDescriptor(id: 90,    type: .boolean, operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 101,   type: .sInt64,  operations: [.Read]),
-                DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt64,  operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 202,   type: .sInt8,   operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, semanticType: "Floop", operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 100,   type: .sInt32, semanticType: "Doop",  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 20,    type: .q1516, semanticType: "Troop",   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 70,    type: .q3132, semanticType: "Hadoop",   operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 90,    type: .boolean, semanticType: "Snoop", operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 101,   type: .sInt64, semanticType: "Ploop",  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt64, semanticType: "Coop",  operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 202,   type: .sInt8, semanticType: "Zoop",   operations: [.Read]),
                 
                 // OfflineSchedule attributes
                 DeviceProfile.AttributeDescriptor(id: 59001, type: .boolean,   operations: [.Read, .Write]),
@@ -52,6 +52,19 @@ class PresentationSpec: QuickSpec {
                 expect(profile.hasPresentableWritableAttributes).to(beFalse())
                 expect(profile.hasWritableAttributes).to(beTrue())
                 expect(profile.writableAttributes.count) == 10
+            }
+            
+            it("Should query as expected by semanticType.") {
+                expect(profile.descriptor(for: "Floop")?.id) == 50
+                expect(profile.descriptor(for: "Doop")?.id) == 100
+                expect(profile.descriptor(for: "Troop")?.id) == 20
+                expect(profile.descriptor(for: "Hadoop")?.id) == 70
+                expect(profile.descriptor(for: "Snoop")?.id) == 90
+                expect(profile.descriptor(for: "Ploop")?.id) == 101
+                expect(profile.descriptor(for: "Coop")?.id) == 201
+                expect(profile.descriptor(for: "Zoop")?.id) == 202
+                
+                expect(profile.descriptor(for: "nnnn")).to(beNil())
             }
             
         }
