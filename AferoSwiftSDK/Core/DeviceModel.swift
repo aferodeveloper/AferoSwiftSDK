@@ -104,7 +104,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
          associationId: String? = nil,
          state: DeviceState = DeviceState(),
          profile: DeviceProfile? = nil,
-         deviceActionable: DeviceBatchActionRequestable? = nil,
+         deviceActionable: DeviceActionable? = nil,
          profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -131,7 +131,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceActionable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceActionable? = nil,
         profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -204,12 +204,12 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
     // MARK: Signals and Pipes
     
     /**
-     The `DeviceBatchActionRequestable` to which attribute writes are sent. These may
+     The `DeviceActionable` to which attribute writes are sent. These may
      go to Conclave or the API, depending upon how things are configured.
      By default, this is nil, so writes are ignored.
      */
     
-    weak fileprivate(set) public var deviceActionable: DeviceBatchActionRequestable? = nil
+    weak fileprivate(set) public var deviceActionable: DeviceActionable? = nil
     
     // MARK: State Signaling
     
@@ -425,7 +425,7 @@ public class DeviceModel: BaseDeviceModel {
         associationId: String? = nil,
         state: DeviceState = DeviceState(),
         profile: DeviceProfile? = nil,
-        deviceActionable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceActionable? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -451,7 +451,7 @@ public class DeviceModel: BaseDeviceModel {
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceActionable: DeviceBatchActionRequestable? = nil,
+        deviceActionable: DeviceActionable? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -626,7 +626,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
                   associationId: String? = nil,
                   state: DeviceState = DeviceState(),
                   profile: DeviceProfile? = nil,
-                  deviceActionable: DeviceBatchActionRequestable? = nil,
+                  deviceActionable: DeviceActionable? = nil,
                   profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -663,11 +663,11 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
 
 }
 
-// MARK: RecordingDeviceModel - <DeviceBatchActionRequestable>
+// MARK: RecordingDeviceModel - <DeviceActionable>
 
-extension RecordingDeviceModel: DeviceBatchActionRequestable {
+extension RecordingDeviceModel: DeviceActionable {
 
-    /// We masquerade as a DeviceBatchActionRequestable so that we're able to be wired directly
+    /// We masquerade as a DeviceActionable so that we're able to be wired directly
     /// to ProfileControls, which in turn allows us to both record and publish state changes
     /// without going through a service.
     
