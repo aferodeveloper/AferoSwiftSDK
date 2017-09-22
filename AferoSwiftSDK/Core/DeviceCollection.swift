@@ -728,9 +728,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
 
         guard
             let profileId = json["profileId"] as? String,
-            let createdTimestamp = json["createdTimestamp"] as? NSNumber,
             let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
-            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]),
             let attributes = json["attributes"] as? [[String: Any]] else {
                 DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
                 onDone(nil)
@@ -748,19 +746,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         device.updateProfile {
             
-            [weak self, weak device] updateProfileSuccess, maybeError in
+            [weak device] updateProfileSuccess, maybeError in
             
             if updateProfileSuccess {
                 
                 guard let device = device else {
                     DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
-                    return
-                }
-                
-                guard let _ = device.presentation else {
-                    DDLogVerbose(String(format: "No presentation for device: \(device); bailing.", deviceId), tag: tag)
-                    self?.removeDevice(device.deviceId)
-                    onDone(nil)
                     return
                 }
                 
@@ -789,19 +780,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         device.updateProfile {
             
-            [weak self, weak device] updateProfileSuccess, maybeError in
+            [weak device] updateProfileSuccess, maybeError in
             
             if updateProfileSuccess {
                 
                 guard let device = device else {
                     DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", peripheral.id), tag: tag)
-                    return
-                }
-                
-                guard let _ = device.presentation else {
-                    DDLogVerbose(String(format: "No presentation for device: \(device); bailing.", peripheral.id), tag: tag)
-                    self?.removeDevice(device.deviceId)
-                    onDone(nil)
                     return
                 }
                 
