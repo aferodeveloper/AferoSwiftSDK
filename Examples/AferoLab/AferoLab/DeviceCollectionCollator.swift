@@ -172,7 +172,13 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     var deviceCollectionDisposable: Disposable?
     
     func updateCollatedIds() {
-        collatedDeviceIds = deviceCollection?.visibleDevices.sorted(by: self.isOrderedBefore).map { $0.id } ?? []
+        collatedDeviceIds = deviceCollection?
+            .allDevices
+            .filter {
+                $0.isPresentable || $0.isLocalSofthub
+            }
+            .sorted(by: isOrderedBefore)
+            .map { $0.deviceId } ?? []
     }
     
     func deviceCollectionAddedDevice(_ device: DeviceModel) {

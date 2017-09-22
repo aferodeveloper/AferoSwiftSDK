@@ -427,6 +427,13 @@ class AccountViewController: UITableViewController {
             }
             cell.textLabel?.text = device.displayName
             
+            var detailText = device.deviceId
+            if device.isLocalSofthub {
+                detailText = detailText + " (Local Softhub)"
+            }
+            cell.detailTextLabel?.text = detailText
+            
+            
         }
         
         cell.selectionStyle = .none
