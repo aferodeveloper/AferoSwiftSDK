@@ -73,7 +73,7 @@ target 'AferoLab' do
     pod 'LKAlertController', '1.12.1'
     pod 'RSEnvironment', '0.0.3'
     pod 'SVProgressHUD', '1.1.3'
-    pod 'QRCodeReader.swift'
+    pod 'QRCodeReader.swift', '~> 7.5'
     pod 'LKAlertController', '1.12.1'
 
 end

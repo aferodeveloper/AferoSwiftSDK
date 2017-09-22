@@ -89,7 +89,7 @@ DEPENDENCIES:
   - Nimble
   - OHHTTPStubs/Swift
   - PromiseKit (= 4.1.3)
-  - QRCodeReader.swift
+  - QRCodeReader.swift (~> 7.5)
   - Quick
   - ReactiveSwift (~> 1.1)
   - RSEnvironment (= 0.0.3)
