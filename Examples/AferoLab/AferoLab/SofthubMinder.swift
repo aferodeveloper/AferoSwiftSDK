@@ -71,10 +71,9 @@ extension AferoSofthubCompleteReason: CustomDebugStringConvertible {
 extension DeviceModelable {
     
     var isLocalSofthub: Bool {
-        return hardwareIdentifierMatches {
-            $0.contains(UserDefaults.standard.clientIdentifier)
-        }
+        return softhubHardwareInfo?.contains(UserDefaults.standard.clientIdentifier) ?? false
     }
+    
 }
 
 class SofthubMinder: NSObject {

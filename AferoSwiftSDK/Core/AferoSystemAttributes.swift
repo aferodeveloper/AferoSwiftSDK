@@ -14,6 +14,7 @@ import Foundation
 
 public enum AferoSystemAttribute: Int {
     case hachiState = 65013
+    case softhubHardwareInfo = 51101
 }
 
 /// State of the ASR module in an Afero device. From `AferoSystemAttribute.hachiState` (`== 65013`)

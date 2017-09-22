@@ -824,6 +824,10 @@ public extension DeviceModelable {
         return value(for: id)
     }
     
+    public func value(for systemAttribute: AferoSystemAttribute) -> AttributeValue? {
+        return value(for: systemAttribute.rawValue)
+    }
+    
     public func set(value: AttributeValue, forAttributeId attributeId: Int) -> Promise<DeviceBatchAction.Results> {
         return set(value: value, forAttributeId: attributeId, localOnly: false)
     }
@@ -1280,20 +1284,15 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    /// Returns true if the device is an Afero softhub and
-    /// the given `clientId` can be found in its `Hubby Hardware Info`
-    /// attribute (`51101`).
-    
-    func hardwareIdentifierMatches(predicate: (String)->Bool) -> Bool {
-        
+    var softhubHardwareInfo: String? {
         let semanticType = "Hubby Hardware Info"
         
-        guard let value = value(for: semanticType)?.stringValue else {
+        guard let value = value(for: .softhubHardwareInfo)?.stringValue else {
             DDLogVerbose("\(deviceId) has no value for semanticType '\(semanticType)'.", tag: TAG)
-            return false
+            return nil
         }
         
-        return predicate(value)
+        return value
     }
     
 }
