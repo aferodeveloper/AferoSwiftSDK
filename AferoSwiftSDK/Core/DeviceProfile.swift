@@ -298,20 +298,20 @@ public extension DeviceProfile {
 Describes a Kiban device and its attributes.
 */
 
-open class DeviceProfile: CustomDebugStringConvertible, Equatable {
+public class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
-    open var debugDescription: String {
+    public var debugDescription: String {
         return "<DeviceProfile> id: \(String(reflecting: id)) deviceType: \(String(reflecting: deviceType)) primaryOperation: \(String(reflecting: primaryOperationAttribute)) summaryAttribute: \(String(reflecting: gaugeSummaryAttribute)) services: \(services) attributes: \(attributes) presentation: \(String(reflecting: presentation))"
     }
     
-    open var CoderKeyDeviceType: String   { return "deviceType" }
-    open var CoderKeyProfileId: String    { return "profileId" }
-    open var CoderKeyServices: String     { return "services" }
-    open var CoderKeyPresentation: String { return "presentation" }
-    open var CoderKeyPresentationOverrideMap: String { return "presentationOverrideMap" }
-    open var CoderKeyDeviceTypeId: String { return "deviceTypeId" }
+    public var CoderKeyDeviceType: String   { return "deviceType" }
+    public var CoderKeyProfileId: String    { return "profileId" }
+    public var CoderKeyServices: String     { return "services" }
+    public var CoderKeyPresentation: String { return "presentation" }
+    public var CoderKeyPresentationOverrideMap: String { return "presentationOverrideMap" }
+    public var CoderKeyDeviceTypeId: String { return "deviceTypeId" }
     
-    open var JSONDict: AferoJSONCodedType? {
+    public var JSONDict: AferoJSONCodedType? {
         
         var ret: [String: Any] = [
             CoderKeyServices: services.JSONDict,
@@ -408,20 +408,49 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
         }
     }
 
-    fileprivate(set) open var id: String?
-    fileprivate(set) open var deviceType: String?
-    fileprivate(set) open var deviceTypeId: String?
+    fileprivate(set) public var id: String?
+    fileprivate(set) public var deviceType: String?
+    fileprivate(set) public var deviceTypeId: String?
     
-    fileprivate(set) open var gaugeSummaryAttribute: AttributeDescriptor?
-    fileprivate(set) open var services: [Service] = []
+    fileprivate(set) public var gaugeSummaryAttribute: AttributeDescriptor?
+    fileprivate(set) public var services: [Service] = []
 
     // MARK: Attribute Descriptors and Filters
-    fileprivate(set) open var attributes: [Int: AttributeDescriptor] = [:]
+    fileprivate(set) public var attributes: [Int: AttributeDescriptor] = [:]
+    
+    fileprivate var _semanticTypeDescriptorMap: [String: [AttributeDescriptor]]! = [:]
+    
+    var semanticTypeDescriptorMap: [String: [AttributeDescriptor]] {
+        
+        if let ret = _semanticTypeDescriptorMap { return ret }
+        
+        _semanticTypeDescriptorMap = attributes.reduce([:]) {
+            curr, next in
+            var ret: [String: [AttributeDescriptor]] = curr
+            
+            guard let semanticType = next.1.semanticType else { return curr }
+            
+            var arr: [AttributeDescriptor]
+            
+            if let existing = ret[semanticType] {
+                arr = existing
+            } else {
+                arr = []
+            }
+            
+            arr.append(next.1)
+            ret[semanticType] = arr
+            return ret
+        }
+        
+        return _semanticTypeDescriptorMap
+        
+    }
     
     fileprivate var attributeOperationMap: [AttributeDescriptor.Operations : Set<AttributeDescriptor>] = [:]
     
     /// All attributes matching the given operation type
-    open func attributesForOperation(_ operation: AttributeDescriptor.Operations) -> Set<AttributeDescriptor> {
+    public func attributesForOperation(_ operation: AttributeDescriptor.Operations) -> Set<AttributeDescriptor> {
         
         guard let ret = attributeOperationMap[operation] else {
             let attrs = Set(attributes.values.filter {
@@ -435,7 +464,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
     
     /// All readable attributes for this profile
-    open var readableAttributes: Set<AttributeDescriptor> {
+    public var readableAttributes: Set<AttributeDescriptor> {
         return attributesForOperation(.Read)
     }
     
@@ -443,18 +472,18 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
         return Set(self.readableAttributes.map { $0.id })
     }()
     
-    open var hasReadableAttributes: Bool {
+    public var hasReadableAttributes: Bool {
         return readableAttributes.count > 0
     }
     
     /// Whether this profile has at least one readable attribute
-    open var hasPresentableReadableAttributes: Bool {
+    public var hasPresentableReadableAttributes: Bool {
         
         return groupsForOperation(.Read).count > 0
     }
 
     /// All writable attributes for this profile
-    open var writableAttributes: Set<AttributeDescriptor> {
+    public var writableAttributes: Set<AttributeDescriptor> {
         return attributesForOperation(.Write)
     }
     
@@ -462,44 +491,82 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
         return Set(self.writableAttributes.map { $0.id })
     }()
     
-    open var hasWritableAttributes: Bool {
+    public var hasWritableAttributes: Bool {
         return writableAttributes.count > 0
     }
     
     /// Whether this profile has at least one writable attribute
-    open var hasPresentableWritableAttributes: Bool {
+    public var hasPresentableWritableAttributes: Bool {
         return groupsForOperation(.Write).count > 0
     }
     
-    open subscript (attributeId: Int) -> AttributeDescriptor? {
-        get {
-            if attributeId == 0 {
-                return self.primaryOperationAttribute
-            }
-            return self.attributes[attributeId]
-        }
+    @available(*, deprecated, message: "Use descriptor(for:Int) instead.")
+    public subscript (attributeId: Int) -> AttributeDescriptor? {
+        get { return descriptor(for: attributeId) }
     }
     
-    open var primaryOperationAttribute: AttributeDescriptor? {
+    /// Get the `AttributeDescriptor` for the given `attributeId`, if any.
+    /// - parameter attributeId: The attributeId for which to get the descriptor.
+    ///
+    /// > **NOTE**
+    /// >
+    /// > Attribute ID **0** is special; this refers to the `primaryOperationAttribute`,
+    /// > if one exists. So, if the `id` of the `primaryOperationAttribute` is `5`, then
+    /// > `descriptor(for: 0) == descriptor(for: 5)`
+    
+    public func descriptor(for attributeId: Int) -> AttributeDescriptor? {
+        if attributeId == 0 {
+            return self.primaryOperationAttribute
+        }
+        return self.attributes[attributeId]
+    }
+    
+    public var primaryOperationAttribute: AttributeDescriptor? {
         if let id = self.presentation?.primaryOperationId {
             return self.attributes[id]
         }
         return nil
     }
     
-    open subscript (semanticType: String) -> [AttributeDescriptor] {
-        get {
-            return Array(
-                self.attributes.values.filter() {
-                    $0.semanticType?.lowercased() == semanticType.lowercased()
-                }
-            )
-        }
+    @available(*, deprecated, message: "Use descriptors(for:String) instead")
+    public subscript (semanticType: String) -> [AttributeDescriptor] {
+        get { return Array(descriptors(for: semanticType)) }
+    }
+    
+    
+    /// Return the first `AttributeDescriptor` matching the given `semanticType`.
+    /// - parameter semanticType: The `semanticType` for which to search.
+    ///
+    /// > **NOTE**
+    /// >
+    /// > While schema-wise these can be non-unique, as a practical matter they have to be,
+    /// > since this is enforced by APE, and is transformed into a unique `#define`
+    /// > in `device_description.h`, used by firmware developers.
+    
+    public func descriptor(for semanticType: String) -> AttributeDescriptor? {
+        return descriptors(for: semanticType).first
+    }
+    
+    /// Get the `AttributeDescriptor`s matching the given `semanticType`.
+    /// - parameter semanticType: The `semanticType` for which to search.
+    ///
+    /// > **NOTE**
+    /// >
+    /// > While schema-wise these can be non-unique, as a practical matter they have to be,
+    /// > since this is enforced by APE, and is transformed into a unique `#define`
+    /// > in `device_description.h`, used by firmware developers.
+    
+    public func descriptors(for semanticType: String) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
+        return descriptors(matching: { $0.semanticType == semanticType })
+    }
+    
+    public func descriptors(matching predicate: @escaping (AttributeDescriptor)->Bool) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
+        return attributes.values.filter(predicate)
     }
     
     // MARK: Presentation convenience accessors
     
-    open func clearCaches() {
+    func clearCaches() {
         controlsForAttributeIdCache.removeAll()
         groupsForControlIdCache.removeAll()
         groupIndicesForOperationCache.removeAll()
@@ -509,7 +576,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
     fileprivate var groupIndicesForControlIdCache: [Int: [Int]] = [:]
     
-    open func groupIndicesForControl(_ control: Presentation.Control) -> [Int] {
+    public func groupIndicesForControl(_ control: Presentation.Control) -> [Int] {
         
         if let ret = groupIndicesForControlIdCache[control.id] { return ret }
         
@@ -525,7 +592,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
     fileprivate var groupsForControlIdCache: [Int: [Presentation.Group]] = [:]
     
     /// Return a list of controls referencing the given ProfileControl
-    open func groupsForControl(_ control: Presentation.Control) -> [Presentation.Group] {
+    public func groupsForControl(_ control: Presentation.Control) -> [Presentation.Group] {
         
         if let ret = groupsForControlIdCache[control.id] {
             return ret
@@ -540,18 +607,18 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
         return ret
     }
     
-    open func attributeHasControls(_ attributeId: Int) -> Bool {
+    public func attributeHasControls(_ attributeId: Int) -> Bool {
         return controlsForAttribute(attributeId).count > 0
     }
     
     /// Return a list of controls referencing the given AttributeDescriptor.
-    open func controlsForAttribute(_ attribute: AttributeDescriptor) -> [Presentation.Control] {
+    public func controlsForAttribute(_ attribute: AttributeDescriptor) -> [Presentation.Control] {
         return controlsForAttribute(attribute.id)
     }
 
     fileprivate var controlsForAttributeIdCache: [Int: [Presentation.Control]] = [:]
     
-    open func controlsForAttribute(_ attributeId: Int) -> [Presentation.Control] {
+    public func controlsForAttribute(_ attributeId: Int) -> [Presentation.Control] {
         
         if let ret = controlsForAttributeIdCache[attributeId] { return ret }
         
@@ -566,7 +633,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
     fileprivate var groupIndicesForOperationCache: [AttributeDescriptor.Operations: [Int]] = [:]
 
-    open func groupIndicesForOperation(_ operations: AttributeDescriptor.Operations) -> [Int] {
+    public func groupIndicesForOperation(_ operations: AttributeDescriptor.Operations) -> [Int] {
         
         if let ret = groupIndicesForOperationCache[operations] { return ret }
         
@@ -593,7 +660,7 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// Return a list of groups which have controls which reference at least one attribute which
     /// matches the given operation.
     
-    open func groupsForOperation(_ operations: AttributeDescriptor.Operations) -> [Presentation.Group] {
+    public func groupsForOperation(_ operations: AttributeDescriptor.Operations) -> [Presentation.Group] {
         
         if let ret = groupsForOperationCache[operations] { return ret }
 
@@ -614,11 +681,11 @@ open class DeviceProfile: CustomDebugStringConvertible, Equatable {
         return ret
     }
     
-    open var presentationOverrideMap: [String: Presentation] = [:]
+    public var presentationOverrideMap: [String: Presentation] = [:]
     
     fileprivate var presentation: Presentation? = nil
     
-    open func presentation(_ deviceId: String? = nil) -> Presentation? {
+    public func presentation(_ deviceId: String? = nil) -> Presentation? {
         guard let deviceId = deviceId else { return presentation }
         guard let presentationOverride = presentationOverrideMap[deviceId] else { return presentation }
         DDLogDebug("Will use presentationOverrideMap for device \(deviceId): \(presentationOverrideMap)")
