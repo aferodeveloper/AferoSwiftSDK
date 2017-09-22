@@ -23,6 +23,27 @@ extension UserDefaults {
             set(newValue, forKey: "enableSofthub")
         }
     }
+    
+    var clientIdentifier: String! {
+        
+        get {
+            
+            if let ret = string(forKey: "clientIdentifier") {
+                return ret
+            }
+            
+            let ret = NSUUID().uuidString
+            set(ret, forKey: "clientIdentifier")
+            synchronize()
+            return ret
+        }
+        
+        set {
+            set(newValue, forKey: "clientIdentifier")
+        }
+        
+    }
+    
 }
 
 extension AferoSofthubCompleteReason: CustomDebugStringConvertible {
@@ -43,6 +64,15 @@ extension AferoSofthubCompleteReason: CustomDebugStringConvertible {
             
         case .setupFailed:
             return "Setup/association failed (\(rawValue))"
+        }
+    }
+}
+
+extension DeviceModelable {
+    
+    var isLocalSofthub: Bool {
+        return hardwareIdentifierMatches {
+            $0.contains(UserDefaults.standard.clientIdentifier)
         }
     }
 }
@@ -104,10 +134,13 @@ class SofthubMinder: NSObject {
     
     var TAG: String { return "AferoSofthubMinder" }
     
-    func start(withAccountId accountId: String, logLevel: AferoSofthubLogLevel = .info, associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler) throws {
+    func start(
+        withAccountId accountId: String,
+        logLevel: AferoSofthubLogLevel = .info,
+        hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
+        associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler
+        ) throws {
         
-        startAferoSofthub(withAccountId: accountId, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
-
         otaProgressObserver = NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: AferoSofthubOTAInProgressNotification),
             object: nil, queue: .main) {
@@ -123,7 +156,7 @@ class SofthubMinder: NSObject {
         }
 
         backgroundNotificationObserver = NotificationCenter.default.addObserver(
-            forName: NSNotification.Name.UIApplicationDidEnterBackground,
+            forName: .UIApplicationDidEnterBackground,
             object: nil, queue: .main) {
                 [weak self] _ in
                 if self?.shouldStopAferoSofthubInBackground ?? false {
@@ -132,7 +165,9 @@ class SofthubMinder: NSObject {
                 self?.preferencesChangedObserver = nil
         }
         
-        foregroundNotificationObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationWillEnterForeground, object: nil, queue: .main) {
+        foregroundNotificationObserver = NotificationCenter.default.addObserver(
+        forName: .UIApplicationWillEnterForeground,
+        object: nil, queue: .main) {
             
             [weak self] _ in
             
@@ -150,6 +185,13 @@ class SofthubMinder: NSObject {
             }
         }
         
+        startAferoSofthub(
+            withAccountId: accountId,
+            logLevel: logLevel,
+            hardwareIdentifier: hardwareIdentifier,
+            associationNeededHandler: associationNeededHandler
+        )
+
     }
     
     func stop() {
@@ -164,7 +206,12 @@ class SofthubMinder: NSObject {
         return AferoSofthub.state() ∈ [.starting, .started]
     }
     
-    fileprivate func startAferoSofthub(withAccountId accountId: String, logLevel: AferoSofthubLogLevel, associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler) {
+    fileprivate func startAferoSofthub(
+        withAccountId accountId: String,
+        logLevel: AferoSofthubLogLevel,
+        hardwareIdentifier: String? = nil,
+        associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler
+        ) {
         
         if hubbyStarted { return }
         
@@ -176,6 +223,7 @@ class SofthubMinder: NSObject {
         AferoSofthub.start(
             withAccountId: accountId,
             logLevel: logLevel,
+            hardwareIdentifier: hardwareIdentifier,
             associationHandler: associationNeededHandler
         ) {
             cr in
