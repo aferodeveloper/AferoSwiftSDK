@@ -202,6 +202,81 @@ class DeviceModelSpec: QuickSpec {
             }
         }
         
+        describe("When updating the profile") {
+            
+            let profile1 = DeviceProfile(attributes: [
+                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 100,   type: .sInt32,  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 20,    type: .q1516,   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 70,    type: .q3132,   operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 90,    type: .boolean, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 101,   type: .sInt64,  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt64,  operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 202,   type: .sInt8,   operations: [.Read]),
+                
+                ]
+            )
+            
+            let profile2 = DeviceProfile(attributes: [
+                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 100,   type: .sInt32,  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 20,    type: .q1516,   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 70,    type: .q3132,   operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 90,    type: .boolean, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 101,   type: .sInt64,  operations: [.Read]),
+                DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt64,  operations: [.Read, .Write]),
+                ]
+            )
+
+
+            var deviceModel: DeviceModelable!
+            var disposable: Disposable!
+            
+            beforeEach {
+                deviceModel = BaseDeviceModel(
+                    deviceId: "foo",
+                    accountId: "moo",
+                    profile: profile1
+                )
+            }
+            
+            afterEach { disposable?.dispose() }
+
+            it("Should emit a profile update if the profile changes") {
+                expect(profile1) != profile2
+                
+                var gotEvent: Bool = false
+                
+                disposable = deviceModel.eventSignal.observeValues {
+                    event in switch event {
+                    case .profileUpdate: gotEvent = true
+                    default: break
+                    }
+                }
+                
+                (deviceModel as! BaseDeviceModel).profile = profile2
+                expect(gotEvent).toEventually(beTrue(), timeout: 2.0, pollInterval: 0.25)
+            }
+            
+            it("Should not emit a profile update if the profile does not change.") {
+
+                expect(profile1) == profile1
+                
+                var gotEvent: Bool = false
+                
+                disposable = deviceModel.eventSignal.observeValues {
+                    event in switch event {
+                    case .profileUpdate: gotEvent = true
+                    default: break
+                    }
+                }
+                
+                (deviceModel as! BaseDeviceModel).profile = profile1
+                expect(gotEvent).toNotEventually(beTrue(), timeout: 2.0, pollInterval: 0.25)
+
+            }
+        }
+        
         describe("When interrogating attributes") {
             
             let profile = DeviceProfile(attributes: [
