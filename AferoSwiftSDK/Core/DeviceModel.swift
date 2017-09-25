@@ -176,7 +176,10 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
     
     /// The profile associated with this device.
     public var profile: DeviceProfile? {
-        didSet { eventSink.send(value: .profileUpdate) }
+        didSet {
+            if oldValue == profile { return }
+            eventSink.send(value: .profileUpdate)
+        }
     }
     
     // MARK: State
