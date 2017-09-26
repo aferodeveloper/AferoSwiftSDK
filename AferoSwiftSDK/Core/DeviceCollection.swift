@@ -410,7 +410,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         _ = apiClient.fetchDevices(for: accountId).then {
             devicesJson -> Void in
-            self.createDevices(with: devicesJson)
+            self.createOrUpdateDevices(with: devicesJson)
             self.state = .loaded
             }.then {
                 self.eventStream.start(trace) {
@@ -600,18 +600,18 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         let deviceIdsToKeep = Set(peripherals.map { $0.id })
         let deviceIdsToRemove = currentDeviceIds.subtracting(deviceIdsToKeep)
-        let deviceIdsToAdd = deviceIdsToKeep.subtracting(currentDeviceIds)
-        let deviceIdsToUpdate = deviceIdsToKeep.subtracting(deviceIdsToAdd)
-        
-        deviceIdsToRemove.forEach { removeDevice($0) }
 
-        let peripheralsToAdd = peripherals.filter { deviceIdsToAdd.contains($0.id) }
-        peripheralsToAdd.forEach { createDevice(with: $0, seq: seq) }
-        
-        let peripheralsToUpdate = peripherals.filter { deviceIdsToUpdate.contains($0.id) }
-        peripheralsToUpdate.forEach {
-            updateDevice(with: $0) {
-                device in DDLogDebug("Updated \(device?.deviceId ?? "<nil>"))")
+        deviceIdsToRemove.forEach {
+            [weak self] deviceId in asyncMain {
+                self?.removeDevice(deviceId)
+            }
+        }
+
+        let peripheralsToKeep = peripherals.filter { deviceIdsToKeep.contains($0.id) }
+        peripheralsToKeep.forEach {
+            [weak self] peripheral in
+            asyncMain {
+                self?.createOrUpdateDevice(with: peripheral, seq: seq)
             }
         }
         
@@ -635,34 +635,46 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    fileprivate func createDevice(with deviceId: String, profileId: String) {
+    /// If necessary, create a device with the given deviceId and profileId.
+    ///
+    /// - parameter deviceId: The `id` of the device.
+    /// - parameter profileId: The `id` of the device's profile.
+    /// - returns: `true` if the device was created, `false` if not (device already existed)
+    
+    fileprivate func createDevice(with deviceId: String, profileId: String) -> Bool {
         
-        var device = _devices[deviceId]
-        
-        if device == nil {
-            device = DeviceModel(
-                deviceId: deviceId,
-                accountId: accountId,
-                associationId: nil,
-                profileId: profileId,
-                attributes: [:],
-                deviceActionable: self,
-                profileSource: profileSource,
-                viewingNotificationConsumer: {
-                    [weak self] isViewing, deviceId in
-                    self?.notifyIsViewing(isViewing, deviceId: deviceId)
-            })
-            device?.shouldAttemptAutomaticUTCMigration = true
-            registerDevice(device!, onDone: nil)
+        if let _ = _devices[deviceId] {
+            return false
         }
         
+        let ret = DeviceModel(
+            deviceId: deviceId,
+            accountId: accountId,
+            associationId: nil,
+            profileId: profileId,
+            attributes: [:],
+            deviceActionable: self,
+            profileSource: profileSource,
+            viewingNotificationConsumer: {
+                [weak self] isViewing, deviceId in
+                self?.notifyIsViewing(isViewing, deviceId: deviceId)
+        })
+        
+        ret.shouldAttemptAutomaticUTCMigration = true
+        registerDevice(ret, onDone: nil)
+        return true
     }
     
-    fileprivate func createDevices(with json: [[String: Any]]) {
-        json.forEach { self.createDevice(with: $0) }
+    fileprivate func createOrUpdateDevices(with json: [[String: Any]]) {
+        json.forEach {
+            elem in
+            asyncMain {
+                self.createOrUpdateDevice(with: elem)
+            }
+        }
     }
     
-    fileprivate func createDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
+    fileprivate func createOrUpdateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
         
         guard
             let deviceId = json["deviceId"] as? String,
@@ -677,7 +689,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             profileSource.add(profile: profile)
         }
         
-        createDevice(with: deviceId, profileId: profileId)
+        let created = createDevice(with: deviceId, profileId: profileId)
         
         updateDevice(with: json) {
             [weak self] maybeDevice in
@@ -685,9 +697,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 onDone(nil)
                 return
             }
+            onDone(device)
+            guard created else { return }
+            
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
-            onDone(device)
         }
         
     }
@@ -698,17 +712,18 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter seq: The sequence number of the event stream message, if any.
     /// - note: sequence numbers are currently ignored.
     
-    fileprivate func createDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil) {
+    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil) {
         
         let deviceId = peripheral.id
         
-        createDevice(with: deviceId, profileId: peripheral.profileId)
+        let created = createDevice(with: deviceId, profileId: peripheral.profileId)
         
         updateDevice(with: peripheral) {
             [weak self] maybeDevice in
             guard let device = maybeDevice else {
                 return
             }
+            guard created else { return }
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
         }
@@ -1199,7 +1214,7 @@ public extension DeviceCollection {
                 
                 deviceJson in
                 
-                self.createDevice(with: deviceJson) {
+                self.createOrUpdateDevice(with: deviceJson) {
                     
                     deviceModel in
                     guard let deviceModel = deviceModel else {
