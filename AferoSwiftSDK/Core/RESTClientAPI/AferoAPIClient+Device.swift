@@ -86,9 +86,13 @@ public extension AferoAPIClientProto {
     ///                                         is allowed, this tells the API that the
     ///                                         user has verified that ownership should transfer.
     ///
+    ///  - parameter expansions: Expansions to include in the call. Defaults to `"state", "tags", "attributes", "extendedData", "profile", "timezone"`
+    ///
     ///  - returns: A `Promise<[String: Any]>`
     
-    public func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false) -> Promise<[String: Any]> {
+    public func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false, expansions: Set<String> = [
+        "state", "tags", "attributes", "extendedData", "profile", "timezone",
+        ]) -> Promise<[String: Any]> {
         
         var deviceData : [String: Any] = [
             "associationId": associationId,
@@ -109,7 +113,7 @@ public extension AferoAPIClientProto {
             additionalParams["verified"] = "true"
         }
         
-        return POST("/v1/accounts/\(accountId)/devices", parameters: deviceData, expansions: ["state", "profile"], additionalParams: additionalParams)
+        return POST("/v1/accounts/\(accountId)/devices", parameters: deviceData, expansions: Array(expansions), additionalParams: additionalParams)
     }
     
     /// Device Info With Extended Data
