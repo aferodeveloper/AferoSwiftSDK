@@ -11,7 +11,6 @@ import Quick
 import Nimble
 import Afero
 import CocoaLumberjack
-import AferoSwiftLogging
 
 class ConclaveConnectionInfoSpec: QuickSpec {
 

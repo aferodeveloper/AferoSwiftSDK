@@ -13,7 +13,6 @@ import Nimble
 import Afero
 import ReactiveSwift
 import CocoaLumberjack
-import AferoSwiftLogging
 
 ///  A bound pair of NSStreams; data written to `output` will be transferred to `input`.
 typealias Pipe = (input: InputStream, output: OutputStream)
