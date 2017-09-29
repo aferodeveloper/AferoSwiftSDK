@@ -959,29 +959,6 @@ public extension DeviceModelable {
 }
 
 public extension DeviceModelable {
-        
-    /// Remove the attribute associated with `attributeId` from the device's state,
-    /// and fulfill with the removed value, if any.
-    /// - parameter attributeId: The `id` of the attribute to remove.
-    /// - returns: A `Promise<AttributeValue?>` which resolves to the removed value,
-    ///            or `nil` if not present.
-    /// - note: While the returned promise never rejects, it's possible that future implementations will.
-    
-    @discardableResult
-    public func removeAttribute(for attributeId: Int) -> Promise<AttributeValue?> {
-        return Promise {
-            fulfill, _ in
-            guard let ret = value(for: attributeId) else {
-                fulfill(nil)
-                return
-            }
-            currentState[safe: attributeId] = nil
-            fulfill(ret)
-        }
-    }
-}
-
-public extension DeviceModelable {
     
     public static var CoderKeyId: String { return "id" }
     public static var CoderKeyData: String { return "data" }
