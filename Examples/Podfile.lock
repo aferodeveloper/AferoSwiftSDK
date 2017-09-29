@@ -1,10 +1,10 @@
 PODS:
   - AferoSofthub (1.0.2)
-  - AferoSwiftSDK/AFNetworking (0.8.1):
+  - AferoSwiftSDK/AFNetworking (0.8.2):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (0.8.1):
+  - AferoSwiftSDK/Core (0.8.2):
     - AferoSofthub (~> 1.0)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
@@ -34,7 +34,7 @@ PODS:
   - CocoaLumberjack/Swift (3.2.1):
     - CocoaLumberjack/Default
   - CocoaZ (1.4.2)
-  - CryptoSwift (0.7.2)
+  - CryptoSwift (0.7.0)
   - HTTPStatusCodes (3.1.2)
   - LKAlertController (1.12.1)
   - Nimble (7.0.2)
@@ -64,7 +64,7 @@ DEPENDENCIES:
   - AferoSofthub
   - AferoSwiftSDK/AFNetworking (from `..`)
   - CocoaLumberjack/Swift (~> 3.2)
-  - CryptoSwift (= 0.7.2)
+  - CryptoSwift (= 0.7.0)
   - HTTPStatusCodes (~> 3.1)
   - LKAlertController (= 1.12.1)
   - Nimble
@@ -82,12 +82,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AferoSofthub: 32247ee82a366f59100a965b88fa264fd433bfaa
-  AferoSwiftSDK: ba3b27cedb43eee57756bd2e8b9fed3413bad065
+  AferoSwiftSDK: adb241a6837eebed2c2eaea44614fdf7284f5598
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: cd2158be2bf639aabc63ec804707c7137c90157c
+  CryptoSwift: e197577cc40d551110480a64c73f31dbff1d8e74
   HTTPStatusCodes: 88155ba36826366a898a7b4f34d311f49083d546
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
   Nimble: bfe1f814edabba69ff145cb1283e04ed636a67f2
