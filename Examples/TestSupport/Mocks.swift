@@ -30,7 +30,7 @@ class MockDeviceBatchActionRequestable: DeviceActionable {
             return Promise { _, reject in reject(error) }
         }
         
-        return Promise { fulfill, _ in fulfill() }
+        return Promise { fulfill, _ in fulfill(()) }
     }
     
     var setTimezoneWasInvoked: Bool = false

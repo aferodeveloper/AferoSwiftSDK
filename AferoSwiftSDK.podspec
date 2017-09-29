@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
         ss.dependency 'CryptoSwift'
         ss.dependency 'CocoaZ', '~> 1.4'
         ss.dependency 'ReactiveSwift', '~> 1.1'
-        ss.dependency 'PromiseKit', '~> 4.1'
+        ss.dependency 'PromiseKit/CorePromise', '~> 4'
         ss.dependency 'HTTPStatusCodes', '~> 3.1'
         ss.dependency 'RSEnvironment', '0.0.3'
     end
@@ -35,7 +35,6 @@ Pod::Spec.new do |s|
         ss.dependency 'AferoSwiftSDK/Core'
         ss.dependency 'AFNetworking', '~> 3.1'
         ss.dependency 'AFOAuth2Manager', '~> 3.0'
-        ss.dependency 'PromiseKit', '~> 4.1'
         ss.source_files = 'AferoSwiftSDK/AFNetworking/**/*'
     end
 

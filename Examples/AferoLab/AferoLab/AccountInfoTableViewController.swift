@@ -519,7 +519,7 @@ class AccountViewController: UITableViewController {
     
     lazy var readerVC: QRCodeReaderViewController = {
         let builder = QRCodeReaderViewControllerBuilder {
-            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObject.ObjectType.qr.rawValue], captureDevicePosition: .back)
+            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObject.ObjectType(rawValue: AVMetadataObject.ObjectType.qr.rawValue)], captureDevicePosition: .back)
         }
         
         return QRCodeReaderViewController(builder: builder)

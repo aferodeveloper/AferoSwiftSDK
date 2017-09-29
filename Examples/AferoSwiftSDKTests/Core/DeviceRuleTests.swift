@@ -57,7 +57,7 @@ class DeviceRuleDecodeSpec: QuickSpec {
         
         describe("When decoding JSON") {
             
-            let json = try? self.readJson("ruleTest1")! as! [AnyObject]
+            let json: [[String: Any]] = (try! self.fixture(named: "ruleTest1"))!
             let maybeRules: [DeviceRule]? = |<json
 
             if let rules = maybeRules {

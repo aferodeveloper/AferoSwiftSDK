@@ -1,0 +1,10 @@
+CLANG_ENABLE_MODULES = YES
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+DEVELOPMENT_TEAM = 534JTUC87X
+FRAMEWORK_SEARCH_PATHS = ["$(SDKROOT)/Developer/Library/Frameworks", "$(inherited)"]
+GCC_NO_COMMON_BLOCKS = YES
+INFOPLIST_FILE = AferoSwiftSDKTests/Info.plist
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+OTHER_SWIFT_FLAGS = $(inherited) -DINTERNAL -DTEST
+PRODUCT_BUNDLE_IDENTIFIER = io.kiban.$(PRODUCT_NAME:rfc1034identifier)
+PRODUCT_NAME = $(TARGET_NAME)
