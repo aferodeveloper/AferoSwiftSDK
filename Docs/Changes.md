@@ -7,6 +7,35 @@ author: Justin Middleton <jrmiddle@afero.io>
 
 ## Milestone 3 / SDK v0.8
 
+### XCode 9 / Swift 4 support
+
+As of **SDK 0.8.2**, AferoSwiftSDK pod can be linked to Swift 3.2 and Swift 4.0 projects.
+The `Afero` module itself is still Swift 3.2, however, so in Xcode 9 projects,
+it's required that a `post_install` hook be configured `Podfile` to indicate
+direct Xcode to use the correct Swift version.
+
+To see this in action, the `AferoLab` and `AferoSwiftSDK` targets in the example project
+have been ported to Swift 4.0, and a `post_install` hook has been added to the Podfile:
+
+```ruby
+# Credit to GitHub member "cocojoe", in a comment on this thread:
+# https://github.com/auth0/Lock.swift/issues/470
+
+post_install do |installer|
+
+  # List of Pods to use as Swift 3.2
+  myTargets = ['AferoSwiftSDK', 'ReactiveSwift']
+
+  installer.pods_project.targets.each do |target|
+    if myTargets.include? target.name
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '3.2'
+      end
+    end
+  end
+end
+```
+
 ### API Changes
 
 #### Overview
