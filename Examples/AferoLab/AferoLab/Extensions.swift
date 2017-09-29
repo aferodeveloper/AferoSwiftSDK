@@ -49,7 +49,7 @@ extension String {
         guard let range = range(of: prefix), range.lowerBound == startIndex else {
             return nil
         }
-        return (prefix: prefix, remainder: self[range.upperBound..<endIndex])
+        return (prefix: prefix, remainder: String(self[range.upperBound..<endIndex]))
     }
     
     // MARK: Numeric conversions
@@ -287,7 +287,7 @@ public extension Data {
         
         while(startIndex < localHexEncoded.endIndex) {
             let endIndex = localHexEncoded.index(startIndex, offsetBy: 2)
-            let byteString = localHexEncoded.substring(with: startIndex..<endIndex)
+            let byteString = String(localHexEncoded[startIndex..<endIndex])
             let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
             byteArray.append(num)
             startIndex = endIndex

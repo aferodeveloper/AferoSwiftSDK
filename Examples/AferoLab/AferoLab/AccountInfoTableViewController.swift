@@ -148,7 +148,7 @@ class AccountViewController: UITableViewController {
             title = accountAccess?.accountDescription
             networkStatus = .connecting
             
-            if let accountId = accountId, let userId = userId {
+            if let accountId = accountId {
                 authConclave(accountId: accountId)
             }
             
@@ -180,7 +180,7 @@ class AccountViewController: UITableViewController {
                 conclaveAuthable: self,
                 accountId: accountId,
                 userId: userId,
-                mobileDeviceId: conclaveMobileDeviceId
+                mobileDeviceId: UserDefaults.standard.clientIdentifier
             )
             
             model = DeviceCollectionDeviceCollator(deviceCollection: deviceCollection)
@@ -440,7 +440,7 @@ class AccountViewController: UITableViewController {
         
     }
     
-    func softhubSwitchValueChanged(_ sender: Any) {
+    @objc func softhubSwitchValueChanged(_ sender: Any) {
         softhubEnabled = (sender as? UISwitch)?.isOn ?? false
     }
     
@@ -519,7 +519,7 @@ class AccountViewController: UITableViewController {
     
     lazy var readerVC: QRCodeReaderViewController = {
         let builder = QRCodeReaderViewControllerBuilder {
-            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObjectTypeQRCode], captureDevicePosition: .back)
+            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObject.ObjectType.qr.rawValue], captureDevicePosition: .back)
         }
         
         return QRCodeReaderViewController(builder: builder)
@@ -648,9 +648,7 @@ extension AccountViewController: QRCodeReaderViewControllerDelegate {
     }
     
     func reader(_ reader: QRCodeReaderViewController, didSwitchCamera newCaptureDevice: AVCaptureDeviceInput) {
-        if let cameraName = newCaptureDevice.device.localizedName {
-            DDLogDebug("Switching capturing to: \(cameraName)", tag: TAG)
-        }
+        DDLogDebug("Switching capturing to: \(newCaptureDevice.device.localizedName)", tag: TAG)
     }
     
     func readerDidCancel(_ reader: QRCodeReaderViewController) {
@@ -664,7 +662,9 @@ extension AccountViewController: QRCodeReaderViewControllerDelegate {
 
 extension AccountViewController: ConclaveAuthable {
     
-    var conclaveMobileDeviceId: String { return UserDefaults.standard.conclaveMobileDeviceId }
+//    var conclaveMobileDeviceId: String {
+//        return UserDefaults.standard.clientIdentifier
+//    }
     
     var conclaveClientVersion: String { return "AferoLabIOS/1.0" }
     
@@ -699,22 +699,29 @@ extension AccountViewController: ConclaveAuthable {
 extension UserDefaults {
     
 
-    var conclaveMobileDeviceId: String {
-        get {
-            guard let ret = string(forKey: "conclaveMobileDeviceId") else {
-                let ret = NSUUID().uuidString
-                self.conclaveMobileDeviceId = ret
-                return ret
-            }
-            return ret
-        }
-
-        set { set(newValue, forKey: "conclaveMobileDeviceId") }
-    }
-
     var userId: String? {
         get { return string(forKey: "userId") }
         set { set(newValue, forKey: "userId") }
+    }
+    
+    var clientIdentifier: String! {
+        
+        get {
+            
+            if let ret = string(forKey: "clientIdentifier") {
+                return ret
+            }
+            
+            let ret = NSUUID().uuidString
+            set(ret, forKey: "clientIdentifier")
+            synchronize()
+            return ret
+        }
+        
+        set {
+            set(newValue, forKey: "clientIdentifier")
+        }
+        
     }
 
 }

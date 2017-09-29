@@ -15,7 +15,7 @@ class AccountInfoZeroStateView: UIView {
     
     func hideImage(animated: Bool = true, delay: TimeInterval = 0.0) -> Promise<Void> {
         
-        if imageView.isHidden { return Promise { fulfill, _ in fulfill() } }
+        if imageView.isHidden { return Promise { fulfill, _ in fulfill(()) } }
         
         return Promise {
 
@@ -29,7 +29,7 @@ class AccountInfoZeroStateView: UIView {
             let completion: (Bool)->Void = {
                 _ in
                 self.imageView.isHidden = true
-                fulfill()
+                fulfill(())
             }
             
             
@@ -45,7 +45,7 @@ class AccountInfoZeroStateView: UIView {
     
     func showImage(animated: Bool = true, delay: TimeInterval = 0.0) -> Promise<Void> {
         
-        if !imageView.isHidden { return Promise { fulfill, _ in fulfill() } }
+        if !imageView.isHidden { return Promise { fulfill, _ in fulfill(()) } }
         
         return Promise {
             fulfill, _ in
@@ -58,7 +58,7 @@ class AccountInfoZeroStateView: UIView {
             let completion: (Bool)->Void = {
                 _ in
                 self.imageView.isHidden = false
-                fulfill()
+                fulfill(())
             }
 
             if animated {
