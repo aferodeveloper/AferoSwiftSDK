@@ -24,25 +24,6 @@ extension UserDefaults {
         }
     }
     
-    var clientIdentifier: String! {
-        
-        get {
-            
-            if let ret = string(forKey: "clientIdentifier") {
-                return ret
-            }
-            
-            let ret = NSUUID().uuidString
-            set(ret, forKey: "clientIdentifier")
-            synchronize()
-            return ret
-        }
-        
-        set {
-            set(newValue, forKey: "clientIdentifier")
-        }
-        
-    }
     
 }
 
