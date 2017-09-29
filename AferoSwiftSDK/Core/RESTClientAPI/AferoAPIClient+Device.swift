@@ -121,7 +121,7 @@ public extension AferoAPIClientProto {
     /// - parameter accountId: The accountId to which the device belongs.
     /// - parameter deviceId: The UUID of the device.
     
-    @available(*, deprecated, message: "Use removeDevice(with deviceId: String, in accountId: String) instead)")
+    @available(*, deprecated, message: "Use getExtendedDeviceInfo(for deviceId: String, in accountId: String) instead)")
     public func getExtendedDeviceInfo(_ accountId: String, deviceId: String) -> Promise<Any> {
         return getExtendedDeviceInfo(for: deviceId, in: accountId)
     }
