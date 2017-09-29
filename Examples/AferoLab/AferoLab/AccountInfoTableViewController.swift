@@ -440,7 +440,7 @@ class AccountViewController: UITableViewController {
         
     }
     
-    func softhubSwitchValueChanged(_ sender: Any) {
+    @objc func softhubSwitchValueChanged(_ sender: Any) {
         softhubEnabled = (sender as? UISwitch)?.isOn ?? false
     }
     
@@ -519,7 +519,7 @@ class AccountViewController: UITableViewController {
     
     lazy var readerVC: QRCodeReaderViewController = {
         let builder = QRCodeReaderViewControllerBuilder {
-            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObjectTypeQRCode], captureDevicePosition: .back)
+            $0.reader = QRCodeReader(metadataObjectTypes: [AVMetadataObject.ObjectType.qr.rawValue], captureDevicePosition: .back)
         }
         
         return QRCodeReaderViewController(builder: builder)
@@ -648,9 +648,7 @@ extension AccountViewController: QRCodeReaderViewControllerDelegate {
     }
     
     func reader(_ reader: QRCodeReaderViewController, didSwitchCamera newCaptureDevice: AVCaptureDeviceInput) {
-        if let cameraName = newCaptureDevice.device.localizedName {
-            DDLogDebug("Switching capturing to: \(cameraName)", tag: TAG)
-        }
+        DDLogDebug("Switching capturing to: \(newCaptureDevice.device.localizedName)", tag: TAG)
     }
     
     func readerDidCancel(_ reader: QRCodeReaderViewController) {
