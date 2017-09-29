@@ -22,7 +22,7 @@ def base_pods
         pod 'CryptoSwift', '0.7.0'
     end
 
-    pod 'CocoaLumberjack/Swift', '3.2.1'
+    pod 'CocoaLumberjack/Swift', '~> 3.2'
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'PromiseKit', '4.1.3'
@@ -57,7 +57,7 @@ target 'AferoLab' do
 
     project 'AferoLab/AferoLab.xcodeproj'
     
-    pod 'CocoaLumberjack/Swift', '3.2.1'
+    pod 'CocoaLumberjack/Swift', '~> 3.2'
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'AferoSwiftSDK/AFNetworking', :path => ".."
 
