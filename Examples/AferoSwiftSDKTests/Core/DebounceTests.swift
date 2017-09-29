@@ -47,7 +47,7 @@ class DebounceSpec: QuickSpec {
                 expect(startTime).toNot(beNil());
                 expect(triggerTime).toNot(beNil());
                 
-                let actualDelay = Double(UInt64(triggerTime!) - UInt64(startTime!))
+                let actualDelay = Double(UInt64(truncating: triggerTime!) - UInt64(truncating: startTime!))
                 expect(actualDelay).to(beCloseTo(209, within: 10)) // Accept delay 0 ~ 20 milliseconds, These are arbitrary numbers, should be 200
             }
             
@@ -110,7 +110,7 @@ class DebounceSpec: QuickSpec {
                 expect(startTime).toNot(beNil());
                 expect(triggerTime).toNot(beNil());
                 
-                let actualDelay = Double(UInt64(triggerTime!) - UInt64(startTime!))
+                let actualDelay = Double(UInt64(truncating: triggerTime!) - UInt64(truncating: startTime!))
                 expect(actualDelay).to(beCloseTo(9, within: 10)) // Accept delay 0 ~ 20 milliseconds, These are arbitrary numbers, should be 0
             }
             

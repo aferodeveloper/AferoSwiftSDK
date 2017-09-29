@@ -135,9 +135,9 @@ func ==(lhs: AttributeMap, rhs: AttributeMap) -> Bool {
 
 extension NSError {
 
-    convenience init(domain: String, code: Int, userInfo: [AnyHashable: Any]? = nil, httpStatusCode: Int?, failingURL: String?, httpURLResponse: HTTPURLResponse?, httpResponseBody: Data?) {
+    convenience init(domain: String, code: Int, userInfo: [String: Any]? = nil, httpStatusCode: Int?, failingURL: String?, httpURLResponse: HTTPURLResponse?, httpResponseBody: Data?) {
         
-        var localUserInfo: [AnyHashable: Any] = [:]
+        var localUserInfo: [String: Any] = [:]
         
         if let httpStatusCode = httpStatusCode {
             localUserInfo["statusCode"] = httpStatusCode

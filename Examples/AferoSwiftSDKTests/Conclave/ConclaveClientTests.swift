@@ -736,7 +736,7 @@ class ConclaveClientSpec: QuickSpec {
                     
                     let heartbeatInterval: TimeInterval? = 2.0
                     let localizedDescription = "Conclave client timed out after \(String(describing: heartbeatInterval)) seconds (with \(client.heartbeatSlack)s slack)"
-                    let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: localizedDescription]
+                    let userInfo: [String: Any] = [NSLocalizedDescriptionKey: localizedDescription]
                     let expectedError = NSError(domain: ConclaveClient.ConclaveClientErrorDomain, code: ConclaveClient.Error.timeoutFatal.rawValue, userInfo: userInfo)
 
                     

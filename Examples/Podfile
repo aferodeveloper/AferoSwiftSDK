@@ -25,7 +25,7 @@ def base_pods
     pod 'CocoaLumberjack/Swift', '~> 3.2'
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
-    pod 'PromiseKit', '4.1.3'
+    pod 'PromiseKit/CorePromise', '~> 4.3'
     pod 'HTTPStatusCodes', '~> 3.1'
     pod 'AferoSofthub', :inhibit_warnings => true
     #pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
@@ -65,11 +65,11 @@ target 'AferoLab' do
     #pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
 
     pod 'HTTPStatusCodes', '~> 3.1'
-    pod 'PromiseKit', '4.1.3'
+    pod 'PromiseKit/CorePromise', '~> 4.3'
     pod 'LKAlertController', '1.12.1'
     pod 'RSEnvironment', '0.0.3'
     pod 'SVProgressHUD', '1.1.3'
-    pod 'QRCodeReader.swift', '~> 7.5'
+    pod 'QRCodeReader.swift', '~> 8.0'
     pod 'LKAlertController', '1.12.1'
 
 end
@@ -84,3 +84,16 @@ target 'AferoLabUITests' do
   inherit! :search_paths
 end
 
+post_install do |installer|
+
+  # List of Pods to use as Swift 3.2
+  myTargets = ['AferoSwiftSDK', 'ReactiveSwift']
+
+  installer.pods_project.targets.each do |target|
+    if myTargets.include? target.name
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '3.2'
+      end
+    end
+  end
+end
