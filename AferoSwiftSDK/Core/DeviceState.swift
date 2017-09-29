@@ -894,7 +894,7 @@ public extension DeviceModelable {
         }
 
     }
-
+    
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
         return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
@@ -928,7 +928,7 @@ public extension DeviceModelable {
         return AttributeValue(stringLiteral: defaultString)
     }
     
-    @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, for: Int) instead.")
+    @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
     public subscript(attributeId id: Int) -> AttributeValue? {
         
         get {
