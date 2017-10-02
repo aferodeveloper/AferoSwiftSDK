@@ -57,16 +57,69 @@ extension AferoSofthubWifiState: CustomStringConvertible, CustomDebugStringConve
     
 }
 
-public enum WifiSetupError: Int, Error, CustomStringConvertible, CustomDebugStringConvertible {
+/// Errors related to wifi setup.
+///
+/// ## Errors originating from the Softhub
+///
+/// Each of the errors below map to errors forwarded to the
+/// setup manager from the `AferoSofthub`, and their `rawValues` are the relevant
+/// integer values of those enumeration cases.
+///
+/// For a full list of the values whence these come, see `AferoSofthubSetupWifiCommandState`
+/// in `AferoSofthub.h`, in the `AferoSofthub` module.
+///
+/// * `.hubbyCommandTimedOutNotAvailable (0x05)`: The setup process has timed out because
+///    the remote hasn't shown up within BLE range of this hub
+///    (`AferoSofthubSetupWifiCommandStateTimedOutNotAvailable`).
+///
+/// * `.hubbyCommandTimedOutConnect (0x06)`: The setup process has timed out because we
+///   couldn't connect to the remote (`AferoSofthubSetupWifiCommandStateTimedOutConnect`).
+///
+/// * `.hubbyCommandTimedOutCommunicating (0x07)`: The setup process has timed out because
+///   we couldn't finish our communication with the remote
+///   (`AferoSofthubSetupWifiCommandStateTimedOutCommunicating`).
+///
+/// * `.hubbyCommandTimedOut (0x08)`: The setup process has timed out for some other reason
+///   (`AferoSofthubSetupWifiCommandStateTimedOut`).
+///
+/// * `.hubbyCommandFailed (0x09)`: The setup process has failed for an unknown reason
+///   (`AferoSofthubSetupWifiCommandStateFailed`)
+///
+/// ## WifiSetupManager internal errors
+///
+/// * `invalidManagerState (0xF0 / 240)`: The manager was not in a valid state to
+///   perform an operation. This likely indicates a programming error
+///   in the caller.
+
+public enum WifiSetupError: Int, LocalizedError, CustomStringConvertible, CustomDebugStringConvertible {
     
     static var Domain: String { return "WifiSetupError" }
     
+    /// The setup process has timed out because
+    /// the remote hasn't shown up within BLE range of this hub
+    /// (`AferoSofthubSetupWifiCommandStateTimedOutNotAvailable`).
     case hubbyCommandTimedOutNotAvailable = 0x5
+    
+    /// The setup process has timed out because we
+    ///  couldn't connect to the remote (`AferoSofthubSetupWifiCommandStateTimedOutConnect`).
     case hubbyCommandTimedOutConnect = 0x6
+    
+    /// The setup process has timed out because
+    /// we couldn't finish our communication with the remote
+    /// (`AferoSofthubSetupWifiCommandStateTimedOutCommunicating`).
     case hubbyCommandTimedOutCommunicating = 0x7
+    
+    /// The setup process has timed out for some other reason
+    /// (`AferoSofthubSetupWifiCommandStateTimedOut`).
     case hubbyCommandTimedOut = 0x8
+    
+    /// The setup process has failed for an unknown reason
+    /// (`AferoSofthubSetupWifiCommandStateFailed`)
     case hubbyCommandFailed = 0x9
     
+    /// The manager was not in a valid state to
+    /// perform an operation. This likely indicates a programming error
+    /// in the caller.
     case invalidManagerState = 0xF0
     
     public var description: String {
@@ -84,22 +137,22 @@ public enum WifiSetupError: Int, Error, CustomStringConvertible, CustomDebugStri
         switch self {
             
         case .hubbyCommandFailed:
-            return NSLocalizedString("Command unsuccessful.", comment: "WifiSetupError.hubbyCommandFailed description")
+            return String(format: NSLocalizedString("Command unsuccessful (%d).", comment: "WifiSetupError.hubbyCommandFailed description"), rawValue)
             
         case .hubbyCommandTimedOut:
-            return NSLocalizedString("Command timed out.", comment: "WifiSetupError.hubbyCommandTimedOut description")
+            return String(format: NSLocalizedString("Command timed out (%d).", comment: "WifiSetupError.hubbyCommandTimedOut description"), rawValue)
             
         case .hubbyCommandTimedOutNotAvailable:
-            return NSLocalizedString("Timed out waiting for device to become available.", comment: "WifiSetupError.hubbyCommandTimedOut description")
+            return String(format: NSLocalizedString("Timed out waiting for device to become available (%d).", comment: "WifiSetupError.hubbyCommandTimedOut description"), rawValue)
             
         case .hubbyCommandTimedOutCommunicating:
-            return NSLocalizedString("Timed out communicating with device.", comment: "WifiSetupError.hubbyCommandTimedOut description")
+            return String(format: NSLocalizedString("Timed out communicating with device (%d).", comment: "WifiSetupError.hubbyCommandTimedOut description"), rawValue)
             
         case .hubbyCommandTimedOutConnect:
-            return NSLocalizedString("Timed out attempting to connect to device.", comment: "WifiSetupError.hubbyCommandTimedOut description")
+            return String(format: NSLocalizedString("Timed out attempting to connect to device (%d).", comment: "WifiSetupError.hubbyCommandTimedOut description"), rawValue)
             
         case .invalidManagerState:
-            return NSLocalizedString("Manager in invalid state for command", comment: "WifiSetupError.hubbyCommandTimedOut description")
+            return String(format: NSLocalizedString("Manager in invalid state for command (%d)", comment: "WifiSetupError.hubbyCommandTimedOut description"), rawValue)
             
         }
     }
@@ -131,6 +184,12 @@ public enum WifiSetupError: Int, Error, CustomStringConvertible, CustomDebugStri
     
     public var nsError: NSError {
         return NSError(wifiSetupError: self)
+    }
+    
+    // MARK: LocalizedError
+    
+    public var errorDescription: String? {
+        return localizedDescription
     }
     
 }
