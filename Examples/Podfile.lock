@@ -30,11 +30,11 @@ PODS:
     - AFNetworking/NSURLSession
   - AFOAuth2Manager (3.0.0):
     - AFNetworking/NSURLSession (~> 3.0)
-  - CocoaLumberjack/Default (3.2.1)
-  - CocoaLumberjack/Swift (3.2.1):
+  - CocoaLumberjack/Default (3.3.0)
+  - CocoaLumberjack/Swift (3.3.0):
     - CocoaLumberjack/Default
   - CocoaZ (1.4.2)
-  - CryptoSwift (0.7.0)
+  - CryptoSwift (0.7.2)
   - HTTPStatusCodes (3.1.2)
   - LKAlertController (1.12.1)
   - Nimble (7.0.2)
@@ -52,7 +52,7 @@ PODS:
   - OHHTTPStubs/Swift (6.0.0):
     - OHHTTPStubs/Default
   - PromiseKit/CorePromise (4.4.0)
-  - QRCodeReader.swift (8.0.1)
+  - QRCodeReader.swift (8.0.3)
   - Quick (1.2.0)
   - ReactiveSwift (1.1.5):
     - Result (~> 3.2)
@@ -64,7 +64,7 @@ DEPENDENCIES:
   - AferoSofthub
   - AferoSwiftSDK/AFNetworking (from `..`)
   - CocoaLumberjack/Swift (~> 3.2)
-  - CryptoSwift (= 0.7.0)
+  - CryptoSwift (= 0.7.2)
   - HTTPStatusCodes (~> 3.1)
   - LKAlertController (= 1.12.1)
   - Nimble
@@ -85,15 +85,15 @@ SPEC CHECKSUMS:
   AferoSwiftSDK: adb241a6837eebed2c2eaea44614fdf7284f5598
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
-  CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
+  CocoaLumberjack: 3c8c74683302f9012bb168e1c4b7ae3c0b558431
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: e197577cc40d551110480a64c73f31dbff1d8e74
+  CryptoSwift: cd2158be2bf639aabc63ec804707c7137c90157c
   HTTPStatusCodes: 88155ba36826366a898a7b4f34d311f49083d546
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
   Nimble: bfe1f814edabba69ff145cb1283e04ed636a67f2
   OHHTTPStubs: 752f9b11fd810a15162d50f11c06ff94f8e012eb
   PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
-  QRCodeReader.swift: 25e6110632fecba8f090f9814b4bd68fc6a519c9
+  QRCodeReader.swift: 7c98a05c2544a7c8737853845428b4460273d50d
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
