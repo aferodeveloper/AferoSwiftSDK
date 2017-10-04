@@ -25,11 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         defaultDebugLevel = DDLogLevel.debug
         
-        DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
-        DDASLLogger.sharedInstance.logFormatter = AferoASLADBLogFormatter()
+        #if DEBUG
+            DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
+            DDLog.add(DDTTYLogger.sharedInstance)
+        #else
+            DDASLLogger.sharedInstance.logFormatter = AferoASLADBLogFormatter()
+            DDLog.add(DDASLLogger.sharedInstance)
+        #endif
         
-        DDLog.add(DDTTYLogger.sharedInstance)
-        DDLog.add(DDASLLogger.sharedInstance)
         
     }
 
