@@ -311,6 +311,10 @@ class DeviceInspectorViewController: UITableViewController {
                 }
         }
         
+        
+        updateVisibleCells()
+        updateDeviceStateIndicator()
+
     }
     
     private func stopObservingDeviceModel() {
@@ -348,6 +352,7 @@ class DeviceInspectorViewController: UITableViewController {
             
         case .stateUpdate:
             updateVisibleCells()
+            updateDeviceStateIndicator()
             
         case .writeStateChange:
             updateWriteStateIndicator()
@@ -390,6 +395,34 @@ class DeviceInspectorViewController: UITableViewController {
             }.forEach {
                 configure(cell: $0.cell, for: $0.indexPath)
         }
+    }
+    
+    func updateDeviceStateIndicator() {
+        
+        var prompt: String?
+        
+        if deviceModel.isAvailable {
+            prompt = NSLocalizedString("Available", comment: "DeviceInspector device state available indicator")
+        } else if deviceModel.isLinked {
+            prompt = NSLocalizedString("Linked", comment: "DeviceInspector device state linked indicator")
+        } else if deviceModel.isVisible {
+            prompt = NSLocalizedString("Visible", comment: "DeviceInspector device state visible indicator")
+        } else if deviceModel.isConnected {
+            prompt = NSLocalizedString("Connected", comment: "DeviceInspector device state connected indicator")
+        } else if deviceModel.isLinked {
+            prompt = NSLocalizedString("Linked", comment: "DeviceInspector device state linked indicator")
+        } else if deviceModel.isDirty {
+            prompt = NSLocalizedString("Dirty", comment: "DeviceInspector device state dirty indicator")
+        } else if deviceModel.isConnectable {
+            prompt = NSLocalizedString("Connectable", comment: "DeviceInspector device connectable available indicator")
+        } else if deviceModel.isDirect {
+            prompt = NSLocalizedString("Direct", comment: "DeviceInspector device state direct indicator")
+        } else if deviceModel.isRebooted {
+            prompt = NSLocalizedString("Rebooted", comment: "DeviceInspector device state rebooted indicator")
+        }
+        
+        navigationItem.prompt = prompt
+
     }
     
     func startMuteTimer(with timeout: TimeInterval) {
