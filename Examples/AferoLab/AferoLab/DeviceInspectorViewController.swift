@@ -85,11 +85,13 @@ class DeviceInspectorViewController: UITableViewController {
     
     enum Reuse {
         
+        case empty
         case deviceInfo
         case genericAttribute
         
         var reuseClass: AnyClass {
             switch self {
+            case .empty: return UITableViewCell.self
             case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -97,13 +99,14 @@ class DeviceInspectorViewController: UITableViewController {
         
         var reuseIdentifier: String {
             switch self {
+            case .empty: return "DeviceInspectorEmptySectionCell"
             case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
         }
         
         static var allCases: Set<Reuse> {
-            return [ .deviceInfo, .genericAttribute ]
+            return [ .empty, .deviceInfo, .genericAttribute ]
         }
         
     }
@@ -261,6 +264,8 @@ class DeviceInspectorViewController: UITableViewController {
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = 55
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        startObservingDeviceModel()
     }
     
     deinit {
@@ -345,7 +350,7 @@ class DeviceInspectorViewController: UITableViewController {
             updateVisibleCells()
             
         case .writeStateChange:
-            updateDeviceWriteStateDisplay()
+            updateWriteStateIndicator()
         }
     }
     
@@ -357,10 +362,6 @@ class DeviceInspectorViewController: UITableViewController {
     
     private var currentErrors: [DeviceErrorStatus: [DeviceError]] = [:] {
         didSet { updateErrorDisplay() }
-    }
-    
-    func updateDeviceWriteStateDisplay() {
-        fatalError("updateDeviceWriteStateDisplay not implmeneted")
     }
     
     func handle(deviceError: DeviceError) {
@@ -377,11 +378,18 @@ class DeviceInspectorViewController: UITableViewController {
     }
     
     func reloadAllSections() {
-        fatalError("reloadAllSections not implemented")
+        let sectionIndices = IndexSet(Section.all.map { $0.rawValue })
+        tableView.reloadSections(sectionIndices, with: .automatic)
     }
     
     func updateVisibleCells() {
-        fatalError("updateVisibleCells not implemented")
+        tableView.indexPathsForVisibleRows?.flatMap {
+            indexPath -> (cell: UITableViewCell, indexPath: IndexPath)? in
+            guard let cell = tableView.cellForRow(at: indexPath) else { return nil }
+            return (cell: cell, indexPath: indexPath)
+            }.forEach {
+                configure(cell: $0.cell, for: $0.indexPath)
+        }
     }
     
     func startMuteTimer(with timeout: TimeInterval) {
@@ -393,7 +401,7 @@ class DeviceInspectorViewController: UITableViewController {
     }
     
     func updateWriteStateIndicator() {
-        fatalError("updateWriteStateIndicator not implemented")
+        DDLogDebug("Device write state now: \(deviceModel.writeState)", tag: TAG)
     }
     
     var otaProgress: Float? {
@@ -423,15 +431,12 @@ class DeviceInspectorViewController: UITableViewController {
     
     weak var deviceModel: DeviceModelable! {
         willSet { deviceEventDisposable = nil }
+        didSet {
+            title = deviceModel?.displayName
+        }
     }
     
     // MARK: Attribute Range Visibility Management
-    
-//    var visibleAttributeRanges: Set<AferoPlatformAttributeRange> = Set(AferoPlatformAttributeRange.all) {
-//        didSet {
-//            updateVisibleAttributeRanges()
-//        }
-//    }
     
     var visibleSections: [Section] = Section.all {
         didSet {
@@ -663,32 +668,56 @@ class DeviceInspectorViewController: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        guard self.tableView(tableView, numberOfRowsInSection: section) > 0 else {
+            return nil
+        }
+        
+        let section = visibleSections[section]
+        return section.localizedName
+    }
+    
+//    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+//
+//        guard self.tableView(tableView, numberOfRowsInSection: section) == 0 else {
+//            return nil
+//        }
+//
+//        return NSLocalizedString("Empty", comment: "DeviceInspectorTableViewController empty section footer")
+//    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if self.tableView(tableView, numberOfRowsInSection: indexPath.section) == 0 {
+            return tableView.dequeueReusableCell(withIdentifier: Reuse.empty.reuseIdentifier, for: indexPath)
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier(for: indexPath), for: indexPath)
-        self.tableView(tableView, configure: cell, for: indexPath)
+        configure(cell: cell, for: indexPath)
         return cell
     }
     
-    func tableView(_ tableView: UITableView, configure cell: UITableViewCell, for indexPath: IndexPath) {
+    func configure(cell: UITableViewCell, for indexPath: IndexPath) {
         
         if let deviceInfoCell = cell as? DeviceInspectorDeviceInfoCell {
-            configure(cell: deviceInfoCell)
+            configure(infoCell: deviceInfoCell)
             return
         }
         
         if let attributeCell = cell as? DeviceInspectorGenericAttributeCell {
-            configure(cell: attributeCell, for: indexPath)
+            configure(attributeCell: attributeCell, for: indexPath)
         }
     }
     
-    func configure(cell: DeviceInspectorDeviceInfoCell) {
+    func configure(infoCell cell: DeviceInspectorDeviceInfoCell) {
         cell.deviceId = deviceModel?.deviceId
         cell.deviceType = deviceModel?.profile?.deviceType
         cell.deviceTypeId = deviceModel?.profile?.deviceTypeId
         cell.profileId = deviceModel?.profileId
     }
     
-    func configure(cell: DeviceInspectorGenericAttributeCell, for indexPath: IndexPath) {
+    func configure(attributeCell cell: DeviceInspectorGenericAttributeCell, for indexPath: IndexPath) {
 
         guard let attribute = attribute(for: indexPath) else {
 
