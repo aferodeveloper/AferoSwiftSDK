@@ -12,6 +12,8 @@ import CocoaLumberjack
 import Afero
 import SVProgressHUD
 
+// MARK: - Device Info Cell -
+
 class DeviceInspectorDeviceInfoCell: UITableViewCell {
     
     @IBOutlet weak var deviceTypeLabel: UILabel!
@@ -42,6 +44,8 @@ class DeviceInspectorDeviceInfoCell: UITableViewCell {
     }
 
 }
+
+// MARK: - Attribute Cells -
 
 /// A cell which displays a single attribute. To configure,
 /// simply set the `attribute` property.
@@ -79,7 +83,9 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
     
 }
 
-class DeviceInspectorViewController: UITableViewController {
+// MARK: - DeviceInspectorViewController -
+
+class DeviceInspectorViewController: UITableViewController, DeviceModelableObserving {
     
     var TAG: String { return "\(type(of: self))" }
     
@@ -111,7 +117,7 @@ class DeviceInspectorViewController: UITableViewController {
         
     }
     
-    enum Section: Int, CustomDebugStringConvertible {
+    enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
         case mcuApplicationSpecificAttributes
@@ -261,125 +267,91 @@ class DeviceInspectorViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsMultipleSelection = false
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
+        tableView.remembersLastFocusedIndexPath = true
         tableView.estimatedRowHeight = 55
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        startObservingDeviceModel()
+        startObservingDeviceEvents()
+        updateVisibleCells()
+        updateDeviceStateIndicator()
     }
     
     deinit {
-        stopObservingDeviceModel()
+        stopObservingDeviceEvents()
     }
+
+    // MARK: <DeviceModelableObserving>
+    
+    /// The DeviceModel that this inspector will observe.
+    ///
+    /// - note: This is `weak` because it's canonically held by the
+    ///         `DeviceCollection`.
+    
+    weak var deviceModelable: DeviceModelable! {
+        didSet { title = deviceModelable?.displayName }
+    }
+    
 
     /// The `disposable`, which is our handle to DeviceEventSignal
     /// observation.
     
-    private var deviceEventDisposable: Disposable? {
-        willSet { deviceEventDisposable?.dispose() }
-    }
+    var deviceEventSignalDisposable: Disposable?
     
-    // MARK: - Device Event Observation
-    
-    private func startObservingDeviceModel() {
-
-        let TAG = self.TAG
-
-        guard let deviceModel = deviceModel else {
-            DDLogWarn("No deviceModel to observe; bailing", tag: TAG)
-            return
-        }
-        
-        deviceModel.eventSignal
-            .observe(on: QueueScheduler.main)
-            .observe {
-                [weak self] signalEvent in switch signalEvent {
-
-                case let .value(event):
-                    self?.handle(event: event)
-
-                case .completed:
-                    self?.teardown()
-                    
-                case let .failed(err):
-                    // NOTE: Shown for completeness; .failed(_) messages are never sent.
-                    DDLogError("Device model error: \(err.localizedDescription)", tag: TAG)
-                    
-                case .interrupted:
-                    // NOTE: Shown for completeness; .interrupted messages are never sent.
-                    DDLogWarn("Device event stream interrupted", tag: TAG)
-                }
-        }
-        
-        
-        updateVisibleCells()
-        updateDeviceStateIndicator()
-
-    }
-    
-    private func stopObservingDeviceModel() {
-        deviceEventDisposable = nil
-    }
-    
-    // MARK: - Device Event Handling
-    
-    func handle(event: DeviceModelEvent) {
-        switch event {
-            
-        case .deleted:
-            teardown()
-            
-        case .error(let err):
-            handle(deviceError: err)
-            
-        case .errorResolved(let status):
-            resolveDeviceErrors(with: status)
-            
-        case .profileUpdate:
-            reloadAllSections()
-            
-        case .muted(let timeout):
-            startMuteTimer(with: timeout)
-            
-        case .otaStart:
-            otaProgress = 0
-            
-        case .otaProgress(let progress):
-            otaProgress = progress
-            
-        case .otaFinish:
-            otaProgress = nil
-            
-        case .stateUpdate:
-            updateVisibleCells()
-            updateDeviceStateIndicator()
-            
-        case .writeStateChange:
-            updateWriteStateIndicator()
-        }
-    }
-    
-    // MARK: - Display Updates
-    
-    func updateErrorDisplay() {
-        fatalError("updateErrorDisplay not implmeneted")
+    func handleDeviceDeletedEvent() {
+        close()
     }
     
     private var currentErrors: [DeviceErrorStatus: [DeviceError]] = [:] {
         didSet { updateErrorDisplay() }
     }
     
-    func handle(deviceError: DeviceError) {
+    func handleDeviceErrorEvent(error: DeviceError) {
         var errs: [DeviceError] = []
-        if let maybeErrs = currentErrors[deviceError.status] {
+        if let maybeErrs = currentErrors[error.status] {
             errs = maybeErrs
         }
-        errs.append(deviceError)
-        currentErrors[deviceError.status] = errs
+        errs.append(error)
+        currentErrors[error.status] = errs
     }
     
-    func resolveDeviceErrors(with status: DeviceErrorStatus) {
+    func handleDeviceErrorResolvedEvent(status: DeviceErrorStatus) {
         currentErrors[status] = nil
+    }
+    
+    func handleDeviceMutedEvent(for duration: TimeInterval) {
+        startMuteTimer(with: duration)
+    }
+    
+    func handleDeviceProfileUpdate() {
+        reloadAllSections()
+    }
+    
+    func handleDeviceOtaStartEvent() {
+        otaProgress = 0
+    }
+    
+    func handleDeviceOtaProgressEvent(with proportion: Float) {
+        otaProgress = proportion
+    }
+    
+    func handleDeviceOtaFinishEvent() {
+        otaProgress = nil
+    }
+    
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        updateVisibleCells()
+        updateDeviceStateIndicator()
+    }
+    
+    func handleDeviceWriteStateChangeEvent(newState: DeviceWriteState) {
+        updateWriteStateIndicator()
+    }
+
+    // MARK: Display Updates
+    
+    func updateErrorDisplay() {
+        fatalError("updateErrorDisplay not implmeneted")
     }
     
     func reloadAllSections() {
@@ -401,23 +373,23 @@ class DeviceInspectorViewController: UITableViewController {
         
         var prompt: String?
         
-        if deviceModel.isAvailable {
+        if deviceModelable.isAvailable {
             prompt = NSLocalizedString("Available", comment: "DeviceInspector device state available indicator")
-        } else if deviceModel.isLinked {
+        } else if deviceModelable.isLinked {
             prompt = NSLocalizedString("Linked", comment: "DeviceInspector device state linked indicator")
-        } else if deviceModel.isVisible {
+        } else if deviceModelable.isVisible {
             prompt = NSLocalizedString("Visible", comment: "DeviceInspector device state visible indicator")
-        } else if deviceModel.isConnected {
+        } else if deviceModelable.isConnected {
             prompt = NSLocalizedString("Connected", comment: "DeviceInspector device state connected indicator")
-        } else if deviceModel.isLinked {
+        } else if deviceModelable.isLinked {
             prompt = NSLocalizedString("Linked", comment: "DeviceInspector device state linked indicator")
-        } else if deviceModel.isDirty {
+        } else if deviceModelable.isDirty {
             prompt = NSLocalizedString("Dirty", comment: "DeviceInspector device state dirty indicator")
-        } else if deviceModel.isConnectable {
+        } else if deviceModelable.isConnectable {
             prompt = NSLocalizedString("Connectable", comment: "DeviceInspector device connectable available indicator")
-        } else if deviceModel.isDirect {
+        } else if deviceModelable.isDirect {
             prompt = NSLocalizedString("Direct", comment: "DeviceInspector device state direct indicator")
-        } else if deviceModel.isRebooted {
+        } else if deviceModelable.isRebooted {
             prompt = NSLocalizedString("Rebooted", comment: "DeviceInspector device state rebooted indicator")
         }
         
@@ -434,7 +406,7 @@ class DeviceInspectorViewController: UITableViewController {
     }
     
     func updateWriteStateIndicator() {
-        DDLogDebug("Device write state now: \(deviceModel.writeState)", tag: TAG)
+        DDLogDebug("Device write state now: \(deviceModelable.writeState)", tag: TAG)
     }
     
     var otaProgress: Float? {
@@ -445,31 +417,51 @@ class DeviceInspectorViewController: UITableViewController {
         }
     }
 
-    func teardown() {
+    // MARK: Navigation
+    
+    func close() {
         presentingViewController?.dismiss(animated: true, completion: nil)
     }
-    
-    // MARK: Navigation
     
     func unwindToAccountController() {
         performSegue(withIdentifier: "unwindToAccountController", sender: self)
     }
     
-    // MARK: - Model
-    
-    /// The DeviceModel that this inspector will observe.
-    ///
-    /// - note: This is `weak` because it's canonically held by the
-    ///         `DeviceCollection`.
-    
-    weak var deviceModel: DeviceModelable! {
-        willSet { deviceEventDisposable = nil }
-        didSet {
-            title = deviceModel?.displayName
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        guard let identifier = segue.identifier else {
+            return
+        }
+        
+        switch identifier {
+            
+        case "ShowGenericAttributeInspector":
+            
+            guard let selectedIndex = tableView.indexPathForSelectedRow else {
+                DDLogError("No selection for device inspector segue.", tag: TAG)
+                return
+            }
+            
+            guard let attribute = attribute(for: selectedIndex) else {
+                DDLogError("No attribute for row: \(selectedIndex.row) in section: \(selectedIndex.section)", tag: TAG)
+                return
+            }
+            
+            guard let inspector = segue.destination as? GenericAttributeEditorViewController else {
+                DDLogError("Unexpected type (\(String(describing: type(of: segue.destination))).", tag: TAG)
+                return
+            }
+            
+            inspector.deviceModelable = deviceModelable
+            inspector.attributeId = attribute.config.descriptor.id
+            
+        default:
+            DDLogWarn("No configuration for \(String(describing: segue.identifier))", tag: TAG)
         }
     }
+
     
-    // MARK: Attribute Range Visibility Management
+    // MARK: Model
     
     var visibleSections: [Section] = Section.all {
         didSet {
@@ -480,8 +472,6 @@ class DeviceInspectorViewController: UITableViewController {
             tableView.endUpdates()
         }
     }
-    
-    // MARK: Section ↔ Platform Attribute Range translation
     
     func section(for attributeRange: AferoPlatformAttributeRange?) -> Section? {
         
@@ -500,8 +490,6 @@ class DeviceInspectorViewController: UITableViewController {
         return section.platformAttributeRange
     }
     
-    // MARK: Attribute Id ↔ Row translation
-    
     private typealias SectionAttributeConfigMap = [Section: [DeviceProfile.AttributeConfig]]
     
     private var _sectionAttributeConfigMap: SectionAttributeConfigMap?
@@ -509,7 +497,7 @@ class DeviceInspectorViewController: UITableViewController {
         
         if let ret = _sectionAttributeConfigMap { return ret }
         
-        guard let deviceModel = deviceModel else { return [:] }
+        guard let deviceModel = deviceModelable else { return [:] }
         
         let ret = Section.all.reduce([:]) {
             
@@ -558,8 +546,6 @@ class DeviceInspectorViewController: UITableViewController {
         _attributeIdSectionMap = nil
     }
     
-    // MARK: IndexPath ↔ Section, Row conversion
-    
     func config(for indexPath: IndexPath) -> DeviceProfile.AttributeConfig? {
         
         guard let section = indexPath.deviceInspectorSection else {
@@ -598,7 +584,7 @@ class DeviceInspectorViewController: UITableViewController {
             return nil
         }
         
-        guard let ret = deviceModel?.attribute(for: attributeId) else {
+        guard let ret = deviceModelable?.attribute(for: attributeId) else {
             let msg = "No attribute for attributeId \(attributeId); will ignore."
             DDLogWarn(msg, tag: TAG)
             return nil
@@ -637,37 +623,7 @@ class DeviceInspectorViewController: UITableViewController {
         return IndexPath(row: row, section: section.rawValue)
     }
     
-    // MARK: Section Visibility Management
-    
-//    func updateVisibleAttributeRanges() {
-//        showAttributes(in: visibleAttributeRanges)
-//    }
-//
-//    var attributeConfigs: [AferoPlatformAttributeRange: [DeviceProfile.AttributeConfig]]
-//
-//    func showAttributes(in ranges: Set<AferoPlatformAttributeRange>) {
-//        ranges.forEach { showAttributes(in: $0) }
-//    }
-//
-//    func showAttributes(in range: AferoPlatformAttributeRange) {
-//
-//        guard let attributes = deviceModel?.attributeConfigs(withIdsIn: range) else {
-//            hideAttributes(in: range)
-//            return
-//        }
-//
-//        attributeConfigs[range] = Array(attributes)
-//    }
-//
-//    func hideAttributes(in ranges: Set<AferoPlatformAttributeRange>) {
-//        ranges.forEach { hideAttributes(in: $0) }
-//    }
-//
-//    func hideAttributes(in range: AferoPlatformAttributeRange) {
-//        attributeConfigs[range] = nil
-//    }
-    
-    // MARK: - <UITableViewDataSource> -
+    // MARK: <UITableViewDataSource>
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return visibleSections.count
@@ -711,15 +667,6 @@ class DeviceInspectorViewController: UITableViewController {
         return section.localizedName
     }
     
-//    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-//
-//        guard self.tableView(tableView, numberOfRowsInSection: section) == 0 else {
-//            return nil
-//        }
-//
-//        return NSLocalizedString("Empty", comment: "DeviceInspectorTableViewController empty section footer")
-//    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if self.tableView(tableView, numberOfRowsInSection: indexPath.section) == 0 {
@@ -744,10 +691,10 @@ class DeviceInspectorViewController: UITableViewController {
     }
     
     func configure(infoCell cell: DeviceInspectorDeviceInfoCell) {
-        cell.deviceId = deviceModel?.deviceId
-        cell.deviceType = deviceModel?.profile?.deviceType
-        cell.deviceTypeId = deviceModel?.profile?.deviceTypeId
-        cell.profileId = deviceModel?.profileId
+        cell.deviceId = deviceModelable?.deviceId
+        cell.deviceType = deviceModelable?.profile?.deviceType
+        cell.deviceTypeId = deviceModelable?.profile?.deviceTypeId
+        cell.profileId = deviceModelable?.profileId
     }
     
     func configure(attributeCell cell: DeviceInspectorGenericAttributeCell, for indexPath: IndexPath) {
@@ -772,11 +719,10 @@ class DeviceInspectorViewController: UITableViewController {
         
         cell.attribute = attribute
     }
-
-    // MARK: - <UITableViewDelegate> -
-
     
 }
+
+// MARK: - Convenience Extensions -
 
 fileprivate extension AferoPlatformAttributeRange {
     

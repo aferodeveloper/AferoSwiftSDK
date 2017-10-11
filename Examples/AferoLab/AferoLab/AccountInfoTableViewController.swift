@@ -554,7 +554,7 @@ class AccountViewController: UITableViewController {
                 return
             }
             
-            inspector.deviceModel = deviceModel
+            inspector.deviceModelable = deviceModel
             
         default:
             DDLogWarn("No configuration for \(segue.identifier)", tag: TAG)

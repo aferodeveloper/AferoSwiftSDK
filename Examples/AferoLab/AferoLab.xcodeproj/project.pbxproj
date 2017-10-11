@@ -10,6 +10,8 @@
 		491A6C774265D5E4E887AC8D /* Pods_AferoLabUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */; };
 		7C90D7040159EEF26D6D8852 /* Pods_AferoLab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */; };
 		CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */; };
+		CB241A311F8D6AD100480CCA /* GenericAttributeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB241A301F8D6AD100480CCA /* GenericAttributeEditorViewController.swift */; };
+		CB241A331F8D839F00480CCA /* DeviceModelableObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB241A321F8D839F00480CCA /* DeviceModelableObserving.swift */; };
 		CB3376201F170112009BFA9E /* APIClientConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = CB33761F1F170112009BFA9E /* APIClientConfig.plist */; };
 		CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3721E7C689700547FD9 /* AppDelegate.swift */; };
 		CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */; };
@@ -69,6 +71,8 @@
 		BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C000460375D6E9ED982A6C4E /* Pods-AferoLabTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AferoLogFormatter.swift; sourceTree = "<group>"; };
+		CB241A301F8D6AD100480CCA /* GenericAttributeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericAttributeEditorViewController.swift; sourceTree = "<group>"; };
+		CB241A321F8D839F00480CCA /* DeviceModelableObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModelableObserving.swift; sourceTree = "<group>"; };
 		CB33761F1F170112009BFA9E /* APIClientConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIClientConfig.plist; sourceTree = "<group>"; };
 		CB34C36F1E7C689700547FD9 /* AferoLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AferoLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB34C3721E7C689700547FD9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -199,6 +203,7 @@
 				CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */,
 				CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */,
 				CB79624D1F830D26002E0C6C /* DeviceInspectorViewController.swift */,
+				CB241A301F8D6AD100480CCA /* GenericAttributeEditorViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */,
+				CB241A321F8D839F00480CCA /* DeviceModelableObserving.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -592,6 +598,8 @@
 				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
 				CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */,
 				CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */,
+				CB241A311F8D6AD100480CCA /* GenericAttributeEditorViewController.swift in Sources */,
+				CB241A331F8D839F00480CCA /* DeviceModelableObserving.swift in Sources */,
 				CB79624E1F830D26002E0C6C /* DeviceInspectorViewController.swift in Sources */,
 				CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */,
 				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
