@@ -15,6 +15,9 @@ import CocoaLumberjack
 class GenericAttributeEditorViewController: UIViewController, DeviceModelableObserving {
 
     // MARK: - UI Management -
+    @IBOutlet weak var bodyView: UIView!
+    
+    @IBOutlet var backgroundTapGestureRecognizer: UITapGestureRecognizer!
     
     @IBOutlet weak var attributeIdLabel: UILabel!
     @IBOutlet weak var attributeNameLabel: UILabel!
@@ -25,15 +28,17 @@ class GenericAttributeEditorViewController: UIViewController, DeviceModelableObs
     @IBOutlet weak var lastUpdatedHeaderLabel: UILabel!
     @IBOutlet weak var lastUpdatedValueLabel: UILabel!
     
-    @IBOutlet weak var valueDataSelector: UISegmentedControl!
+    @IBOutlet weak var attributeValueHeaderLabel: UILabel!
+    @IBOutlet weak var attributeStringValueLabel: UILabel!
     @IBOutlet weak var attributeStringValueTextView: UITextView!
     
-    @IBOutlet weak var cancelButton: UIButton!
-    
-    @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var attributeValueTextViewHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
+       super.viewDidLoad()
         attributeStringValueTextView.delegate = self
+        attributeStringValueTextView.textContainer.lineFragmentPadding = 0
+        attributeStringValueTextView.textContainerInset = .zero
         updateAttributeDisplay()
     }
     
@@ -47,6 +52,10 @@ class GenericAttributeEditorViewController: UIViewController, DeviceModelableObs
     
     func close() {
         presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func backgroundTapped(_ sender: Any) {
+        close()
     }
     
     @IBAction func cancelTapped(_ sender: Any) {
@@ -89,6 +98,19 @@ class GenericAttributeEditorViewController: UIViewController, DeviceModelableObs
         dataTypeValueLabel?.text = attributeTypeValue
         lastUpdatedValueLabel?.text = attributeLastUpdatedValue
         attributeStringValueTextView?.text = attributeStringValue
+        attributeStringValueLabel?.text = attributeStringValue
+        updateTextViewHeightConstraint()
+    }
+    
+    func updateTextViewHeightConstraint() {
+        guard let tv = attributeStringValueTextView else { return }
+        let newSize = tv.sizeThatFits(
+            CGSize(width: tv.frame.size.width, height: .infinity)
+        )
+        attributeValueTextViewHeightConstraint?.constant = newSize.height
+        bodyView.invalidateIntrinsicContentSize()
+        view.invalidateIntrinsicContentSize()
+        view.setNeedsLayout()
     }
     
     // MARK: <DeviceModelableObserving>
