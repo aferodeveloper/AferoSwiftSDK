@@ -427,15 +427,31 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         performSegue(withIdentifier: "unwindToAccountController", sender: self)
     }
     
+    enum SegueIdentifier: String {
+        case showTextViewAttributeInspector = "ShowTextViewAttributeInspector"
+        case showSliderAttributeInspector = "ShowSliderAttributeInspector"
+        case showSwitchAttributeInspector = "ShowSwitchAttributeInspector"
+        case showPickerAttributeInspector = "ShowPickerAttributeInspector"
+    }
+    
+    func performSegue(withIdentifier identifier: SegueIdentifier, sender: Any?) {
+        performSegue(withIdentifier: identifier.rawValue, sender: sender)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        guard let identifier = segue.identifier else {
+        guard
+            let identifierString = segue.identifier,
+            let identifier = SegueIdentifier(rawValue: identifierString) else {
             return
         }
         
         switch identifier {
             
-        case "ShowGenericAttributeInspector":
+        case .showTextViewAttributeInspector: fallthrough
+        case .showSliderAttributeInspector: fallthrough
+        case .showSwitchAttributeInspector: fallthrough
+        case .showPickerAttributeInspector
             
             guard let selectedIndex = tableView.indexPathForSelectedRow else {
                 DDLogError("No selection for device inspector segue.", tag: TAG)
@@ -447,7 +463,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 return
             }
             
-            guard let inspector = segue.destination as? GenericAttributeEditorViewController else {
+            guard let inspector = segue.destination as? BaseAttributeInspectorViewController else {
                 DDLogError("Unexpected type (\(String(describing: type(of: segue.destination))).", tag: TAG)
                 return
             }
@@ -718,6 +734,57 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
         
         cell.attribute = attribute
+    }
+    
+    // MARK: <UITableViewDelegate>
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard let attribute = attribute(for: indexPath) else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        
+        var maybeSegueIdentifier: SegueIdentifier?
+        
+        switch attribute.config.descriptor.dataType {
+        case .utf8S: fallthrough
+        case .bytes:
+            maybeSegueIdentifier = .showTextViewAttributeInspector
+            
+        case .boolean:
+            maybeSegueIdentifier = .showSwitchAttributeInspector
+            
+        case .q1516: fallthrough
+        case .q3132: fallthrough
+        case .sInt8: fallthrough
+        case .sInt16: fallthrough
+        case .sInt32: fallthrough
+        case .sInt64:
+            maybeSegueIdentifier = .showSliderAttributeInspector
+            
+        // Floats are deprecated; use .q1516 / .q3132 instead.
+        case .float32: fallthrough
+        case .float64:
+        DDLogWarn("Will show slider for deprecated type \(attribute.config.descriptor.dataType)", tag: TAG)
+            maybeSegueIdentifier = .showSliderAttributeInspector
+            
+        // Added for completeness; the following are not supported.
+        case .uInt8: fallthrough
+        case .uInt16: fallthrough
+        case .uInt32: fallthrough
+        case .uInt64: fallthrough
+        case .unknown:
+            DDLogError("Detected unsupported type \(attribute.config.descriptor.dataType); not editing.", tag: TAG)
+
+        }
+        
+        guard let segueIdentifier = maybeSegueIdentifier else {
+            DDLogWarn("Unable to determine segue to use for \(String(describing: attribute)); bailing.", tag: TAG)
+            return
+        }
+        
+        performSegue(withIdentifier: segueIdentifier, sender: self)
     }
     
 }
