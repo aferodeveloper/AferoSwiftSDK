@@ -351,7 +351,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     // MARK: Display Updates
     
     func updateErrorDisplay() {
-        fatalError("updateErrorDisplay not implmeneted")
+        // TODO: Implement updateErrorDisplay
+        DDLogError("updateErrorDisplay not implemented.", tag: TAG)
     }
     
     func reloadAllSections() {
@@ -451,7 +452,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case .showTextViewAttributeInspector: fallthrough
         case .showSliderAttributeInspector: fallthrough
         case .showSwitchAttributeInspector: fallthrough
-        case .showPickerAttributeInspector
+        case .showPickerAttributeInspector:
             
             guard let selectedIndex = tableView.indexPathForSelectedRow else {
                 DDLogError("No selection for device inspector segue.", tag: TAG)
@@ -471,8 +472,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             inspector.deviceModelable = deviceModelable
             inspector.attributeId = attribute.config.descriptor.id
             
-        default:
-            DDLogWarn("No configuration for \(String(describing: segue.identifier))", tag: TAG)
         }
     }
 
