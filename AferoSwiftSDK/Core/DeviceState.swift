@@ -918,28 +918,37 @@ public extension DeviceModelable {
     }
     
     /// Comprises an attribute value and all type and presentation info.
-    public typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig)
+    public typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig, displayParams: [String: Any]?)
+    
     
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
     public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyRandomAccessCollection<[Attribute]>? {
         return attributeConfigs()?
             .flatMap {
-            config -> Attribute? in
-            guard let value = self.value(for: config.descriptor) else {
-                return nil
-            }
-            return (value: value, config: config)
-        }.lazy
+                config -> Attribute? in
+
+                guard let value = self.value(for: config.descriptor) else {
+                    return nil
+                }
+                
+                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+                
+                return (value: value, config: config, displayParams: displayParams)
+            }.lazy
     }
     
     public func attributes(in range: ClosedRange<Int>) -> LazyRandomAccessCollection<[Attribute]>? {
         return attributeConfigs(withIdsIn: range)?
             .flatMap {
                 config -> Attribute? in
+                
                 guard let value = self.value(for: config.descriptor) else {
                     return nil
                 }
-                return (value: value, config: config)
+                
+                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+                
+                return (value: value, config: config, displayParams: displayParams)
             }.lazy
     }
     
@@ -954,7 +963,10 @@ public extension DeviceModelable {
             let config = attributeConfig(for: attributeId) else {
             return nil
         }
-        return (value: value, config: config)
+
+        let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+        
+        return (value: value, config: config, displayParams: displayParams)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {

@@ -595,11 +595,32 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     // MARK: Presentation convenience accessors
     
     func clearCaches() {
+        attributeIdValueOptionProcessors.removeAll()
         controlsForAttributeIdCache.removeAll()
         groupsForControlIdCache.removeAll()
         groupIndicesForOperationCache.removeAll()
         groupsForOperationCache.removeAll()
         groupIndicesForControlIdCache.removeAll()
+    }
+    
+    public typealias ValueOptionProcessor = (AttributeValue?) -> [String: Any]
+    
+    var attributeIdValueOptionProcessors: [Int: ValueOptionProcessor] = [:]
+    
+    func valueOptionProcessor(for attributeId: Int?) -> ValueOptionProcessor? {
+        
+        guard let attributeId = attributeId else { return nil }
+        
+        if let ret = attributeIdValueOptionProcessors[attributeId] {
+            return ret
+        }
+        
+        guard let ret = attributeConfig(for: attributeId)?.presentation?.valueOptions.displayRulesProcessor() else {
+            return nil
+        }
+        
+        attributeIdValueOptionProcessors[attributeId] = ret
+        return ret
     }
 
     fileprivate var groupIndicesForControlIdCache: [Int: [Int]] = [:]
