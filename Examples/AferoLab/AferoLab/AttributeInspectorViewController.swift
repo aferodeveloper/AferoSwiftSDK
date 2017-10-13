@@ -117,10 +117,6 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
         return attribute?.config.descriptor.isWritable ?? false
     }
     
-    var attributeLabelDisplayValue: String? {
-        return attribute?.displayParams?["label"] as? String
-    }
-    
     var lastUpdatedStringValue: String {
         // TODO: Implement last updated
         return "-"
@@ -202,51 +198,171 @@ class TextFieldAttributeInspectorViewController: BaseAttributeInspectorViewContr
 
     @IBOutlet weak var attributeDisplayLabelValueLabel: UILabel!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        attributeValueTextField.delegate = self
+    }
+    
     override func updateAttributeDisplay() {
         super.updateAttributeDisplay()
-        attributeValueTextField?.text = attributeValueStringValue
-        attributeDisplayLabelValueLabel?.text = attributeLabelDisplayValue
+        
+        guard
+            let attributeValueTextField = attributeValueTextField,
+            let attributeDisplayLabelValueLabel = attributeDisplayLabelValueLabel else {
+                return
+        }
+        
+        if (attributeValueTextField.text == attributeValueStringValue) &&
+            (attributeDisplayLabelValueLabel.text == attributeLabelDisplayValue) {
+            return
+        }
+
+        attributeValueTextField.resignFirstResponder()
+        attributeValueTextField.text = attributeValueStringValue
+        attributeValueTextField.textColor = .black
+        attributeDisplayLabelValueLabel.text = attributeLabelDisplayValue
+        
+        UIView.animate(
+            withDuration: 0.125,
+            delay: 0.0,
+            options: .curveEaseInOut,
+            animations: {
+                let bounceScale = CGAffineTransform(scaleX: 1.15, y: 1.15)
+                attributeValueTextField.layer.setAffineTransform(bounceScale)
+                attributeDisplayLabelValueLabel.layer.setAffineTransform(bounceScale)
+        }) {
+            completed in
+            UIView.animate(
+                withDuration: 0.125,
+                delay: 0.0,
+                options: .curveEaseOut,
+                animations: {
+                    attributeValueTextField.layer.setAffineTransform(.identity)
+                    attributeDisplayLabelValueLabel.layer.setAffineTransform(.identity)
+            },
+                completion: nil)
+        }
+    }
+    
+    // MARK: Convenience Accessors
+    
+    var attributeLabelDisplayValue: String? {
+        return attribute?.displayParams?["label"] as? String
+    }
+    
+    var attributeRangeOptions: DeviceProfile.Presentation.AttributeOption.RangeOptions? {
+        return attribute?.config.presentation?.rangeOptions
+    }
+    
+    var attributeRangeSubscriptor: RangeOptionsSubscriptor? {
+        guard let dataType = attribute?.config.descriptor.dataType else {
+            return nil
+        }
+        return attributeRangeOptions?.subscriptor(dataType)
+    }
+    
+    typealias ValueOption = DeviceProfile.Presentation.AttributeOption.ValueOption
+    var attributeValueOptions: [ValueOption]? {
+        return attribute?.config.presentation?.valueOptions
+    }
+
+    var attributeValueOptionsMap: ValueOptionsMap? {
+        guard let attribute = attribute else { return nil }
+        return attribute.config.presentation?.valueOptions.valueOptionsMap
+    }
+    
+    func attributeValue(for stringValue: String?) -> AttributeValue? {
+        
+        guard let stringValue = stringValue else { return nil }
+        
+        guard let value = attribute?.config.descriptor.valueForStringLiteral(stringValue) else {
+            return nil
+        }
+        
+        if let rangeOptions = attributeRangeSubscriptor,
+            rangeOptions.steps.contains(value) {
+            return value
+        }
+        
+        if let valueOptionsMap = attributeValueOptionsMap {
+            if valueOptionsMap.keys.contains(stringValue) {
+                return attribute?.config.descriptor.valueForStringLiteral(stringValue)
+            }
+        }
+        
+        return nil
     }
     
     // MARK: <UITextFieldDelegate>
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        // todo
-        return false
+        return attributeIsWritable
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        // todo
+        DDLogDebug("textField did begin editing", tag: TAG)
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // todo
-        return false
+
+        let replacementText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+
+        if let _ = attributeValue(for: replacementText) {
+            textField.textColor = .black
+        } else {
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
+            textField.textColor = .red
+        }
+        
+        return true
     }
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        // todo
-        return false
+        return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        // todo
+
+        guard
+            let deviceModelable = deviceModelable,
+            let attributeId = attributeId else { return }
+
+        guard let newValue = attributeValue(for: textField.text) else {
+            updateAttributeDisplay()
+            return
+        }
+        
+        let deviceId = deviceModelable.deviceId
+        let TAG = self.TAG
+        
+        deviceModelable.set(value: newValue, forAttributeId: attributeId)
+            .then {
+                value in
+                DDLogInfo("Set \(attributeId) to \(String(reflecting: value)) on \(deviceId)", tag: TAG)
+            }.catch {
+                error in
+                DDLogError("Error setting \(attributeId) to \(newValue) on \(deviceId)", tag: TAG)
+        }
+
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        // todo
         return false
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // todo
+        textField.resignFirstResponder()
         return false
     }
     
     // MARK: Actions
     
     @IBAction func textFieldEditingChanged(_ sender: UITextField) {
-        // todo
+        guard let _ = attributeValue(for: sender.text) else {
+            sender.textColor = .red
+            return
+        }
+        sender.textColor = .black
     }
     
 

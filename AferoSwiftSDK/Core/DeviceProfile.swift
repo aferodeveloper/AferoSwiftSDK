@@ -161,6 +161,7 @@ public protocol AttributeOptionPresentable {
     var label: LabelPresentable? { get }
     var rangeOptionsPresentable: RangeOptionsPresentable? { get }
     var valueOptionsPresentable: [ValueOptionPresentable] { get }
+    var valueOptionsMap: ValueOptionsMap { get }
 }
 
 public extension AttributeOptionPresentable {
@@ -168,8 +169,10 @@ public extension AttributeOptionPresentable {
     public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
 }
 
+
 public typealias ValueOptionApplyPresentable = [String: Any]
 public typealias ValueOptionMatchPresentable = String
+public typealias ValueOptionsMap = [ValueOptionMatchPresentable: ValueOptionApplyPresentable]
 
 /// Represents a set of distinct, discrete values for an attribute state
 public protocol ValueOptionPresentable {
@@ -888,6 +891,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             public var rangeOptions: RangeOptions? = nil
             public var rangeOptionsPresentable: RangeOptionsPresentable? { return rangeOptions }
             
+            public var valueOptionsMap: ValueOptionsMap
             public var valueOptions: [ValueOption] = []
             public var valueOptionsPresentable: [ValueOptionPresentable] { return self.valueOptions.map { $0 as ValueOptionPresentable } }
             
@@ -895,6 +899,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                 self.label = label
                 self.rangeOptions = rangeOptions
                 self.valueOptions = valueOptions
+                self.valueOptionsMap = valueOptions.valueOptionsMap
                 self.flags = flags
             }
             
@@ -1968,12 +1973,15 @@ extension DeviceProfile.Presentation.AttributeOption: AferoJSONCoding {
     }
     
     public init?(json: AferoJSONCodedType?) {
-        if let json = json as? AferoJSONObject {
-            self.flags = |<(json[type(of: self).CoderKeyFlags]) ?? []
-            self.label = json[type(of: self).CoderKeyLabel] as? String
-            self.valueOptions = |<(json[type(of: self).CoderKeyValueOptions] as? [AnyObject]) ?? []
-            self.rangeOptions = |<(json[type(of: self).CoderKeyRangeOptions] as? [String: Any])
-        }
+        
+        guard let json = json as? AferoJSONObject else { return nil }
+        
+        self.flags = |<(json[type(of: self).CoderKeyFlags]) ?? []
+        self.label = json[type(of: self).CoderKeyLabel] as? String
+        self.valueOptions = |<(json[type(of: self).CoderKeyValueOptions] as? [AnyObject]) ?? []
+        self.valueOptionsMap = valueOptions.valueOptionsMap
+        self.rangeOptions = |<(json[type(of: self).CoderKeyRangeOptions] as? [String: Any])
+        
     }
 }
 
@@ -2562,6 +2570,22 @@ public extension Array where Element: ValueOptionPresentable {
         }
     }
     
+    public var valueOptionsMap: ValueOptionsMap {
+        
+        return displayRules.reduce([:]) {
+            curr, next in
+            guard
+                let match = next["match"] as? ValueOptionMatchPresentable,
+                let apply = next["apply"] as? ValueOptionApplyPresentable else {
+                    return curr
+            }
+            var ret = curr
+            ret[match] = apply
+            return ret
+        }
+        
+    }
+    
     public func displayRulesProcessor<
         C: Hashable & SafeSubscriptable>(_ attributeId: Int, initial: [String: Any]? = nil) -> ((C?)->[String: Any])
         where C.Value == AttributeValue, C.Key == Int
@@ -2688,6 +2712,10 @@ public extension DeviceProfile.Presentation.AttributeOption.RangeOptions {
     
     public func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor {
         return RangeOptionsSubscriptor(rangeOptions: self, dataType: dataType)
+    }
+    
+    public var range: ClosedRange<AttributeValue> {
+        return min...max
     }
 
 }
