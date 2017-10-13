@@ -273,9 +273,32 @@ class SwitchAttributeInspectorViewController: TextFieldAttributeInspectorViewCon
     
     @IBOutlet weak var attributeValueSwitch: UISwitch!
     
+    override func updateAttributeDisplay() {
+        super.updateAttributeDisplay()
+        attributeValueSwitch?.isEnabled = attributeIsWritable
+        attributeValueSwitch?.isOn = attribute?.value.boolValue ?? false
+    }
+    
     // MARK: Actions
     
     @IBAction func switchValueChanged(_ sender: UISwitch) {
+        
+        guard
+            let deviceModelable = deviceModelable,
+            let attributeId = attributeId else { return }
+        
+        let newValue = sender.isOn
+        let deviceId = deviceModelable.deviceId
+        let TAG = self.TAG
+        
+        deviceModelable.set(value: .boolean(newValue), forAttributeId: attributeId)
+            .then {
+                value in
+                DDLogInfo("Set \(attributeId) to \(String(reflecting: value)) on \(deviceId)", tag: TAG)
+            }.catch {
+                error in
+                DDLogError("Error setting \(attributeId) to \(newValue) on \(deviceId)", tag: TAG)
+        }
     }
 }
 
