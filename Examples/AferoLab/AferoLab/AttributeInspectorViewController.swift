@@ -113,6 +113,14 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
         return attribute?.config.descriptor.dataType.stringValue ?? "-"
     }
     
+    var attributeIsWritable: Bool {
+        return attribute?.config.descriptor.isWritable ?? false
+    }
+    
+    var attributeLabelDisplayValue: String? {
+        return attribute?.displayParams?["label"] as? String
+    }
+    
     var lastUpdatedStringValue: String {
         // TODO: Implement last updated
         return "-"
@@ -192,9 +200,12 @@ class TextFieldAttributeInspectorViewController: BaseAttributeInspectorViewContr
 
     @IBOutlet weak var attributeValueTextField: UITextField!
 
+    @IBOutlet weak var attributeDisplayLabelValueLabel: UILabel!
+    
     override func updateAttributeDisplay() {
         super.updateAttributeDisplay()
         attributeValueTextField?.text = attributeValueStringValue
+        attributeDisplayLabelValueLabel?.text = attributeLabelDisplayValue
     }
     
     // MARK: <UITextFieldDelegate>
@@ -313,3 +324,5 @@ class PickerAttributeInspectorViewController: TextFieldAttributeInspectorViewCon
         // todo
     }
 }
+
+
