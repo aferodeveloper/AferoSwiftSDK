@@ -275,22 +275,27 @@ class TextFieldAttributeInspectorViewController: BaseAttributeInspectorViewContr
         
         guard let stringValue = stringValue else { return nil }
         
-        guard let value = attribute?.config.descriptor.valueForStringLiteral(stringValue) else {
+        guard let attribute = attribute else {
             return nil
         }
         
-        if let rangeOptions = attributeRangeSubscriptor,
-            rangeOptions.steps.contains(value) {
-            return value
+        guard let value = attribute.config.descriptor.valueForStringLiteral(stringValue) else {
+            return nil
         }
         
+        if let rangeOptions = attributeRangeSubscriptor {
+            guard rangeOptions.steps.contains(value) else {
+                return nil
+            }
+        }
+
         if let valueOptionsMap = attributeValueOptionsMap {
-            if valueOptionsMap.keys.contains(stringValue) {
-                return attribute?.config.descriptor.valueForStringLiteral(stringValue)
+            guard valueOptionsMap.keys.contains(stringValue) else {
+                return nil
             }
         }
         
-        return nil
+        return value
     }
     
     // MARK: <UITextFieldDelegate>
