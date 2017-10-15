@@ -175,6 +175,8 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     
 }
 
+// MARK: - AferoAttributeUITextView -
+
 @IBDesignable class AferoAttributeUITextField: UITextField, DeviceModelableObserving, AttributeEventObserving, UITextFieldDelegate {
     
     @IBInspectable var standardTextColor: UIColor = .black
@@ -322,6 +324,8 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 }
 
+// MARK: - AferoAttributeUISwitch -
+
 class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEventObserving {
     
     override init(frame: CGRect) {
@@ -392,6 +396,8 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
     }
 
 }
+
+// MARK: - AferoAttributeUISlider
 
 /// A UISlider bound to an Afero device and attribute.
 
@@ -510,4 +516,129 @@ class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEvent
         return (min: min, max: max, value: floatValue)
     }
     
+}
+
+// MARK: - AferoAttributeUIPickerView -
+
+class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, AttributeEventObserving, UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    func configure() {
+        delegate = self
+        dataSource = self
+        reloadAllComponents()
+        updateUI()
+    }
+    
+    func updateUI() {
+        
+        guard let attribute = attribute else {
+            return
+        }
+        
+        guard let index = attribute.config.presentation?.valueOptions.index(where: {
+            valueOption in return valueOption.match == attribute.value.stringValue
+        }) else {
+            DDLogError("Unrecognized value for picker (== \(String(describing: attribute)); bailing.", tag: TAG)
+            return
+        }
+        
+        selectRow(index, inComponent: 0, animated: true)
+    }
+    
+    deinit {
+        stopObservingDeviceEvents()
+        stopObservingAttributeEvents()
+    }
+    
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+    
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        updateUI()
+    }
+    
+    func handleDeviceProfileUpdateEvent() {
+        configure()
+    }
+    
+    // MARK: <AttributeEventObserving>
+    var attributeId: Int?
+    var attributeEventDisposable: Disposable?
+    
+    func initializeAttributeObservation() {
+        configure()
+    }
+    
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+        updateUI()
+    }
+
+    // MARK: <UIPickerViewDataSource>
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        // todo
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return attributeValueOptions?.count ?? 0
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        guard let valueOptions = attributeValueOptions else { return nil }
+        
+        var label = "-"
+        if let maybeLabel = valueOptions[row].apply["label"] as? String { label = maybeLabel }
+        
+        let value = valueOptions[row].match
+        
+        return "\(label) (\(value))"
+    }
+    
+    // MARK: <UdIPickerViewDelegate>
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        let TAG = self.TAG
+        
+        guard let deviceModelable = deviceModelable, let attributeId = attributeId else {
+            DDLogWarn("No device or attribute to update; bailing.", tag: TAG)
+            return
+        }
+        
+        guard let valueOptions = attributeValueOptions else {
+            // We should never get here, since we need valueOptions to
+            // create our rows
+            fatalError("No valueOptions present.")
+        }
+        
+        guard let newValue = attributeValue(for: valueOptions[row].match) else {
+            DDLogError("Unable to create attributeValue for \(valueOptions[row].match); bailing.", tag: TAG)
+            return
+        }
+        
+        let deviceId = deviceModelable.deviceId
+        
+        deviceModelable.set(value: newValue, forAttributeId: attributeId).then {
+            newValue -> Void in
+            DDLogVerbose("Successfully set \(deviceId).\(attributeId) to \(String(reflecting: newValue))", tag: TAG)
+            }.catch {
+                error in
+                self.updateUI()
+                DDLogError("Unable to set \(deviceId).\(attributeId) to \(String(reflecting: newValue)): \(String(reflecting: error))", tag: TAG)
+        }
+
+    }
+
 }

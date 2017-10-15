@@ -324,6 +324,15 @@ extension AttributeEventObserving {
 
 extension AttributeEventObserving {
     
+    func initializeAttributeObservation() {
+        guard let attributeId = attributeId else {
+            DDLogWarn("Not initializing observation yet; missing device or attributeId", tag: TAG)
+            return
+        }
+        DDLogDebug("Initializing observation for \(attributeId)", tag: TAG)
+    }
+    
+    
     func handle(event: AttributeEvent) {
         switch event {
         case let .update(accountId, deviceId, attribute):
@@ -408,7 +417,7 @@ extension AttributeEventObserving {
     }
     
     var attributeValueOptionsMap: ValueOptionsMap? {
-        guard let ret = attribute?.config.presentation?.valueOptionsMap else { return nil }
+        guard let ret = attributeValueOptions?.valueOptionsMap else { return nil }
         guard ret.count > 0 else { return nil }
         return ret
     }

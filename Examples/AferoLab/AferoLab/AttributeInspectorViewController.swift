@@ -34,6 +34,9 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
     
     typealias Observing = AttributeEventObserving & DeviceModelableObserving
  
+    /// A collection of references to views which will be configured
+    /// for attribute/devie observing when `configureObservers()` is called.
+    
     @IBOutlet var allObservers: [UIView] = []
     
     func configureObservers() {
@@ -51,7 +54,6 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
     override func viewDidLoad() {
         super.viewDidLoad()
         configureObservers()
-        updateUI()
     }
     
     deinit { stopObservingDeviceEvents() }
@@ -68,23 +70,12 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
         close()
     }
     
-    var attributeId: Int? {
-        didSet { updateUI() }
-    }
-    
-    // MARK: UI Updates
-    
-    func updateUI() { }
-    
-    func updateTextValues() { }
-    
     // MARK: <DeviceModelableObserving>
     
     weak var deviceModelable: DeviceModelable! {
         didSet {
             startObservingDeviceEvents()
             configureObservers()
-            updateUI()
         }
     }
     
@@ -94,17 +85,16 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
         close()
     }
     
-    func handleDeviceStateUpdateEvent(newState: DeviceState) {
-        updateUI()
-    }
-    
     // MARK: <AttributeEventObserving>
+    
+    var attributeId: Int? {
+        didSet {
+            configureObservers()
+        }
+    }
     
     var attributeEventDisposable: Disposable?
     
-    func initializeAttributeObservation() {
-        // nothing
-    }
 }
 
 class TextViewAttributeInspectorViewController: BaseAttributeInspectorViewController, UITextViewDelegate {
@@ -117,12 +107,15 @@ class TextViewAttributeInspectorViewController: BaseAttributeInspectorViewContro
         attributeStringValueTextView.delegate = self
         attributeStringValueTextView.textContainer.lineFragmentPadding = 0
         attributeStringValueTextView.textContainerInset = .zero
-        updateUI()
     }
     
-    override func updateTextValues() {
-        super.updateTextValues()
-        updateTextViewHeightConstraint()
+    var textViewTextObservation: NSKeyValueObservation?
+    
+    func startObservingTextViewContent() {
+        textViewTextObservation = attributeStringValueTextView.observe(\.text) {
+            view, change in
+            self.updateTextViewHeightConstraint()
+        }
     }
     
     func updateTextViewHeightConstraint() {
@@ -193,46 +186,9 @@ class SwitchAttributeInspectorViewController: TextFieldAttributeInspectorViewCon
 /// of values. Values are presented in a `UIPickerView`, based upon the attribute's
 /// `valueOptions` definition.
 
-class PickerAttributeInspectorViewController: TextFieldAttributeInspectorViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class PickerAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
     
     @IBOutlet weak var attributeValuePickerView: UIPickerView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        attributeValuePickerView.delegate = self
-    }
-    
-    override func updateTextValues() {
-        super.updateTextValues()
-        updatePickerViewSelectedRow()
-    }
-    
-    func updatePickerViewSelectedRow() {
-        
-    }
-    
-    // MARK: <UIPickerViewDataSource>
-
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        // todo
-        return 0
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        // todo
-        return 0
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        // todo
-        return nil
-    }
-    
-    // MARK: <UdIPickerViewDelegate>
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // todo
-    }
 }
 
 

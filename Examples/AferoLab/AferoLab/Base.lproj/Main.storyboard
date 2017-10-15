@@ -1456,7 +1456,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L1U-ZM-2CB">
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L1U-ZM-2CB" customClass="AferoAttributeUIPickerView" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="130" width="303" height="175"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="175" id="YzF-6z-rT4"/>
@@ -1547,6 +1547,7 @@
                         <outletCollection property="allObservers" destination="6fa-Y3-EO0" collectionClass="NSMutableArray" id="QXH-W3-uMZ"/>
                         <outletCollection property="allObservers" destination="f4Z-NW-nLf" collectionClass="NSMutableArray" id="b3j-mR-SBp"/>
                         <outletCollection property="allObservers" destination="L1U-ZM-2CB" collectionClass="NSMutableArray" id="fwm-pj-3Pl"/>
+                        <outletCollection property="allObservers" destination="L1U-ZM-2CB" collectionClass="NSMutableArray" id="YGR-FA-oGE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vBT-LU-LuC" userLabel="First Responder" sceneMemberID="firstResponder"/>

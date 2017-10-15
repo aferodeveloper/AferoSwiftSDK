@@ -747,9 +747,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         var maybeSegueIdentifier: SegueIdentifier?
         
         switch attribute.config.descriptor.dataType {
+
         case .utf8S: fallthrough
         case .bytes:
-            maybeSegueIdentifier = .showTextViewAttributeInspector
+            if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
+                maybeSegueIdentifier = .showPickerAttributeInspector
+            } else {
+                maybeSegueIdentifier = .showTextViewAttributeInspector
+            }
             
         case .boolean:
             maybeSegueIdentifier = .showSwitchAttributeInspector
@@ -760,7 +765,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case .sInt16: fallthrough
         case .sInt32: fallthrough
         case .sInt64:
-            maybeSegueIdentifier = .showSliderAttributeInspector
+            if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
+                maybeSegueIdentifier = .showPickerAttributeInspector
+            } else if attribute.config.presentation?.rangeOptions != nil {
+                maybeSegueIdentifier = .showSliderAttributeInspector
+            } else {
+                maybeSegueIdentifier = .showTextViewAttributeInspector
+            }
             
         // Floats are deprecated; use .q1516 / .q3132 instead.
         case .float32: fallthrough
