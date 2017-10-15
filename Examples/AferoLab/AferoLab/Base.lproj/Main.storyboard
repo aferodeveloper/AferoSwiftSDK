@@ -700,17 +700,23 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fa-t7-7Hm" userLabel="AttributeId">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fa-t7-7Hm" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="20" width="55" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qEr-De-wZ8" userLabel="AttributeName">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qEr-De-wZ8" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="83" y="20" width="240" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X0L-F6-9VO" userLabel="BottomRule">
                                         <rect key="frame" x="0.0" y="44" width="343" height="1"/>
@@ -725,11 +731,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="UTF8" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGY-bA-6uw">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="UTF8" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGY-bA-6uw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="285" y="49" width="38" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5c7-Fn-dan">
                                         <rect key="frame" x="20" y="69" width="97" height="18"/>
@@ -737,11 +746,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fxs-yG-bcw">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fxs-yG-bcw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="164" y="69" width="159" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="800" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X38-c1-JXq">
                                         <rect key="frame" x="20" y="89" width="42" height="18"/>
@@ -749,7 +761,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView" customClass="AferoAttributeUITextView" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="70" y="89" width="253" height="18"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" identifier="valueTextViewHeight" id="cYh-Ju-ueK"/>
@@ -834,6 +846,11 @@
                         <outlet property="dataTypeValueLabel" destination="wGY-bA-6uw" id="LIl-1d-iOh"/>
                         <outlet property="lastUpdatedHeaderLabel" destination="5c7-Fn-dan" id="1QC-j6-XR1"/>
                         <outlet property="lastUpdatedValueLabel" destination="Fxs-yG-bcw" id="WPH-k4-P2N"/>
+                        <outletCollection property="allObservers" destination="0Fa-t7-7Hm" collectionClass="NSMutableArray" id="w7r-js-HDu"/>
+                        <outletCollection property="allObservers" destination="qEr-De-wZ8" collectionClass="NSMutableArray" id="Ijm-Rj-VOQ"/>
+                        <outletCollection property="allObservers" destination="wGY-bA-6uw" collectionClass="NSMutableArray" id="4KH-0v-qp0"/>
+                        <outletCollection property="allObservers" destination="Fxs-yG-bcw" collectionClass="NSMutableArray" id="Hs9-Vb-Wd9"/>
+                        <outletCollection property="allObservers" destination="hJW-aI-06s" collectionClass="NSMutableArray" id="uHb-Kn-8GS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dP4-iv-MEP" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -893,17 +910,23 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UfL-Hz-LIb" userLabel="AttributeId">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UfL-Hz-LIb" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="20" width="55" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Udd-m1-CMi" userLabel="AttributeName">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Udd-m1-CMi" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="83" y="20" width="240" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwT-RL-wOh" userLabel="BottomRule">
                                         <rect key="frame" x="0.0" y="44" width="343" height="1"/>
@@ -918,11 +941,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="SINT64" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fu9-YA-7yr">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="SINT64" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fu9-YA-7yr" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="271" y="49" width="52" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xaq-Z3-hla">
                                         <rect key="frame" x="20" y="69" width="97" height="18"/>
@@ -930,11 +956,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYb-up-Kdt">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYb-up-Kdt" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="164" y="69" width="159" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fa-e1-TYe">
                                         <rect key="frame" x="20" y="103" width="42" height="18"/>
@@ -942,26 +971,31 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="2,000,000" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OON-Ky-72L" userLabel="Attribute Value Text Field">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="2,000,000" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OON-Ky-72L" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="70" y="101" width="253" height="21"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                        <connections>
-                                            <action selector="textFieldEditingChanged:" destination="fkd-FY-zEX" eventType="editingChanged" id="bC6-JJ-9EM"/>
-                                        </connections>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="art-02-IUW" userLabel="Attribute Value Slider">
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="art-02-IUW" userLabel="Attribute Value Slider" customClass="AferoAttributeUISlider" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="18" y="130" width="307" height="31"/>
-                                        <connections>
-                                            <action selector="sliderValueChanged:" destination="fkd-FY-zEX" eventType="valueChanged" id="ClS-2n-MJK"/>
-                                        </connections>
                                     </slider>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y78-wf-SfH">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y78-wf-SfH" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="168" width="303" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLabel"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1046,6 +1080,13 @@
                         <outlet property="dataTypeValueLabel" destination="Fu9-YA-7yr" id="JvI-Ak-O0b"/>
                         <outlet property="lastUpdatedHeaderLabel" destination="Xaq-Z3-hla" id="Jaf-WN-2hP"/>
                         <outlet property="lastUpdatedValueLabel" destination="dYb-up-Kdt" id="fF3-xs-ncN"/>
+                        <outletCollection property="allObservers" destination="UfL-Hz-LIb" collectionClass="NSMutableArray" id="t8g-za-ryr"/>
+                        <outletCollection property="allObservers" destination="Udd-m1-CMi" collectionClass="NSMutableArray" id="hZJ-6J-hOa"/>
+                        <outletCollection property="allObservers" destination="Fu9-YA-7yr" collectionClass="NSMutableArray" id="vYv-Kf-dHQ"/>
+                        <outletCollection property="allObservers" destination="dYb-up-Kdt" collectionClass="NSMutableArray" id="TMq-Yh-3TY"/>
+                        <outletCollection property="allObservers" destination="OON-Ky-72L" collectionClass="NSMutableArray" id="8na-RB-2la"/>
+                        <outletCollection property="allObservers" destination="art-02-IUW" collectionClass="NSMutableArray" id="l41-Gd-Ebn"/>
+                        <outletCollection property="allObservers" destination="y78-wf-SfH" collectionClass="NSMutableArray" id="iLZ-0Z-5uo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I9Z-wM-UPl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1105,17 +1146,23 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97v-dc-CSa" userLabel="AttributeId">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97v-dc-CSa" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="20" width="55" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jXW-0Z-u8j" userLabel="AttributeName">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jXW-0Z-u8j" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="83" y="20" width="240" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P7K-DH-V3T" userLabel="BottomRule">
                                         <rect key="frame" x="0.0" y="44" width="343" height="1"/>
@@ -1130,11 +1177,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ni-kh-jWf">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ni-kh-jWf" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="282" y="49" width="41" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Enq-d2-gEK">
                                         <rect key="frame" x="20" y="69" width="97" height="18"/>
@@ -1142,11 +1192,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y1f-tN-sJw">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y1f-tN-sJw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="164" y="69" width="159" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dgi-Id-B3t">
                                         <rect key="frame" x="20" y="103" width="42" height="18"/>
@@ -1154,33 +1207,38 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="false" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoP-Qa-1VA" userLabel="Attribute Value Text Field">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="false" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoP-Qa-1VA" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="223" y="101" width="43" height="21"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                        <connections>
-                                            <action selector="textFieldEditingChanged:" destination="aPl-sr-J37" eventType="editingChanged" id="nCt-9O-FQG"/>
-                                        </connections>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uXp-nI-GZi">
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uXp-nI-GZi" customClass="AferoAttributeUISwitch" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="274" y="96" width="51" height="31"/>
-                                        <connections>
-                                            <action selector="switchValueChanged:" destination="aPl-sr-J37" eventType="valueChanged" id="4iv-uh-LaB"/>
-                                        </connections>
                                     </switch>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZNm-rs-MSA">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZNm-rs-MSA" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="134.5" width="303" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLabel"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="Enq-d2-gEK" firstAttribute="firstBaseline" secondItem="Y1f-tN-sJw" secondAttribute="firstBaseline" id="2VM-ce-eAQ"/>
                                     <constraint firstItem="jXW-0Z-u8j" firstAttribute="firstBaseline" secondItem="97v-dc-CSa" secondAttribute="firstBaseline" id="5AR-T4-4Hh"/>
-                                    <constraint firstItem="ZNm-rs-MSA" firstAttribute="firstBaseline" secondItem="uXp-nI-GZi" secondAttribute="baseline" constant="24.5" symbolType="layoutAnchor" id="6aV-G9-2O0"/>
+                                    <constraint firstItem="ZNm-rs-MSA" firstAttribute="firstBaseline" secondItem="uXp-nI-GZi" secondAttribute="baseline" constant="22" symbolType="layoutAnchor" id="6aV-G9-2O0"/>
                                     <constraint firstItem="ZNm-rs-MSA" firstAttribute="trailing" secondItem="uXp-nI-GZi" secondAttribute="trailing" id="9DC-v5-T9R"/>
                                     <constraint firstAttribute="trailing" secondItem="jXW-0Z-u8j" secondAttribute="trailing" constant="20" symbolic="YES" id="BDU-6c-yMB"/>
                                     <constraint firstAttribute="bottom" secondItem="ZNm-rs-MSA" secondAttribute="bottom" constant="10" id="DZc-Dm-8fH"/>
@@ -1257,6 +1315,13 @@
                         <outlet property="dataTypeValueLabel" destination="7ni-kh-jWf" id="PYE-UP-6YG"/>
                         <outlet property="lastUpdatedHeaderLabel" destination="Enq-d2-gEK" id="c7F-WM-TRB"/>
                         <outlet property="lastUpdatedValueLabel" destination="Y1f-tN-sJw" id="Cc5-jl-1R7"/>
+                        <outletCollection property="allObservers" destination="97v-dc-CSa" collectionClass="NSMutableArray" id="hpf-8n-fZ0"/>
+                        <outletCollection property="allObservers" destination="jXW-0Z-u8j" collectionClass="NSMutableArray" id="Ozd-8L-SsG"/>
+                        <outletCollection property="allObservers" destination="7ni-kh-jWf" collectionClass="NSMutableArray" id="PZO-xy-Way"/>
+                        <outletCollection property="allObservers" destination="Y1f-tN-sJw" collectionClass="NSMutableArray" id="lrE-EH-ZZi"/>
+                        <outletCollection property="allObservers" destination="QoP-Qa-1VA" collectionClass="NSMutableArray" id="eeq-h5-QKD"/>
+                        <outletCollection property="allObservers" destination="uXp-nI-GZi" collectionClass="NSMutableArray" id="o9x-Ku-tST"/>
+                        <outletCollection property="allObservers" destination="ZNm-rs-MSA" collectionClass="NSMutableArray" id="VMW-GL-mjq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cDC-zC-jc5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1316,17 +1381,23 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3rB-O7-Lxy" userLabel="AttributeId">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3rB-O7-Lxy" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="20" y="20" width="55" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-Bw-Cdg" userLabel="AttributeName">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-Bw-Cdg" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="83" y="20" width="240" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hTz-W6-Uhm" userLabel="BottomRule">
                                         <rect key="frame" x="0.0" y="44" width="343" height="1"/>
@@ -1341,11 +1412,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNr-zh-HNh">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNr-zh-HNh" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="282" y="49" width="41" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lks-l3-cD0">
                                         <rect key="frame" x="20" y="69" width="97" height="18"/>
@@ -1353,11 +1427,14 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJu-JV-Xb3">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJu-JV-Xb3" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="164" y="69" width="159" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOA-rC-od4">
                                         <rect key="frame" x="20" y="103" width="42" height="18"/>
@@ -1365,14 +1442,19 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="Cupertino" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f4Z-NW-nLf" userLabel="Attribute Value Text Field">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="Cupertino" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f4Z-NW-nLf" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
                                         <rect key="frame" x="239" y="101" width="84" height="21"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                        <connections>
-                                            <action selector="textFieldEditingChanged:" destination="6gg-Ol-caJ" eventType="editingChanged" id="bil-0V-T7C"/>
-                                        </connections>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textField>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L1U-ZM-2CB">
                                         <rect key="frame" x="20" y="130" width="303" height="175"/>
@@ -1459,6 +1541,12 @@
                         <outlet property="dataTypeValueLabel" destination="nNr-zh-HNh" id="CnR-Rc-NbS"/>
                         <outlet property="lastUpdatedHeaderLabel" destination="Lks-l3-cD0" id="PKa-wA-sCL"/>
                         <outlet property="lastUpdatedValueLabel" destination="BJu-JV-Xb3" id="LO0-u7-05C"/>
+                        <outletCollection property="allObservers" destination="3rB-O7-Lxy" collectionClass="NSMutableArray" id="MzO-Xj-uyW"/>
+                        <outletCollection property="allObservers" destination="82Q-Bw-Cdg" collectionClass="NSMutableArray" id="gdh-TP-doh"/>
+                        <outletCollection property="allObservers" destination="nNr-zh-HNh" collectionClass="NSMutableArray" id="Nli-PO-b8x"/>
+                        <outletCollection property="allObservers" destination="6fa-Y3-EO0" collectionClass="NSMutableArray" id="QXH-W3-uMZ"/>
+                        <outletCollection property="allObservers" destination="f4Z-NW-nLf" collectionClass="NSMutableArray" id="b3j-mR-SBp"/>
+                        <outletCollection property="allObservers" destination="L1U-ZM-2CB" collectionClass="NSMutableArray" id="fwm-pj-3Pl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vBT-LU-LuC" userLabel="First Responder" sceneMemberID="firstResponder"/>

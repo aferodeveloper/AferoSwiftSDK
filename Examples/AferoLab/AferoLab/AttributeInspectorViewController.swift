@@ -12,29 +12,46 @@ import Afero
 import ReactiveSwift
 import CocoaLumberjack
 
-class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObserving {
+class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObserving, AttributeEventObserving {
 
     // MARK: - UI Management -
     @IBOutlet weak var bodyView: UIView!
     
     @IBOutlet var backgroundTapGestureRecognizer: UITapGestureRecognizer!
     
-    @IBOutlet weak var attributeIdLabel: UILabel!
-    @IBOutlet weak var attributeNameLabel: UILabel!
+    @IBOutlet weak var attributeIdLabel: AferoAttributeUILabel!
+    @IBOutlet weak var attributeNameLabel: AferoAttributeUILabel!
     
     @IBOutlet weak var dataTypeHeaderLabel: UILabel!
-    @IBOutlet weak var dataTypeValueLabel: UILabel!
+    @IBOutlet weak var dataTypeValueLabel: AferoAttributeUILabel!
     
     @IBOutlet weak var lastUpdatedHeaderLabel: UILabel!
-    @IBOutlet weak var lastUpdatedValueLabel: UILabel!
+    @IBOutlet weak var lastUpdatedValueLabel: AferoAttributeUILabel!
     
     @IBOutlet weak var attributeValueHeaderLabel: UILabel!
     
     // MARK: Lifecycle
     
+    typealias Observing = AttributeEventObserving & DeviceModelableObserving
+ 
+    @IBOutlet var allObservers: [UIView] = []
+    
+    func configureObservers() {
+        allObservers.forEach {
+            {
+                maybeObserving in
+                maybeObserving?.attributeEventSignaling = deviceModelable
+                maybeObserving?.attributeId = attributeId
+                maybeObserving?.startObservingAttributeEvents()
+                maybeObserving?.startObservingDeviceEvents()
+            }($0 as? Observing)
+        }
+    }
+    
     override func viewDidLoad() {
-       super.viewDidLoad()
-        updateAttributeDisplay()
+        super.viewDidLoad()
+        configureObservers()
+        updateUI()
     }
     
     deinit { stopObservingDeviceEvents() }
@@ -51,33 +68,23 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
         close()
     }
     
-    @IBAction func cancelTapped(_ sender: Any) {
-        close()
-    }
-    
-    @IBAction func saveTapped(_ sender: Any) {
-        close()
-    }
-    
     var attributeId: Int? {
-        didSet { updateAttributeDisplay() }
+        didSet { updateUI() }
     }
     
     // MARK: UI Updates
     
-    func updateAttributeDisplay() {
-        attributeIdLabel?.text = attributeIdStringValue
-        attributeNameLabel?.text = attributeNameStringValue
-        dataTypeValueLabel?.text = attributeTypeStringValue
-        lastUpdatedValueLabel?.text = lastUpdatedStringValue
-    }
+    func updateUI() { }
+    
+    func updateTextValues() { }
     
     // MARK: <DeviceModelableObserving>
     
-    var deviceModelable: DeviceModelable! {
+    weak var deviceModelable: DeviceModelable! {
         didSet {
             startObservingDeviceEvents()
-            updateAttributeDisplay()
+            configureObservers()
+            updateUI()
         }
     }
     
@@ -88,62 +95,33 @@ class BaseAttributeInspectorViewController: UIViewController, DeviceModelableObs
     }
     
     func handleDeviceStateUpdateEvent(newState: DeviceState) {
-        updateAttributeDisplay()
+        updateUI()
     }
     
-    // MARK: Convenience Accessors
+    // MARK: <AttributeEventObserving>
     
-    /// A tuple containing the attribute's data type and display
-    /// information, as well as its current value
-    var attribute: DeviceModelable.Attribute? {
-        guard let attributeId = attributeId else { return nil }
-        return deviceModelable?.attribute(for: attributeId)
+    var attributeEventDisposable: Disposable?
+    
+    func initializeAttributeObservation() {
+        // nothing
     }
-    
-    var attributeIdStringValue: String {
-        guard let attributeId = attributeId else { return "-" }
-        return "\(attributeId)"
-    }
-    
-    var attributeNameStringValue: String {
-        return attribute?.config.descriptor.semanticType ?? "-"
-    }
-    
-    var attributeTypeStringValue: String {
-        return attribute?.config.descriptor.dataType.stringValue ?? "-"
-    }
-    
-    var attributeIsWritable: Bool {
-        return attribute?.config.descriptor.isWritable ?? false
-    }
-    
-    var lastUpdatedStringValue: String {
-        // TODO: Implement last updated
-        return "-"
-    }
-    
-    var attributeValueStringValue: String {
-        return attribute?.value.stringValue ?? "-"
-    }
-    
 }
 
 class TextViewAttributeInspectorViewController: BaseAttributeInspectorViewController, UITextViewDelegate {
     
-    @IBOutlet weak var attributeStringValueTextView: UITextView!
+    @IBOutlet weak var attributeStringValueTextView: AferoAttributeUITextView!
     @IBOutlet weak var attributeValueTextViewHeightConstraint: NSLayoutConstraint!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         attributeStringValueTextView.delegate = self
         attributeStringValueTextView.textContainer.lineFragmentPadding = 0
         attributeStringValueTextView.textContainerInset = .zero
-        updateAttributeDisplay()
+        updateUI()
     }
     
-    override func updateAttributeDisplay() {
-        super.updateAttributeDisplay()
-        attributeStringValueTextView?.text = attributeValueStringValue
+    override func updateTextValues() {
+        super.updateTextValues()
         updateTextViewHeightConstraint()
     }
     
@@ -193,234 +171,22 @@ class TextViewAttributeInspectorViewController: BaseAttributeInspectorViewContro
 }
 
 class TextFieldAttributeInspectorViewController: BaseAttributeInspectorViewController, UITextFieldDelegate {
-
-    @IBOutlet weak var attributeValueTextField: UITextField!
-
-    @IBOutlet weak var attributeDisplayLabelValueLabel: UILabel!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        attributeValueTextField.delegate = self
-    }
-    
-    override func updateAttributeDisplay() {
-        super.updateAttributeDisplay()
-        
-        guard
-            let attributeValueTextField = attributeValueTextField,
-            let attributeDisplayLabelValueLabel = attributeDisplayLabelValueLabel else {
-                return
-        }
-        
-        if (attributeValueTextField.text == attributeValueStringValue) &&
-            (attributeDisplayLabelValueLabel.text == attributeLabelDisplayValue) {
-            return
-        }
-
-        attributeValueTextField.resignFirstResponder()
-        attributeValueTextField.text = attributeValueStringValue
-        attributeValueTextField.textColor = .black
-        attributeDisplayLabelValueLabel.text = attributeLabelDisplayValue
-        
-        UIView.animate(
-            withDuration: 0.125,
-            delay: 0.0,
-            options: .curveEaseInOut,
-            animations: {
-                let bounceScale = CGAffineTransform(scaleX: 1.15, y: 1.15)
-                attributeValueTextField.layer.setAffineTransform(bounceScale)
-                attributeDisplayLabelValueLabel.layer.setAffineTransform(bounceScale)
-        }) {
-            completed in
-            UIView.animate(
-                withDuration: 0.125,
-                delay: 0.0,
-                options: .curveEaseOut,
-                animations: {
-                    attributeValueTextField.layer.setAffineTransform(.identity)
-                    attributeDisplayLabelValueLabel.layer.setAffineTransform(.identity)
-            },
-                completion: nil)
-        }
-    }
-    
-    // MARK: Convenience Accessors
-    
-    var attributeLabelDisplayValue: String? {
-        return attribute?.displayParams?["label"] as? String
-    }
-    
-    var attributeRangeOptions: DeviceProfile.Presentation.AttributeOption.RangeOptions? {
-        return attribute?.config.presentation?.rangeOptions
-    }
-    
-    var attributeRangeSubscriptor: RangeOptionsSubscriptor? {
-        guard let dataType = attribute?.config.descriptor.dataType else {
-            return nil
-        }
-        return attributeRangeOptions?.subscriptor(dataType)
-    }
-    
-    typealias ValueOption = DeviceProfile.Presentation.AttributeOption.ValueOption
-    var attributeValueOptions: [ValueOption]? {
-        return attribute?.config.presentation?.valueOptions
-    }
-
-    var attributeValueOptionsMap: ValueOptionsMap? {
-        guard let attribute = attribute else { return nil }
-        return attribute.config.presentation?.valueOptions.valueOptionsMap
-    }
-    
-    func attributeValue(for stringValue: String?) -> AttributeValue? {
-        
-        guard let stringValue = stringValue else { return nil }
-        
-        guard let attribute = attribute else {
-            return nil
-        }
-        
-        guard let value = attribute.config.descriptor.valueForStringLiteral(stringValue) else {
-            return nil
-        }
-        
-        if let rangeOptions = attributeRangeSubscriptor {
-            guard rangeOptions.steps.contains(value) else {
-                return nil
-            }
-        }
-
-        if let valueOptionsMap = attributeValueOptionsMap {
-            guard valueOptionsMap.keys.contains(stringValue) else {
-                return nil
-            }
-        }
-        
-        return value
-    }
-    
-    // MARK: <UITextFieldDelegate>
-    
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        return attributeIsWritable
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        DDLogDebug("textField did begin editing", tag: TAG)
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
-        let replacementText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-
-        if let _ = attributeValue(for: replacementText) {
-            textField.textColor = .black
-        } else {
-            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
-            textField.textColor = .red
-        }
-        
-        return true
-    }
-    
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-
-        guard
-            let deviceModelable = deviceModelable,
-            let attributeId = attributeId else { return }
-
-        guard let newValue = attributeValue(for: textField.text) else {
-            updateAttributeDisplay()
-            return
-        }
-        
-        let deviceId = deviceModelable.deviceId
-        let TAG = self.TAG
-        
-        deviceModelable.set(value: newValue, forAttributeId: attributeId)
-            .then {
-                value in
-                DDLogInfo("Set \(attributeId) to \(String(reflecting: value)) on \(deviceId)", tag: TAG)
-            }.catch {
-                error in
-                DDLogError("Error setting \(attributeId) to \(newValue) on \(deviceId)", tag: TAG)
-        }
-
-    }
-    
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        return false
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return false
-    }
-    
-    // MARK: Actions
-    
-    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
-        guard let _ = attributeValue(for: sender.text) else {
-            sender.textColor = .red
-            return
-        }
-        sender.textColor = .black
-    }
-    
-
+    @IBOutlet weak var attributeValueTextField: AferoAttributeUITextField!
+    @IBOutlet weak var attributeDisplayLabelValueLabel: AferoAttributeUILabel!
 }
 
 /// Provides an inspector for attributes whose values can can be within a ceiling
 /// and a floor.
 
 class SliderAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
-    
-    @IBOutlet weak var attributeValueSlider: UISlider!
-    
-    // MARK: Actions
-    
-    @IBAction func sliderValueChanged(_ sender: UISlider) {
-    }
+    @IBOutlet weak var attributeValueSlider: AferoAttributeUISlider!
 }
-
 
 /// Provides an inspector for attributes whose values can take one of two values,
 /// which can be interpreted as "on" or "off".
 
 class SwitchAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
-    
-    @IBOutlet weak var attributeValueSwitch: UISwitch!
-    
-    override func updateAttributeDisplay() {
-        super.updateAttributeDisplay()
-        attributeValueSwitch?.isEnabled = attributeIsWritable
-        attributeValueSwitch?.isOn = attribute?.value.boolValue ?? false
-    }
-    
-    // MARK: Actions
-    
-    @IBAction func switchValueChanged(_ sender: UISwitch) {
-        
-        guard
-            let deviceModelable = deviceModelable,
-            let attributeId = attributeId else { return }
-        
-        let newValue = sender.isOn
-        let deviceId = deviceModelable.deviceId
-        let TAG = self.TAG
-        
-        deviceModelable.set(value: .boolean(newValue), forAttributeId: attributeId)
-            .then {
-                value in
-                DDLogInfo("Set \(attributeId) to \(String(reflecting: value)) on \(deviceId)", tag: TAG)
-            }.catch {
-                error in
-                DDLogError("Error setting \(attributeId) to \(newValue) on \(deviceId)", tag: TAG)
-        }
-    }
+    @IBOutlet weak var attributeValueSwitch: AferoAttributeUISwitch!
 }
 
 /// Provides an inspector for attributes whose values an take on an enumeration
@@ -436,8 +202,8 @@ class PickerAttributeInspectorViewController: TextFieldAttributeInspectorViewCon
         attributeValuePickerView.delegate = self
     }
     
-    override func updateAttributeDisplay() {
-        super.updateAttributeDisplay()
+    override func updateTextValues() {
+        super.updateTextValues()
         updatePickerViewSelectedRow()
     }
     
