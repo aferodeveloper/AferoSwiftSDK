@@ -102,65 +102,6 @@ class TextViewAttributeInspectorViewController: BaseAttributeInspectorViewContro
     @IBOutlet weak var attributeStringValueTextView: AferoAttributeUITextView!
     @IBOutlet weak var attributeValueTextViewHeightConstraint: NSLayoutConstraint!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        attributeStringValueTextView.delegate = self
-        attributeStringValueTextView.textContainer.lineFragmentPadding = 0
-        attributeStringValueTextView.textContainerInset = .zero
-    }
-    
-    var textViewTextObservation: NSKeyValueObservation?
-    
-    func startObservingTextViewContent() {
-        textViewTextObservation = attributeStringValueTextView.observe(\.text) {
-            view, change in
-            self.updateTextViewHeightConstraint()
-        }
-    }
-    
-    func updateTextViewHeightConstraint() {
-        guard let tv = attributeStringValueTextView else { return }
-        let newSize = tv.sizeThatFits(
-            CGSize(width: tv.frame.size.width, height: .infinity)
-        )
-        attributeValueTextViewHeightConstraint?.constant = newSize.height
-        bodyView.invalidateIntrinsicContentSize()
-        view.invalidateIntrinsicContentSize()
-        view.setNeedsLayout()
-    }
-    
-    // MARK: <UITextViewDelegate>
-    
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        // todo
-        return false
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        // todo
-    }
-
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        // todo
-        return false
-    }
-
-    func textViewDidChange(_ textView: UITextView) {
-        // todo
-    }
-    
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        // todo
-        return false
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        // todo
-    }
-
-    // MARK: Actions
-    
-    
 }
 
 class TextFieldAttributeInspectorViewController: BaseAttributeInspectorViewController, UITextFieldDelegate {

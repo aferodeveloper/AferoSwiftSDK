@@ -665,15 +665,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ie3-Yj-A1A">
-                                <rect key="frame" x="16" y="270.5" width="343" height="127"/>
+                                <rect key="frame" x="16" y="269.5" width="343" height="129"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBt-bk-Lgo" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ac-9q-5uL">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KLt-gs-eeQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -762,12 +762,30 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView" customClass="AferoAttributeUITextView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="89" width="253" height="18"/>
+                                        <rect key="frame" x="70" y="89" width="253" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" identifier="valueTextViewHeight" id="cYh-Ju-ueK"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="keyPath" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="lineFragmentPadding">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="bottomTextContainerInset">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="leftTextContainerInset">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="rightTextContainerInset">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="topTextContainerInset">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1346,15 +1364,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="icM-VQ-A2j">
-                                <rect key="frame" x="16" y="176" width="343" height="315"/>
+                                <rect key="frame" x="16" y="185" width="343" height="297"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lbh-Rl-7Bb" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="315"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="297"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yDp-w5-wms">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="315"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="297"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="6fa-Y3-EO0">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="315"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="297"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -1457,7 +1475,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L1U-ZM-2CB" customClass="AferoAttributeUIPickerView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="130" width="303" height="175"/>
+                                        <rect key="frame" x="20" y="122" width="303" height="175"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="175" id="YzF-6z-rT4"/>
                                         </constraints>
@@ -1483,14 +1501,14 @@
                                     <constraint firstItem="BJu-JV-Xb3" firstAttribute="trailing" secondItem="nNr-zh-HNh" secondAttribute="trailing" id="RbW-Lk-7zD"/>
                                     <constraint firstItem="nE7-ag-rWX" firstAttribute="leading" secondItem="icM-VQ-A2j" secondAttribute="leading" constant="20" symbolic="YES" id="VYw-3M-qf1"/>
                                     <constraint firstItem="f4Z-NW-nLf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="bOA-rC-od4" secondAttribute="trailing" constant="8" symbolic="YES" id="fQ8-4n-ZlG"/>
-                                    <constraint firstItem="L1U-ZM-2CB" firstAttribute="top" secondItem="f4Z-NW-nLf" secondAttribute="bottom" constant="8" symbolic="YES" id="j4J-wo-4zd"/>
+                                    <constraint firstItem="L1U-ZM-2CB" firstAttribute="top" secondItem="f4Z-NW-nLf" secondAttribute="bottom" id="j4J-wo-4zd"/>
                                     <constraint firstItem="hTz-W6-Uhm" firstAttribute="top" secondItem="82Q-Bw-Cdg" secondAttribute="bottom" constant="3" id="khv-C4-g6Q"/>
                                     <constraint firstAttribute="trailing" secondItem="Lbh-Rl-7Bb" secondAttribute="trailing" id="m18-cG-vZS"/>
                                     <constraint firstItem="3rB-O7-Lxy" firstAttribute="leading" secondItem="icM-VQ-A2j" secondAttribute="leading" constant="20" symbolic="YES" id="nQh-DE-YIb"/>
                                     <constraint firstItem="f4Z-NW-nLf" firstAttribute="firstBaseline" secondItem="bOA-rC-od4" secondAttribute="firstBaseline" id="noL-wo-s3v"/>
                                     <constraint firstItem="Lks-l3-cD0" firstAttribute="firstBaseline" secondItem="BJu-JV-Xb3" secondAttribute="firstBaseline" id="pbq-SL-HSL"/>
                                     <constraint firstAttribute="trailing" secondItem="hTz-W6-Uhm" secondAttribute="trailing" id="qO8-dF-8T9"/>
-                                    <constraint firstAttribute="bottom" secondItem="L1U-ZM-2CB" secondAttribute="bottom" constant="10" id="rn5-eM-87L"/>
+                                    <constraint firstAttribute="bottom" secondItem="L1U-ZM-2CB" secondAttribute="bottom" id="rn5-eM-87L"/>
                                     <constraint firstItem="L1U-ZM-2CB" firstAttribute="trailing" secondItem="BJu-JV-Xb3" secondAttribute="trailing" id="rpe-tw-gNh"/>
                                     <constraint firstItem="nNr-zh-HNh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nE7-ag-rWX" secondAttribute="trailing" constant="8" symbolic="YES" id="sGE-cV-KdU"/>
                                     <constraint firstItem="82Q-Bw-Cdg" firstAttribute="firstBaseline" secondItem="3rB-O7-Lxy" secondAttribute="firstBaseline" id="szb-Ts-qRb"/>

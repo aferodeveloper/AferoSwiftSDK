@@ -108,13 +108,58 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 }
 
-@IBDesignable class AferoAttributeUITextView: UITextView, DeviceModelableObserving, AttributeEventObserving, AferoAttributeTextProducing {
+@IBDesignable class AferoAttributeUITextView: UITextView, DeviceModelableObserving, AttributeEventObserving, AferoAttributeTextProducing, UITextViewDelegate {
+
+    @IBInspectable var standardTextColor: UIColor = .black
+    @IBInspectable var invalidValueTextColor: UIColor = .red
+    
+    @IBInspectable var lineFragmentPadding: CGFloat {
+        get { return textContainer.lineFragmentPadding }
+        set { textContainer.lineFragmentPadding = newValue }
+    }
+    
+    @IBInspectable public var bottomTextContainerInset: CGFloat {
+        get { return textContainerInset.bottom }
+        set { textContainerInset.bottom = newValue }
+    }
+    @IBInspectable public var leftTextContainerInset: CGFloat {
+        get { return textContainerInset.left }
+        set { textContainerInset.left = newValue }
+    }
+    @IBInspectable public var rightTextContainerInset: CGFloat {
+        get { return textContainerInset.right }
+        set { textContainerInset.right = newValue }
+    }
+    @IBInspectable public var topTextContainerInset: CGFloat {
+        get { return textContainerInset.top }
+        set { textContainerInset.top = newValue }
+    }
+    
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
+        super.init(frame: frame, textContainer: textContainer)
+        configure()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    func configure() {
+        delegate = self
+    }
 
     deinit {
         stopObservingDeviceEvents()
         stopObservingAttributeEvents()
     }
-
+    
+    override var intrinsicContentSize: CGSize {
+        return sizeThatFits(
+            CGSize(width: frame.size.width, height: .infinity)
+        )
+    }
+    
     // MARK: <AferoAttributeTextProducing>
     var attributeTextSource: AferoAttributeTextSource = .attributeValue
     @IBInspectable var attributeTextSourceName: String {
@@ -133,33 +178,20 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
             attributeTextSource = source
         }
     }
-
-    // MARK: <DeviceModelableObserving>
-    var deviceModelable: DeviceModelable!
-    var deviceEventSignalDisposable: Disposable?
-
-    func handleDeviceStateUpdateEvent(newState: DeviceState) {
-        isEditable = newState.isAvailable
-    }
     
-    // MARK: <AttributeEventObserving>
-    var attributeId: Int?
-    var attributeEventDisposable: Disposable?
-    
-    func initializeAttributeObservation() {
-        guard let attribute = attribute else { return }
-        self.text = text(for: attribute)
-    }
-
-    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+    func updateUI() {
         
         if isFirstResponder { return }
         
-        let newValue = attributeValueStringValue
-        
-        guard self.text != newValue else {
-            return
-        }
+        isEditable = shouldBeEditable
+        isSelectable = shouldBeSelectable
+
+        guard
+            let attribute = attribute,
+            let newValue = text(for: attribute)
+            else { return }
+
+        guard text != newValue else { return }
         
         UIView.transition(
             with: self,
@@ -167,10 +199,98 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
             options: .transitionCrossDissolve,
             animations: {
                 self.text = newValue
-            },
+                self.textColor = self.standardTextColor
+        },
             completion: nil
         )
         
+        invalidateIntrinsicContentSize()
+    }
+
+
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        updateUI()
+    }
+    
+    // MARK: <AttributeEventObserving>
+    var attributeId: Int?
+    var attributeEventDisposable: Disposable?
+    
+    func initializeAttributeObservation() {
+        updateUI()
+    }
+
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+       updateUI()
+    }
+    
+    var shouldBeSelectable: Bool { return true }
+    
+    var shouldBeEditable: Bool {
+        if attributeTextSource != .attributeValue { return false }
+        if !(deviceModelable?.isAvailable ?? false) { return false }
+        if !attributeIsWritable { return false }
+        return true
+    }
+    
+    // MARK: <UITextViewDelegate>
+    
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        return shouldBeEditable
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        DDLogDebug("Began editing", tag: TAG)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let replacementText = (textView.text as NSString?)?.replacingCharacters(in: range, with: text)
+        
+        if let _ = attributeValue(for: replacementText) {
+            textView.textColor = standardTextColor
+        } else {
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
+            textView.textColor = invalidValueTextColor
+        }
+        
+        return true
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        invalidateIntrinsicContentSize()
+    }
+    
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        return true
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+
+        guard
+            let deviceModelable = deviceModelable,
+            let attributeId = attributeId else { return }
+        
+        guard let newValue = attributeValue(for: textView.text) else {
+            updateUI()
+            return
+        }
+        
+        let deviceId = deviceModelable.deviceId
+        let TAG = self.TAG
+        
+        deviceModelable.set(value: newValue, forAttributeId: attributeId)
+            .then {
+                value in
+                DDLogInfo("Set \(attributeId) to \(String(reflecting: value)) on \(deviceId)", tag: TAG)
+            }.catch {
+                error in
+                DDLogError("Error setting \(attributeId) to \(newValue) on \(deviceId)", tag: TAG)
+        }
+
     }
     
 }
@@ -245,10 +365,10 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
         let replacementText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
         
         if let _ = attributeValue(for: replacementText) {
-            textField.textColor = .black
+            textField.textColor = standardTextColor
         } else {
             DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
-            textField.textColor = .red
+            textField.textColor = invalidValueTextColor
         }
         
         return true
