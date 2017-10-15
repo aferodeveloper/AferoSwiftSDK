@@ -266,17 +266,12 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
     public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
         
         guard let
-            attributeDescriptor = descriptorForAttributeId(attributeId) else { return }
-        
-        let attributeOption = attributeOptionForAttributeId(attributeId)
+            attribute = attribute(for: attributeId) else { return }
         
         let event: AttributeEvent = .update(
             accountId: accountId,
             deviceId: deviceId,
-            attributeId: attributeId,
-            attributeDescriptor: attributeDescriptor,
-            attributeOption: attributeOption,
-            attributeValue: value
+            attribute: attribute
         )
         
         DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)

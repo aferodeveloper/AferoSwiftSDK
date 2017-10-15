@@ -787,7 +787,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                 
                 switch event {
                     
-                case let .update(_, _, attributeId, _, _, attributeValue):
+                case let .update(_, _, attribute):
+                    
+                    let attributeId = attribute.config.descriptor.id
                     
                     guard let wifiAttributeId = AferoSofthubWifiAttributeId(rawValue: attributeId) else {
                         DDLogDebug("Unrecognized attributeId \(attributeId) for wifi setup; ignoring.")
@@ -799,9 +801,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                     case .networkType:
                         
                         guard
-                            let typeValue = attributeValue.intValue,
+                            let typeValue = attribute.value.intValue,
                             let networkType = AferoSofthubWifiNetworkType(rawValue: typeValue) else {
-                                DDLogError("\(attributeValue) cannot coerce to int for network type.", tag: TAG)
+                                DDLogError("\(attribute.value) cannot coerce to int for network type.", tag: TAG)
                                 return
                         }
                         
@@ -809,8 +811,8 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                         
                     case .currentSSID:
                         
-                        guard let newSSID = attributeValue.stringValue else {
-                            DDLogError("\(attributeValue) cannot coerce to string for SSID", tag: TAG)
+                        guard let newSSID = attribute.value.stringValue else {
+                            DDLogError("\(attribute.value) cannot coerce to string for SSID", tag: TAG)
                             return
                         }
                         
@@ -819,9 +821,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                     case .setupState:
                         
                         guard
-                            let intState = attributeValue.intValue,
+                            let intState = attribute.value.intValue,
                             let newState = AferoSofthubWifiState(rawValue: intState) else {
-                                DDLogError("Invalid integer value for setup state (\(attributeValue))", tag: TAG)
+                                DDLogError("Invalid integer value for setup state (\(attribute.value))", tag: TAG)
                                 return
                         }
                         
@@ -830,9 +832,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                     case .steadyState:
                         
                         guard
-                            let intState = attributeValue.intValue,
+                            let intState = attribute.value.intValue,
                             let newState = AferoSofthubWifiState(rawValue: intState) else {
-                                DDLogError("Invalid integer value for steady state (\(attributeValue))", tag: TAG)
+                                DDLogError("Invalid integer value for steady state (\(attribute.value))", tag: TAG)
                                 return
                         }
                         
@@ -840,8 +842,8 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                         
                     case .RSSI:
                         
-                        guard let newRSSI = attributeValue.intValue else {
-                            DDLogError("Invalid integer value for RSSI (\(attributeValue))", tag: TAG)
+                        guard let newRSSI = attribute.value.intValue else {
+                            DDLogError("Invalid integer value for RSSI (\(attribute.value))", tag: TAG)
                             return
                         }
                         

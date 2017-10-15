@@ -368,7 +368,7 @@ public typealias DeviceEventPipe = (signal: DeviceEventSignal, sink: DeviceEvent
 // MARK: <AttributeSignaling>
 
 public enum AttributeEvent {
-    case update(accountId: String, deviceId: String, attributeId: Int, attributeDescriptor: DeviceProfile.AttributeDescriptor, attributeOption: DeviceProfile.Presentation.AttributeOption?, attributeValue: AttributeValue)
+    case update(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute)
 }
 
 extension AttributeEvent: CustomStringConvertible, CustomDebugStringConvertible {
@@ -379,8 +379,8 @@ extension AttributeEvent: CustomStringConvertible, CustomDebugStringConvertible 
     
     public var debugDescription: String {
         switch self {
-        case let .update(accountId, deviceId, attributeId, attributeDescriptor, attributeOption, attributeValue):
-            return "<AttributeEvent.Update> accountId: \(accountId) deviceId: \(deviceId) attributeId: \(attributeId), descriptor: \(attributeDescriptor) options: \(String(reflecting: attributeOption)) attributeValue: \(attributeValue)"
+        case let .update(accountId, deviceId, attribute):
+            return "<AttributeEvent.Update> accountId: \(accountId) deviceId: \(deviceId) attribute: \(String(reflecting: attribute))"
         }
     }
 }
@@ -435,6 +435,8 @@ public typealias AttributeEventSignal = Signal<AttributeEvent, NoError>
 public typealias AttributeEventPipe = PipeHolder<AttributeEvent, NoError>
 
 public protocol AttributeEventSignaling: class {
+    
+    func attribute(for attributeId: Int) -> DeviceModelable.Attribute?
     func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal?
     func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue)
 }
