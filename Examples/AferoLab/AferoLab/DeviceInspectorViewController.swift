@@ -65,19 +65,19 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
         didSet {
             
             guard let attribute = attribute else {
-                attributeNameLabel.text = nil
-                attributeIdLabel.text = nil
-                attributeTypeLabel.text = nil
-                attributeStringValueLabel.text = nil
-                attributeByteValueLabel.text = nil
+                attributeNameLabel?.text = nil
+                attributeIdLabel?.text = nil
+                attributeTypeLabel?.text = nil
+                attributeStringValueLabel?.text = nil
+                attributeByteValueLabel?.text = nil
                 return
             }
             
-            attributeNameLabel.text = attribute.config.descriptor.semanticType
-            attributeIdLabel.text = "\(attribute.config.descriptor.id)"
-            attributeTypeLabel.text = attribute.config.descriptor.dataType.stringValue ?? "<unknown>"
-            attributeStringValueLabel.text = attribute.value.stringValue ?? "<empty>"
-            attributeByteValueLabel.text = attribute.value.byteArray.description
+            attributeNameLabel?.text = attribute.config.descriptor.semanticType
+            attributeIdLabel?.text = "\(attribute.config.descriptor.id)"
+            attributeTypeLabel?.text = attribute.config.descriptor.dataType.stringValue ?? "<unknown>"
+            attributeStringValueLabel?.text = attribute.value.stringValue ?? "<empty>"
+            attributeByteValueLabel?.text = attribute.value.byteArray.description
         }
     }
     
@@ -723,11 +723,11 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
             cell.attribute = nil
-            cell.attributeNameLabel.text = config.descriptor.semanticType
-            cell.attributeIdLabel.text = "\(config.descriptor.id)"
-            cell.attributeByteValueLabel.text = "-"
-            cell.attributeStringValueLabel.text = "-"
-            cell.attributeTypeLabel.text = config.descriptor.dataType.stringValue
+            cell.attributeNameLabel?.text = config.descriptor.semanticType
+            cell.attributeIdLabel?.text = "\(config.descriptor.id)"
+            cell.attributeByteValueLabel?.text = "-"
+            cell.attributeStringValueLabel?.text = "-"
+            cell.attributeTypeLabel?.text = config.descriptor.dataType.stringValue
             
             return
         }
