@@ -11,6 +11,7 @@ import ReactiveSwift
 import CocoaLumberjack
 import Afero
 import SVProgressHUD
+import LKAlertController
 
 // MARK: - Device Info Cell -
 
@@ -44,6 +45,23 @@ class DeviceInspectorDeviceInfoCell: UITableViewCell {
     }
 
 }
+
+class DeviceInspectorDeviceCharacteristicCell: UITableViewCell {
+    
+    @IBOutlet weak var characteristicNameLabel: UILabel!
+    var characteristicName: String? {
+        get { return characteristicNameLabel.text }
+        set { characteristicNameLabel.text = newValue }
+    }
+    
+    @IBOutlet weak var characteristicValueLabel: UILabel!
+    var characteristicValue: String? {
+        get { return characteristicValueLabel.text }
+        set { characteristicValueLabel.text = newValue }
+    }
+    
+}
+
 
 // MARK: - Attribute Cells -
 
@@ -91,28 +109,28 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     enum Reuse {
         
-        case empty
         case deviceInfo
+        case deviceCharacteristic
         case genericAttribute
         
         var reuseClass: AnyClass {
             switch self {
-            case .empty: return UITableViewCell.self
             case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
+            case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
         }
         
         var reuseIdentifier: String {
             switch self {
-            case .empty: return "DeviceInspectorEmptySectionCell"
             case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
+            case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
         }
         
         static var allCases: Set<Reuse> {
-            return [ .empty, .deviceInfo, .genericAttribute ]
+            return [ .deviceCharacteristic, .deviceInfo, .genericAttribute ]
         }
         
     }
@@ -258,6 +276,28 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 localizedName,
                 rawValue
             )
+        }
+        
+    }
+    
+    enum DeviceCharacteristicRow: Int {
+        
+        case deviceType
+        case deviceId
+        case deviceTypeId
+        case deviceProfileId
+        
+        static let all: [DeviceCharacteristicRow] = [
+            .deviceType, .deviceId, .deviceTypeId, .deviceProfileId
+        ]
+        
+        var localizedName: String {
+            switch self {
+            case .deviceType: return NSLocalizedString("Device Type", comment: "Device inspector device type cell name")
+            case .deviceId: return NSLocalizedString("Device ID", comment: "Device inspector device id cell name")
+            case .deviceTypeId: return NSLocalizedString("Type ID", comment: "Device inspector device type id name")
+            case .deviceProfileId: return NSLocalizedString("Profile ID", comment: "Device inspector device profile id name")
+            }
         }
         
     }
@@ -475,6 +515,41 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
     }
 
+    func presentActionSheet(for row: DeviceCharacteristicRow) {
+    
+        let maybeValueToCopy: String?
+        switch row {
+        case .deviceId: maybeValueToCopy = deviceModelable?.deviceId
+        case .deviceProfileId: maybeValueToCopy = deviceModelable?.profileId
+        case .deviceType: maybeValueToCopy = deviceModelable.profile?.deviceType
+        case .deviceTypeId: maybeValueToCopy = deviceModelable.profile?.deviceTypeId
+        }
+        
+        guard let valueToCopy = maybeValueToCopy else {
+            return
+        }
+        
+        ActionSheet(title: row.localizedName)
+            .addAction(String(format: NSLocalizedString("Copy %@", comment: "Copy format"), row.localizedName), style: .default) {
+                _ in
+                UIPasteboard.general.string = valueToCopy
+                SVProgressHUD.showSuccess(
+                    withStatus: String(
+                        format: NSLocalizedString(
+                            "Copied %@",
+                            comment: "DeviceInspectorViewController copied."
+                        ),
+                        row.localizedName
+                    )
+                )
+            }.addAction(
+                NSLocalizedString(
+                    "Cancel",
+                    comment: "DeviceInspectorViewController cancel"
+                ),
+                style: .cancel
+            ).show()
+    }
     
     // MARK: Model
     
@@ -647,7 +722,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         if section == 0 {
-            return 1
+            return DeviceCharacteristicRow.all.count
         }
         
         let sections = Section.all.filter({ visibleSections.contains($0) })
@@ -667,7 +742,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     func reuseIdentifier(for indexPath: IndexPath) -> String {
         let section = visibleSections[indexPath.section]
         switch section {
-        case .deviceInfo: return Reuse.deviceInfo.reuseIdentifier
+        case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
         default: return Reuse.genericAttribute.reuseIdentifier
         }
     }
@@ -684,10 +759,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if self.tableView(tableView, numberOfRowsInSection: indexPath.section) == 0 {
-            return tableView.dequeueReusableCell(withIdentifier: Reuse.empty.reuseIdentifier, for: indexPath)
-        }
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier(for: indexPath), for: indexPath)
         configure(cell: cell, for: indexPath)
         return cell
@@ -695,8 +766,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
         
-        if let deviceInfoCell = cell as? DeviceInspectorDeviceInfoCell {
-            configure(infoCell: deviceInfoCell)
+        if let deviceInfoCell = cell as? DeviceInspectorDeviceCharacteristicCell {
+            configure(characteristicCell: deviceInfoCell, for: indexPath)
             return
         }
         
@@ -705,11 +776,21 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
     }
     
-    func configure(infoCell cell: DeviceInspectorDeviceInfoCell) {
-        cell.deviceId = deviceModelable?.deviceId
-        cell.deviceType = deviceModelable?.profile?.deviceType
-        cell.deviceTypeId = deviceModelable?.profile?.deviceTypeId
-        cell.profileId = deviceModelable?.profileId
+    func configure(characteristicCell cell: DeviceInspectorDeviceCharacteristicCell, for indexPath: IndexPath) {
+        
+        guard let characteristic = DeviceCharacteristicRow(rawValue: indexPath.row) else {
+            fatalError("Unrecognized device characteristic row index \(indexPath.row)")
+        }
+        
+        cell.characteristicName = characteristic.localizedName
+
+        switch characteristic {
+        case .deviceId: cell.characteristicValue = deviceModelable?.deviceId
+        case .deviceType: cell.characteristicValue = deviceModelable?.profile?.deviceType
+        case .deviceTypeId: cell.characteristicValue = deviceModelable?.profile?.deviceTypeId
+        case .deviceProfileId: cell.characteristicValue = deviceModelable?.profileId
+        }
+        
     }
     
     func configure(attributeCell cell: DeviceInspectorGenericAttributeCell, for indexPath: IndexPath) {
@@ -739,62 +820,80 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let attribute = attribute(for: indexPath) else {
+        guard let section = Section(rawValue: indexPath.section) else {
+            assert(false, "Unexpected section \(indexPath.section).")
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }
         
-        var maybeSegueIdentifier: SegueIdentifier?
-        
-        switch attribute.config.descriptor.dataType {
+        switch section {
+        case .deviceInfo:
 
-        case .utf8S: fallthrough
-        case .bytes:
-            if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
-                maybeSegueIdentifier = .showPickerAttributeInspector
-            } else {
-                maybeSegueIdentifier = .showTextViewAttributeInspector
+            guard let characteristic = DeviceCharacteristicRow(rawValue: indexPath.row) else {
+                fatalError("Unrecognized device characteristic row index \(indexPath.row)")
             }
             
-        case .boolean:
-            maybeSegueIdentifier = .showSwitchAttributeInspector
+            presentActionSheet(for: characteristic)
+            tableView.deselectRow(at: indexPath, animated: true)
             
-        case .q1516: fallthrough
-        case .q3132: fallthrough
-        case .sInt8: fallthrough
-        case .sInt16: fallthrough
-        case .sInt32: fallthrough
-        case .sInt64:
-            if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
-                maybeSegueIdentifier = .showPickerAttributeInspector
-            } else if attribute.config.presentation?.rangeOptions != nil {
+        default:
+            guard let attribute = attribute(for: indexPath) else {
+                tableView.deselectRow(at: indexPath, animated: true)
+                return
+            }
+            
+            var maybeSegueIdentifier: SegueIdentifier?
+            
+            switch attribute.config.descriptor.dataType {
+                
+            case .utf8S: fallthrough
+            case .bytes:
+                if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
+                    maybeSegueIdentifier = .showPickerAttributeInspector
+                } else {
+                    maybeSegueIdentifier = .showTextViewAttributeInspector
+                }
+                
+            case .boolean:
+                maybeSegueIdentifier = .showSwitchAttributeInspector
+                
+            case .q1516: fallthrough
+            case .q3132: fallthrough
+            case .sInt8: fallthrough
+            case .sInt16: fallthrough
+            case .sInt32: fallthrough
+            case .sInt64:
+                if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
+                    maybeSegueIdentifier = .showPickerAttributeInspector
+                } else if attribute.config.presentation?.rangeOptions != nil {
+                    maybeSegueIdentifier = .showSliderAttributeInspector
+                } else {
+                    maybeSegueIdentifier = .showTextViewAttributeInspector
+                }
+                
+            // Floats are deprecated; use .q1516 / .q3132 instead.
+            case .float32: fallthrough
+            case .float64:
+                DDLogWarn("Will show slider for deprecated type \(attribute.config.descriptor.dataType)", tag: TAG)
                 maybeSegueIdentifier = .showSliderAttributeInspector
-            } else {
-                maybeSegueIdentifier = .showTextViewAttributeInspector
+                
+            // Added for completeness; the following are not supported.
+            case .uInt8: fallthrough
+            case .uInt16: fallthrough
+            case .uInt32: fallthrough
+            case .uInt64: fallthrough
+            case .unknown:
+                DDLogError("Detected unsupported type \(attribute.config.descriptor.dataType); not editing.", tag: TAG)
+                
             }
             
-        // Floats are deprecated; use .q1516 / .q3132 instead.
-        case .float32: fallthrough
-        case .float64:
-        DDLogWarn("Will show slider for deprecated type \(attribute.config.descriptor.dataType)", tag: TAG)
-            maybeSegueIdentifier = .showSliderAttributeInspector
+            guard let segueIdentifier = maybeSegueIdentifier else {
+                DDLogWarn("Unable to determine segue to use for \(String(describing: attribute)); bailing.", tag: TAG)
+                return
+            }
             
-        // Added for completeness; the following are not supported.
-        case .uInt8: fallthrough
-        case .uInt16: fallthrough
-        case .uInt32: fallthrough
-        case .uInt64: fallthrough
-        case .unknown:
-            DDLogError("Detected unsupported type \(attribute.config.descriptor.dataType); not editing.", tag: TAG)
-
+            performSegue(withIdentifier: segueIdentifier, sender: self)
         }
-        
-        guard let segueIdentifier = maybeSegueIdentifier else {
-            DDLogWarn("Unable to determine segue to use for \(String(describing: attribute)); bailing.", tag: TAG)
-            return
-        }
-        
-        performSegue(withIdentifier: segueIdentifier, sender: self)
     }
     
 }
