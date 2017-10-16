@@ -56,7 +56,7 @@ enum AccountInfoSection: Int {
     static let Count = AccountInfoSection.devices.rawValue + 1
 }
 
-extension IndexPath {
+fileprivate extension IndexPath {
     
     var accountInfoSection: AccountInfoSection? {
         return AccountInfoSection(rawValue: section)
@@ -116,6 +116,10 @@ class AccountViewController: UITableViewController {
     
     @IBAction func unwindFromSignIn(segue: UIStoryboardSegue) {
         refreshAccountAccess()
+    }
+    
+    @IBAction func unwindFromDeviceInspector(segue: UIStoryboardSegue) {
+        
     }
     
     // MARK: The fun begins
@@ -524,6 +528,38 @@ class AccountViewController: UITableViewController {
         
         return QRCodeReaderViewController(builder: builder)
     }()
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+        guard let identifier = segue.identifier else {
+            return
+        }
+        
+        switch identifier {
+            
+        case "ShowDeviceInspector":
+            
+            guard let selectedIndex = tableView.indexPathForSelectedRow else {
+                DDLogError("No selection for device inspector segue.", tag: TAG)
+                return
+            }
+            
+            guard let deviceModel = device(at: selectedIndex) else {
+                DDLogError("No device at index \(String(describing: selectedIndex))", tag: TAG)
+                return
+            }
+            
+            guard let inspector = segue.destination as? DeviceInspectorViewController else {
+                DDLogError("Unexpected type (\(String(describing: type(of: segue.destination))).", tag: TAG)
+                return
+            }
+            
+            inspector.deviceModelable = deviceModel
+            
+        default:
+            DDLogWarn("No configuration for \(segue.identifier)", tag: TAG)
+        }
+    }
     
 }
 

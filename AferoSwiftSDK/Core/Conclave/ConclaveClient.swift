@@ -50,11 +50,11 @@ public enum ConnectionState: Int, CustomDebugStringConvertible {
 open class ConclaveClient: CustomDebugStringConvertible {
     
     open var debugDescription: String {
-        return "<ConclaveClient> connectionState: \(connectionState) (connection: \(String(describing: conclaveConnection)))"
+        return "<\(TAG)> connectionState: \(connectionState) (connection: \(String(describing: conclaveConnection)))"
     }
     
-    fileprivate let TAG = "ConclaveClient"
-    
+    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+
     open static let ConclaveClientErrorDomain = "ConclaveClient"
 
     /// Emitted errors
@@ -630,10 +630,8 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
                 return
             }
             
-            let localizedDescription = NSLocalizedString("Unhandled JSON error (missing object and error in event); this should never happen.", comment: "ConclaveStreamConnection JSON unhandled error text")
-            let localError = NSError(domain: "ConclaveStreamConnection", code: -1000, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
-            serverOutboundSink.send(value: ConclaveConnectionEvent.transientError(localError))
-
+            DDLogDebug("Unrecognized incoming JSONStreamEvent data; skipping: \(String(reflecting: data))", tag: TAG)
+            
         }
     }
     
@@ -794,8 +792,8 @@ as `JSONStreamEvent`s.
 
 open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     
-    lazy var TAG: String = { return "JSONStreamReader \(Unmanaged.passUnretained(self).toOpaque())" }()
-    
+    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+
     open var connectionTimeout: TimeInterval = 15 // seconds
     fileprivate var connectionTimer: Timer? = nil
     
@@ -1088,8 +1086,8 @@ delimters.
 
 open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     
-    lazy var TAG: String = { return "JSONStreamWriter \(Unmanaged.passUnretained(self).toOpaque())" }()
-    
+    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+
     let outputStream: OutputStream
     
     lazy fileprivate var pipe: JSONStreamWriterPipe = {

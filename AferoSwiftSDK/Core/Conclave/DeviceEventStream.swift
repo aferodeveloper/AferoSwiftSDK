@@ -20,7 +20,9 @@ public typealias DeviceStreamEventSignal = Signal<DeviceStreamEvent, NSError>
 public typealias DeviceStreamEventSink = Observer<DeviceStreamEvent, NSError>
 public typealias DeviceStreamEventPipe = (DeviceStreamEventSignal, DeviceStreamEventSink)
 
-public protocol DeviceEventStreamable {
+protocol DeviceEventStreamable: class, CustomDebugStringConvertible {
+    
+    var TAG: String { get }
     var clientId: String { get }
     var accountId: String { get }
     var eventSignal: DeviceStreamEventSignal? { get }
@@ -34,14 +36,22 @@ public protocol DeviceEventStreamable {
     func publish(metrics: Metrics)
 }
 
+extension DeviceEventStreamable {
+    
+    var TAG: String { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }
+    
+    var debugDescription: String {
+        return "<\(TAG)> accountId:\(accountId) clientId:\(clientId) "
+    }
+
+}
+
 // MARK: - ConclaveDeviceEventStream
 
-open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvertible {
+class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvertible {
     
-    let TAG = "ConclaveDeviceEventStream"
-    
-    open var debugDescription: String {
-        return "<ConclaveDeviceEventStream> access: \(conclaveAccess.debugDescription) token: \(connectionToken.debugDescription)"
+    var debugDescription: String {
+        return "<\(TAG)> accountId:\(accountId) clientType:\(clientType) clientVersion:\(clientVersion) access: \(conclaveAccess.debugDescription) token: \(conclaveAccessToken.debugDescription) client:\(conclaveClient.debugDescription)"
     }
     
     /// The object responsible for handling Conclave authentication.
@@ -66,11 +76,11 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
     fileprivate(set) var conclaveAccess: ConclaveAccess? = nil
     
     /// The curent Conclave connection token being used. `nil` if not connected.
-    open var connectionToken: ConclaveAccess.Token? {
+    var conclaveAccessToken: ConclaveAccess.Token? {
         return conclaveAccess?.token
     }
     
-    open var host: ConclaveHost? {
+    var host: ConclaveHost? {
         return conclaveAccess?.conclaveHosts.hostsForType("socket").first
     }
     
@@ -94,7 +104,7 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
     }
     
     /// The current channelId being used by this connection. `nil` if not connected.
-    open var channelId: String? { return connectionToken?.channelId }
+    open var channelId: String? { return conclaveAccessToken?.channelId }
     
     public init(authable: ConclaveAuthable, accountId: String, userId: String, clientId: String) {
         self.conclaveAuthable = authable
@@ -122,12 +132,14 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
                 return
             }
             
+            let TAG = self.TAG
+            
             conclaveClientDisposable = conclaveClient.eventSignal
                 .observe(on: conclaveScheduler)
                 .observe {
                     [weak self] event in
                     
-                    DDLogVerbose("Got event: \(event)", tag: "DeviceEventStream")
+                    DDLogVerbose("Got event: \(event)", tag: TAG)
                     
                     switch event {
                     case .failed(let err):
@@ -200,10 +212,10 @@ open class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringCo
         self.conclaveAccess = conclaveAccess
         
         guard let
-            connectionToken = connectionToken,
+            connectionToken = conclaveAccessToken,
             let clientType = clientType else {
                 self.conclaveAccess = nil
-                let msg = "Missing connectionToken! Bailing."
+                let msg = "Missing conclaveAccessToken; bailing."
                 DDLogWarn(msg, tag: TAG)
                 let error = NSError(domain: "ConclaveDeviceEventStream", code: -1, localizedDescription: msg)
                 state = .disconnected

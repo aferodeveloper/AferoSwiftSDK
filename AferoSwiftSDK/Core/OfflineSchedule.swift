@@ -561,6 +561,8 @@ open class OfflineSchedule: NSObject {
     
     func startObservingStorageEvents() {
         
+        let TAG = self.TAG
+        
         guard let attributeIds = attributeIds else { return }
         var observableAttributeIds = attributeIds
         
@@ -568,9 +570,9 @@ open class OfflineSchedule: NSObject {
         
         disposable = storage?.eventSignalForAttributeIds(observableAttributeIds)?.observeValues {
             [weak self] event in switch event {
-            case let .update(_, _, attributeId, attributeDescriptor, attributeOption, attributeValue):
-                DDLogDebug("Got attributeUpdate id: \(attributeId) desc: \(attributeDescriptor.debugDescription) opt: \(attributeOption.debugDescription) value: \(attributeValue.debugDescription)")
-                self?.storageUpdated(attributeId, attributeValue: attributeValue)
+            case let .update(_, _, attribute):
+                DDLogDebug("Got attributeUpdate: \(String(reflecting: attribute))", tag: TAG)
+                self?.storageUpdated(attribute.config.descriptor.id, attributeValue: attribute.value)
             }
         }
     }

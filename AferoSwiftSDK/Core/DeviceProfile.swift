@@ -161,6 +161,7 @@ public protocol AttributeOptionPresentable {
     var label: LabelPresentable? { get }
     var rangeOptionsPresentable: RangeOptionsPresentable? { get }
     var valueOptionsPresentable: [ValueOptionPresentable] { get }
+    var valueOptionsMap: ValueOptionsMap { get }
 }
 
 public extension AttributeOptionPresentable {
@@ -168,8 +169,10 @@ public extension AttributeOptionPresentable {
     public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
 }
 
+
 public typealias ValueOptionApplyPresentable = [String: Any]
 public typealias ValueOptionMatchPresentable = String
+public typealias ValueOptionsMap = [ValueOptionMatchPresentable: ValueOptionApplyPresentable]
 
 /// Represents a set of distinct, discrete values for an attribute state
 public protocol ValueOptionPresentable {
@@ -277,6 +280,9 @@ public extension DeviceProfile {
     }
     
     public func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
+
+        // Note that we don't use attributeConfigs(on:isIncluded:) here, because we
+        // can index directly into attributes using attributeId.
         
         guard let descriptor = descriptor(for: attributeId) else {
             return nil
@@ -286,12 +292,31 @@ public extension DeviceProfile {
     }
     
     public func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
-        guard let descriptor = descriptor(for: semanticType) else {
-            return nil
-        }
-        return (descriptor: descriptor, presentation: presentation(deviceId)?[descriptor.id])
+        return attributeConfigs(on: deviceId) { $0.descriptor.semanticType == semanticType }.first
+    }
+    
+    /// Returns attributeConfigs filtered by `isIncluded`.
+    /// - parameter isIncluded: The predicate to use for filtering configs. If unspecified, defaults to `{ _ in true }`, therefore
+    ///                         including all configs in the result.
+    /// - returns: A `LazyRandomAccessCollection<[AttributeConfig]>` which matches all results.
+    
+    public func attributeConfigs(on deviceId: String? = nil, isIncluded: (AttributeConfig)->Bool = { _ in true }) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        let ret = descriptors()
+            .map {
+            descriptor in
+                return (descriptor: descriptor, presentation: self.presentation(deviceId)?[descriptor.id])
+        }.filter(isIncluded).lazy
+        return ret
     }
 
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        return attributeConfigs(on: deviceId) { range.contains($0.descriptor.id) }
+    }
+    
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[AttributeConfig]> {
+        return attributeConfigs(on: deviceId, withIdsIn: platformAttributeRange.range)
+    }
+    
 }
 
 /**
@@ -505,6 +530,17 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         get { return descriptor(for: attributeId) }
     }
     
+    /// Return a lazy collection of all attribute descriptors matching the given predicate.
+    /// - parameter isIncluded: The predicate used to indicate whether or not a descriptor
+    ///                         should be included.
+    /// - returns: A `LazyRandomAccessCollection<[AttributeDescriptor]>` which contains all
+    ///            of the attributes in this profile filtered by `isIncluded`.
+    
+    public func descriptors(isIncluded: (AttributeDescriptor)->Bool  = { _ in return true})
+        -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+            return attributes.values.filter(isIncluded).lazy
+    }
+    
     /// Get the `AttributeDescriptor` for the given `attributeId`, if any.
     /// - parameter attributeId: The attributeId for which to get the descriptor.
     ///
@@ -533,7 +569,6 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         get { return Array(descriptors(for: semanticType)) }
     }
     
-    
     /// Return the first `AttributeDescriptor` matching the given `semanticType`.
     /// - parameter semanticType: The `semanticType` for which to search.
     ///
@@ -556,22 +591,39 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > since this is enforced by APE, and is transformed into a unique `#define`
     /// > in `device_description.h`, used by firmware developers.
     
-    public func descriptors(for semanticType: String) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
-        return descriptors(matching: { $0.semanticType == semanticType })
-    }
-    
-    public func descriptors(matching predicate: @escaping (AttributeDescriptor)->Bool) -> LazyFilterCollection<LazyMapCollection<[Int: AttributeDescriptor], AttributeDescriptor>> {
-        return attributes.values.filter(predicate)
+    public func descriptors(for semanticType: String) -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+        return descriptors(isIncluded: { $0.semanticType == semanticType })
     }
     
     // MARK: Presentation convenience accessors
     
     func clearCaches() {
+        attributeIdValueOptionProcessors.removeAll()
         controlsForAttributeIdCache.removeAll()
         groupsForControlIdCache.removeAll()
         groupIndicesForOperationCache.removeAll()
         groupsForOperationCache.removeAll()
         groupIndicesForControlIdCache.removeAll()
+    }
+    
+    public typealias ValueOptionProcessor = (AttributeValue?) -> [String: Any]
+    
+    var attributeIdValueOptionProcessors: [Int: ValueOptionProcessor] = [:]
+    
+    func valueOptionProcessor(for attributeId: Int?) -> ValueOptionProcessor? {
+        
+        guard let attributeId = attributeId else { return nil }
+        
+        if let ret = attributeIdValueOptionProcessors[attributeId] {
+            return ret
+        }
+        
+        guard let ret = attributeConfig(for: attributeId)?.presentation?.valueOptions.displayRulesProcessor() else {
+            return nil
+        }
+        
+        attributeIdValueOptionProcessors[attributeId] = ret
+        return ret
     }
 
     fileprivate var groupIndicesForControlIdCache: [Int: [Int]] = [:]
@@ -839,6 +891,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             public var rangeOptions: RangeOptions? = nil
             public var rangeOptionsPresentable: RangeOptionsPresentable? { return rangeOptions }
             
+            public var valueOptionsMap: ValueOptionsMap
             public var valueOptions: [ValueOption] = []
             public var valueOptionsPresentable: [ValueOptionPresentable] { return self.valueOptions.map { $0 as ValueOptionPresentable } }
             
@@ -846,6 +899,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                 self.label = label
                 self.rangeOptions = rangeOptions
                 self.valueOptions = valueOptions
+                self.valueOptionsMap = valueOptions.valueOptionsMap
                 self.flags = flags
             }
             
@@ -1919,12 +1973,15 @@ extension DeviceProfile.Presentation.AttributeOption: AferoJSONCoding {
     }
     
     public init?(json: AferoJSONCodedType?) {
-        if let json = json as? AferoJSONObject {
-            self.flags = |<(json[type(of: self).CoderKeyFlags]) ?? []
-            self.label = json[type(of: self).CoderKeyLabel] as? String
-            self.valueOptions = |<(json[type(of: self).CoderKeyValueOptions] as? [AnyObject]) ?? []
-            self.rangeOptions = |<(json[type(of: self).CoderKeyRangeOptions] as? [String: Any])
-        }
+        
+        guard let json = json as? AferoJSONObject else { return nil }
+        
+        self.flags = |<(json[type(of: self).CoderKeyFlags]) ?? []
+        self.label = json[type(of: self).CoderKeyLabel] as? String
+        self.valueOptions = |<(json[type(of: self).CoderKeyValueOptions] as? [AnyObject]) ?? []
+        self.valueOptionsMap = valueOptions.valueOptionsMap
+        self.rangeOptions = |<(json[type(of: self).CoderKeyRangeOptions] as? [String: Any])
+        
     }
 }
 
@@ -2513,6 +2570,22 @@ public extension Array where Element: ValueOptionPresentable {
         }
     }
     
+    public var valueOptionsMap: ValueOptionsMap {
+        
+        return displayRules.reduce([:]) {
+            curr, next in
+            guard
+                let match = next["match"] as? ValueOptionMatchPresentable,
+                let apply = next["apply"] as? ValueOptionApplyPresentable else {
+                    return curr
+            }
+            var ret = curr
+            ret[match] = apply
+            return ret
+        }
+        
+    }
+    
     public func displayRulesProcessor<
         C: Hashable & SafeSubscriptable>(_ attributeId: Int, initial: [String: Any]? = nil) -> ((C?)->[String: Any])
         where C.Value == AttributeValue, C.Key == Int
@@ -2639,6 +2712,10 @@ public extension DeviceProfile.Presentation.AttributeOption.RangeOptions {
     
     public func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor {
         return RangeOptionsSubscriptor(rangeOptions: self, dataType: dataType)
+    }
+    
+    public var range: ClosedRange<AttributeValue> {
+        return min...max
     }
 
 }

@@ -18,7 +18,7 @@ import CocoaLumberjack
 
 internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
     
-    let TAG = "DeviceProfileRegistry"
+    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
     
     /// Strongly-held uncached source for profiles
     var source: DeviceAccountProfilesSource
@@ -196,7 +196,11 @@ struct DeviceRequestId: Hashable {
 
 public class DeviceCollection: NSObject, MetricsReportable {
     
-    let TAG = "DeviceCollection"
+    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+    
+    public override var debugDescription: String {
+        return "<\(TAG)> accountId: \(accountId) state: \(state) eventStream: \(eventStream.debugDescription)"
+    }
 
     /// Represents the state of the collection overall.
     public enum State: Equatable {
@@ -269,7 +273,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter deviceEventStreamable: A source of device events
     /// - parameter profileSource: A helper to fetch device profiles as needed
     
-    public init(apiClient: AferoAPIClientProto, deviceEventStreamable: DeviceEventStreamable) {
+    init(apiClient: AferoAPIClientProto, deviceEventStreamable: DeviceEventStreamable) {
         eventStream = deviceEventStreamable
         self.profileSource = CachedDeviceAccountProfilesSource(profileSource: apiClient)
         self.apiClient = apiClient
@@ -295,7 +299,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
     deinit {
-        DDLogDebug("Deinitializing deviceCollection for accountId: \(accountId)")
+        DDLogDebug("Deinitializing.", tag: TAG)
         unregisterFromAppStateNotifications()
         stopEventStream()
         eventSignalDisposable = nil
