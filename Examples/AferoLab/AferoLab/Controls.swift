@@ -12,24 +12,63 @@ import Afero
 import ReactiveSwift
 import CocoaLumberjack
 
+/// Identfies whence an attribute-observing view will determine its text value.
+///
+/// * `attributeId`: The view should reflect its attribute's integer id.
+///
+/// * `attributeName`: The view should reflect its attribute's name.
+///   > **NOTE**: `attributeName` is derived from the profile's `semanticType` value.
+///
+/// * `attributeType`: : The view should reflect the attriute's type.
+///
+/// * `attributeValue`: The view should reflect the attribute's value.
+///
+/// * `attributeLabel`: The view should reflect the `label` field of an attribute's
+/// `valueOptions` `apply` block, for any given value.
+///
+/// * `attributeLastUpdated`: The view should reflect the attribute's `last updated` value.
+///   > **NOTE**: `attributeLastUpdated` to be implemented; currently returns "-".
+
 enum AferoAttributeTextSource: String {
 
+    /// The view should reflect its attribute's integer id.
     case attributeId = "attributeId"
+    
+    /// The view should reflect its attribute's name.
+    /// - note: name is derived from the profile's `semanticType` value.
     case attributeName = "attributeName"
+    
+    /// The view should reflect the attriute's type.
     case attributeType = "attributeType"
+    
+    /// The view should reflect the attribute's value.
     case attributeValue = "attributeValue"
+    
+    /// The view should reflect the `label` field of an attribute's
+    /// `valueOptions` `apply` block, for any given value.
     case attributeLabel = "attributeLabel"
+    
+    /// The view should reflect the attribute's `last updated` value.
+    /// - note: to be implemented; currently returns "-".
     case attributeLastUpdated = "attributeLastUpdated"
     
 }
 
+/// Implementors of this protocol use `attributeTextSource` to determine
+/// the characteristic of their associated attribute to display.
 protocol AferoAttributeTextProducing {
+    
+    /// The source of the attribute value to display.
     var attributeTextSource: AferoAttributeTextSource { get }
+    
+    /// A defaulted method for etracting a `String` value from
+    /// an attribute.
     func text(for attribute: DeviceModelable.Attribute) -> String?
 }
 
 extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     
+    /// Returns a value for an attribute based upon the given source.
     func text(for attribute: DeviceModelable.Attribute) -> String? {
         switch attributeTextSource {
         case .attributeId: return attributeIdStringValue
@@ -43,6 +82,17 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 }
 
+/// A `UILabel` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance. Changes to the attribute's value are reflected in the label's text.
+/// The source of the text is determined by the value of `attributeTextSource`.
+///
+/// # Interface Builder Note
+///
+/// `attributeTextSourceName` can be configured in Interface Builder by populating
+/// the *Attribute Text Source Name* field in the Attributes inspector, or
+/// the keypath `attributeTextSourceName` in the Identity inspector,
+/// with the `rawValue` of the desired `AferoAttributeTextSource`.
+
 @IBDesignable class AferoAttributeUILabel: UILabel, DeviceModelableObserving, AttributeEventObserving, AferoAttributeTextProducing {
     
     deinit {
@@ -52,8 +102,13 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     
     // MARK: <AferoAttributeTextProducing>
 
+    /// The source of the attribute value to display.
     var attributeTextSource: AferoAttributeTextSource = .attributeValue
 
+    /// The name of the source of the attribute value to display.
+    /// Reflected in IB by the `Attribute Text Source Name` field in
+    /// the Attributes inspector, or the `attribtueTextSourceName`
+    /// key in the Identity inspector.
     @IBInspectable var attributeTextSourceName: String {
         
         get {
@@ -108,28 +163,52 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 }
 
+/// A `UITextView` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance. Changes to the attribute's value are reflected in the `textView.text`.
+/// The source of the text is determined by the value of `attributeTextSource`.
+///
+/// Note that this `UITextView` is its own delegate. 
+///
+/// # Interface Builder Note
+///
+/// `attributeTextSourceName` can be configured in Interface Builder by populating
+/// the *Attribute Text Source Name* field in the Attributes inspector, or
+/// the keypath `attributeTextSourceName` in the Identity inspector,
+/// with the `rawValue` of the desired `AferoAttributeTextSource`.
+
 @IBDesignable class AferoAttributeUITextView: UITextView, DeviceModelableObserving, AttributeEventObserving, AferoAttributeTextProducing, UITextViewDelegate {
 
+    /// The color to use when this text view reflects a valid value.
     @IBInspectable var standardTextColor: UIColor = .black
+
+    /// The color to use when this text view reflects an invalid (during editing).
     @IBInspectable var invalidValueTextColor: UIColor = .red
     
+    /// An `@IBInspectable` proxy value for `textContainer.lineFragmentPadding`
     @IBInspectable var lineFragmentPadding: CGFloat {
         get { return textContainer.lineFragmentPadding }
         set { textContainer.lineFragmentPadding = newValue }
     }
     
+    /// An `@IBInspectable` proxy value for `textContainerInset.bottom`
     @IBInspectable public var bottomTextContainerInset: CGFloat {
         get { return textContainerInset.bottom }
         set { textContainerInset.bottom = newValue }
     }
+    
+    /// An `@IBInspectable` proxy value for `textContainerInset.left`
     @IBInspectable public var leftTextContainerInset: CGFloat {
         get { return textContainerInset.left }
         set { textContainerInset.left = newValue }
     }
+    
+    /// An `@IBInspectable` proxy value for `textContainerInset.right`
     @IBInspectable public var rightTextContainerInset: CGFloat {
         get { return textContainerInset.right }
         set { textContainerInset.right = newValue }
     }
+    
+    /// An `@IBInspectable` proxy value for `textContainerInset.top`
     @IBInspectable public var topTextContainerInset: CGFloat {
         get { return textContainerInset.top }
         set { textContainerInset.top = newValue }
@@ -161,7 +240,20 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     }
     
     // MARK: <AferoAttributeTextProducing>
+    
+    /// The source of the attribute value to display.
+    ///
+    /// - note: This `textView` will will not be editable if
+    ///         `attributeTextSource ≠ .attributeValue`.
     var attributeTextSource: AferoAttributeTextSource = .attributeValue
+    
+    /// The name of the source of the attribute value to display.
+    /// Reflected in IB by the `Attribute Text Source Name` field in
+    /// the Attributes inspector, or the `attribtueTextSourceName`
+    /// key in the Identity inspector.
+    ///
+    /// - note: This `textView` will will not be editable if
+    ///         `attributeTextSourceName ≠ "attributeValue"`.
     @IBInspectable var attributeTextSourceName: String {
         
         get {
@@ -297,9 +389,18 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 // MARK: - AferoAttributeUITextView -
 
+/// A `UITextField` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance. Changes to the attribute's value are reflected in the `textField.text`.
+/// The source of the text is determined by the value of `attributeTextSource`.
+///
+/// Note that this `UITextField` is its own delegate.
+
 @IBDesignable class AferoAttributeUITextField: UITextField, DeviceModelableObserving, AttributeEventObserving, UITextFieldDelegate {
     
+    /// The color to use when this text view reflects a valid value.
     @IBInspectable var standardTextColor: UIColor = .black
+    
+    /// The color to use when this text view reflects an invalid (during editing).
     @IBInspectable var invalidValueTextColor: UIColor = .red
     
     override init(frame: CGRect) {
@@ -446,6 +547,12 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 // MARK: - AferoAttributeUISwitch -
 
+/// A `UISwitch` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance.
+///
+/// * Changes to the attribute's `boolValue` are reflected in the `switch.isOn`.
+/// * Interactive changes to the control's state actuat the bound attribute.
+
 class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEventObserving {
     
     override init(frame: CGRect) {
@@ -519,7 +626,12 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
 
 // MARK: - AferoAttributeUISlider
 
-/// A UISlider bound to an Afero device and attribute.
+/// A `UISlider` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance.
+///
+/// * `minimumValue`, `maximumValue` are determinded by the `attribute`'s `RangeOptions` value, if any.
+/// * `value` is determined by the `attribute`'s `floatValue`, if any.
+/// * Interactive changes to the slider's `value` actuate the bound attribute.
 
 class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEventObserving {
     
@@ -639,6 +751,16 @@ class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEvent
 }
 
 // MARK: - AferoAttributeUIPickerView -
+
+/// A `UIPickerView` subclass that's bound to an attribute on an Afero `DeviceModelable`
+/// instance.
+///
+/// * The view has a single component. Its `title` is determined by the associated
+///   attribute values `ValueOption.apply["label"]`.
+/// * Changes to the value are reflected in the control
+/// * Interactive changes to the picker's `selectedRow` actuate the bound attribute.
+///
+/// - note: `AferoAttributeUIPickerView` is its own delegate.
 
 class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, AttributeEventObserving, UIPickerViewDelegate, UIPickerViewDataSource {
     
