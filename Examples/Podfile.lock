@@ -51,7 +51,7 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (6.0.0)
   - OHHTTPStubs/Swift (6.0.0):
     - OHHTTPStubs/Default
-  - PromiseKit/CorePromise (4.4.0)
+  - PromiseKit/CorePromise (4.4.3)
   - QRCodeReader.swift (8.0.3)
   - Quick (1.2.0)
   - ReactiveSwift (1.1.5):
@@ -92,7 +92,7 @@ SPEC CHECKSUMS:
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
   Nimble: bfe1f814edabba69ff145cb1283e04ed636a67f2
   OHHTTPStubs: 752f9b11fd810a15162d50f11c06ff94f8e012eb
-  PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
+  PromiseKit: fbb52a0d154402c57eeb6eccd36dd7724fcf6117
   QRCodeReader.swift: 7c98a05c2544a7c8737853845428b4460273d50d
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
