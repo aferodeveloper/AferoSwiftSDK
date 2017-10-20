@@ -256,11 +256,14 @@ protocol AttributeEventObserving: class, Tagged {
 
     var attributeValueOptions: [ValueOption]? { get }
     var attributeValueOptionsMap: ValueOptionsMap? { get }
-    func attributeValue(for stringValue: String?) -> AttributeValue?
+    func attributeValue(forStringValue stringValue: String?) -> AttributeValue?
+    func attributeValue(forDoubleValue doubleValue: Double?) -> AttributeValue?
+    func attributeValue(forFloatValue floatValue: Float?) -> AttributeValue?
+    func attributeValue(forIntegerValue integerValue: Int?) -> AttributeValue?
 
-    func attributeValue(for proportion: Float) -> AttributeValue?
+    func attributeValue(forProportion proportion: Float) -> AttributeValue?
     func proportion(for value: AttributeValue?) -> Float
-
+    
 }
 
 
@@ -422,7 +425,7 @@ extension AttributeEventObserving {
         return ret
     }
     
-    func attributeValue(for stringValue: String?) -> AttributeValue? {
+    func attributeValue(forStringValue stringValue: String?) -> AttributeValue? {
         
         guard let stringValue = stringValue else { return nil }
         
@@ -448,6 +451,22 @@ extension AttributeEventObserving {
         
         return value
     }
+
+    func attributeValue(forDoubleValue doubleValue: Double?) -> AttributeValue? {
+        guard let doubleValue = doubleValue else { return nil }
+        return attributeValue(forStringValue: "\(doubleValue)")
+    }
+
+    func attributeValue(forFloatValue floatValue: Float?) -> AttributeValue? {
+        guard let floatValue = floatValue else { return nil }
+        return attributeValue(forDoubleValue: Double(floatValue))
+    }
+    
+    func attributeValue(forIntegerValue integerValue: Int?) -> AttributeValue? {
+        guard let integerValue = integerValue else { return nil }
+        return attributeValue(forStringValue: "\(integerValue)")
+    }
+
 }
 
 // MARK: RangesOptions Methods Default Implementations
@@ -465,7 +484,7 @@ extension AttributeEventObserving {
         return attributeRangeOptions?.subscriptor(dataType)
     }
     
-    func attributeValue(for proportion: Float) -> AttributeValue? {
+    func attributeValue(forProportion proportion: Float) -> AttributeValue? {
         
         guard let rangeSubscriptor = attributeRangeSubscriptor else {
             return nil
@@ -491,4 +510,3 @@ extension AttributeEventObserving {
 
 
 }
-

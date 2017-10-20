@@ -82,6 +82,8 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
 
 }
 
+// MARK: - AferoAttributeUILabel -
+
 /// A `UILabel` subclass that's bound to an attribute on an Afero `DeviceModelable`
 /// instance. Changes to the attribute's value are reflected in the label's text.
 /// The source of the text is determined by the value of `attributeTextSource`.
@@ -162,6 +164,8 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     }
 
 }
+
+// MARK: - AferoAttributeUITextView -
 
 /// A `UITextView` subclass that's bound to an attribute on an Afero `DeviceModelable`
 /// instance. Changes to the attribute's value are reflected in the `textView.text`.
@@ -340,12 +344,20 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let replacementText = (textView.text as NSString?)?.replacingCharacters(in: range, with: text)
         
-        if let _ = attributeValue(for: replacementText) {
+        guard let attribute = attribute else {
+            DDLogWarn("Not replacing text, because we don't have an attribute.", tag: TAG)
+            return false
+        }
+        guard let replacementText = (textView.text as NSString?)?.replacingCharacters(in: range, with: text) else {
+            DDLogError("Unable to repace text with nil value.", tag: TAG)
+            return false
+        }
+        
+        if let _ = attributeValue(forStringValue: replacementText) {
             textView.textColor = standardTextColor
         } else {
-            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.descriptor.dataType)", tag: TAG)
             textView.textColor = invalidValueTextColor
         }
         
@@ -366,7 +378,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
             let deviceModelable = deviceModelable,
             let attributeId = attributeId else { return }
         
-        guard let newValue = attributeValue(for: textView.text) else {
+        guard let newValue = attributeValue(forStringValue: textView.text) else {
             updateUI()
             return
         }
@@ -463,12 +475,19 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
-        let replacementText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        
-        if let _ = attributeValue(for: replacementText) {
+        guard let attribute = attribute else {
+            DDLogWarn("Not replacing text, because we don't have an attribute.", tag: TAG)
+            return false
+        }
+        guard let replacementText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else {
+            DDLogError("Unable to repace text with nil value.", tag: TAG)
+            return false
+        }
+
+        if let _ = attributeValue(forStringValue: replacementText) {
             textField.textColor = standardTextColor
         } else {
-            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute?.config.descriptor.dataType)", tag: TAG)
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.descriptor.dataType)", tag: TAG)
             textField.textColor = invalidValueTextColor
         }
         
@@ -485,7 +504,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
             let deviceModelable = deviceModelable,
             let attributeId = attributeId else { return }
         
-        guard let newValue = attributeValue(for: textField.text) else {
+        guard let newValue = attributeValue(forStringValue: textField.text) else {
             updateUI()
             return
         }
@@ -516,7 +535,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     // MARK: Actions
 
     @objc func textFieldEditingChanged(sender: UITextField) {
-        guard let _ = attributeValue(for: sender.text) else {
+        guard let _ = attributeValue(forStringValue: sender.text) else {
             sender.textColor = invalidValueTextColor
             return
         }
@@ -624,7 +643,307 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
 
 }
 
-// MARK: - AferoAttributeUISlider
+// MARK: - <AferoUISegmentedControl> -
+
+class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObserving, AttributeEventObserving {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    deinit {
+        stopObservingDeviceEvents()
+        stopObservingAttributeEvents()
+    }
+    
+    func configure() {
+        addTarget(self, action: #selector(valueChangedInteractively(sender:)), for: .valueChanged)
+        reloadAllSegments()
+        updateUI()
+    }
+    
+    func updateUI() {
+        
+        guard let attribute = attribute else {
+            return
+        }
+        
+        isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
+        
+        guard let index = attributeValueOptions?.index(where: {
+            valueOption in return valueOption.match == attribute.value.stringValue
+        }) else {
+            DDLogError("Unrecognized value for segmentedControl (== \(String(describing: attribute)); bailing.", tag: TAG)
+            return
+        }
+        
+        selectedSegmentIndex = index
+    }
+
+    
+    @objc func valueChangedInteractively(sender: UISegmentedControl) {
+
+        let TAG = self.TAG
+        
+        guard
+            let deviceModelable = deviceModelable,
+            let attributeId = attributeId else {
+                DDLogWarn("No deviceModel or attribute configured; bailing.", tag: TAG)
+                return
+        }
+        
+        guard let valueOptions = attributeValueOptions else {
+            // We should never get here, since we need valueOptions to
+            // create our rows
+            fatalError("No valueOptions present.")
+        }
+        
+        let idx = sender.selectedSegmentIndex
+
+        guard let newValue = attributeValue(forStringValue: valueOptions[idx].match) else {
+            DDLogError("Unable to create attributeValue for \(valueOptions[idx].match); bailing.", tag: TAG)
+            return
+        }
+
+        
+        let deviceId = deviceModelable.deviceId
+        
+        deviceModelable.set(value: newValue, forAttributeId: attributeId).then {
+            newValue -> Void in
+            DDLogVerbose("Successfully set \(deviceId).\(attributeId) to \(String(reflecting: newValue))", tag: TAG)
+            }.catch {
+                error in
+                DDLogError("Unable to set \(deviceId).\(attributeId) to \(String(reflecting: newValue)): \(String(reflecting: error))", tag: TAG)
+        }
+
+    }
+    
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+    
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        isEnabled = newState.isAvailable
+    }
+    
+    // MARK: <AttributeEventObserving>
+    
+    var attributeId: Int?
+    var attributeEventDisposable: Disposable?
+    
+    func reloadAllSegments(animated: Bool = false) {
+
+        guard let valueOptions = attributeValueOptions else {
+            return
+        }
+        
+        removeAllSegments()
+
+        valueOptions.reversed().enumerated().forEach {
+            
+            if
+                let imageName = $1.apply["imageName"] as? String,
+                let image = UIImage(named: imageName) {
+                insertSegment(with: image, at: 0, animated: animated)
+                return
+            }
+            
+            if let title = $1.apply["label"] as? String {
+                insertSegment(withTitle: title, at: 0, animated: animated)
+                return
+            }
+            
+            insertSegment(withTitle: $1.match, at: 0, animated: animated)
+        }
+        
+    }
+    
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+        updateUI()
+    }
+    
+}
+
+// MARK: - AferoAttributeUIProgressView -
+
+/// A `UIProgressView` bound to an Afero device attribute. Its `progress` is calculated
+/// the attribute's value vis a vis its `rangeOptions`.
+
+class AferoAttributeUIProgressView: UIProgressView, AttributeEventObserving {
+
+    func updateUI() {
+        progress = proportion(for: attribute?.value)
+    }
+    
+    deinit {
+        stopObservingAttributeEvents()
+    }
+    
+    // MARK: <AttributeEventObserving>
+    var attributeId: Int?
+    var attributeEventDisposable: Disposable?
+    
+    func initializeAttributeObservation() {
+        updateUI()
+    }
+
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+        updateUI()
+    }
+    
+    func progress(for attribute: DeviceModelable.Attribute?) -> Float? {
+        return proportion(for: attribute?.value)
+    }
+    
+}
+
+// MARK: - AferoOTAProgressView -
+
+@IBDesignable class AferoOTAProgressView: UIProgressView, DeviceModelableObserving {
+    
+    // MARK: IBInspectables
+    
+    @IBInspectable var hidesWhenInactive: Bool = true {
+        didSet {
+            guard oldValue != isOTAInProgress else { return }
+            guard !isOTAInProgress else { return }
+            isHidden = hidesWhenInactive
+        }
+    }
+
+    // MARK: Lifecycle
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    deinit {
+        stopObservingDeviceEvents()
+    }
+    
+    // MARK: <NSCoding>
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        hidesWhenInactive = aDecoder.decodeBool(forKey: "hidesWhenInactive")
+    }
+
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(hidesWhenInactive, forKey: "hidesWhenInactive")
+    }
+    
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+    
+    private(set) var isOTAInProgress: Bool = false {
+        didSet {
+            guard oldValue != isOTAInProgress else { return }
+            if isOTAInProgress {
+                isHidden = false
+                return
+            }
+            isHidden = hidesWhenInactive
+        }
+    }
+    
+    func handleDeviceOtaStartEvent() {
+        isHidden = false
+    }
+    
+    func handleDeviceOtaProgressEvent(with proportion: Float) {
+        progress = proportion
+    }
+    
+    func handleDeviceOtaFinishEvent() {
+        progress = 0
+        isHidden = hidesWhenInactive
+    }
+
+}
+
+// MARK: - AferoAttributeUIStepper -
+
+class AferoAttributeUIStepper: UISlider, DeviceModelableObserving, AttributeEventObserving {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    func configure() {
+        addTarget(self, action: #selector(valueChangedInteractively(sender:)), for: .valueChanged)
+    }
+    
+    func updateUI() {
+        isEnabled = deviceModelable?.isAvailable ?? false
+        value = attribute?.value.floatValue ?? 0.0
+    }
+    
+    deinit {
+        stopObservingDeviceEvents()
+        stopObservingAttributeEvents()
+    }
+    
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+    
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        updateUI()
+    }
+    
+    // MARK: <AttributeEventObserving>
+    var attributeId: Int?
+    var attributeEventDisposable: Disposable?
+    
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+        updateUI()
+    }
+    
+    // MARK: Actions
+    
+    @objc func valueChangedInteractively(sender: UIStepper) {
+        let TAG = self.TAG
+        
+        guard
+            let deviceModelable = deviceModelable,
+            let attributeId = attributeId else {
+                DDLogWarn("No deviceModel or attribute configured; bailing.", tag: TAG)
+                return
+        }
+        
+        guard let newValue = attributeValue(forFloatValue: value) else {
+            DDLogError("Unable to derive attributeValue for \(value); bailing.", tag: TAG)
+            return
+        }
+        
+        let deviceId = deviceModelable.deviceId
+        
+        deviceModelable.set(value: newValue, forAttributeId: attributeId).then {
+            newValue -> Void in
+            DDLogVerbose("Successfully set \(deviceId).\(attributeId) to \(String(reflecting: newValue))", tag: TAG)
+            }.catch {
+                error in
+                DDLogError("Unable to set \(deviceId).\(attributeId) to \(String(reflecting: newValue)): \(String(reflecting: error))", tag: TAG)
+        }
+
+    }
+
+}
+
+// MARK: - AferoAttributeUISlider -
 
 /// A `UISlider` subclass that's bound to an attribute on an Afero `DeviceModelable`
 /// instance.
@@ -865,7 +1184,7 @@ class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, Attrib
             fatalError("No valueOptions present.")
         }
         
-        guard let newValue = attributeValue(for: valueOptions[row].match) else {
+        guard let newValue = attributeValue(forStringValue: valueOptions[row].match) else {
             DDLogError("Unable to create attributeValue for \(valueOptions[row].match); bailing.", tag: TAG)
             return
         }
