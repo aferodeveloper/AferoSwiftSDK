@@ -253,6 +253,7 @@
                     <connections>
                         <outlet property="associateDeviceButtonItem" destination="bMy-jt-Au2" id="VZx-KN-sv8"/>
                         <outlet property="signOutButton" destination="pYM-Km-9YV" id="i6D-eA-6ut"/>
+                        <segue destination="taP-RM-A2x" kind="show" identifier="ShowModuloViewController" id="G5F-Ne-TdL"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YBM-zI-17X" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1833,6 +1834,38 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="4831" y="1654"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="ZiJ-cj-p85">
+            <objects>
+                <viewController id="taP-RM-A2x" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6pg-d1-i8F"/>
+                        <viewControllerLayoutGuide type="bottom" id="BIM-sI-jjR"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="k64-KB-0tr">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="16" y="248" width="343" height="75"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="title" value="Tom"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="temperatureValueText" value="Cloony"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="WuI-JE-4cH" firstAttribute="centerY" secondItem="k64-KB-0tr" secondAttribute="centerY" id="L82-q9-CFH"/>
+                            <constraint firstItem="WuI-JE-4cH" firstAttribute="centerX" secondItem="k64-KB-0tr" secondAttribute="centerX" id="arw-JM-kli"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wYN-SJ-sSh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3040.8000000000002" y="3116.4917541229388"/>
         </scene>
         <!--Stepper Attribute Inspector View Controller-->
         <scene sceneID="lpu-gB-7Nw">
