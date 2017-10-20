@@ -5,7 +5,7 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Baseline standard spacing" minToolsVersion="9.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -479,12 +479,15 @@
                         <segue destination="fkd-FY-zEX" kind="presentation" identifier="ShowSliderAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="TvW-6J-N3V"/>
                         <segue destination="aPl-sr-J37" kind="presentation" identifier="ShowSwitchAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="n8D-ih-mUF"/>
                         <segue destination="6gg-Ol-caJ" kind="presentation" identifier="ShowPickerAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="h6Y-tp-dmW"/>
+                        <segue destination="wCn-hf-7Ha" kind="presentation" identifier="ShowSegmentedControlAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="wNa-1e-g2S"/>
+                        <segue destination="iM7-5k-xnR" kind="presentation" identifier="ShowStepperAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="HOd-E4-GHC"/>
+                        <segue destination="J1j-7j-I6O" kind="presentation" identifier="ShowProgressAttributeInspector" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="WIX-vs-HF9"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9xF-5f-Sdb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="WeI-Bc-aa8" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2408.8000000000002" y="1303.8980509745129"/>
+            <point key="canvasLocation" x="2426" y="1321"/>
         </scene>
         <!--SliderControlInputView-->
         <scene sceneID="xLK-E7-y4R">
@@ -798,7 +801,6 @@
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="keyPath" value="YES"/>
                                             <userDefinedRuntimeAttribute type="number" keyPath="lineFragmentPadding">
                                                 <real key="value" value="0.0"/>
                                             </userDefinedRuntimeAttribute>
@@ -907,7 +909,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3412" y="585"/>
+            <point key="canvasLocation" x="3242" y="307"/>
         </scene>
         <!--Slider Attribute Inspector View Controller-->
         <scene sceneID="3jc-wt-Mqd">
@@ -1143,7 +1145,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4135" y="584"/>
+            <point key="canvasLocation" x="4070" y="500"/>
         </scene>
         <!--Switch Attribute Inspector View Controller-->
         <scene sceneID="5xH-O9-tff">
@@ -1378,7 +1380,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4872.8000000000002" y="583.3583208395803"/>
+            <point key="canvasLocation" x="4831" y="832"/>
         </scene>
         <!--Picker Attribute Inspector View Controller-->
         <scene sceneID="248-F8-9P7">
@@ -1437,8 +1439,8 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-Bw-Cdg" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="83" y="20" width="240" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="City" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-Bw-Cdg" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="290.5" y="20" width="32.5" height="21"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1459,8 +1461,8 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNr-zh-HNh" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="282" y="49" width="41" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="UTF8S" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNr-zh-HNh" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="276" y="49" width="47" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1604,7 +1606,704 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="5626" y="584"/>
+            <point key="canvasLocation" x="5582" y="1242"/>
+        </scene>
+        <!--Segmented Control Attribute Inspector View Controller-->
+        <scene sceneID="b4s-5v-9pq">
+            <objects>
+                <viewController id="wCn-hf-7Ha" customClass="SegmentedControlAttributeInspectorViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RzS-SC-Iet"/>
+                        <viewControllerLayoutGuide type="bottom" id="gzF-gf-Hnx"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Wwp-QC-BPn">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tuA-r2-bNb">
+                                <rect key="frame" x="16" y="246" width="343" height="176"/>
+                                <subviews>
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Edt-bQ-E7K" userLabel="VisualEffectViewContainer">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="176"/>
+                                        <subviews>
+                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rHo-91-ouQ">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="176"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="E7f-YR-Bqb">
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="176"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </view>
+                                                <blurEffect style="extraLight"/>
+                                            </visualEffectView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="rHo-91-ouQ" secondAttribute="bottom" id="EiY-tS-ssN"/>
+                                            <constraint firstAttribute="trailing" secondItem="rHo-91-ouQ" secondAttribute="trailing" id="cWj-jC-Ao6"/>
+                                            <constraint firstItem="rHo-91-ouQ" firstAttribute="top" secondItem="Edt-bQ-E7K" secondAttribute="top" id="eTm-3t-2HF"/>
+                                            <constraint firstItem="rHo-91-ouQ" firstAttribute="leading" secondItem="Edt-bQ-E7K" secondAttribute="leading" id="qH6-Iq-VgG"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="16"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                                <integer key="value" value="4"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                                <size key="value" width="2" height="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                                <real key="value" value="0.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a6w-Ar-fKD" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Is Awesome?" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dtg-dB-hBU" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="219" y="20" width="104" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uLf-2E-6P2" userLabel="BottomRule">
+                                        <rect key="frame" x="0.0" y="44" width="343" height="1"/>
+                                        <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="K0K-ST-rRF"/>
+                                        </constraints>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXs-Ao-Sdz">
+                                        <rect key="frame" x="20" y="49" width="74" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="16k-td-NWm" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="282" y="49" width="41" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IbB-dG-cdR">
+                                        <rect key="frame" x="20" y="69" width="97" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5lC-V2-rxe" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="164" y="69" width="159" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lW8-4Q-7ql">
+                                        <rect key="frame" x="20" y="103" width="42" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="false" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Dn9-ui-heW" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="280" y="101" width="43" height="21"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="9QZ-Wc-hac">
+                                        <rect key="frame" x="20" y="130" width="303" height="29"/>
+                                        <segments>
+                                            <segment title="Not Awesome"/>
+                                            <segment title="Totally Awesome"/>
+                                        </segments>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="IbB-dG-cdR" firstAttribute="firstBaseline" secondItem="cXs-Ao-Sdz" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="0Ic-B9-WzP"/>
+                                    <constraint firstItem="cXs-Ao-Sdz" firstAttribute="top" secondItem="uLf-2E-6P2" secondAttribute="bottom" constant="4" id="0xS-Vp-uEh"/>
+                                    <constraint firstItem="Dn9-ui-heW" firstAttribute="firstBaseline" secondItem="lW8-4Q-7ql" secondAttribute="firstBaseline" id="88Z-cx-x8X"/>
+                                    <constraint firstItem="cXs-Ao-Sdz" firstAttribute="leading" secondItem="tuA-r2-bNb" secondAttribute="leading" constant="20" symbolic="YES" id="8AF-gr-Qoj"/>
+                                    <constraint firstAttribute="trailing" secondItem="uLf-2E-6P2" secondAttribute="trailing" id="Bqy-bD-FLz"/>
+                                    <constraint firstAttribute="trailing" secondItem="Edt-bQ-E7K" secondAttribute="trailing" id="EBn-Fd-88t"/>
+                                    <constraint firstItem="Edt-bQ-E7K" firstAttribute="leading" secondItem="tuA-r2-bNb" secondAttribute="leading" id="GDw-Ou-aWe"/>
+                                    <constraint firstItem="Dn9-ui-heW" firstAttribute="trailing" secondItem="5lC-V2-rxe" secondAttribute="trailing" id="IA6-cD-wRy"/>
+                                    <constraint firstItem="IbB-dG-cdR" firstAttribute="firstBaseline" secondItem="5lC-V2-rxe" secondAttribute="firstBaseline" id="IM2-sz-Hbl"/>
+                                    <constraint firstItem="cXs-Ao-Sdz" firstAttribute="firstBaseline" secondItem="16k-td-NWm" secondAttribute="firstBaseline" id="JJG-C2-CfT"/>
+                                    <constraint firstItem="Edt-bQ-E7K" firstAttribute="top" secondItem="tuA-r2-bNb" secondAttribute="top" id="JSD-zZ-g45"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="9QZ-Wc-hac" secondAttribute="bottom" constant="10" id="L2x-3G-mf8"/>
+                                    <constraint firstItem="5lC-V2-rxe" firstAttribute="trailing" secondItem="16k-td-NWm" secondAttribute="trailing" id="LlR-8A-EYC"/>
+                                    <constraint firstItem="IbB-dG-cdR" firstAttribute="leading" secondItem="cXs-Ao-Sdz" secondAttribute="leading" id="MCZ-W1-Bln"/>
+                                    <constraint firstItem="16k-td-NWm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cXs-Ao-Sdz" secondAttribute="trailing" constant="8" symbolic="YES" id="N3z-LQ-VWq"/>
+                                    <constraint firstItem="a6w-Ar-fKD" firstAttribute="leading" secondItem="tuA-r2-bNb" secondAttribute="leading" constant="20" symbolic="YES" id="RNo-Vc-8fr"/>
+                                    <constraint firstItem="uLf-2E-6P2" firstAttribute="leading" secondItem="tuA-r2-bNb" secondAttribute="leading" id="VE6-73-YJx"/>
+                                    <constraint firstItem="9QZ-Wc-hac" firstAttribute="trailing" secondItem="Dn9-ui-heW" secondAttribute="trailing" id="Ze1-Ki-fqX"/>
+                                    <constraint firstItem="lW8-4Q-7ql" firstAttribute="leading" secondItem="IbB-dG-cdR" secondAttribute="leading" id="Zli-Ww-ySR"/>
+                                    <constraint firstItem="9QZ-Wc-hac" firstAttribute="top" secondItem="Dn9-ui-heW" secondAttribute="bottom" constant="8" symbolType="layoutAnchor" id="aZb-r4-ECi"/>
+                                    <constraint firstItem="Dn9-ui-heW" firstAttribute="firstBaseline" secondItem="5lC-V2-rxe" secondAttribute="baseline" constant="34" id="gWP-ad-Flg"/>
+                                    <constraint firstItem="a6w-Ar-fKD" firstAttribute="top" secondItem="tuA-r2-bNb" secondAttribute="top" constant="20" symbolic="YES" id="ijg-eA-S0U"/>
+                                    <constraint firstItem="Dn9-ui-heW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="lW8-4Q-7ql" secondAttribute="trailing" constant="8" symbolic="YES" id="jUi-vA-yT9"/>
+                                    <constraint firstAttribute="trailing" secondItem="dtg-dB-hBU" secondAttribute="trailing" constant="20" symbolic="YES" id="lgv-My-T2d"/>
+                                    <constraint firstAttribute="trailing" secondItem="16k-td-NWm" secondAttribute="trailing" constant="20" symbolic="YES" id="orH-eE-Tma"/>
+                                    <constraint firstItem="dtg-dB-hBU" firstAttribute="firstBaseline" secondItem="a6w-Ar-fKD" secondAttribute="firstBaseline" id="pb9-Rz-tAC"/>
+                                    <constraint firstItem="5lC-V2-rxe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IbB-dG-cdR" secondAttribute="trailing" constant="8" symbolic="YES" id="rpQ-f9-tqv"/>
+                                    <constraint firstAttribute="bottom" secondItem="Edt-bQ-E7K" secondAttribute="bottom" id="wBf-xy-ehT"/>
+                                    <constraint firstItem="dtg-dB-hBU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="a6w-Ar-fKD" secondAttribute="trailing" constant="8" symbolic="YES" id="wqT-18-Roz"/>
+                                    <constraint firstItem="9QZ-Wc-hac" firstAttribute="leading" secondItem="lW8-4Q-7ql" secondAttribute="leading" id="xZH-xa-5WG"/>
+                                    <constraint firstItem="uLf-2E-6P2" firstAttribute="top" secondItem="dtg-dB-hBU" secondAttribute="bottom" constant="3" id="xw9-lJ-poQ"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                        <size key="value" width="2" height="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="tuA-r2-bNb" firstAttribute="centerX" secondItem="Wwp-QC-BPn" secondAttribute="centerX" id="22F-JE-Cfg"/>
+                            <constraint firstItem="tuA-r2-bNb" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wwp-QC-BPn" secondAttribute="leading" constant="16" id="6oZ-jv-jPX"/>
+                            <constraint firstItem="gzF-gf-Hnx" firstAttribute="top" relation="greaterThanOrEqual" secondItem="tuA-r2-bNb" secondAttribute="bottom" constant="8" symbolic="YES" id="PZJ-TH-mBZ"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="tuA-r2-bNb" secondAttribute="leading" priority="252" id="Rbw-Ms-uFb"/>
+                            <constraint firstItem="tuA-r2-bNb" firstAttribute="centerY" secondItem="Wwp-QC-BPn" secondAttribute="centerY" id="gRh-90-8fi"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tuA-r2-bNb" secondAttribute="trailing" priority="252" id="nvr-SM-DgW"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="tuA-r2-bNb" secondAttribute="trailing" constant="16" id="ppC-ku-ayE"/>
+                            <constraint firstItem="tuA-r2-bNb" firstAttribute="top" relation="greaterThanOrEqual" secondItem="RzS-SC-Iet" secondAttribute="bottom" constant="8" symbolic="YES" id="ttV-Dr-4qS"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="swt-AE-4qX" appends="YES" id="3zZ-Ie-RZc"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="attributeIdLabel" destination="a6w-Ar-fKD" id="gOT-qM-M0Q"/>
+                        <outlet property="attributeNameLabel" destination="dtg-dB-hBU" id="k0j-0s-6FX"/>
+                        <outlet property="attributeValueHeaderLabel" destination="lW8-4Q-7ql" id="Xln-i8-P4K"/>
+                        <outlet property="attributeValueTextField" destination="Dn9-ui-heW" id="yhE-dt-j9h"/>
+                        <outlet property="backgroundTapGestureRecognizer" destination="4OX-HO-XyN" id="giE-v8-Hbb"/>
+                        <outlet property="bodyView" destination="tuA-r2-bNb" id="f0r-Qt-zqQ"/>
+                        <outlet property="dataTypeHeaderLabel" destination="cXs-Ao-Sdz" id="oFp-KF-6d8"/>
+                        <outlet property="dataTypeValueLabel" destination="16k-td-NWm" id="cg0-y1-cRG"/>
+                        <outlet property="lastUpdatedHeaderLabel" destination="IbB-dG-cdR" id="a5D-JL-UIX"/>
+                        <outlet property="lastUpdatedValueLabel" destination="5lC-V2-rxe" id="iDV-X0-Y2M"/>
+                        <outlet property="segmentedControl" destination="9QZ-Wc-hac" id="u7K-1e-tQV"/>
+                        <outletCollection property="allObservers" destination="a6w-Ar-fKD" collectionClass="NSMutableArray" id="2vX-xQ-01a"/>
+                        <outletCollection property="allObservers" destination="dtg-dB-hBU" collectionClass="NSMutableArray" id="90L-8d-3Tp"/>
+                        <outletCollection property="allObservers" destination="16k-td-NWm" collectionClass="NSMutableArray" id="6dZ-BC-2ev"/>
+                        <outletCollection property="allObservers" destination="E7f-YR-Bqb" collectionClass="NSMutableArray" id="efc-Ot-0yy"/>
+                        <outletCollection property="allObservers" destination="Dn9-ui-heW" collectionClass="NSMutableArray" id="Fxq-D1-TpH"/>
+                        <outletCollection property="allObservers" destination="9QZ-Wc-hac" collectionClass="NSMutableArray" id="vRu-8k-7mP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PE5-ZB-4Su" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="swt-AE-4qX">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="wCn-hf-7Ha" id="itA-TD-Io5"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="4831" y="1654"/>
+        </scene>
+        <!--Stepper Attribute Inspector View Controller-->
+        <scene sceneID="lpu-gB-7Nw">
+            <objects>
+                <viewController id="iM7-5k-xnR" customClass="StepperAttributeInspectorViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="KNd-WX-APX"/>
+                        <viewControllerLayoutGuide type="bottom" id="rkZ-w6-3Du"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jj7-TW-HFd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lRk-QR-4ce">
+                                <rect key="frame" x="16" y="253" width="343" height="162"/>
+                                <subviews>
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IdY-y8-5XM" userLabel="VisualEffectViewContainer">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="162"/>
+                                        <subviews>
+                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pyS-Xn-Irm">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="162"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="cqb-hJ-cyY">
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="162"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </view>
+                                                <blurEffect style="extraLight"/>
+                                            </visualEffectView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="pyS-Xn-Irm" firstAttribute="leading" secondItem="IdY-y8-5XM" secondAttribute="leading" id="1UG-iI-k2c"/>
+                                            <constraint firstAttribute="bottom" secondItem="pyS-Xn-Irm" secondAttribute="bottom" id="TH2-lD-KBH"/>
+                                            <constraint firstItem="pyS-Xn-Irm" firstAttribute="top" secondItem="IdY-y8-5XM" secondAttribute="top" id="bbg-b4-JJn"/>
+                                            <constraint firstAttribute="trailing" secondItem="pyS-Xn-Irm" secondAttribute="trailing" id="pdb-um-7rj"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="16"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                                <integer key="value" value="4"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                                <size key="value" width="2" height="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                                <real key="value" value="0.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jqf-UE-kik" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JXG-aF-t2F" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="83" y="20" width="240" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nRl-Mc-nNA" userLabel="BottomRule">
+                                        <rect key="frame" x="0.0" y="44" width="343" height="1"/>
+                                        <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="PrE-37-4Dx"/>
+                                        </constraints>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h7B-4T-3vW">
+                                        <rect key="frame" x="20" y="49" width="74" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmN-yL-ndi" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="282" y="49" width="41" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XT2-FL-yBb">
+                                        <rect key="frame" x="20" y="69" width="97" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zts-44-ZCC" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="164" y="69" width="159" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOc-Bv-7Xh">
+                                        <rect key="frame" x="20" y="103" width="42" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="0" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S1v-fx-Vpj" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="206" y="101" width="15" height="21"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1cS-Cs-fpD" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="134" width="303" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLabel"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="yau-RW-XIS">
+                                        <rect key="frame" x="229" y="97" width="94" height="29"/>
+                                    </stepper>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="1cS-Cs-fpD" firstAttribute="trailing" secondItem="yau-RW-XIS" secondAttribute="trailing" id="0iH-7b-z95"/>
+                                    <constraint firstAttribute="trailing" secondItem="IdY-y8-5XM" secondAttribute="trailing" id="1jV-SZ-2rn"/>
+                                    <constraint firstItem="S1v-fx-Vpj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mOc-Bv-7Xh" secondAttribute="trailing" constant="8" symbolic="YES" id="1pa-gJ-1Sp"/>
+                                    <constraint firstAttribute="trailing" secondItem="JmN-yL-ndi" secondAttribute="trailing" constant="20" symbolic="YES" id="1q2-uF-ng1"/>
+                                    <constraint firstItem="JXG-aF-t2F" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jqf-UE-kik" secondAttribute="trailing" constant="8" symbolic="YES" id="32B-nI-Vsu"/>
+                                    <constraint firstAttribute="bottom" secondItem="1cS-Cs-fpD" secondAttribute="bottom" constant="10" id="4W8-9d-IIC"/>
+                                    <constraint firstItem="1cS-Cs-fpD" firstAttribute="leading" secondItem="mOc-Bv-7Xh" secondAttribute="leading" id="7K6-ck-bMn"/>
+                                    <constraint firstAttribute="trailing" secondItem="JXG-aF-t2F" secondAttribute="trailing" constant="20" symbolic="YES" id="9yN-SR-usu"/>
+                                    <constraint firstItem="Zts-44-ZCC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="XT2-FL-yBb" secondAttribute="trailing" constant="8" symbolic="YES" id="BNT-Dl-6s6"/>
+                                    <constraint firstAttribute="bottom" secondItem="IdY-y8-5XM" secondAttribute="bottom" id="DWb-cX-WQJ"/>
+                                    <constraint firstItem="yau-RW-XIS" firstAttribute="trailing" secondItem="Zts-44-ZCC" secondAttribute="trailing" id="F5y-IL-UcV"/>
+                                    <constraint firstItem="jqf-UE-kik" firstAttribute="top" secondItem="lRk-QR-4ce" secondAttribute="top" constant="20" symbolic="YES" id="H2Z-85-ROi"/>
+                                    <constraint firstItem="jqf-UE-kik" firstAttribute="leading" secondItem="lRk-QR-4ce" secondAttribute="leading" constant="20" symbolic="YES" id="HrL-Ka-QBj"/>
+                                    <constraint firstItem="JmN-yL-ndi" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="h7B-4T-3vW" secondAttribute="trailing" constant="8" symbolic="YES" id="LCV-g6-ihm"/>
+                                    <constraint firstItem="XT2-FL-yBb" firstAttribute="firstBaseline" secondItem="h7B-4T-3vW" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="LMq-XP-jDe"/>
+                                    <constraint firstItem="S1v-fx-Vpj" firstAttribute="firstBaseline" secondItem="Zts-44-ZCC" secondAttribute="baseline" constant="34" id="LgE-s9-vL4"/>
+                                    <constraint firstItem="yau-RW-XIS" firstAttribute="centerY" secondItem="S1v-fx-Vpj" secondAttribute="centerY" id="Mln-a9-9i8"/>
+                                    <constraint firstItem="h7B-4T-3vW" firstAttribute="firstBaseline" secondItem="JmN-yL-ndi" secondAttribute="firstBaseline" id="P75-rC-qy0"/>
+                                    <constraint firstItem="h7B-4T-3vW" firstAttribute="leading" secondItem="lRk-QR-4ce" secondAttribute="leading" constant="20" symbolic="YES" id="Q80-4X-Acp"/>
+                                    <constraint firstAttribute="trailing" secondItem="nRl-Mc-nNA" secondAttribute="trailing" id="Raj-jg-6zM"/>
+                                    <constraint firstItem="h7B-4T-3vW" firstAttribute="top" secondItem="nRl-Mc-nNA" secondAttribute="bottom" constant="4" id="SMg-uG-9ph"/>
+                                    <constraint firstItem="IdY-y8-5XM" firstAttribute="leading" secondItem="lRk-QR-4ce" secondAttribute="leading" id="VFU-7U-0MZ"/>
+                                    <constraint firstItem="nRl-Mc-nNA" firstAttribute="top" secondItem="JXG-aF-t2F" secondAttribute="bottom" constant="3" id="XDi-zI-G4e"/>
+                                    <constraint firstItem="Zts-44-ZCC" firstAttribute="trailing" secondItem="JmN-yL-ndi" secondAttribute="trailing" id="bcN-Wz-MS7"/>
+                                    <constraint firstItem="XT2-FL-yBb" firstAttribute="leading" secondItem="h7B-4T-3vW" secondAttribute="leading" id="eny-ec-ipr"/>
+                                    <constraint firstItem="JXG-aF-t2F" firstAttribute="firstBaseline" secondItem="jqf-UE-kik" secondAttribute="firstBaseline" id="foP-Oe-e2Y"/>
+                                    <constraint firstItem="S1v-fx-Vpj" firstAttribute="firstBaseline" secondItem="mOc-Bv-7Xh" secondAttribute="firstBaseline" id="jfA-WR-KPh"/>
+                                    <constraint firstItem="IdY-y8-5XM" firstAttribute="top" secondItem="lRk-QR-4ce" secondAttribute="top" id="kni-FX-cZo"/>
+                                    <constraint firstItem="mOc-Bv-7Xh" firstAttribute="leading" secondItem="XT2-FL-yBb" secondAttribute="leading" id="qyj-SY-bR9"/>
+                                    <constraint firstItem="XT2-FL-yBb" firstAttribute="firstBaseline" secondItem="Zts-44-ZCC" secondAttribute="firstBaseline" id="tFr-9S-uIV"/>
+                                    <constraint firstItem="1cS-Cs-fpD" firstAttribute="top" secondItem="yau-RW-XIS" secondAttribute="bottom" constant="8" symbolic="YES" id="vrd-hZ-M8Z"/>
+                                    <constraint firstItem="nRl-Mc-nNA" firstAttribute="leading" secondItem="lRk-QR-4ce" secondAttribute="leading" id="x3l-Ct-RHW"/>
+                                    <constraint firstItem="yau-RW-XIS" firstAttribute="leading" secondItem="S1v-fx-Vpj" secondAttribute="trailing" constant="8" symbolic="YES" id="zgb-gA-oGk"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                        <size key="value" width="2" height="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lRk-QR-4ce" secondAttribute="trailing" constant="16" id="Ava-wd-dQr"/>
+                            <constraint firstItem="lRk-QR-4ce" firstAttribute="top" relation="greaterThanOrEqual" secondItem="KNd-WX-APX" secondAttribute="bottom" constant="8" symbolic="YES" id="Evl-4x-bMd"/>
+                            <constraint firstItem="lRk-QR-4ce" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jj7-TW-HFd" secondAttribute="leading" constant="16" id="Lww-e3-v7y"/>
+                            <constraint firstItem="rkZ-w6-3Du" firstAttribute="top" relation="greaterThanOrEqual" secondItem="lRk-QR-4ce" secondAttribute="bottom" constant="8" symbolic="YES" id="gcU-fK-dI9"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="lRk-QR-4ce" secondAttribute="leading" priority="252" id="mGb-aT-cAj"/>
+                            <constraint firstItem="lRk-QR-4ce" firstAttribute="centerX" secondItem="jj7-TW-HFd" secondAttribute="centerX" id="onf-QH-b78"/>
+                            <constraint firstItem="lRk-QR-4ce" firstAttribute="centerY" secondItem="jj7-TW-HFd" secondAttribute="centerY" id="uwe-cQ-hk8"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lRk-QR-4ce" secondAttribute="trailing" priority="252" id="zqj-Y0-a4F"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="fm7-BQ-Lch" appends="YES" id="eTu-B3-wBq"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="attributeDisplayLabelValueLabel" destination="1cS-Cs-fpD" id="x8C-9u-Jd6"/>
+                        <outlet property="attributeIdLabel" destination="jqf-UE-kik" id="Cbc-2a-fxf"/>
+                        <outlet property="attributeNameLabel" destination="JXG-aF-t2F" id="anS-1H-Zwc"/>
+                        <outlet property="attributeValueHeaderLabel" destination="mOc-Bv-7Xh" id="NTA-gw-xL5"/>
+                        <outlet property="attributeValueTextField" destination="S1v-fx-Vpj" id="aIH-Hg-mKL"/>
+                        <outlet property="backgroundTapGestureRecognizer" destination="4OX-HO-XyN" id="E3p-ud-fuR"/>
+                        <outlet property="bodyView" destination="lRk-QR-4ce" id="jed-fI-N0t"/>
+                        <outlet property="dataTypeHeaderLabel" destination="h7B-4T-3vW" id="PIf-nu-oEm"/>
+                        <outlet property="dataTypeValueLabel" destination="JmN-yL-ndi" id="SCM-cP-zkf"/>
+                        <outlet property="lastUpdatedHeaderLabel" destination="XT2-FL-yBb" id="8jb-lC-aby"/>
+                        <outlet property="lastUpdatedValueLabel" destination="Zts-44-ZCC" id="5x3-7E-uvb"/>
+                        <outlet property="stepper" destination="yau-RW-XIS" id="xsJ-hn-NTe"/>
+                        <outletCollection property="allObservers" destination="jqf-UE-kik" collectionClass="NSMutableArray" id="N2a-7b-Om3"/>
+                        <outletCollection property="allObservers" destination="JXG-aF-t2F" collectionClass="NSMutableArray" id="d9r-dP-AJr"/>
+                        <outletCollection property="allObservers" destination="JmN-yL-ndi" collectionClass="NSMutableArray" id="n5B-nL-uiZ"/>
+                        <outletCollection property="allObservers" destination="Zts-44-ZCC" collectionClass="NSMutableArray" id="vec-Wf-hLI"/>
+                        <outletCollection property="allObservers" destination="S1v-fx-Vpj" collectionClass="NSMutableArray" id="D2H-FA-GS4"/>
+                        <outletCollection property="allObservers" destination="1cS-Cs-fpD" collectionClass="NSMutableArray" id="UVq-Dv-cLw"/>
+                        <outletCollection property="allObservers" destination="yau-RW-XIS" collectionClass="NSMutableArray" id="8QE-71-rD8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mXQ-EE-Fz0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="fm7-BQ-Lch">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="iM7-5k-xnR" id="jPX-5Z-f5t"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="4070" y="2092"/>
+        </scene>
+        <!--Progress View Attribute Inspector View Controller-->
+        <scene sceneID="7tz-yJ-HW9">
+            <objects>
+                <viewController id="J1j-7j-I6O" customClass="ProgressViewAttributeInspectorViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Pj-Kc-SBl"/>
+                        <viewControllerLayoutGuide type="bottom" id="rtN-96-5Jx"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jMh-h8-tKM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hQF-pc-YSM">
+                                <rect key="frame" x="16" y="250" width="343" height="168"/>
+                                <subviews>
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-gx-m7a" userLabel="VisualEffectViewContainer">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="168"/>
+                                        <subviews>
+                                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3tN-lQ-Clt">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="168"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="kYz-ka-pqW">
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="168"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </view>
+                                                <blurEffect style="extraLight"/>
+                                            </visualEffectView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="3tN-lQ-Clt" secondAttribute="trailing" id="NvO-dW-5HN"/>
+                                            <constraint firstItem="3tN-lQ-Clt" firstAttribute="top" secondItem="uhW-gx-m7a" secondAttribute="top" id="PJF-IR-hih"/>
+                                            <constraint firstItem="3tN-lQ-Clt" firstAttribute="leading" secondItem="uhW-gx-m7a" secondAttribute="leading" id="XDi-AQ-Y6H"/>
+                                            <constraint firstAttribute="bottom" secondItem="3tN-lQ-Clt" secondAttribute="bottom" id="ppt-cg-19i"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="16"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                                <integer key="value" value="4"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                                <size key="value" width="2" height="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                                <real key="value" value="0.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jDb-62-eju" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeId"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQR-vB-ELa" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="83" y="20" width="240" height="21"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeName"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OqZ-32-8M3" userLabel="BottomRule">
+                                        <rect key="frame" x="0.0" y="44" width="343" height="1"/>
+                                        <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="JWu-8D-m60"/>
+                                        </constraints>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O0x-Vt-Iek">
+                                        <rect key="frame" x="20" y="49" width="74" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="SINT64" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BRM-d5-hQp" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="271" y="49" width="52" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z09-DO-Z7X">
+                                        <rect key="frame" x="20" y="69" width="97" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsV-IO-HC9" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="164" y="69" width="159" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLastUpdated"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2U8-eA-HMP">
+                                        <rect key="frame" x="20" y="103" width="42" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="2,000,000" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pEs-v6-bh5" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="70" y="101" width="253" height="21"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
+                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
+                                                <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="R9x-aL-59P">
+                                        <rect key="frame" x="20" y="130" width="303" height="2"/>
+                                    </progressView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K64-V9-twz" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="140" width="303" height="18"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeLabel"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="pEs-v6-bh5" firstAttribute="firstBaseline" secondItem="bsV-IO-HC9" secondAttribute="baseline" constant="34" id="1tr-gW-mqH"/>
+                                    <constraint firstItem="uhW-gx-m7a" firstAttribute="top" secondItem="hQF-pc-YSM" secondAttribute="top" id="3bI-cz-IB3"/>
+                                    <constraint firstItem="pEs-v6-bh5" firstAttribute="leading" secondItem="2U8-eA-HMP" secondAttribute="trailing" constant="8" symbolic="YES" id="5XC-Wd-gbd"/>
+                                    <constraint firstAttribute="bottom" secondItem="K64-V9-twz" secondAttribute="bottom" constant="10" id="5wi-rT-DCR"/>
+                                    <constraint firstItem="OqZ-32-8M3" firstAttribute="leading" secondItem="hQF-pc-YSM" secondAttribute="leading" id="6NO-qa-B9U"/>
+                                    <constraint firstAttribute="trailing" secondItem="aQR-vB-ELa" secondAttribute="trailing" constant="20" symbolic="YES" id="9gB-82-91S"/>
+                                    <constraint firstItem="aQR-vB-ELa" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jDb-62-eju" secondAttribute="trailing" constant="8" symbolic="YES" id="CWU-lj-bFr"/>
+                                    <constraint firstItem="Z09-DO-Z7X" firstAttribute="firstBaseline" secondItem="bsV-IO-HC9" secondAttribute="firstBaseline" id="Cfp-z3-HVO"/>
+                                    <constraint firstItem="bsV-IO-HC9" firstAttribute="trailing" secondItem="BRM-d5-hQp" secondAttribute="trailing" id="Hpk-4V-9pK"/>
+                                    <constraint firstItem="pEs-v6-bh5" firstAttribute="trailing" secondItem="bsV-IO-HC9" secondAttribute="trailing" id="IAv-BL-2lb"/>
+                                    <constraint firstItem="R9x-aL-59P" firstAttribute="top" secondItem="pEs-v6-bh5" secondAttribute="bottom" constant="8" symbolic="YES" id="IFL-yh-cTR"/>
+                                    <constraint firstItem="R9x-aL-59P" firstAttribute="trailing" secondItem="pEs-v6-bh5" secondAttribute="trailing" id="IhV-uQ-Gcz"/>
+                                    <constraint firstItem="K64-V9-twz" firstAttribute="leading" secondItem="R9x-aL-59P" secondAttribute="leading" id="Mdg-37-umi"/>
+                                    <constraint firstItem="Z09-DO-Z7X" firstAttribute="firstBaseline" secondItem="O0x-Vt-Iek" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="NYf-ph-8fZ"/>
+                                    <constraint firstItem="OqZ-32-8M3" firstAttribute="top" secondItem="aQR-vB-ELa" secondAttribute="bottom" constant="3" id="Swi-u9-aZd"/>
+                                    <constraint firstItem="aQR-vB-ELa" firstAttribute="firstBaseline" secondItem="jDb-62-eju" secondAttribute="firstBaseline" id="WqJ-mS-KZN"/>
+                                    <constraint firstItem="O0x-Vt-Iek" firstAttribute="top" secondItem="OqZ-32-8M3" secondAttribute="bottom" constant="4" id="Wy2-zN-XIm"/>
+                                    <constraint firstItem="R9x-aL-59P" firstAttribute="leading" secondItem="2U8-eA-HMP" secondAttribute="leading" id="Xa1-DM-lwk"/>
+                                    <constraint firstAttribute="trailing" secondItem="BRM-d5-hQp" secondAttribute="trailing" constant="20" symbolic="YES" id="aSS-wD-z9W"/>
+                                    <constraint firstItem="K64-V9-twz" firstAttribute="trailing" secondItem="R9x-aL-59P" secondAttribute="trailing" id="b5N-2y-o72"/>
+                                    <constraint firstItem="bsV-IO-HC9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Z09-DO-Z7X" secondAttribute="trailing" constant="8" symbolic="YES" id="dJb-Hy-dN3"/>
+                                    <constraint firstAttribute="trailing" secondItem="uhW-gx-m7a" secondAttribute="trailing" id="eji-6a-X8r"/>
+                                    <constraint firstAttribute="trailing" secondItem="OqZ-32-8M3" secondAttribute="trailing" id="faU-e4-Zts"/>
+                                    <constraint firstItem="O0x-Vt-Iek" firstAttribute="leading" secondItem="hQF-pc-YSM" secondAttribute="leading" constant="20" symbolic="YES" id="ghg-dl-yAQ"/>
+                                    <constraint firstItem="jDb-62-eju" firstAttribute="leading" secondItem="hQF-pc-YSM" secondAttribute="leading" constant="20" symbolic="YES" id="hmm-3H-nRi"/>
+                                    <constraint firstItem="uhW-gx-m7a" firstAttribute="leading" secondItem="hQF-pc-YSM" secondAttribute="leading" id="htP-GI-EdD"/>
+                                    <constraint firstItem="BRM-d5-hQp" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="O0x-Vt-Iek" secondAttribute="trailing" constant="8" symbolic="YES" id="pR3-JF-GYv"/>
+                                    <constraint firstItem="Z09-DO-Z7X" firstAttribute="leading" secondItem="O0x-Vt-Iek" secondAttribute="leading" id="pkA-id-7UK"/>
+                                    <constraint firstItem="pEs-v6-bh5" firstAttribute="firstBaseline" secondItem="2U8-eA-HMP" secondAttribute="firstBaseline" id="qin-lT-qEI"/>
+                                    <constraint firstItem="2U8-eA-HMP" firstAttribute="leading" secondItem="Z09-DO-Z7X" secondAttribute="leading" id="rGI-5U-ldq"/>
+                                    <constraint firstItem="jDb-62-eju" firstAttribute="top" secondItem="hQF-pc-YSM" secondAttribute="top" constant="20" symbolic="YES" id="vXO-fG-PhQ"/>
+                                    <constraint firstItem="O0x-Vt-Iek" firstAttribute="firstBaseline" secondItem="BRM-d5-hQp" secondAttribute="firstBaseline" id="wLZ-S3-np2"/>
+                                    <constraint firstAttribute="bottom" secondItem="uhW-gx-m7a" secondAttribute="bottom" id="yNe-L2-uwK"/>
+                                    <constraint firstItem="K64-V9-twz" firstAttribute="top" secondItem="R9x-aL-59P" secondAttribute="bottom" constant="8" symbolic="YES" id="zFy-BO-FUW"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                        <size key="value" width="2" height="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="hQF-pc-YSM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="jMh-h8-tKM" secondAttribute="leading" constant="16" id="5Pm-Lx-njz"/>
+                            <constraint firstItem="rtN-96-5Jx" firstAttribute="top" relation="greaterThanOrEqual" secondItem="hQF-pc-YSM" secondAttribute="bottom" constant="8" symbolic="YES" id="Aq4-V1-i1f"/>
+                            <constraint firstItem="hQF-pc-YSM" firstAttribute="centerX" secondItem="jMh-h8-tKM" secondAttribute="centerX" id="Hq4-iI-nVg"/>
+                            <constraint firstItem="hQF-pc-YSM" firstAttribute="centerY" secondItem="jMh-h8-tKM" secondAttribute="centerY" id="KtY-V8-e8G"/>
+                            <constraint firstItem="hQF-pc-YSM" firstAttribute="top" relation="greaterThanOrEqual" secondItem="7Pj-Kc-SBl" secondAttribute="bottom" constant="8" symbolic="YES" id="MAc-BH-FQ0"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="hQF-pc-YSM" secondAttribute="leading" priority="252" id="Xeb-m8-fvX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="hQF-pc-YSM" secondAttribute="trailing" priority="252" id="bhu-JM-aYx"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hQF-pc-YSM" secondAttribute="trailing" constant="16" id="sfo-M3-ehd"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="AaF-8L-qlm" appends="YES" id="0EZ-C5-hcx"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="attributeDisplayLabelValueLabel" destination="K64-V9-twz" id="4om-Zr-42j"/>
+                        <outlet property="attributeIdLabel" destination="jDb-62-eju" id="WU7-oU-Kf7"/>
+                        <outlet property="attributeNameLabel" destination="aQR-vB-ELa" id="CrM-zu-T9W"/>
+                        <outlet property="attributeValueHeaderLabel" destination="2U8-eA-HMP" id="9VZ-eX-dej"/>
+                        <outlet property="attributeValueTextField" destination="pEs-v6-bh5" id="ug8-K2-7dZ"/>
+                        <outlet property="backgroundTapGestureRecognizer" destination="4OX-HO-XyN" id="HzT-XB-WLd"/>
+                        <outlet property="bodyView" destination="hQF-pc-YSM" id="Ip5-QF-iwd"/>
+                        <outlet property="dataTypeHeaderLabel" destination="O0x-Vt-Iek" id="VFe-fV-D25"/>
+                        <outlet property="dataTypeValueLabel" destination="BRM-d5-hQp" id="H88-UZ-moh"/>
+                        <outlet property="lastUpdatedHeaderLabel" destination="Z09-DO-Z7X" id="5oU-HL-KTY"/>
+                        <outlet property="lastUpdatedValueLabel" destination="bsV-IO-HC9" id="5Cv-8Z-hXq"/>
+                        <outlet property="progressView" destination="R9x-aL-59P" id="oBi-37-cnV"/>
+                        <outletCollection property="allObservers" destination="jDb-62-eju" collectionClass="NSMutableArray" id="es6-Dx-P3l"/>
+                        <outletCollection property="allObservers" destination="aQR-vB-ELa" collectionClass="NSMutableArray" id="0gC-Hh-Ct5"/>
+                        <outletCollection property="allObservers" destination="BRM-d5-hQp" collectionClass="NSMutableArray" id="KZN-aL-6BP"/>
+                        <outletCollection property="allObservers" destination="bsV-IO-HC9" collectionClass="NSMutableArray" id="7PV-Kn-qGQ"/>
+                        <outletCollection property="allObservers" destination="pEs-v6-bh5" collectionClass="NSMutableArray" id="UiV-c9-Smy"/>
+                        <outletCollection property="allObservers" destination="K64-V9-twz" collectionClass="NSMutableArray" id="V70-Ec-E0K"/>
+                        <outletCollection property="allObservers" destination="R9x-aL-59P" collectionClass="NSMutableArray" id="rzl-ob-Z5P"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zkM-xL-y2Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="AaF-8L-qlm">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="J1j-7j-I6O" id="Dhf-yb-EPX"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="3242" y="2353"/>
         </scene>
     </scenes>
     <resources>

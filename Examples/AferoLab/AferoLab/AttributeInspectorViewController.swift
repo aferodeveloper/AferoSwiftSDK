@@ -123,6 +123,18 @@ class SwitchAttributeInspectorViewController: TextFieldAttributeInspectorViewCon
     @IBOutlet weak var attributeValueSwitch: AferoAttributeUISwitch!
 }
 
+class SegmentedControlAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+}
+
+class ProgressViewAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
+    @IBOutlet weak var progressView: UIProgressView!
+}
+
+class StepperAttributeInspectorViewController: TextFieldAttributeInspectorViewController {
+    @IBOutlet weak var stepper: UIStepper!
+}
+
 /// Provides an inspector for attributes whose values an take on an enumeration
 /// of values. Values are presented in a `UIPickerView`, based upon the attribute's
 /// `valueOptions` definition.
