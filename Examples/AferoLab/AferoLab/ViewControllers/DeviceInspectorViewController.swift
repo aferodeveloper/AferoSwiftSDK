@@ -473,6 +473,9 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case showSliderAttributeInspector = "ShowSliderAttributeInspector"
         case showSwitchAttributeInspector = "ShowSwitchAttributeInspector"
         case showPickerAttributeInspector = "ShowPickerAttributeInspector"
+        case showSegmentedControlAttributeInspector = "ShowSegmentedControlAttributeInspector"
+        case showStepperAttributeInspector = "ShowStepperAttributeInspector"
+        case showProgressAttributeInspector = "ShowProgressAttributeInspector"
     }
     
     func performSegue(withIdentifier identifier: SegueIdentifier, sender: Any?) {
@@ -492,7 +495,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case .showTextViewAttributeInspector: fallthrough
         case .showSliderAttributeInspector: fallthrough
         case .showSwitchAttributeInspector: fallthrough
-        case .showPickerAttributeInspector:
+        case .showPickerAttributeInspector: fallthrough
+        case .showSegmentedControlAttributeInspector: fallthrough
+        case .showStepperAttributeInspector: fallthrough
+        case .showProgressAttributeInspector:
             
             guard let selectedIndex = tableView.indexPathForSelectedRow else {
                 DDLogError("No selection for device inspector segue.", tag: TAG)
@@ -837,62 +843,70 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             tableView.deselectRow(at: indexPath, animated: true)
             
         default:
+            
             guard let attribute = attribute(for: indexPath) else {
                 tableView.deselectRow(at: indexPath, animated: true)
                 return
             }
             
-            var maybeSegueIdentifier: SegueIdentifier?
+            let segueIdentifier: SegueIdentifier
+            defer { performSegue(withIdentifier: segueIdentifier, sender: self) }
             
-            switch attribute.config.descriptor.dataType {
+            // Special cases
+            //
+            // 1. If we have valueOptions
+            //    a. and 3 or fewer options, use a segmentedControl
+            //    b. Otherwise, use a picker
+            // 2. Else if we have rangeOptions
+            //    a. And 20 or fewer steps, use a stepper
+            //    b. Otherwise,
+            //       i. If we're readwrite, use a slider
+            //       ii. Otherwise, use a progress view
+            // 3. Else if we're a Bool, use a switch
+            // 4. Else if we're a string or raw bytes, use a textView
+            
+            if
+                let valueOptions = attribute.config.presentation?.valueOptions,
+                !valueOptions.isEmpty {
+               
+                // we have ValueOptions
                 
-            case .utf8S: fallthrough
-            case .bytes:
-                if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
-                    maybeSegueIdentifier = .showPickerAttributeInspector
+                if valueOptions.count <= 3 {
+                    segueIdentifier = .showSegmentedControlAttributeInspector
                 } else {
-                    maybeSegueIdentifier = .showTextViewAttributeInspector
+                    segueIdentifier = .showPickerAttributeInspector
                 }
                 
-            case .boolean:
-                maybeSegueIdentifier = .showSwitchAttributeInspector
+            } else if let rangeOptions = attribute.config.presentation?.rangeOptions {
                 
-            case .q1516: fallthrough
-            case .q3132: fallthrough
-            case .sInt8: fallthrough
-            case .sInt16: fallthrough
-            case .sInt32: fallthrough
-            case .sInt64:
-                if !(attribute.config.presentation?.valueOptions.isEmpty ?? true) {
-                    maybeSegueIdentifier = .showPickerAttributeInspector
-                } else if attribute.config.presentation?.rangeOptions != nil {
-                    maybeSegueIdentifier = .showSliderAttributeInspector
+                // we have RangeOptions
+                
+                if rangeOptions.count.intValue <= 20 {
+                    // use a stepper
+                    segueIdentifier = .showStepperAttributeInspector
+                    
                 } else {
-                    maybeSegueIdentifier = .showTextViewAttributeInspector
+                    // Use a slider or progress view
+
+                    if attribute.config.descriptor.isWritable {
+                        // use a slider
+                        segueIdentifier = .showSliderAttributeInspector
+                    } else {
+                        // use a progress view
+                        segueIdentifier = .showProgressAttributeInspector
+                    }
+                 
                 }
-                
-            // Floats are deprecated; use .q1516 / .q3132 instead.
-            case .float32: fallthrough
-            case .float64:
-                DDLogWarn("Will show slider for deprecated type \(attribute.config.descriptor.dataType)", tag: TAG)
-                maybeSegueIdentifier = .showSliderAttributeInspector
-                
-            // Added for completeness; the following are not supported.
-            case .uInt8: fallthrough
-            case .uInt16: fallthrough
-            case .uInt32: fallthrough
-            case .uInt64: fallthrough
-            case .unknown:
-                DDLogError("Detected unsupported type \(attribute.config.descriptor.dataType); not editing.", tag: TAG)
-                
+            } else {
+                switch attribute.config.descriptor.dataType {
+                case .boolean:
+                    // use a switch
+                    segueIdentifier = .showSwitchAttributeInspector
+                default:
+                    // use a textView
+                    segueIdentifier = .showTextViewAttributeInspector
+                }
             }
-            
-            guard let segueIdentifier = maybeSegueIdentifier else {
-                DDLogWarn("Unable to determine segue to use for \(String(describing: attribute)); bailing.", tag: TAG)
-                return
-            }
-            
-            performSegue(withIdentifier: segueIdentifier, sender: self)
         }
     }
     
