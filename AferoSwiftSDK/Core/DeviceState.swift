@@ -902,16 +902,16 @@ public extension DeviceModelable {
         return attributeConfig(forAttributeId: attributeId)
     }
     
-    public func attributeConfigs(isIncluded: (DeviceProfile.AttributeConfig)->Bool = { _ in true })
-        -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+    public func attributeConfigs(isIncluded: @escaping (DeviceProfile.AttributeConfig)->Bool = { _ in true })
+        -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
             return profile?.attributeConfigs(on: deviceId, isIncluded: isIncluded)
     }
     
-    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
         return profile?.attributeConfigs(on: deviceId, withIdsIn: range)
     }
     
-    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[DeviceProfile.AttributeConfig]>? {
+    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
         return attributeConfigs(withIdsIn: range.range)
     }
     
@@ -924,7 +924,7 @@ public extension DeviceModelable {
     
     
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
-    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyRandomAccessCollection<[Attribute]>? {
+    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
         return attributeConfigs()?
             .flatMap {
                 config -> Attribute? in
@@ -939,7 +939,7 @@ public extension DeviceModelable {
             }.lazy
     }
     
-    public func attributes(in range: ClosedRange<Int>) -> LazyRandomAccessCollection<[Attribute]>? {
+    public func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
         return attributeConfigs(withIdsIn: range)?
             .flatMap {
                 config -> Attribute? in
@@ -954,7 +954,7 @@ public extension DeviceModelable {
             }.lazy
     }
     
-    public func attributes(in range: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[Attribute]>? {
+    public func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[Attribute]>? {
         return attributes(in: range.range)
     }
     
