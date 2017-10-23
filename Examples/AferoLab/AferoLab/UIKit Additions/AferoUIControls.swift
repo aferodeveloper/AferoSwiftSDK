@@ -437,7 +437,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
     func updateUI() {
         if isFirstResponder { return }
         
-        isEnabled = deviceModelable?.isAvailable ?? false
+        isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
         
         let newValue = attributeValueStringValue
         
@@ -614,6 +614,22 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
         stopObservingAttributeEvents()
     }
 
+    func updateUI() {
+
+        isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
+
+        guard let attribute = attribute else {
+            self.isOn = false
+            self.isEnabled = false
+            return
+        }
+
+        guard isOn != attribute.value.boolValue else { return }
+        isOn = attribute.value.boolValue
+
+        isOn = attribute.value.boolValue
+    }
+    
     // MARK: <DeviceModelableObserving>
     var deviceModelable: DeviceModelable!
     var deviceEventSignalDisposable: Disposable?
@@ -627,18 +643,10 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
     var attributeEventDisposable: Disposable?
 
     func initializeAttributeObservation() {
-        guard let attribute = attribute else {
-            self.isOn = false
-            self.isEnabled = false
-            return
-        }
-        isOn = attribute.value.boolValue
-        isEnabled = true
+        updateUI()
     }
     
     func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
-        guard isOn != attribute.value.boolValue else { return }
-        isOn = attribute.value.boolValue
     }
 
 }
@@ -893,7 +901,7 @@ class AferoAttributeUIStepper: UIStepper, DeviceModelableObserving, AttributeEve
     }
     
     func updateUI() {
-        isEnabled = deviceModelable?.isAvailable ?? false
+        isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
         value = attribute?.value.doubleValue ?? 0.0
     }
     
@@ -1111,7 +1119,7 @@ class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, Attrib
     }
     
     func updateUI() {
-        
+    
         guard let attribute = attribute else {
             return
         }
