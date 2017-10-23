@@ -729,7 +729,7 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
     var deviceEventSignalDisposable: Disposable?
     
     func handleDeviceStateUpdateEvent(newState: DeviceState) {
-        isEnabled = newState.isAvailable
+        updateUI()
     }
     
     // MARK: <AttributeEventObserving>
@@ -737,14 +737,24 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
     var attributeId: Int?
     var attributeEventDisposable: Disposable?
     
+    func initializeAttributeObservation() {
+        updateUI()
+    }
+    
+    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
+        updateUI()
+    }
+    
+    // MARK: UI Management
+    
     func reloadAllSegments(animated: Bool = false) {
-
+        
         guard let valueOptions = attributeValueOptions else {
             return
         }
         
         removeAllSegments()
-
+        
         valueOptions.reversed().enumerated().forEach {
             
             if
@@ -762,10 +772,6 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
             insertSegment(withTitle: $1.match, at: 0, animated: animated)
         }
         
-    }
-    
-    func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
-        updateUI()
     }
     
 }
@@ -870,7 +876,7 @@ class AferoAttributeUIProgressView: UIProgressView, AttributeEventObserving {
 
 // MARK: - AferoAttributeUIStepper -
 
-class AferoAttributeUIStepper: UISlider, DeviceModelableObserving, AttributeEventObserving {
+class AferoAttributeUIStepper: UIStepper, DeviceModelableObserving, AttributeEventObserving {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -888,7 +894,7 @@ class AferoAttributeUIStepper: UISlider, DeviceModelableObserving, AttributeEven
     
     func updateUI() {
         isEnabled = deviceModelable?.isAvailable ?? false
-        value = attribute?.value.floatValue ?? 0.0
+        value = attribute?.value.doubleValue ?? 0.0
     }
     
     deinit {
@@ -908,6 +914,10 @@ class AferoAttributeUIStepper: UISlider, DeviceModelableObserving, AttributeEven
     var attributeId: Int?
     var attributeEventDisposable: Disposable?
     
+    func initializeAttributeObservation() {
+        updateUI()
+    }
+    
     func handleAttributeUpdate(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute) {
         updateUI()
     }
@@ -924,7 +934,7 @@ class AferoAttributeUIStepper: UISlider, DeviceModelableObserving, AttributeEven
                 return
         }
         
-        guard let newValue = attributeValue(forFloatValue: value) else {
+        guard let newValue = attributeValue(forDoubleValue: value) else {
             DDLogError("Unable to derive attributeValue for \(value); bailing.", tag: TAG)
             return
         }
