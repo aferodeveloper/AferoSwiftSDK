@@ -298,22 +298,23 @@ public extension DeviceProfile {
     /// Returns attributeConfigs filtered by `isIncluded`.
     /// - parameter isIncluded: The predicate to use for filtering configs. If unspecified, defaults to `{ _ in true }`, therefore
     ///                         including all configs in the result.
-    /// - returns: A `LazyRandomAccessCollection<[AttributeConfig]>` which matches all results.
+    /// - returns: A `LazyCollection<[AttributeConfig]>` which matches all results.
     
-    public func attributeConfigs(on deviceId: String? = nil, isIncluded: (AttributeConfig)->Bool = { _ in true }) -> LazyRandomAccessCollection<[AttributeConfig]> {
+    public func attributeConfigs(on deviceId: String? = nil, isIncluded: @escaping (AttributeConfig)->Bool = { _ in true }) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+        
         let ret = descriptors()
             .map {
             descriptor in
                 return (descriptor: descriptor, presentation: self.presentation(deviceId)?[descriptor.id])
-        }.filter(isIncluded).lazy
+        }.filter(isIncluded)
         return ret
     }
 
-    public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyRandomAccessCollection<[AttributeConfig]> {
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId) { range.contains($0.descriptor.id) }
     }
     
-    public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyRandomAccessCollection<[AttributeConfig]> {
+    public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId, withIdsIn: platformAttributeRange.range)
     }
     
@@ -533,11 +534,11 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// Return a lazy collection of all attribute descriptors matching the given predicate.
     /// - parameter isIncluded: The predicate used to indicate whether or not a descriptor
     ///                         should be included.
-    /// - returns: A `LazyRandomAccessCollection<[AttributeDescriptor]>` which contains all
+    /// - returns: A `LazyCollection<[AttributeDescriptor]>` which contains all
     ///            of the attributes in this profile filtered by `isIncluded`.
     
     public func descriptors(isIncluded: (AttributeDescriptor)->Bool  = { _ in return true})
-        -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+        -> LazyCollection<[AttributeDescriptor]> {
             return attributes.values.filter(isIncluded).lazy
     }
     
@@ -591,7 +592,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > since this is enforced by APE, and is transformed into a unique `#define`
     /// > in `device_description.h`, used by firmware developers.
     
-    public func descriptors(for semanticType: String) -> LazyRandomAccessCollection<[AttributeDescriptor]> {
+    public func descriptors(for semanticType: String) -> LazyCollection<[AttributeDescriptor]> {
         return descriptors(isIncluded: { $0.semanticType == semanticType })
     }
     
