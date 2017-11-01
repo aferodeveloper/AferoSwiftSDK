@@ -899,7 +899,7 @@ public extension DeviceModelable {
 
     @available(*, deprecated, message: "Use attributeConfig(for: Int) instead.")
     public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
-        return attributeConfig(forAttributeId: attributeId)
+        return attributeConfig(for: attributeId)
     }
     
     public func attributeConfigs(isIncluded: @escaping (DeviceProfile.AttributeConfig)->Bool = { _ in true })
