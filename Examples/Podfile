@@ -27,9 +27,6 @@ def base_pods
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'PromiseKit/CorePromise', '~> 4.3'
     pod 'HTTPStatusCodes', '~> 3.1'
-    pod 'AferoSofthub', :inhibit_warnings => true
-    #pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
-
     pod 'AferoSwiftSDK/AFNetworking', :path => '..'
 end
 
@@ -57,15 +54,8 @@ target 'AferoLab' do
 
     project 'AferoLab/AferoLab.xcodeproj'
     
-    pod 'CocoaLumberjack/Swift', '~> 3.2'
-    pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
-    pod 'AferoSwiftSDK/AFNetworking', :path => ".."
-
-    pod 'AferoSofthub', :inhibit_warnings => true
-    #pod 'AferoSofthub', :inhibit_warnings => true, :path => "../../hubby"
-
-    pod 'HTTPStatusCodes', '~> 3.1'
-    pod 'PromiseKit/CorePromise', '~> 4.3'
+    base_pods
+    
     pod 'LKAlertController', '1.12.1'
     pod 'RSEnvironment', '0.0.3'
     pod 'SVProgressHUD', '1.1.3'
