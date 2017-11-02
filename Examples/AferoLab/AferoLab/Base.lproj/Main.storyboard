@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YYV-1Q-Ilk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YYV-1Q-Ilk">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Baseline standard spacing" minToolsVersion="9.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -134,13 +134,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zdJ-7Q-UQd">
-                                            <rect key="frame" x="8" y="8" width="64" height="21"/>
+                                            <rect key="frame" x="16" y="11" width="64" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AccountNameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWG-lA-CQM">
-                                            <rect key="frame" x="152" y="8" width="215" height="21"/>
+                                            <rect key="frame" x="144" y="11" width="215" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="215" id="iPg-Uy-L11"/>
                                             </constraints>
@@ -149,25 +149,25 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Network Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lpp-Yr-GLK">
-                                            <rect key="frame" x="8" y="42" width="118" height="21"/>
+                                            <rect key="frame" x="16" y="45" width="118" height="16"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NetworkStatusLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7V-1m-RXK">
-                                            <rect key="frame" x="152" y="42" width="215" height="21"/>
+                                            <rect key="frame" x="144" y="40" width="215" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SoftHub" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lf0-Ze-wi8">
-                                            <rect key="frame" x="8" y="76" width="64" height="21"/>
+                                            <rect key="frame" x="16" y="74" width="64" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.31019377710000001" green="0.2942167222" blue="0.28571039440000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zcz-gR-67K" userLabel="HubStatusSwitch">
-                                            <rect key="frame" x="318" y="71" width="51" height="31"/>
+                                            <rect key="frame" x="310" y="69" width="51" height="31"/>
                                             <color key="onTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <connections>
@@ -1848,14 +1848,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="29" y="297" width="290" height="75"/>
+                                <rect key="frame" x="34" y="253" width="279" height="75"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="title" value="Tom"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="temperatureValueText" value="34°c"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isTitleHidden" value="NO"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="maximumValueImage" value="QRCode30"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="minimumValueImage" value="error.png"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedMaximumTrackImage" value="Info.png"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
@@ -2346,7 +2344,6 @@
     <resources>
         <image name="Info.png" width="16" height="16"/>
         <image name="QRCode30" width="30" height="30"/>
-        <image name="error.png" width="28" height="28"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="0Ax-oZ-siA"/>
