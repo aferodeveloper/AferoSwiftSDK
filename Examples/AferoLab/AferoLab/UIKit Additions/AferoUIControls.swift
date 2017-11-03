@@ -746,6 +746,7 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
     var attributeEventDisposable: Disposable?
     
     func initializeAttributeObservation() {
+        reloadAllSegments()
         updateUI()
     }
     
@@ -789,7 +790,7 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
 /// A `UIProgressView` bound to an Afero device attribute. Its `progress` is calculated
 /// the attribute's value vis a vis its `rangeOptions`.
 
-class AferoAttributeUIProgressView: UIProgressView, AttributeEventObserving {
+class AferoAttributeUIProgressView: UIProgressView, DeviceModelableObserving, AttributeEventObserving {
 
     func updateUI() {
         progress = proportion(for: attribute?.value)
@@ -797,6 +798,14 @@ class AferoAttributeUIProgressView: UIProgressView, AttributeEventObserving {
     
     deinit {
         stopObservingAttributeEvents()
+    }
+    
+    // MARK: <DeviceModelableObserving>
+    var deviceModelable: DeviceModelable!
+    var deviceEventSignalDisposable: Disposable?
+    
+    func handleDeviceStateUpdateEvent(newState: DeviceState) {
+        updateUI()
     }
     
     // MARK: <AttributeEventObserving>

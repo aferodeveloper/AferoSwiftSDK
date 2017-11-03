@@ -1607,7 +1607,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="5582" y="1242"/>
+            <point key="canvasLocation" x="5581.6000000000004" y="1241.8290854572715"/>
         </scene>
         <!--Segmented Control Attribute Inspector View Controller-->
         <scene sceneID="b4s-5v-9pq">
@@ -1847,14 +1847,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="34" y="253" width="279" height="75"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="124.5" y="290" width="126.5" height="87.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="title" value="Tom"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="temperatureValueText" value="34°c"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="title" value="My Titlle"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="temperatureValueText" value="34°F"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isTitleHidden" value="NO"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedMaximumTrackImage" value="Info.png"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="maximumValueImage" value="QRCode"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
@@ -1867,7 +1868,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wYN-SJ-sSh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3040.8000000000002" y="3116.4917541229388"/>
+            <point key="canvasLocation" x="2256.8000000000002" y="3614.8425787106448"/>
         </scene>
         <!--Stepper Attribute Inspector View Controller-->
         <scene sceneID="lpu-gB-7Nw">
@@ -2343,6 +2344,7 @@
     </scenes>
     <resources>
         <image name="Info.png" width="16" height="16"/>
+        <image name="QRCode" width="44" height="44"/>
         <image name="QRCode30" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>

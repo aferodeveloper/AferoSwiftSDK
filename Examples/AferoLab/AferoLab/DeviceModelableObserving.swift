@@ -24,7 +24,7 @@ extension Tagged {
 /// Protocol which devices some handy convenience methods
 /// for observing Afero DeviceModels and events.
 
-protocol DeviceModelableObserving: class, Tagged {
+protocol DeviceModelableObserving: Tagged {
 
     weak var deviceModelable: DeviceModelable! { get set }
     var deviceEventSignalDisposable: Disposable? { get set }
@@ -219,7 +219,7 @@ extension DeviceModelableObserving {
 /// Protocol which to make observations of individual attribute changes
 /// easier.
 
-protocol AttributeEventObserving: class, Tagged {
+protocol AttributeEventObserving: Tagged {
 
     var attributeId: Int? { get set }
     var attribute: DeviceModelable.Attribute? { get }
