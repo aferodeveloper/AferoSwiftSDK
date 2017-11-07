@@ -950,7 +950,8 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         }
     }
 
-    var parseBuffer: Data? = nil
+    private var parseBuffer: Data? = nil
+    private var readBuffer: [UInt8] = [UInt8](repeating: 0, count: 1024)
 
     let DELIM: UInt8 = 0x0a
     
@@ -960,17 +961,16 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
 
         // First exhaust available bytes so that we get a full compression frame
         
-        let processBuffer = NSMutableData()
-        
-        var readBuffer = [UInt8](repeating: 0, count: 1024)
+        var processBuffer = Data()
         
         while(stream.hasBytesAvailable) {
             
             let len = stream.read(&readBuffer, maxLength: readBuffer.count)
             DDLogDebug("\(len) bytes read.", tag: TAG)
+            DDLogVerbose("bytes: \(readBuffer.toHexString())", tag: TAG)
             
             if (len > 0) {
-                processBuffer.append(readBuffer, length: len)
+                processBuffer.append(&readBuffer, count: len)
             } else if len == 0 {
                 DDLogDebug("empty read.", tag: TAG)
             } else {
@@ -980,7 +980,9 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             }
         }
         
-        if processBuffer.length == 0 {
+        DDLogVerbose("process buffer now \(String(reflecting: processBuffer))", tag: TAG)
+        
+        if processBuffer.count == 0 {
             DDLogDebug("No parse work to do; bailing.", tag: TAG)
             return
         }
@@ -991,7 +993,10 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             parseBuffer = Data()
         }
         
-        parseBuffer!.append(streamProcessor(processBuffer as Data))
+        let decompressed = streamProcessor(processBuffer)
+        
+        DDLogVerbose("Decompressed processBuffer to \(String(reflecting: decompressed))", tag: TAG)
+        parseBuffer!.append(decompressed)
 
         let bytesToParse = parseBuffer!.byteArray
         
@@ -1039,9 +1044,9 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
                 continue
             }
             
-            let data = Data(bytes: UnsafePointer<UInt8>(Array(bytes)), count: bytes.count)
-            let line = NSString(data: data, encoding: String.Encoding.utf8.rawValue) ?? "<nil>"
-            DDLogVerbose("line: \(line)", tag: TAG)
+            let data = Data(bytes: bytes)
+
+            DDLogVerbose("line: \(NSString(data: data, encoding: String.Encoding.utf8.rawValue) ?? "<nil>")", tag: TAG)
             
             let obj: Any?
             
