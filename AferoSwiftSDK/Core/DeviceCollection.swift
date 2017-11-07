@@ -44,13 +44,25 @@ internal class CachedDeviceAccountProfilesSource: DeviceAccountProfilesSource {
         profileCache.removeAll(keepingCapacity: false)
     }
     
-    lazy fileprivate(set) var hasVisibleDevices: Bool! = {
-        return self.profileCache.reduce(false) {
-            curr, next in
-            if curr == true { return true }
-            return next.1.presentation() != nil
+    private var _hasVisibleDevices: Bool?
+    
+    fileprivate(set) var hasVisibleDevices: Bool! {
+        
+        get {
+            if let ret = _hasVisibleDevices { return ret }
+            let ret = self.profileCache.reduce(false) {
+                curr, next in
+                if curr == true { return true }
+                return next.1.presentation() != nil
+            }
+            _hasVisibleDevices = ret
+            return ret
         }
-    }()
+        
+        set {
+            _hasVisibleDevices = newValue
+        }
+    }
     
     /**
     Get a profile for the given profileId. Used the cached version if available,
