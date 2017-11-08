@@ -1,11 +1,11 @@
 PODS:
-  - AferoSofthub (1.0.2)
-  - AferoSwiftSDK/AFNetworking (0.8.3):
+  - AferoSofthub (1.1.0)
+  - AferoSwiftSDK/AFNetworking (0.9.0):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (0.8.3):
-    - AferoSofthub (= 1.0.2)
+  - AferoSwiftSDK/Core (0.9.0):
+    - AferoSofthub (= 1.1.0)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
     - CryptoSwift
@@ -80,8 +80,8 @@ EXTERNAL SOURCES:
     :path: ..
 
 SPEC CHECKSUMS:
-  AferoSofthub: 32247ee82a366f59100a965b88fa264fd433bfaa
-  AferoSwiftSDK: b994f3e31a66ca19485529a9bc9fa76f840b4c68
+  AferoSofthub: 6711d808d82968e2c31884a8e9bb118dcf2d059f
+  AferoSwiftSDK: c04bc608a927e2d859af69439f99c79c0d6b8089
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 3c8c74683302f9012bb168e1c4b7ae3c0b558431

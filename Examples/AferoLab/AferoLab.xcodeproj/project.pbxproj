@@ -579,7 +579,7 @@
 				"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
-				"${BUILT_PRODUCTS_DIR}/AferoSofthub/AferoSofthub.framework",
+				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
 				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK/Afero.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaZ/CocoaZ.framework",
@@ -813,6 +813,7 @@
 					"$(PROJECT_DIR)/AferoClientSDK/darwin/AferoSwiftConclave/1.2.2/AferoSwiftConclave",
 				);
 				INFOPLIST_FILE = AferoLab/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DINTERNAL -DDEBUG -Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
@@ -836,6 +837,7 @@
 					"$(PROJECT_DIR)/AferoClientSDK/darwin/AferoSwiftConclave/1.2.2/AferoSwiftConclave",
 				);
 				INFOPLIST_FILE = AferoLab/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
