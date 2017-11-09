@@ -11,7 +11,7 @@ import ReactiveSwift
 
 ## Protocols
 
-The following are amoong the protocols are defined by `Afero`, and are required
+The following are among the protocols are defined by `Afero`, and are required
 for this example.
 
 ```swift
