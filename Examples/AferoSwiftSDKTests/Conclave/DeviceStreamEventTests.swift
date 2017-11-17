@@ -24,35 +24,73 @@ class DeviceStreamEventTests: QuickSpec {
         describe("DeviceStreamEvent.Peripheral.DeviceTag instances") {
             typealias Tag = DeviceStreamEvent.Peripheral.DeviceTag
             
-            let t1 = Tag(id: "tag1", value: "tag1Value", localizationKey: "tag1LocKey", type: "t1type")
+            let t1 = Tag(id: "id1", value: "value1")
+            let t2 = Tag(id: "id2", key: "key2", value: "value2", type: .account)
+            let t2b = Tag(id: "id2", value: "value2", type: .account)
+            let t3 = Tag(id: "id3", key: "key3", value: "value3", localizationKey: "locKey3", type: .account)
+            let t3b = Tag(id: "id3", key: "key3", value: "value3", type: .account)
             
-            let t2 = Tag(id: "tag2", value: "tag2Value", localizationKey: "tag2LocKey", type: "t2type")
             
-            // MARK: .. should initialize
-            
-            it("should initialize properly") {
-                expect(t1.id) == "tag1"
-                expect(t1.value) == "tag1Value"
-                expect(t1.localizationKey) == "tag1LocKey"
-                expect(t1.type) == "t1type"
-
-                expect(t2.id) == "tag2"
-                expect(t2.value) == "tag2Value"
-                expect(t2.localizationKey) == "tag2LocKey"
-                expect(t2.type) == "t2type"
-            }
-            
-            // MARK: .. should compare
-
-            it("should compare correctly") {
-                expect(t1) == t1
-                expect(t1) != t2
+            describe("Creating") {
                 
-                expect(t2) != t1
-                expect(t2) == t2
+                it("should instantiate properly.") {
+                    expect(t1.id) == "id1"
+                    expect(t1.key).to(beNil())
+                    expect(t1.value) == "value1"
+                    expect(t1.type) == Tag.TagType.account
+                    expect(t1.localizationKey).to(beNil())
+                    
+                    expect(t2.id) == "id2"
+                    expect(t2.key) == "key2"
+                    expect(t2.value) == "value2"
+                    expect(t2.type) == Tag.TagType.account
+                    expect(t2.localizationKey).to(beNil())
+                    
+                    expect(t3.id) == "id3"
+                    expect(t3.key) == "key3"
+                    expect(t3.value) == "value3"
+                    expect(t3.type) == Tag.TagType.account
+                    expect(t3.localizationKey) == "locKey3"
+                }
+                
             }
             
-            // MARK: .. should JSON-roundtrip
+            describe("Comparing") {
+                
+                it("should compare properly") {
+                    expect(t1) == t1
+                    expect(t1) != t2
+                    expect(t1) != t2b
+                    expect(t1) != t3
+                    expect(t1) != t3b
+                    
+                    expect(t2) != t1
+                    expect(t2) == t2
+                    expect(t2) != t2b
+                    expect(t2) != t3
+                    expect(t2) != t3b
+                    
+                    expect(t2b) != t1
+                    expect(t2b) != t2
+                    expect(t2b) == t2b
+                    expect(t2b) != t3
+                    expect(t2b) != t3b
+                    
+                    expect(t3) != t1
+                    expect(t3) != t2
+                    expect(t3) != t2b
+                    expect(t3) == t3
+                    expect(t3) != t3b
+                    
+                    expect(t3b) != t1
+                    expect(t3b) != t2
+                    expect(t3) != t2b
+                    expect(t3b) != t3
+                    expect(t3b) == t3b
+                    
+                }
+                
+            }
 
             it("should roundtrip JSON correclty") {
                 let t1a: Tag? = |<t1.JSONDict
@@ -62,6 +100,19 @@ class DeviceStreamEventTests: QuickSpec {
                 let t2a: Tag? = |<t2.JSONDict
                 expect(t2a).toNot(beNil())
                 expect(t2a) == t2
+                
+                let t2ba: Tag? = |<t2b.JSONDict
+                expect(t2ba).toNot(beNil())
+                expect(t2ba) == t2b
+                
+                let t3a: Tag? = |<t3.JSONDict
+                expect(t3a).toNot(beNil())
+                expect(t3a) == t3
+
+                let t3ba: Tag? = |<t3b.JSONDict
+                expect(t3ba).toNot(beNil())
+                expect(t3ba) == t3b
+
             }
             
         }
@@ -833,7 +884,7 @@ class DeviceStreamEventTests: QuickSpec {
                 virtual: true,
                 locationState: .known(l1),
                 tags: [
-                    Tag(id: "tag1", value: "tag1Value", localizationKey: "tag1LocKey", type: "t1type"),
+                    Tag(id: "tag1", value: "tag1Value", localizationKey: "tag1LocKey"),
                 ],
                 createdTimestampMs: NSNumber(value: Int64.max)
             )
@@ -851,7 +902,7 @@ class DeviceStreamEventTests: QuickSpec {
                 virtual: true,
                 locationState: .known(l2),
                 tags: [
-                    Tag(id: "tag2", value: "tag2Value", localizationKey: "tag2LocKey", type: "t2type"),
+                    Tag(id: "tag2", value: "tag2Value", localizationKey: "tag2LocKey"),
                     ],
                 createdTimestampMs: NSNumber(value: Int64.max - 1)
             )
@@ -869,7 +920,7 @@ class DeviceStreamEventTests: QuickSpec {
                 virtual: true,
                 locationState: .known(l3),
                 tags: [
-                    Tag(id: "tag3", value: "tag3Value", localizationKey: "tag3LocKey", type: "t3type"),
+                    Tag(id: "tag3", value: "tag3Value", localizationKey: "tag3LocKey"),
                     ],
                 createdTimestampMs: NSNumber(value: Int64.max - 2)
             )
@@ -887,7 +938,7 @@ class DeviceStreamEventTests: QuickSpec {
                 virtual: true,
                 locationState: .known(l4),
                 tags: [
-                    Tag(id: "tag4", value: "tag4Value", localizationKey: "tag4LocKey", type: "t4type"),
+                    Tag(id: "tag4", value: "tag4Value", localizationKey: "tag4LocKey"),
                     ],
                 createdTimestampMs: NSNumber(value: Int64.max - 3)
             )
@@ -904,7 +955,7 @@ class DeviceStreamEventTests: QuickSpec {
                 friendlyName: "friendlyName5",
                 virtual: true,
                 tags: [
-                    Tag(id: "tag5", value: "tag5Value", localizationKey: "tag5LocKey", type: "t5type"),
+                    Tag(id: "tag5", value: "tag5Value", localizationKey: "tag5LocKey"),
                     ],
                 createdTimestampMs: NSNumber(value: Int64.max - 4)
             )

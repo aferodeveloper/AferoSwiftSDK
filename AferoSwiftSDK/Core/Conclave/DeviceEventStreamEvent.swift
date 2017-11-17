@@ -757,14 +757,45 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         public struct DeviceTag: Hashable, AferoJSONCoding, CustomDebugStringConvertible {
             
-            public var id: String
-            public var value: String
-            public var localizationKey: String
-            public var type: String
+            public typealias Id = String
             
-            public init(id: String, value: String, localizationKey: String, type: String) {
+            /// A UUID value that identifies this tag, such that it can be deleted
+            /// in the future.
+            public var id: Id
+            
+            public typealias Value = String
+            
+            /// This is the value of the tag. This is just a simple character string,
+            /// so that it can be used
+            /// alone, or with a delimiter of the developers' choice to create a key/value pair.
+            public var value: Value
+            
+            public typealias Key = String
+
+            /// A free form field that can be used by clients for organizational
+            /// purposes. Optional.
+            public var key: Key?
+            
+            public typealias LocalizationKey = String
+            
+            /// In the future, Afero may create the ability to localize these tags
+            /// for different locales in different global markets. This field is not
+            /// currently in use and can be safely ignored by the developer.
+            public var localizationKey: LocalizationKey?
+            
+            public enum TagType: String {
+                case account = "ACCOUNT"
+            }
+            
+            /// In the future, Afero may deploy different categories of tags.
+            /// This field is not currently in use, will always be `.account`,
+            /// and can be safely ignored by the developer.
+            public var type: TagType
+            
+            public init(id: Id, key: Key? = nil, value: Value, localizationKey: LocalizationKey? = nil, type: TagType = .account) {
                 self.id = id
                 self.value = value
+                self.key = key
                 self.localizationKey = localizationKey
                 self.type = type
             }
@@ -772,16 +803,24 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <CustomDebugStringConvertible>
             
             public var debugDescription: String {
-                return "<DeviceTag> id: \(id) value: \(value) type: \(type) localizationkey: \(localizationKey)"
+                return "<DeviceTag> id:\(id) value:\\(value) type: \(type) key:\(String(describing: key)) localizationkey: \(String(describing :localizationKey))"
             }
             
             // MARK: <Hashable>
             
-            public var hashValue: Int { return value.hashValue ^ localizationKey.hashValue ^ type.hashValue ^ id.hashValue }
+            public var hashValue: Int {
+                
+                return value.hashValue
+                    ^ (key?.hashValue ?? 0)
+                    ^ (localizationKey?.hashValue ?? 0)
+                    ^ type.hashValue
+                    ^ id.hashValue
+            }
             
             public static func ==(lhs: DeviceTag, rhs: DeviceTag) -> Bool {
                 return lhs.id == rhs.id
                     && lhs.value == rhs.value
+                    && lhs.key == rhs.key
                     && lhs.type == rhs.type
                     && lhs.localizationKey == rhs.localizationKey
             }
@@ -789,17 +828,28 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <AferoJSONCodeing>
             
             static let CoderKeyValue = "value"
+            static let CoderKeyKey = "key"
             static let CoderKeyLocalizationKey = "localizationKey"
             static let CoderKeyType = "deviceTagType"
             static let CoderKeyId = "deviceTagId"
             
             public var JSONDict: AferoJSONCodedType? {
-                return [
+
+                var ret: [String: Any] = [
                     type(of: self).CoderKeyId: id,
                     type(of: self).CoderKeyValue: value,
                     type(of: self).CoderKeyType: type,
-                    type(of: self).CoderKeyLocalizationKey: localizationKey
                 ]
+                
+                if let key = key {
+                    ret[type(of: self).CoderKeyKey] = key
+                }
+                
+                if let localizationKey = localizationKey {
+                    ret[type(of: self).CoderKeyLocalizationKey] = localizationKey
+                }
+                
+                return ret
             }
             
             public init?(json: AferoJSONCodedType?) {
@@ -811,15 +861,27 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 }
                 
                 guard
-                    let id = jsonDict[type(of: self).CoderKeyId] as? String,
-                    let value = jsonDict[type(of: self).CoderKeyValue] as? String,
-                    let type = jsonDict[type(of: self).CoderKeyType] as? String,
-                    let localizationKey = jsonDict[type(of: self).CoderKeyLocalizationKey] as? String else {
+                    let id = jsonDict[type(of: self).CoderKeyId] as? Id,
+                    let value = jsonDict[type(of: self).CoderKeyValue] as? Value else {
                         DDLogWarn("\(jsonDict) doesn't represent a valid DeviceTag", tag: tag)
                         return nil
                 }
                 
-                self.init(id: id, value: value, localizationKey: localizationKey, type: type)
+                var type = TagType.account
+
+                if
+                    let maybeTypeRawValue = jsonDict[type(of: self).CoderKeyType] as? TagType.RawValue,
+                    let maybeType = TagType(rawValue: maybeTypeRawValue) {
+                    type = maybeType
+                }
+                
+                self.init(
+                    id: id,
+                    key: jsonDict[type(of: self).CoderKeyKey] as? Key,
+                    value: value,
+                    localizationKey: jsonDict[type(of: self).CoderKeyLocalizationKey] as? LocalizationKey,
+                    type: type
+                )
                 
             }
             
