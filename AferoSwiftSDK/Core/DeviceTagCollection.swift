@@ -12,25 +12,28 @@ import Result
 
 class DeviceTagCollection {
     
+    typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag
+    
     // MARK: Private
 
-    private var identifierTagMap: [DeviceTag.Id: DeviceTag] = [:]
-    private var keyTagMap: [DeviceTag.Key: [DeviceTag]] = [:]
+    private var _identifierTagMap: [DeviceTag.Id: DeviceTag] = [:]
+    private var _keyTagMap: [DeviceTag.Key: Set<DeviceTag>] = [:]
     
     func invalidate() {
-        keyTagMap.removeAll()
+        _keyTagMap = [:]
+        _tags = nil
     }
     
-    typealias AddTagOnDone = ([DeviceTag]?, Error?)->Void
+    typealias AddTagOnDone = (Set<DeviceTag>?, Error?) -> Void
 
     /// Add a tag to the collection.
     /// - parameter tag: The tag to remove.
     /// - parameter onDone: The completion handler for the call.
     
     private func _add(tag: DeviceTag, onDone: AddTagOnDone) -> Void {
-        identifierTagMap[tag.id] = tag
+        _identifierTagMap[tag.id] = tag
 
-        var ret: [DeviceTag]?
+        var ret: Set<DeviceTag>?
         var error: Error?
         
         defer { onDone(ret, error) }
@@ -40,24 +43,42 @@ class DeviceTagCollection {
             return
         }
         
-        keyTagMap.removeValue(forKey: key)
+        _keyTagMap.removeValue(forKey: key)
         ret = deviceTags(forKey: key)
     }
-
-    typealias RemoveTagOnDone = ([DeviceTag]?, Error?)->Void
-
-    /// Remove a tag from the collection.
-    /// - parameter tag: The tag to remove.
-    /// - parameter onDone: The completion handler for the call.
     
-    private func _remove(tag: DeviceTag, onDone: RemoveTagOnDone) -> Void {
+    typealias DeleteTagOnDone = (Set<DeviceTag>?, Error?)->Void
+
+    private func _remove(where isIncluded: (DeviceTag)->Bool, onDone: DeleteTagOnDone) {
         
-        var ret: [DeviceTag]?
+        var ret: Set<DeviceTag>?
         var error: Error?
         
         defer { onDone(ret, error) }
         
-        guard let tag = identifierTagMap.removeValue(forKey: tag.id) else {
+        let deleteKeys = _identifierTagMap
+            .filter { isIncluded($1) }
+            .map { $0.key }
+        
+        let deletedTags = Set(deleteKeys.flatMap {
+            _identifierTagMap.removeValue(forKey: $0)
+        })
+        
+        onDone(deletedTags, nil)
+    }
+    
+    /// Remove a tag from the collection.
+    /// - parameter tag: The tag to remove.
+    /// - parameter onDone: The completion handler for the call.
+    
+    private func _remove(tag: DeviceTag, onDone: DeleteTagOnDone) -> Void {
+        
+        var ret: Set<DeviceTag>?
+        var error: Error?
+        
+        defer { onDone(ret, error) }
+        
+        guard let tag = _identifierTagMap.removeValue(forKey: tag.id) else {
             ret = []
             return
         }
@@ -67,20 +88,29 @@ class DeviceTagCollection {
             return
         }
         
-        keyTagMap.removeValue(forKey: key)
+        _keyTagMap.removeValue(forKey: key)
         ret = deviceTags(forKey: key)
     }
     
     // MARK: Getters
 
     var isEmpty: Bool {
-        return identifierTagMap.isEmpty
+        return _identifierTagMap.isEmpty
     }
     
     /// All of the tags.
     
-    var tags: LazyMapCollection<[DeviceTag.Id: DeviceTag], DeviceTag> {
-        return identifierTagMap.values
+    var count: Int {
+        return _identifierTagMap.count
+    }
+    
+    private var _tags: Set<DeviceTag>?
+    
+    var tags: Set<DeviceTag>! {
+        if let ret = _tags { return ret }
+        let ret = Set(_identifierTagMap.values)
+        _tags = ret
+        return ret
     }
     
     /// Get a deviceTag for the given identifier.
@@ -88,24 +118,24 @@ class DeviceTagCollection {
     /// - returns: The matching `DeviceTag`, if any.
     
     public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
-        return identifierTagMap[id]
+        return _identifierTagMap[id]
     }
     
     /// Get all `deviceTag` for the given `key`.
     /// - parameter key: The `DeviceTag.Key` to match.
     /// - returns: All `DeviceTag`s whose key equals `key`
     
-    public func deviceTags(forKey key: DeviceTag.Key) -> [DeviceTag] {
+    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
 
-        if let ret = keyTagMap[key] {
+        if let ret = _keyTagMap[key] {
             return ret
         }
         
-        let ret = identifierTagMap
+        let ret = Set(_identifierTagMap
             .filter { $0.value.key == key }
-            .map { $0.value }
+            .map { $0.value })
         
-        keyTagMap[key] = ret
+        _keyTagMap[key] = ret
         return ret
     }
 
@@ -119,16 +149,25 @@ class DeviceTagCollection {
     ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
     
     func getTag(for key: DeviceTag.Key) -> DeviceTag? {
-        return deviceTags(forKey: key).last
+        return deviceTags(forKey: key).first
     }
     
     // MARK: Setters
     
-    func add(tag: DeviceTag, onDone: AddTagOnDone) -> Void {
-        
+    func add(tag: DeviceTag, onDone: AddTagOnDone) {
+        _add(tag: tag, onDone: onDone)
     }
     
+    func remove(tag: DeviceTag, onDone: DeleteTagOnDone) {
+        _remove(where: { $0 == tag }, onDone: onDone)
+    }
     
+    func remove(withKey key: DeviceTag.Key?, onDone: DeleteTagOnDone) {
+        _remove(where: { $0.key == key }, onDone: onDone)
+    }
     
+    func remove(withId id: DeviceTag.Id, onDone: DeleteTagOnDone) {
+        _remove(where: { $0.id == id }, onDone: onDone)
+    }
     
 }
