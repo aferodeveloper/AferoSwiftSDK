@@ -12,27 +12,11 @@ import CocoaZ
 
 import CocoaLumberjack
 
-public func ==(lhs: ConclaveClient.ClientEvent, rhs: ConclaveClient.ClientEvent) -> Bool {
-    switch (lhs, rhs) {
-
-    case let (.stateChange(lstate), .stateChange(rstate)):
-        return lstate == rstate
-
-    case let (.transientError(lerr), .transientError(rerr)):
-        return lerr == rerr
-        
-    case let (.data(levt, _, lseq, ltarg), .data(revt, _, rseq, rtarg)):
-        return levt == revt && lseq == rseq && ltarg == rtarg
-        
-    default:
-        return false
-    }
-}
 
 // MARK: - ConclaveClient
 
 /// Client state
-public enum ConnectionState: Int, CustomDebugStringConvertible {
+enum ConnectionState: Int, CustomDebugStringConvertible {
     
     public var debugDescription: String {
         switch(self) {
@@ -47,18 +31,18 @@ public enum ConnectionState: Int, CustomDebugStringConvertible {
     case connected = 2
 }
 
-open class ConclaveClient: CustomDebugStringConvertible {
+class ConclaveClient: CustomDebugStringConvertible {
     
-    open var debugDescription: String {
+    var debugDescription: String {
         return "<\(TAG)> connectionState: \(connectionState) (connection: \(String(describing: conclaveConnection)))"
     }
     
     fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
 
-    open static let ConclaveClientErrorDomain = "ConclaveClient"
+    static let ConclaveClientErrorDomain = "ConclaveClient"
 
     /// Emitted errors
-    public enum Error: Int {
+    enum Error: Int {
         
         case observerError = -1000 // Unable to observe server
         case connectionErrorRemoteConnectionFailed = -1001 // Unable to connect
@@ -69,7 +53,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
     }
     
     /// Events passed on the eventSignal
-    public enum ClientEvent: Equatable, CustomDebugStringConvertible {
+    enum ClientEvent: Equatable, CustomDebugStringConvertible {
         
         public var debugDescription: String {
             switch(self) {
@@ -93,9 +77,29 @@ open class ConclaveClient: CustomDebugStringConvertible {
         
         /// The client received data.
         case data(event: DeviceStreamEventName, data: DeviceStreamEventData, seq: DeviceStreamEventSeq?, target: DeviceStreamEventTarget?)
+        
+        // MARK: Equatable
+        
+        static func ==(lhs: ConclaveClient.ClientEvent, rhs: ConclaveClient.ClientEvent) -> Bool {
+            switch (lhs, rhs) {
+                
+            case let (.stateChange(lstate), .stateChange(rstate)):
+                return lstate == rstate
+                
+            case let (.transientError(lerr), .transientError(rerr)):
+                return lerr == rerr
+                
+            case let (.data(levt, _, lseq, ltarg), .data(revt, _, rseq, rtarg)):
+                return levt == revt && lseq == rseq && ltarg == rtarg
+                
+            default:
+                return false
+            }
+        }
+
     }
     
-    fileprivate(set) open var connectionState: ConnectionState = .disconnected {
+    fileprivate(set) var connectionState: ConnectionState = .disconnected {
         
         willSet{
             DDLogInfo("\(self) will transition from state \(connectionState) to \(newValue)", tag: TAG)
@@ -116,26 +120,26 @@ open class ConclaveClient: CustomDebugStringConvertible {
     }
     
     /// Auth token (currently not used)
-    fileprivate(set) open var token: ConclaveAccess.Token
+    fileprivate(set) var token: ConclaveAccess.Token
     
     /// Agent type (“hub”, “android”, “postmaster”, …)
-    fileprivate(set) open var type: String
+    fileprivate(set) var type: String
     
     /// The hub’s device ID
-    fileprivate(set) open var deviceId: String?
+    fileprivate(set) var deviceId: String?
     
     /// A client’s unique ID, unused by conclave itself, but reported to other clients
-    fileprivate(set) open var mobileDeviceId: String?
+    fileprivate(set) var mobileDeviceId: String?
     
     /// For debugging information only
-    fileprivate(set) open var version: String?
+    fileprivate(set) var version: String?
     
     let `protocol`: Int = 2
     
     /// Tells the Conclave server to turn on extended debugging.
-    fileprivate(set) open var trace: Bool = false
+    fileprivate(set) var trace: Bool = false
     
-    fileprivate(set) open var sessionId: Int? = nil
+    fileprivate(set) var sessionId: Int? = nil
     
     /**
     Designated initializer.
@@ -148,7 +152,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
     
     */
     
-    public init(token: ConclaveAccess.Token, type: String, deviceId: String? = nil, mobileDeviceId: String? = nil, version: String? = nil, trace: Bool = false) {
+    init(token: ConclaveAccess.Token, type: String, deviceId: String? = nil, mobileDeviceId: String? = nil, version: String? = nil, trace: Bool = false) {
         self.token = token
         self.type = type
         self.deviceId = deviceId
@@ -179,7 +183,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
         return Signal.pipe()
     }()
     
-    open var eventSignal: Signal<ClientEvent, NSError> {
+    var eventSignal: Signal<ClientEvent, NSError> {
         return eventPipe.0
     }
     
@@ -190,12 +194,12 @@ open class ConclaveClient: CustomDebugStringConvertible {
     // Server Communication
     // Connection state is handled through this interface
     
-    fileprivate(set) open var messageSink: ConclaveMessageSink? = nil
+    fileprivate(set) var messageSink: ConclaveMessageSink? = nil
     fileprivate var serverReadSignalDisposable: Disposable? = nil
 
     // MARK: Public
     
-    fileprivate(set) open var conclaveConnection: ConclaveConnection? = nil
+    fileprivate(set) var conclaveConnection: ConclaveConnection? = nil
     
     lazy fileprivate(set) var conclaveReadQueueScheduler: QueueScheduler = {
         return QueueScheduler(qos: DispatchQoS.default, name: "io.afero.conclaveRead")
@@ -211,7 +215,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
                   error will be attached to `userInfo[NSUnderlyingErrorKey]`.
     */
     
-    open func connect(_ connection: ConclaveConnection) throws {
+    func connect(_ connection: ConclaveConnection) throws {
         
         if connectionState != .disconnected {
             throw NSError(
@@ -283,7 +287,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
                   a "graceful" shutdown (with a `.Bye`) will be executed.
     */
     
-    open func disconnect(_ force: Bool = false) {
+    func disconnect(_ force: Bool = false) {
 
         if (connectionState == .disconnected) {
             return
@@ -303,10 +307,10 @@ open class ConclaveClient: CustomDebugStringConvertible {
     // MARK: Message Handling
     
     /// Sequence number of last seen message
-    fileprivate(set) open var seqNum: Int = 0
+    fileprivate(set) var seqNum: Int = 0
     
     /// Maximum size of outbound message
-    fileprivate(set) open var bufferSize: Int = 0
+    fileprivate(set) var bufferSize: Int = 0
 
     func handleNext(_ next: ConclaveConnectionEvent) {
         
@@ -315,11 +319,11 @@ open class ConclaveClient: CustomDebugStringConvertible {
         switch(next) {
             
         case .stateChange(let connectionState):
-            DDLogInfo("INFO: Connection state now: \(connectionState)", tag: TAG)
+            DDLogInfo("Connection state now: \(connectionState)", tag: TAG)
             break
             
         case .transientError(let error):
-            DDLogInfo("ERROR: (conclave) \(error.localizedDescription)", tag: TAG)
+            DDLogError("(conclave) \(error.localizedDescription)", tag: TAG)
             break
             
         case .message(let message):
@@ -434,7 +438,7 @@ open class ConclaveClient: CustomDebugStringConvertible {
         watchdog?.invalidate()
         if let heartbeatInterval = heartbeatInterval {
             let delay = heartbeatInterval + TimeInterval(heartbeatSlack)
-            DDLogInfo("Scheduling watchdog to fire in \(delay)")
+            DDLogVerbose("Scheduling watchdog to fire in \(delay)", tag: TAG)
             self.watchdog = Timer.schedule(delay: delay) {
                 [weak self] timer in self?.watchdogFired()
             }
@@ -471,19 +475,19 @@ open class ConclaveClient: CustomDebugStringConvertible {
 Represents events emitted from a ConclaveConnection. Note that fatal errors are not
 emitted in this format, but rather as bare `NSErrors` on appropriate signals.
 */
-public enum ConclaveConnectionEvent {
+enum ConclaveConnectionEvent {
     case stateChange(ConnectionState)
     case transientError(NSError)
     case message(ConclaveMessage)
 }
 
 /// Type for messages sent to the Conclave server, and consumed by the connection's `writeSink`.
-public typealias ConclaveMessageSink = Observer<ConclaveMessage, NSError>
+typealias ConclaveMessageSink = Observer<ConclaveMessage, NSError>
 
 /// Type for events received from the Conclave server.
-public typealias ConclaveReadSignal = Signal<ConclaveConnectionEvent, NSError>
+typealias ConclaveReadSignal = Signal<ConclaveConnectionEvent, NSError>
 
-public protocol ConclaveConnection {
+protocol ConclaveConnection {
     
     /// The signal from which ConclaveConnectionEvents are emitted.
     var readSignal: ConclaveReadSignal { get }
@@ -502,37 +506,37 @@ public protocol ConclaveConnection {
 
 // MARK: - ConclaveStreamConnection
 
-open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible {
+class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible {
     
-    open var debugDescription: String {
+    public var debugDescription: String {
         return "<ConclaveStreamConnection> connectionState: \(connectionState)"
     }
     
     let TAG = "ConclaveStreamConnection"
     
-    open static let ErrorDomain = "ConclaveStreamConnection"
-    public enum ErrorCode: Int {
+    fileprivate static let ErrorDomain = "ConclaveStreamConnection"
+    fileprivate enum ErrorCode: Int {
         case alreadyConnected = -1000
     }
     
-    fileprivate(set) open var connectionState: ConnectionState = .disconnected {
+    fileprivate var connectionState: ConnectionState = .disconnected {
         didSet {
             DDLogVerbose("Transitioned from state \(oldValue) to state \(connectionState)", tag: TAG)
             serverOutboundSink.send(value: .stateChange(connectionState))
         }
     }
     
-    fileprivate(set) open var reader: LineDelimitedJSONStreamReader!
+    private var reader: LineDelimitedJSONStreamReader!
     var readerDisposable: Disposable! {
         willSet { readerDisposable?.dispose() }
     }
     
-    fileprivate(set) open var writer: LineDelimitedJSONStreamWriter!
+    private var writer: LineDelimitedJSONStreamWriter!
     var serverSendDisposable: Disposable! {
         willSet { serverSendDisposable?.dispose() }
     }
     
-    public init(encrypted: Bool = true, compressed: Bool = true, inputStream: InputStream, outputStream: OutputStream) {
+    init(encrypted: Bool = true, compressed: Bool = true, inputStream: InputStream, outputStream: OutputStream) {
 
         if encrypted {
             inputStream.setProperty(StreamSocketSecurityLevel.negotiatedSSL, forKey: Stream.PropertyKey.socketSecurityLevelKey)
@@ -686,7 +690,7 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
     open func disconnect() {
 
         if (self.connectionState == .disconnected) {
-            DDLogInfo("Already disconnected, nothing to do.", tag: TAG)
+            DDLogVerbose("Already disconnected, nothing to do.", tag: TAG)
             return
         }
         
@@ -732,16 +736,16 @@ open class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConver
 A `ConclaveConnection` which binds to a socket.
 */
 
-open class ConclaveSocketConnection: ConclaveStreamConnection {
+class ConclaveSocketConnection: ConclaveStreamConnection {
     
-    override open var debugDescription: String {
+    override public var debugDescription: String {
         return "<ConclaveSocketConnection> host: \(host) port: \(port) connectionState: \(connectionState)"
     }
     
-    fileprivate(set) open var port: ConclaveHost.Port! = nil
-    fileprivate(set) open var host: ConclaveHost.HostName! = nil
+    fileprivate(set) var port: ConclaveHost.Port! = nil
+    fileprivate(set) var host: ConclaveHost.HostName! = nil
     
-    required public init(host: String, port: ConclaveHost.Port, encrypted: Bool, compressed: Bool) {
+    required init(host: String, port: ConclaveHost.Port, encrypted: Bool, compressed: Bool) {
 
         self.host = host
         self.port = port
@@ -763,7 +767,7 @@ open class ConclaveSocketConnection: ConclaveStreamConnection {
 
 // MARK: - Stream Handlers
 
-public enum JSONStreamEvent {
+enum JSONStreamEvent {
     case stateChange(ConnectionState)
     case data(JSONStreamData)
 }
@@ -777,7 +781,7 @@ func PureStreamProcessor(_ data: Data) -> Data {
 
 // MARK: - JSON Stream Reader
 
-public typealias JSONStreamData = (Any?, NSError?)
+typealias JSONStreamData = (Any?, NSError?)
 
 let StreamReaderErrorDomain = "JSONStreamReader"
 enum StreamReaderErrorCode: Int {
@@ -790,14 +794,14 @@ and parsing each line as a JSON object. Parse results and state changes are emit
 as `JSONStreamEvent`s.
 */
 
-open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
+class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     
     fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
 
-    open var connectionTimeout: TimeInterval = 15 // seconds
+    var connectionTimeout: TimeInterval = 15 // seconds
     fileprivate var connectionTimer: Timer? = nil
     
-    fileprivate func startConnectionTimer() {
+    func startConnectionTimer() {
         stopConnectionTimer()
         weak var wself = self
 
@@ -834,7 +838,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         }
     }
     
-    let inputStream: InputStream
+    private let inputStream: InputStream
     var streamProcessor: StreamProcessor = PureStreamProcessor
     
     lazy fileprivate var pipe: (Signal<JSONStreamEvent, NSError>, Observer<JSONStreamEvent, NSError>) = {
@@ -847,7 +851,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     It's up to the subscriber to decide ehether or not a transient error represents something failable.
     */
     
-    open var readSignal: Signal<JSONStreamEvent, NSError> {
+    var readSignal: Signal<JSONStreamEvent, NSError> {
         return pipe.0
     }
     
@@ -857,7 +861,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     
     fileprivate var q: DispatchQueue
     
-    public init(stream: InputStream, compressed: Bool = false) {
+    init(stream: InputStream, compressed: Bool = false) {
         q = DispatchQueue(label: "io.afero.JSONReader", attributes: [])
         inputStream = stream
         if (compressed) {
@@ -868,7 +872,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     }
     
     deinit {
-        DDLogDebug("Deinitializing.", tag: TAG)
+        DDLogVerbose("Deinitializing.", tag: TAG)
     }
     
     fileprivate(set) open var finished = false
@@ -880,7 +884,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     3. Opens the stream
     */
     
-    open func start() {
+    func start() {
 
         if finished {
             fatalError("Cannot start previously finished stream.")
@@ -898,7 +902,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     3. Closes the stream, unschedules it, and nils its delegate.
     */
     
-    open func end(_ error: NSError? = nil) {
+    fileprivate func end(_ error: NSError? = nil) {
 
         finished = true
         self.inputStream.delegate = nil
@@ -917,7 +921,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     
     // MARK: <NSStreamDelegate>
     
-    open func stream(_ stream: Stream, handle eventCode: Stream.Event) {
+    public func stream(_ stream: Stream, handle eventCode: Stream.Event) {
         
         if finished { return }
         
@@ -928,7 +932,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             self.connectionState = .connected
             
         case Stream.Event.hasBytesAvailable:
-//            DDLogDebug("Got EventHasBytesAvailable.", tag: TAG)
+            DDLogDebug("Got EventHasBytesAvailable.", tag: TAG)
             q.async {
                 self.handleHasBytesAvailable(stream as! InputStream)
             }
@@ -938,12 +942,12 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             end()
             
         case Stream.Event.errorOccurred:
-            DDLogInfo("ERROR: Got EventErrorOccurred: \(String(describing: stream.streamError))", tag: TAG)
+            DDLogError("Got EventErrorOccurred: \(String(describing: stream.streamError))", tag: TAG)
             writeSink.send(error: stream.streamError! as NSError)
             end()
             
         case Stream.Event.hasSpaceAvailable:
-            DDLogDebug("Got EventHasSpaceAvailable (ignoring)", tag: TAG)
+            DDLogVerbose("Got EventHasSpaceAvailable (ignoring)", tag: TAG)
             
         default:
             break
@@ -953,9 +957,9 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     private var parseBuffer: Data? = nil
     private var readBuffer: [UInt8] = [UInt8](repeating: 0, count: 1024)
 
-    let DELIM: UInt8 = 0x0a
+    private let DELIM: UInt8 = 0x0a
     
-    func handleHasBytesAvailable(_ stream: InputStream) {
+    private func handleHasBytesAvailable(_ stream: InputStream) {
 
         let TAG = self.TAG
 
@@ -976,7 +980,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             } else {
                 let error = stream.streamError
                 let status = stream.streamStatus
-                DDLogError("ERROR: Read failure (err: \(String(describing: error)) status: \(status)). Bailing.", tag: TAG)
+                DDLogError("Read failure (err: \(String(describing: error)) status: \(status)). Bailing.", tag: TAG)
             }
         }
         
@@ -1001,7 +1005,7 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         let bytesToParse = parseBuffer!.byteArray
         
         if bytesToParse.count == 0 {
-            DDLogError("No bytes decompressed parsed from parseBuffer: \(String(describing: parseBuffer))", tag: TAG)
+            DDLogWarn("No bytes decompressed parsed from parseBuffer: \(String(describing: parseBuffer))", tag: TAG)
             return
         }
         
@@ -1054,13 +1058,11 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
                 
                 obj = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions())
                 let event: JSONStreamEvent = .data((obj, nil))
-//                DDLogDebug("Forwarding data \(event) to writeSink: \(writeSink)", tag: "JSONStreamReader")
                 writeSink.send(value: event)
                 
             } catch let error as NSError {
                 
                 let event: JSONStreamEvent = .data((nil, error))
-//                DDLogDebug("Forwarding error \(event) to writeSink: \(writeSink)", tag: "JSONStreamReader")
                 writeSink.send(value: event)
                 
             }
@@ -1079,9 +1081,9 @@ open class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
 
 // MARK: JSONStreamWriter
 
-public typealias JSONStreamWriterSignal = Signal<Any?, NSError>
-public typealias JSONStreamWriterSink = Observer<Any?, NSError>
-public typealias JSONStreamWriterPipe = (JSONStreamWriterSignal, JSONStreamWriterSink)
+typealias JSONStreamWriterSignal = Signal<Any?, NSError>
+typealias JSONStreamWriterSink = Observer<Any?, NSError>
+typealias JSONStreamWriterPipe = (JSONStreamWriterSignal, JSONStreamWriterSink)
 
 /**
 NSStreamDelegate specific to NSOutputStreams. Its job is to listen for `AnyObject` instances
@@ -1089,24 +1091,24 @@ sent to its `writeSink`, encoding them to JSON, and writing them to the output s
 delimters.
 */
 
-open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
+class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     
-    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+    lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
 
-    let outputStream: OutputStream
+    private let outputStream: OutputStream
     
     lazy fileprivate var pipe: JSONStreamWriterPipe = {
         return Signal.pipe()
         }()
     
-    fileprivate var readSignal: JSONStreamWriterSignal {
+    private var readSignal: JSONStreamWriterSignal {
         return pipe.0
     }
     
     /**
     Sink on which to send objects which will be written to the outputStream
     */
-    open var writeSink: JSONStreamWriterSink {
+    var writeSink: JSONStreamWriterSink {
         return pipe.1
     }
     
@@ -1117,7 +1119,7 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     and open the stream upon `start()`.
     */
     
-    public init(stream: OutputStream, compressed: Bool = false) {
+    init(stream: OutputStream, compressed: Bool = false) {
         q = DispatchQueue(label: "io.afero.JSONWriter", attributes: [])
         outputStream = stream
         if compressed {
@@ -1132,10 +1134,10 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
         end()
     }
     
-    fileprivate var q: DispatchQueue
+    private var q: DispatchQueue
     
-    fileprivate(set) open var finished = false
-    fileprivate var readSignalDisposable: Disposable? = nil
+    var finished = false
+    private var readSignalDisposable: Disposable? = nil
     
     lazy fileprivate(set) var readQueueScheduler: QueueScheduler = {
         return QueueScheduler(qos: .default, name: "io.afero.readQScheduler", targeting: self.q)
@@ -1151,8 +1153,10 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     
     */
     
-    open func start() {
-        
+    func start() {
+
+        let TAG = self.TAG
+    
         DDLogVerbose("start() invoked.", tag: TAG)
 
         if finished {
@@ -1165,17 +1169,17 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
                 [weak self] event in switch event {
 
                 case .failed(let err):
-                    DDLogInfo("ERROR: Error sent to streamWriter: \(err). Terminating", tag: self?.TAG)
+                    DDLogError("Error sent to streamWriter: \(err). Terminating", tag: TAG)
                     self?.end()
 
                 case .interrupted:
-                    DDLogInfo("Received interrupted on JSON writer; ignoring.", tag: self?.TAG)
+                    DDLogWarn("Received interrupted on JSON writer; ignoring.", tag: TAG)
                     
                 case .value(let value):
                     self?.handleNext(value)
                     
                 case .completed:
-                    DDLogInfo("Received complete on JSON writer; ending.", tag: self?.TAG)
+                    DDLogInfo("Received complete on JSON writer; ending.", tag: TAG)
                     self?.end()
 
                 }
@@ -1191,7 +1195,7 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     Tear down the world. This closes and unschedules the stream, and disposes the signal. No further events will be processed.
     */
     
-    open func end() {
+    fileprivate func end() {
         DDLogVerbose("end() invoked.", tag: TAG)
         finished = true
         readSignalDisposable?.dispose()
@@ -1205,7 +1209,7 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
 
     fileprivate let DELIM: [UInt8] = [0x0a]
 
-    func handleNext(_ obj: Any?) {
+    fileprivate func handleNext(_ obj: Any?) {
         
         var messageData = Data()
         var processedData = Data()
@@ -1283,25 +1287,25 @@ open class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
         }
     }
     
-    open func stream(_ stream: Stream, handle eventCode: Stream.Event) {
+    public func stream(_ stream: Stream, handle eventCode: Stream.Event) {
         
         switch(eventCode) {
             
         case Stream.Event.openCompleted:
-            DDLogInfo("Got EventOpenCompleted.", tag: TAG)
+            DDLogDebug("Got EventOpenCompleted.", tag: TAG)
             
         case Stream.Event.hasBytesAvailable:
-            DDLogInfo("Got EventBytesAvailable (ignored).", tag: TAG)
+            DDLogDebug("Got EventBytesAvailable (ignored).", tag: TAG)
             
         case Stream.Event.endEncountered:
             DDLogInfo("Got EventEndEncountered.", tag: TAG)
             
         case Stream.Event.errorOccurred:
-            DDLogInfo("Got EventErrorOccurred: \(String(describing: stream.streamError)).", tag: TAG)
+            DDLogError("Got EventErrorOccurred: \(String(describing: stream.streamError)).", tag: TAG)
             writeSink.send(error: stream.streamError! as NSError)
             
         case Stream.Event.hasSpaceAvailable:
-            DDLogInfo("Got EventHasSpaceAvailable (flushing)", tag: TAG)
+            DDLogDebug("Got EventHasSpaceAvailable (flushing)", tag: TAG)
             q.async {
                 self.spaceAvailable = true
                 self.flush()
