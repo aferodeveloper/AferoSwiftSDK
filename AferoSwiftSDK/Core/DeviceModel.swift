@@ -263,10 +263,21 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         return eventPipeForAttributeId(attributeId)?.signal
     }
     
+    fileprivate static var attributeSignalQ = DispatchQueue(
+        label: "io.afero.attributeSignaling",
+        qos: .default,
+        attributes: .concurrent
+    )
+    
     public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
         
-        guard let
-            attribute = attribute(for: attributeId) else { return }
+        let TAG = self.TAG
+        
+        guard
+            let attribute = attribute(for: attributeId),
+            let pipe = eventPipeForAttributeId(attributeId) else {
+                return
+        }
         
         let event: AttributeEvent = .update(
             accountId: accountId,
@@ -274,8 +285,11 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
             attribute: attribute
         )
         
-        DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)
-        eventPipeForAttributeId(attributeId)?.sendNext(event)
+        type(of: self).attributeSignalQ.async {
+            DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)
+            pipe.sendNext(event)
+        }
+        
     }
     
     fileprivate func completeAllAttributeSignals() {
