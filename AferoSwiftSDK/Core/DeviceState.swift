@@ -374,7 +374,10 @@ public enum AttributeEvent {
 extension AttributeEvent: CustomStringConvertible, CustomDebugStringConvertible {
     
     public var description: String {
-        return debugDescription
+        switch self {
+        case let .update(accountId, deviceId, attribute):
+            return "<AttributeEvent.Update> accountId: \(accountId) deviceId: \(deviceId) attribute: \(String(describing: attribute))"
+        }
     }
     
     public var debugDescription: String {
@@ -1158,10 +1161,8 @@ public extension DeviceModelable {
         currentState = state
 
         attributeInstances.forEach {
-            DDLogVerbose(String(format: "Signaling update for attribute: %@", $0.debugDescription), tag: TAG)
             self.signalAttributeUpdate($0.id, value: $0.value)
         }
-        
         
     }
     
