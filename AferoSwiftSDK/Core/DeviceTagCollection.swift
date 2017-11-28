@@ -8,7 +8,68 @@
 import Foundation
 import CocoaLumberjack
 import ReactiveSwift
+import PromiseKit
 import Result
+
+
+/// Events describing changes to the population of device tags in a
+/// `DeviceTagPersisting` implementor.
+///
+/// # Cases
+/// * `.add(tag: DeviceTag)`: `tag` was added to the `DeviceTagPersisting` implementor.
+/// * `.update(tag: DeviceTag)`: `tag` was added to the `DeviceTagPersisting` implementor.
+/// * `.delete(id: DeviceTag.Id)`: The tag with the given `id` was deleted
+///                              on the `DeviceTagPersisting` implementor.
+
+enum DeviceTagPersistingEvent {
+
+    typealias DeviceTag = DeviceTagPersisting.DeviceTag
+
+    /// `tag` was added to the `DeviceTagPersisting` implementor.
+    case add(tag: DeviceTag)
+    
+    /// `tag` was updated on the `DeviceTagPersisiting` implementor.
+    case update(tag: DeviceTag)
+    
+    /// The tag with the given `id` was deleted on the `DeviceTagPersisting` implementor.
+    case delete(id: DeviceTag.Id)
+}
+
+protocol DeviceTagPersisting {
+    
+    // MARK: Types
+    
+    typealias DeviceTag = DeviceTagCollection.DeviceTag
+
+    /// Type for response handler for `deleteTag`
+    typealias DeleteTagOnDone = (DeviceTag.Key?, Error?) -> Void
+    
+    /// Type for response hander for `addOrUpdateTag`
+    typealias AddOrUpdateTagOnDone = (DeviceTag?, Error?) -> Void
+
+    // MARK: CRUD
+    
+    /// Delete a tag in persistent storage.
+    /// - parameter id: The id of the tag to delete.
+    /// - parameter onDone: The result handler for the call.
+    
+    func deleteTag(with id: DeviceTag.Id, onDone: DeleteTagOnDone)
+    
+    /// Add or update a tag.
+    ///
+    /// - parameter value: The tag's value.
+    /// - parameter key: An optional key for the tag.
+    /// - parameter id: The optional identifier for the tag.
+    /// - parameter onDone: The result handler for the call.
+
+    func addOrUpdateTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, onDone:AddOrUpdateTagOnDone)
+    
+    // MARK: Observation
+    
+    /// A Reactive `Signal`
+    var eventSignal: Signal<DeviceTagPersistingEvent, NoError> { get }
+    
+}
 
 class DeviceTagCollection {
     
@@ -27,24 +88,36 @@ class DeviceTagCollection {
     typealias AddTagOnDone = (Set<DeviceTag>?, Error?) -> Void
 
     /// Add a tag to the collection.
-    /// - parameter tag: The tag to remove.
+    /// - parameter tag: The tag to add.
     /// - parameter onDone: The completion handler for the call.
     
     private func _add(tag: DeviceTag, onDone: AddTagOnDone) -> Void {
-        _identifierTagMap[tag.id] = tag
-
+        
         var ret: Set<DeviceTag>?
         var error: Error?
         
-        defer { onDone(ret, error) }
+        defer {
+            onDone(ret, error)
+            ret?.forEach {
+                eventSink.send(value: .addedTag($0))
+            }
+        }
         
-        guard let key = tag.key  else {
-            ret = [tag]
+        if let maybeExisting = _identifierTagMap[tag.id],
+            maybeExisting == tag {
+            onDone(ret, error)
             return
         }
         
-        _keyTagMap.removeValue(forKey: key)
-        ret = deviceTags(forKey: key)
+        _identifierTagMap[tag.id] = tag
+
+        
+        if let key = tag.key  {
+            _keyTagMap.removeValue(forKey: key)
+        }
+    
+        ret = [tag]
+
     }
     
     typealias DeleteTagOnDone = (Set<DeviceTag>?, Error?)->Void
@@ -54,17 +127,21 @@ class DeviceTagCollection {
         var ret: Set<DeviceTag>?
         var error: Error?
         
-        defer { onDone(ret, error) }
+        defer {
+            onDone(ret, error)
+            ret?.forEach {
+                eventSink.send(value: .deletedTag($0))
+            }
+        }
         
-        let deleteKeys = _identifierTagMap
+        let deleteIds = _identifierTagMap
             .filter { isIncluded($1) }
             .map { $0.key }
         
-        let deletedTags = Set(deleteKeys.flatMap {
+        ret = Set(deleteIds.flatMap {
             _identifierTagMap.removeValue(forKey: $0)
         })
         
-        onDone(deletedTags, nil)
     }
     
     /// Remove a tag from the collection.
@@ -72,6 +149,8 @@ class DeviceTagCollection {
     /// - parameter onDone: The completion handler for the call.
     
     private func _remove(tag: DeviceTag, onDone: DeleteTagOnDone) -> Void {
+        
+        _remove(where: { $0.id == tag.id }, onDone: onDone)
         
         var ret: Set<DeviceTag>?
         var error: Error?
@@ -152,7 +231,73 @@ class DeviceTagCollection {
         return deviceTags(forKey: key).first
     }
     
-    // MARK: Setters
+    // MARK: Signaling
+    
+    enum Event: Hashable {
+        
+        case addedTag(DeviceTag)
+        case updatedTag(oldValue: DeviceTag, newValue: DeviceTag)
+        case deletedTag(DeviceTag)
+        
+        static func ==(lhs: Event, rhs: Event) -> Bool {
+            
+            switch (lhs, rhs) {
+                
+            case let (.addedTag(tl), .addedTag(tr)):
+                return tl == tr
+                
+            case let (.updatedTag(tol, tnl), .updatedTag(tor, tnr)):
+                return tol == tor && tnl == tnr
+                
+            case let (.deletedTag(tl), .deletedTag(tr)):
+                return tl == tr
+
+            default:
+                return false
+            }
+        }
+        
+        var hashValue: Int {
+            
+            switch self {
+            case let .addedTag(t): return t.hashValue
+            case let .deletedTag(t): return t.hashValue
+            case let .updatedTag(o, n): return o.hashValue ^ n.hashValue
+            }
+            
+        }
+        
+        
+    }
+    
+    /// Type for the sink to which we send `Event`s.
+    private typealias EventSink = Observer<Event, NoError>
+    
+    /// Type for the signal on which clients listen for `Event`s.
+    typealias EventSignal = Signal<Event, NoError>
+    
+    /// Type for the pipe that ties `EventSink` and `EventSignal` together.
+    private typealias EventPipe = (output: EventSignal, input: EventSink)
+    
+    /// The pipe which casts `Event`s.
+    lazy private final var eventPipe: EventPipe = {
+        return EventSignal.pipe()
+    }()
+    
+    /// The `Signal` on which `Event`s can be received.
+    var eventSignal: EventSignal {
+        return eventPipe.0
+    }
+    
+    /**
+     The `Sink` to which `Event`s are broadcast.
+     */
+    
+    private final var eventSink: EventSink {
+        return eventPipe.1
+    }
+
+    // MARK: Protected
     
     func add(tag: DeviceTag, onDone: AddTagOnDone) {
         _add(tag: tag, onDone: onDone)
@@ -169,5 +314,9 @@ class DeviceTagCollection {
     func remove(withId id: DeviceTag.Id, onDone: DeleteTagOnDone) {
         _remove(where: { $0.id == id }, onDone: onDone)
     }
+    
+    // MARK: Public
+    
+    
     
 }

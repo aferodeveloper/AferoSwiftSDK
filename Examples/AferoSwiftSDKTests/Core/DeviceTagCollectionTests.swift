@@ -9,15 +9,16 @@
 import Foundation
 import Quick
 import Nimble
+import ReactiveSwift
 @testable import Afero
 
 class DeviceTagCollectionSpec: QuickSpec {
     
-
+    
     override func spec() {
         
         typealias DeviceTag = DeviceTagCollection.DeviceTag
-
+        
         fdescribe("Initialization") {
             
             it("should initializize") {
@@ -27,39 +28,89 @@ class DeviceTagCollectionSpec: QuickSpec {
             }
         }
         
-        fdescribe("when setting tags") {
+        fdescribe("when setting manipulating tags") {
             
+            var events: [DeviceTagCollection.Event]!
             var c: DeviceTagCollection!
+            var d: Disposable?
             
             let t1 = DeviceTag(id: "id1", key: "k1", value: "v1")
             let t1b = DeviceTag(id: "id1b", key: "k1", value: "v1b")
             let t2 = DeviceTag(id: "id2", key: "k2", value: "v2")
             let t3 = DeviceTag(id: "id3", value: "v3")
             let t3b = DeviceTag(id: "id3b", value: "v3b")
-
+            
             beforeEach {
                 c = DeviceTagCollection()
+                events = []
+                d = c.eventSignal
+                    .observe(on: QueueScheduler.main)
+                    .observeValues {
+                        events.append($0)
+                }
             }
             
-            it("should append tags when addTag is called.") {
+            afterEach {
+                d?.dispose()
+            }
+            
+            it("should append tags when addTag is called for tags with differing ids.") {
                 
                 c.add(tag: t1) { _, _ in }
                 expect(c.isEmpty).to(beFalse())
                 expect(c.count) == 1
-
+                
                 c.add(tag: t1) { _, _ in }
                 expect(c.isEmpty).to(beFalse())
                 expect(c.count) == 1
-
+                
                 let t1b = DeviceTag(id: "id1b", key: "k1", value: "v1b")
                 c.add(tag: t1b) { _, _ in }
                 expect(c.isEmpty).to(beFalse())
                 expect(c.count) == 2
                 
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t1b),
+                            ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
-
+            
+            it("should replace tags when addTag is called for tags with equal ids.") {
+                
+                c.add(tag: t1) { _, _ in }
+                expect(c.isEmpty).to(beFalse())
+                expect(c.count) == 1
+                
+                var t1c = t1
+                t1c.value = "v1c"
+                c.add(tag: t1c) { _, _ in }
+                
+                expect(c.isEmpty).to(beFalse())
+                expect(c.count) == 1
+                expect(c.tags.first) == t1c
+                
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t1c)
+                        ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
+            }
+            
             it("should remove a single tag when given a tag to remove.") {
-
+                
                 c.add(tag: t1) { _, _ in }
                 c.add(tag: t2) { _, _ in }
                 
@@ -67,7 +118,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 var removed: Set<DeviceTag> = []
                 var err: Error?
-
+                
                 c.remove(tag: t2) {
                     maybeRemoved, maybeErr in
                     maybeRemoved?.forEach {
@@ -81,8 +132,21 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 expect(c.count) == 1
                 expect(c.tags.first) == t1
+                
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t2),
+                            DeviceTagCollection.Event.deletedTag(t2),
+                            ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
-
+            
             it("should remove a single tag when given an id to remove.") {
                 
                 c.add(tag: t1) { _, _ in }
@@ -106,10 +170,23 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 expect(c.count) == 1
                 expect(c.tags) == Set([t1])
+                
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t2),
+                            DeviceTagCollection.Event.deletedTag(t2),
+                            ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
             
             it("should be unchanged when removing an unknown id") {
-
+                
                 c.add(tag: t1) { _, _ in }
                 c.add(tag: t2) { _, _ in }
                 
@@ -132,10 +209,21 @@ class DeviceTagCollectionSpec: QuickSpec {
                 expect(c.count) == 2
                 expect(c.tags) == Set([t1, t2])
                 
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t2),
+                            ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
             
             it("should remove all tags matching a key when removing by key.") {
-
+                
                 c.add(tag: t1) { _, _ in }
                 c.add(tag: t1b) { _, _ in }
                 c.add(tag: t2) { _, _ in }
@@ -157,9 +245,23 @@ class DeviceTagCollectionSpec: QuickSpec {
                 expect(err != nil).toNotEventually(beTrue())
                 expect(c.count) == 1
                 expect(c.tags) == Set([t2])
-
+                
+                expect(Set(events)).toEventually(
+                    equal(
+                        Set([
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t1b),
+                            DeviceTagCollection.Event.addedTag(t2),
+                            DeviceTagCollection.Event.deletedTag(t1),
+                            DeviceTagCollection.Event.deletedTag(t1b),
+                            ])
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
-
+            
             it("should remove all tags without a key when removing by a nil key.") {
                 
                 c.add(tag: t1) { _, _ in }
@@ -167,7 +269,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 c.add(tag: t2) { _, _ in }
                 c.add(tag: t3) { _, _ in }
                 c.add(tag: t3b) { _, _ in }
-
+                
                 expect(c.count) == 5
                 
                 var removed: Set<DeviceTag> = []
@@ -186,10 +288,26 @@ class DeviceTagCollectionSpec: QuickSpec {
                 expect(c.count) == 3
                 expect(c.tags) == Set([t1, t1b, t2])
                 
+                expect(events).toEventually(
+                    equal(
+                        [
+                            DeviceTagCollection.Event.addedTag(t1),
+                            DeviceTagCollection.Event.addedTag(t1b),
+                            DeviceTagCollection.Event.addedTag(t2),
+                            DeviceTagCollection.Event.addedTag(t3),
+                            DeviceTagCollection.Event.addedTag(t3b),
+                            DeviceTagCollection.Event.deletedTag(t3),
+                            DeviceTagCollection.Event.deletedTag(t3b),
+                            ]
+                    ),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
-
+            
             it("should be unchanged when removing by an unknown key") {
-
+                
                 c.add(tag: t1) { _, _ in }
                 c.add(tag: t2) { _, _ in }
                 
@@ -211,7 +329,13 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 expect(c.count) == 2
                 expect(c.tags) == Set([t1, t2])
-
+                
+                expect(events.count).toNotEventually(
+                    beGreaterThan(2),
+                    timeout: 4.0,
+                    pollInterval: 0.1
+                )
+                
             }
             
         }
