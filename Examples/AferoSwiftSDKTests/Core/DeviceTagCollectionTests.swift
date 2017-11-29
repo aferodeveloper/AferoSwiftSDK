@@ -26,7 +26,7 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedDeleteTagResult: ExpectedDeleteTagResult = .success
     
-    func deleteTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: (DeviceStreamEvent.Peripheral.DeviceTag.Id?, Error?) -> Void) {
+    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: (DeviceStreamEvent.Peripheral.DeviceTag.Id?, Error?) -> Void) {
         deleteCalledCount += 1
         switch expectedDeleteTagResult {
         case .success: onDone(id, nil)
@@ -46,7 +46,7 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedAddOrUpdateTagResult: ExpectedAddOrUpdateTagResult = .success(id: "foo")
     
-    func addOrUpdateTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone: (DeviceTagPersisting.DeviceTag?, Error?) -> Void) {
+    func persistTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone: (DeviceTagPersisting.DeviceTag?, Error?) -> Void) {
         addOrUpdateCalledCount += 1
         switch expectedAddOrUpdateTagResult {
         case .success(let expectedId): onDone(DeviceTag(id: id ?? expectedId, key: key, value: value, localizationKey: localizationKey), nil)

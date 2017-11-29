@@ -34,7 +34,7 @@ protocol DeviceTagPersisting: class {
     /// - parameter id: The id of the tag to delete.
     /// - parameter onDone: The result handler for the call.
     
-    func deleteTag(with id: DeviceTag.Id, onDone: DeleteTagOnDone)
+    func purgeTag(with id: DeviceTag.Id, onDone: DeleteTagOnDone)
     
     /// Add or update a tag.
     ///
@@ -43,13 +43,31 @@ protocol DeviceTagPersisting: class {
     /// - parameter id: The optional identifier for the tag.
     /// - parameter onDone: The result handler for the call.
 
-    func addOrUpdateTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone:AddOrUpdateTagOnDone)
+    func persistTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone:AddOrUpdateTagOnDone)
+    
+}
+
+extension DeviceTagPersisting {
+    func addOrUpdate(tag: DeviceTag, onDone: AddOrUpdateTagOnDone) {
+    
+    }
+}
+
+extension DeviceCollection {
+    
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
+        return apiClient.persistTag(tag: tag, for: deviceId, in: accountId)
+    }
+    
+    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
+        return apiClient.purgeTag(with: id, for: deviceId, in: accountId)
+    }
     
 }
 
 class DeviceTagCollection {
     
-    /// The persistence backend to use. Weakly held.
+    /// The persistence backend to use.
     weak var persistence: DeviceTagPersisting!
     
     /// Initialize this collection with the given persistence backend.
@@ -299,7 +317,7 @@ class DeviceTagCollection {
     
     public func addOrUpdateTag(with value: DeviceTag.Value, groupedUsing key: DeviceTag.Key?, identifiedBy id: DeviceTag.Id? = nil, using localizationKey: DeviceTag.LocalizationKey? = nil, onDone: AddOrUpdateTagOnDone) {
         
-        persistence.addOrUpdateTag(
+        persistence.persistTag(
             value: value,
             key: key,
             id: id,
@@ -323,7 +341,7 @@ class DeviceTagCollection {
     
     public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeleteTagOnDone) {
         
-        persistence.deleteTag(with: id) {
+        persistence.purgeTag(with: id) {
 
             maybeId, maybeError in
 
