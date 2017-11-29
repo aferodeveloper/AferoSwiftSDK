@@ -558,8 +558,15 @@ public class DeviceCollection: NSObject, MetricsReportable {
             onDeviceOTAProgress(peripheralId: peripheralId, progress: progress, seq: seq)
             
         case let .invalidate(seq, maybePeripheralId, eventName, data):
+            
             DDLogDebug(String(format: "invalidate received: %@", data), tag: TAG)
-            onInvalidate(maybePeripheralId: maybePeripheralId, eventName: eventName, data: data, seq: seq)
+            
+            guard let invalidation = InvalidationEvent(kind: eventName, info: data) else {
+                DDLogWarn("Unrecognized invalidation event kind \(eventName); ignoring.", tag: TAG)
+                break
+            }
+            
+            onInvalidate(maybePeripheralId: maybePeripheralId, event: invalidation, seq: seq)
             
         case let .deviceError(seq, _, error):
             onDeviceError(error: error, seq: seq)
@@ -934,25 +941,29 @@ public class DeviceCollection: NSObject, MetricsReportable {
     ///         are computed and sent by the service based upon internal state changes.
     ///         For this reason, we only forward the name and the raw daa.
     
-    fileprivate func onInvalidate(maybePeripheralId: String?, eventName: InvalidationEventKind, data: [String: Any], seq: DeviceStreamEventSeq?) {
+    fileprivate func onInvalidate(maybePeripheralId: String?, event: InvalidationEvent, seq: DeviceStreamEventSeq?) {
 
         guard
             let peripheralId = maybePeripheralId,
             let device = peripheral(for: peripheralId) else { return }
         
-        switch eventName {
+        switch event.kind {
             
-        case InvalidationEvent.profiles.rawValue:
+        case .profiles:
             device.profileId = nil
             
-        case InvalidationEvent.location.rawValue:
+        case .location:
             updateLocation(for: peripheralId, retryInterval: 10.0)
             
-        case InvalidationEvent.timezone.rawValue:
+        case .timezone:
             updateTimeZoneState(for: peripheralId, retryInterval: 10.0)
+            
+        case .tags:
+            assert(false, "Handle update tags for \(String(reflecting: event))")
 
         default:
             break
+            
         }
     }
     

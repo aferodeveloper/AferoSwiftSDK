@@ -12,36 +12,82 @@ import CocoaLumberjack
 
 /// Describes a kind of invalidate envent that can be received.
 
-public typealias InvalidationEventKind = String
+public struct InvalidationEvent: CustomStringConvertible, CustomDebugStringConvertible {
+    
+    public var description: String {
+        return "<InvalidationEvent.\(kind.rawValue)> info: \(String(describing: info))"
+    }
 
-public enum InvalidationEvent: String {
-    
-    case accounts = "accounts"
-    case invitations = "invitations"
-    case profiles = "profiles"
-    case location = "location"
-    case timezone = "timezone"
-    
-    public init?(notificationName: String) {
-        switch notificationName {
-        case InvalidationEvent.accounts.notificationName: self = .accounts
-        case InvalidationEvent.invitations.notificationName: self = .invitations
-        case InvalidationEvent.profiles.notificationName: self = .profiles
-        case InvalidationEvent.location.notificationName: self = .location
-        default: return nil
+    public var debugDescription: String {
+        return "<InvalidationEvent.\(kind.rawValue)> info: \(String(reflecting: info))"
+    }
+
+    public enum Kind: String {
+        
+        /// Accounts were invalidated. This is received when a the accounts to which a
+        /// given user has access changes.
+        case accounts = "accounts"
+        
+        /// The user's pending sharing invitations list was invalidated. This is received
+        /// when a user is invited to share an account, or when an invitation is rescinded.
+        case invitations = "invitations"
+        
+        /// Profiles have been invalidate for a device.
+        case profiles = "profiles"
+        
+        /// A device's location has been invalidated.
+        case location = "location"
+        
+        /// A device's timezone has been invalidate.
+        case timezone = "timezone"
+        
+        /// A device's tags have been invalidated. This is received when a tag has
+        /// been added to a device, removed from a device, or updated.
+        case tags = "tags"
+        
+        public init?(notificationName: String) {
+            switch notificationName {
+            case Kind.accounts.notificationName: self = .accounts
+            case Kind.invitations.notificationName: self = .invitations
+            case Kind.profiles.notificationName: self = .profiles
+            case Kind.location.notificationName: self = .location
+            case Kind.tags.notificationName: self = .tags
+            default: return nil
+            }
         }
+        
+        public var notificationName: String {
+            switch self {
+            case .accounts: return "InvalidationKindAccounts"
+            case .invitations: return "InvalidationKindInvitations"
+            case .profiles: return "InvalidationKindProfiles"
+            case .location: return "InvalidationKindLocation"
+            case .timezone: return "InvalidationKindTimeZone"
+            case .tags: return "InvalidationKindTags"
+            }
+        }
+        
     }
     
-    public var notificationName: String {
-        switch self {
-        case .accounts: return "InvalidationKindAccounts"
-        case .invitations: return "InvalidationKindInvitations"
-        case .profiles: return "InvalidationKindProfiles"
-        case .location: return "InvalidationKindLocation"
-        case .timezone: return "InvalidationKindTimeZone"
-        }
+    /// The kind of invalidation event.
+    public var kind: Kind
+    
+    public typealias EventInfo = [String: Any]
+    public var info: EventInfo?
+    
+    public init(kind: Kind, info: EventInfo? = nil) {
+        self.kind = kind
+        self.info = info
     }
     
+    public init?(kind: Kind.RawValue, info: EventInfo? = nil) {
+        guard let kind = Kind(rawValue: kind) else {
+            return nil
+        }
+        self.kind = kind
+        self.info = info
+    }
+
 }
 
 // MARK: - DeviceStreamEvent
@@ -104,7 +150,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
     /// * `kind`: The type of the invalidation event. See `InvalidationEventKind`.
     /// * `data`: The raw data provided in the message.
     
-    case invalidate(seq: DeviceStreamEventSeq?, peripheralId: String?, kind: InvalidationEventKind, data: DeviceStreamEventData)
+    case invalidate(seq: DeviceStreamEventSeq?, peripheralId: String?, kind: InvalidationEvent.Kind.RawValue, data: DeviceStreamEventData)
 
     /// An error was encountered for a device.
     ///
@@ -217,7 +263,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
         case .invalidate:
             guard
-                let kind = data["kind"] as? InvalidationEventKind else {
+                let kind = data["kind"] as? InvalidationEvent.Kind.RawValue else {
                     DDLogError("Unable to extract Invalidate from \(String(reflecting: data))", tag: TAG)
                     return nil
             }
