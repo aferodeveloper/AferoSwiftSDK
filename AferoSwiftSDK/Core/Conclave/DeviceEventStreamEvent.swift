@@ -803,7 +803,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <CustomDebugStringConvertible>
             
             public var debugDescription: String {
-                return "<DeviceTag> id:\(id) value:\\(value) type: \(type) key:\(String(describing: key)) localizationkey: \(String(describing :localizationKey))"
+                return "<DeviceTag> id:\(id) value:\(value) type: \(type) key:\(String(describing: key)) localizationkey: \(String(describing :localizationKey))"
             }
             
             // MARK: <Hashable>

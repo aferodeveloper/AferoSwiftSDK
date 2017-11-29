@@ -12,38 +12,19 @@ import PromiseKit
 import Result
 
 
-/// Events describing changes to the population of device tags in a
-/// `DeviceTagPersisting` implementor.
-///
-/// # Cases
-/// * `.add(tag: DeviceTag)`: `tag` was added to the `DeviceTagPersisting` implementor.
-/// * `.update(tag: DeviceTag)`: `tag` was added to the `DeviceTagPersisting` implementor.
-/// * `.delete(id: DeviceTag.Id)`: The tag with the given `id` was deleted
-///                              on the `DeviceTagPersisting` implementor.
+/// An implementation of deviceTag persistence methods. The
+/// implementation does not itself preserve any state; the `DeviceTagCollection`
+/// relies upon it to perform CRUD operations.
 
-enum DeviceTagPersistingEvent {
-
-    typealias DeviceTag = DeviceTagPersisting.DeviceTag
-
-    /// `tag` was added to the `DeviceTagPersisting` implementor.
-    case add(tag: DeviceTag)
-    
-    /// `tag` was updated on the `DeviceTagPersisiting` implementor.
-    case update(tag: DeviceTag)
-    
-    /// The tag with the given `id` was deleted on the `DeviceTagPersisting` implementor.
-    case delete(id: DeviceTag.Id)
-}
-
-protocol DeviceTagPersisting {
+protocol DeviceTagPersisting: class {
     
     // MARK: Types
-    
+
     typealias DeviceTag = DeviceTagCollection.DeviceTag
 
     /// Type for response handler for `deleteTag`
-    typealias DeleteTagOnDone = (DeviceTag.Key?, Error?) -> Void
-    
+    typealias DeleteTagOnDone = (DeviceTag.Id?, Error?) -> Void
+
     /// Type for response hander for `addOrUpdateTag`
     typealias AddOrUpdateTagOnDone = (DeviceTag?, Error?) -> Void
 
@@ -62,22 +43,33 @@ protocol DeviceTagPersisting {
     /// - parameter id: The optional identifier for the tag.
     /// - parameter onDone: The result handler for the call.
 
-    func addOrUpdateTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, onDone:AddOrUpdateTagOnDone)
-    
-    // MARK: Observation
-    
-    /// A Reactive `Signal`
-    var eventSignal: Signal<DeviceTagPersistingEvent, NoError> { get }
+    func addOrUpdateTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone:AddOrUpdateTagOnDone)
     
 }
 
 class DeviceTagCollection {
     
+    /// The persistence backend to use. Weakly held.
+    weak var persistence: DeviceTagPersisting!
+    
+    /// Initialize this collection with the given persistence backend.
+    /// - parameter persistence: The persistence backend that will be used,
+    ///                          if any.
+    
+    init(with persistence: DeviceTagPersisting) {
+        self.persistence = persistence
+    }
+    
     typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag
     
     // MARK: Private
-
-    private var _identifierTagMap: [DeviceTag.Id: DeviceTag] = [:]
+    
+    private var _identifierTagMap: [DeviceTag.Id: DeviceTag] = [:] {
+        didSet {
+            invalidate()
+        }
+    }
+    
     private var _keyTagMap: [DeviceTag.Key: Set<DeviceTag>] = [:]
     
     func invalidate() {
@@ -120,9 +112,9 @@ class DeviceTagCollection {
 
     }
     
-    typealias DeleteTagOnDone = (Set<DeviceTag>?, Error?)->Void
+    typealias RemoveTagOnDone = (Set<DeviceTag>?, Error?)->Void
 
-    private func _remove(where isIncluded: (DeviceTag)->Bool, onDone: DeleteTagOnDone) {
+    private func _remove(where isIncluded: (DeviceTag)->Bool, onDone: RemoveTagOnDone) {
         
         var ret: Set<DeviceTag>?
         var error: Error?
@@ -148,7 +140,7 @@ class DeviceTagCollection {
     /// - parameter tag: The tag to remove.
     /// - parameter onDone: The completion handler for the call.
     
-    private func _remove(tag: DeviceTag, onDone: DeleteTagOnDone) -> Void {
+    private func _remove(tag: DeviceTag, onDone: RemoveTagOnDone) -> Void {
         
         _remove(where: { $0.id == tag.id }, onDone: onDone)
         
@@ -297,26 +289,68 @@ class DeviceTagCollection {
         return eventPipe.1
     }
 
-    // MARK: Protected
+    // MARK: Protected/Internal
     
     func add(tag: DeviceTag, onDone: AddTagOnDone) {
         _add(tag: tag, onDone: onDone)
     }
     
-    func remove(tag: DeviceTag, onDone: DeleteTagOnDone) {
+    func remove(tag: DeviceTag, onDone: RemoveTagOnDone) {
         _remove(where: { $0 == tag }, onDone: onDone)
     }
     
-    func remove(withKey key: DeviceTag.Key?, onDone: DeleteTagOnDone) {
+    func remove(withKey key: DeviceTag.Key?, onDone: RemoveTagOnDone) {
         _remove(where: { $0.key == key }, onDone: onDone)
     }
     
-    func remove(withId id: DeviceTag.Id, onDone: DeleteTagOnDone) {
+    func remove(withId id: DeviceTag.Id, onDone: RemoveTagOnDone) {
         _remove(where: { $0.id == id }, onDone: onDone)
     }
     
     // MARK: Public
     
+    public typealias AddOrUpdateTagOnDone = DeviceTagPersisting.AddOrUpdateTagOnDone
     
+    public func addOrUpdateTag(with value: DeviceTag.Value, groupedUsing key: DeviceTag.Key?, identifiedBy id: DeviceTag.Id? = nil, using localizationKey: DeviceTag.LocalizationKey? = nil, onDone: AddOrUpdateTagOnDone) {
+        
+        persistence.addOrUpdateTag(
+            value: value,
+            key: key,
+            id: id,
+            localizationKey: localizationKey
+        ) {
+            maybeTag, maybeError in
+            
+            guard let tag = maybeTag else {
+                onDone(nil, maybeError)
+                return
+            }
+            
+            add(tag: tag) {
+                onDone($0.0?.first, $0.1)
+            }
+        }
+        
+    }
+    
+    public typealias DeleteTagOnDone = DeviceTagPersisting.DeleteTagOnDone
+    
+    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeleteTagOnDone) {
+        
+        persistence.deleteTag(with: id) {
+
+            maybeId, maybeError in
+
+            guard let id = maybeId else {
+                onDone(nil, maybeError)
+                return
+            }
+            
+            remove(withId: id) {
+                onDone(id, $0.1)
+            }
+            
+        }
+    }
     
 }
