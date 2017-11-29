@@ -504,7 +504,7 @@ public extension Data {
         
         guard var localHexEncoded = hexEncoded else { return nil }
         
-        if localHexEncoded.characters.count % 2 != 0 {
+        if localHexEncoded.count % 2 != 0 {
             localHexEncoded = "0" + localHexEncoded
         }
         

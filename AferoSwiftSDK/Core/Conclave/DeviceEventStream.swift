@@ -51,7 +51,7 @@ extension DeviceEventStreamable {
 class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvertible {
     
     var debugDescription: String {
-        return "<\(TAG)> accountId:\(accountId) clientType:\(clientType) clientVersion:\(clientVersion) access: \(conclaveAccess.debugDescription) token: \(conclaveAccessToken.debugDescription) client:\(conclaveClient.debugDescription)"
+        return "<\(TAG)> accountId:\(accountId) clientType:\(String(describing: clientType)) clientVersion:\(String(describing: clientVersion)) access: \(conclaveAccess.debugDescription) token: \(conclaveAccessToken.debugDescription) client:\(conclaveClient.debugDescription)"
     }
     
     /// The object responsible for handling Conclave authentication.

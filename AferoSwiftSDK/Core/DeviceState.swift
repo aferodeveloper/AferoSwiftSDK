@@ -494,7 +494,7 @@ public protocol DeviceCommandConsuming: class {
 }
 
 
-public protocol DeviceModelable: class, DeviceEventSignaling, AttributeEventSignaling, DeviceCommandConsuming, OfflineScheduleStorage {
+public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, DeviceCommandConsuming, OfflineScheduleStorage {
     
     /// The unique ID of the device on the service.
     var deviceId: String { get }
@@ -1145,8 +1145,6 @@ public extension DeviceModelable {
         }
         
         var state = currentState
-        
-        let TAG = self.TAG
         
         if !accumulative {
             state.reset()

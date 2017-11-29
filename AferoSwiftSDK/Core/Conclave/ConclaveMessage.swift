@@ -196,8 +196,6 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
             public static func ==(lhs: ConclaveAccess.Token.Client, rhs: ConclaveAccess.Token.Client) -> Bool {
                 switch (lhs, rhs) {
                 case let (.user(luid), .user(ruid)): return luid == ruid
-                default:
-                    return false
                 }
             }
             
@@ -225,7 +223,6 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
         public var userId: String? {
             switch client {
             case let .user(userId): return userId
-            default: return nil
             }
         }
         
