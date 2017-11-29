@@ -12,7 +12,7 @@ import Nimble
 import ReactiveSwift
 @testable import Afero
 
-class FakeDeviceTagPersisting: DeviceTagPersisting {
+class MockDeviceTagPersisting: DeviceTagPersisting {
     
     // MARK: Delete
     
@@ -63,7 +63,7 @@ class DeviceTagCollectionSpec: QuickSpec {
         typealias DeviceTag = DeviceTagCollection.DeviceTag
         
         var events: [DeviceTagCollection.Event]!
-        var persistence: FakeDeviceTagPersisting!
+        var persistence: MockDeviceTagPersisting!
         var c: DeviceTagCollection!
         var d: Disposable?
         
@@ -74,7 +74,7 @@ class DeviceTagCollectionSpec: QuickSpec {
         let t3b = DeviceTag(id: "id3b", value: "v3b")
         
         beforeEach {
-            persistence = FakeDeviceTagPersisting()
+            persistence = MockDeviceTagPersisting()
             c = DeviceTagCollection(with: persistence)
             events = []
             d = c.eventSignal
@@ -197,7 +197,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.addOrUpdateCalledCount) == 0
                     expect(persistence.deleteCalledCount) == 0
                     
-                    persistence.expectedAddOrUpdateTagResult = .success(id: t2.id)
+                    persistence.expectedAddOrUpdateTagResult = .success(id: t2.id!)
                     
                     c.addOrUpdateTag(
                         with: t2.value,
@@ -239,7 +239,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(c.count) == 1
                     expect(persistence.deleteCalledCount) == 0
                     
-                    c.deleteTag(identifiedBy: t1.id) {
+                    c.deleteTag(identifiedBy: t1.id!) {
                         maybeId = $0
                         maybeError = $1
                     }
@@ -390,7 +390,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         var removed: Set<DeviceTag> = []
                         var err: Error?
                         
-                        c.remove(withId: t2.id) {
+                        c.remove(withId: t2.id!) {
                             maybeRemoved, maybeErr in
                             maybeRemoved?.forEach {
                                 removed.insert($0)

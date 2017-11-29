@@ -88,6 +88,11 @@ class DeviceTagCollection {
         var ret: Set<DeviceTag>?
         var error: Error?
         
+        guard let id = tag.id else {
+            error = "No tag found."
+            return
+        }
+        
         defer {
             onDone(ret, error)
             ret?.forEach {
@@ -95,13 +100,13 @@ class DeviceTagCollection {
             }
         }
         
-        if let maybeExisting = _identifierTagMap[tag.id],
+        if let maybeExisting = _identifierTagMap[id],
             maybeExisting == tag {
             onDone(ret, error)
             return
         }
         
-        _identifierTagMap[tag.id] = tag
+        _identifierTagMap[id] = tag
 
         
         if let key = tag.key  {
@@ -141,26 +146,7 @@ class DeviceTagCollection {
     /// - parameter onDone: The completion handler for the call.
     
     private func _remove(tag: DeviceTag, onDone: RemoveTagOnDone) -> Void {
-        
-        _remove(where: { $0.id == tag.id }, onDone: onDone)
-        
-        var ret: Set<DeviceTag>?
-        var error: Error?
-        
-        defer { onDone(ret, error) }
-        
-        guard let tag = _identifierTagMap.removeValue(forKey: tag.id) else {
-            ret = []
-            return
-        }
-        
-        guard let key = tag.key else {
-            ret = [tag]
-            return
-        }
-        
-        _keyTagMap.removeValue(forKey: key)
-        ret = deviceTags(forKey: key)
+        _remove(where: { $0 == tag }, onDone: onDone)
     }
     
     // MARK: Getters
