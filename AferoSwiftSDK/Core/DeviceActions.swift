@@ -10,16 +10,39 @@ import Foundation
 import PromiseKit
 import CoreLocation
 
-// MARK: DeviceBatchActionRequestable
-
 public typealias WriteAttributeOnDone = (DeviceBatchAction.Results?, Error?) -> Void
 public typealias SetTimeZoneResult = (deviceId: String, tz: TimeZone, isUserOverride: Bool)
 public typealias SetTimeZoneOnDone = (SetTimeZoneResult?, Error?)->Void
 
-@available(*, deprecated, message: "Use protocol DeviceActionable instead.")
-public typealias DeviceBatchActionRequestable = DeviceActionable
 
-public protocol DeviceActionable: class {
+typealias DeviceCloudSupporting = DeviceActionable & DeviceTagCloudPersisting
+
+protocol DeviceTagCloudPersisting: class {
+    
+    /// Add or update the given DeviceTag on the device identified by `deviceId` and `accountId`.
+    /// - parameter tag: The tag to update. If `tag.id` is non-nil, then its existing representation in
+    ///                  the cloud will be replaced the given instance. If `tag.id` is nil, then a new
+    ///                  tag will be added.
+    /// - parameter deviceId: The `id` of the device on which to set the tag.
+    /// - parameter accountId: The `id` of the account to which the given device is associated.
+    /// - returns: A `Promise` that resolves to the tag resulting from the add or update request, and throws
+    ///            any errors emitted by the cloud.
+
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag>
+
+    /// Delete a tag with the given `id`, on the device identified by `deviceId` and `accountId`.
+    /// - parameter id: The `id` of the tag to delete.
+    /// - parameter deviceId: The `id` of the device from which to remove the tag.
+    /// - parameter accountId: The `id` of the account to which the given device is associated.
+    /// - returns: A `Promise` which resoles to the given tag id if successfully deleted, and throws
+    ///            any errors emitted by the cloud.
+    /// - note: The Afero REST API returns no content upon a successful deletion; the given tag is simply
+    ///         returned in the promise upon success.
+    
+   func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id>
+}
+
+protocol DeviceActionable: class {
     
     func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone)
     
@@ -38,11 +61,12 @@ public protocol DeviceActionable: class {
     /// - returns: A Promise<DeviceLocation?> that resolves to the given parameters upon success.
 
     func setLocation(as location: DeviceLocation?, for deviceId: String, in accountId: String) -> Promise<Void>
+
 }
 
-public extension DeviceActionable {
+extension DeviceActionable {
     
-    public func setLocation(as location: CLLocation, with sourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil, for deviceId: String, in accountId: String) -> Promise<Void> {
+    func setLocation(as location: CLLocation, with sourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil, for deviceId: String, in accountId: String) -> Promise<Void> {
         
         let location = DeviceLocation(
             location: location,
@@ -125,6 +149,19 @@ public extension DeviceCollection {
     }
     
 }
+
+extension DeviceCollection: DeviceTagCloudPersisting {
+    
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
+        return apiClient.persistTag(tag: tag, for: deviceId, in: accountId)
+    }
+    
+    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
+        return apiClient.purgeTag(with: id, for: deviceId, in: accountId)
+    }
+    
+}
+
 
 
 

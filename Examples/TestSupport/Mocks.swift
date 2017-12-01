@@ -15,9 +15,58 @@ import HTTPStatusCodes
 @testable import Afero
 
 
-// MARK: - MockDeviceBatchActionRequestable
+// MARK: - MockDeviceCloudSupporting
 
-class MockDeviceBatchActionRequestable: DeviceActionable {
+class MockDeviceCloudSupporting: DeviceCloudSupporting {
+    
+    let persisting = MockDeviceTagPersisting()
+    
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
+        return Promise {
+            fulfill, reject in
+            
+            persisting.persist(tag: tag) {
+                maybeTag, maybeError in
+                if let error = maybeError {
+                    reject(error)
+                    return
+                }
+                
+                if let tag = maybeTag {
+                    fulfill(tag)
+                }
+                
+                reject("No tag, but no error either.")
+            }
+
+        }
+    }
+    
+    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceStreamEvent.Peripheral.DeviceTag.Id> {
+
+        return Promise {
+            fulfill, reject in
+            
+            persisting.purgeTag(with: id) {
+                maybeId, maybeError in
+                if let error = maybeError {
+                    reject(error)
+                    return
+                }
+                
+                if let id = maybeId {
+                    fulfill(id)
+                }
+                
+                reject("No tag, but no error either.")
+            }
+            
+        }
+
+    }
+    
+    
+    
     
     var setLocationWasInvoked: Bool = false
     var lastSetLocationArgsProvided: (location: DeviceLocation?, deviceId: String, accountId: String)?

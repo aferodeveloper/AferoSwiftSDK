@@ -13,7 +13,7 @@ import ReactiveSwift
 @testable import Afero
 
 class MockDeviceTagPersisting: DeviceTagPersisting {
-    
+
     // MARK: Delete
     
     private(set) var deleteCalledCount: Int = 0
@@ -26,7 +26,7 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedDeleteTagResult: ExpectedDeleteTagResult = .success
     
-    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: (DeviceStreamEvent.Peripheral.DeviceTag.Id?, Error?) -> Void) {
+    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: @escaping (DeviceStreamEvent.Peripheral.DeviceTag.Id?, Error?) -> Void) {
         deleteCalledCount += 1
         switch expectedDeleteTagResult {
         case .success: onDone(id, nil)
@@ -46,10 +46,19 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedAddOrUpdateTagResult: ExpectedAddOrUpdateTagResult = .success(id: "foo")
     
-    func persistTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone: (DeviceTagPersisting.DeviceTag?, Error?) -> Void) {
+    func persist(tag: DeviceTagPersisting.DeviceTag, onDone: @escaping DeviceTagPersisting.AddOrUpdateTagOnDone) {
+        
         addOrUpdateCalledCount += 1
+        
         switch expectedAddOrUpdateTagResult {
-        case .success(let expectedId): onDone(DeviceTag(id: id ?? expectedId, key: key, value: value, localizationKey: localizationKey), nil)
+            
+        case .success(let expectedId):
+            var resultTag = tag
+            if resultTag.id == nil {
+                resultTag.id = expectedId
+            }
+            onDone(resultTag, nil)
+            
         case .failure(let error): onDone(nil, error)
         }
     }

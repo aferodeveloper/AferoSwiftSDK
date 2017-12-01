@@ -533,12 +533,17 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
     var friendlyName: String? { get set }
-    var deviceActionable: DeviceActionable? { get }
     var otaProgress: Double? { get }
     var deviceErrors: Set<DeviceErrorStatus> { get }
     
     func notifyViewing(_ isViewing: Bool)
     
+}
+
+protocol DeviceModelableInternal: DeviceModelable {
+
+    var deviceCloudSupporting: DeviceCloudSupporting? { get }
+
 }
 
 public extension DeviceModelable {
@@ -694,21 +699,21 @@ public extension DeviceModelable {
 
 }
 
-public extension DeviceModelable {
+extension DeviceModelableInternal {
 
     /// Set this device's timezone. Upon success, the timeZone will be immediately set on this device
     /// (a conclave invalidation will also be handled), and a device state update will be signaled.
     
-    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
+    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
 
-        guard let deviceActionable = deviceActionable else {
+        guard let deviceCloudSupporting = deviceCloudSupporting else {
             return Promise { _, reject in reject("No attribute writeable") }
         }
         
         return Promise {
             fulfill, reject in
             
-            deviceActionable.setTimeZone(
+            deviceCloudSupporting.setTimeZone(
                 as: timeZone,
                 isUserOverride: isUserOverride,
                 for: deviceId,

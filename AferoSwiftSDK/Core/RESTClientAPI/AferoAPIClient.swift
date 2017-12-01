@@ -14,7 +14,7 @@ import CoreLocation
 /// A protocol specifying the minimum requirements for an API client which will
 /// be extended to provide access to Afero REST Client API methods.
 
-public protocol AferoAPIClientProto: DeviceActionable, DeviceAccountProfilesSource {
+public protocol AferoAPIClientProto: class, DeviceAccountProfilesSource {
     
     var TAG: String { get }
     

@@ -676,7 +676,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             associationId: nil,
             profileId: profileId,
             attributes: [:],
-            deviceActionable: self,
+            deviceCloudSupporting: self,
             profileSource: profileSource,
             viewingNotificationConsumer: {
                 [weak self] isViewing, deviceId in

@@ -16,7 +16,7 @@ import Result
 /// implementation does not itself preserve any state; the `DeviceTagCollection`
 /// relies upon it to perform CRUD operations.
 
-protocol DeviceTagPersisting: class {
+internal protocol DeviceTagPersisting: class {
     
     // MARK: Types
 
@@ -34,7 +34,7 @@ protocol DeviceTagPersisting: class {
     /// - parameter id: The id of the tag to delete.
     /// - parameter onDone: The result handler for the call.
     
-    func purgeTag(with id: DeviceTag.Id, onDone: DeleteTagOnDone)
+    func purgeTag(with id: DeviceTag.Id, onDone: @escaping DeleteTagOnDone)
     
     /// Add or update a tag.
     ///
@@ -43,29 +43,11 @@ protocol DeviceTagPersisting: class {
     /// - parameter id: The optional identifier for the tag.
     /// - parameter onDone: The result handler for the call.
 
-    func persistTag(value: DeviceTag.Value, key: DeviceTag.Key?, id: DeviceTag.Id?, localizationKey: DeviceTag.LocalizationKey?, onDone:AddOrUpdateTagOnDone)
+    func persist(tag: DeviceTag, onDone: @escaping AddOrUpdateTagOnDone)
     
 }
 
-extension DeviceTagPersisting {
-    func addOrUpdate(tag: DeviceTag, onDone: AddOrUpdateTagOnDone) {
-    
-    }
-}
-
-extension DeviceCollection {
-    
-    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
-        return apiClient.persistTag(tag: tag, for: deviceId, in: accountId)
-    }
-    
-    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
-        return apiClient.purgeTag(with: id, for: deviceId, in: accountId)
-    }
-    
-}
-
-class DeviceTagCollection {
+public class DeviceTagCollection {
     
     /// The persistence backend to use.
     weak var persistence: DeviceTagPersisting!
@@ -78,7 +60,7 @@ class DeviceTagCollection {
         self.persistence = persistence
     }
     
-    typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag
+    public typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag
     
     // MARK: Private
     
@@ -313,44 +295,48 @@ class DeviceTagCollection {
     
     // MARK: Public
     
-    public typealias AddOrUpdateTagOnDone = DeviceTagPersisting.AddOrUpdateTagOnDone
+    /// Type for response hander for `addOrUpdateTag`
+    public typealias AddOrUpdateTagOnDone = (DeviceTag?, Error?) -> Void
+
     
-    public func addOrUpdateTag(with value: DeviceTag.Value, groupedUsing key: DeviceTag.Key?, identifiedBy id: DeviceTag.Id? = nil, using localizationKey: DeviceTag.LocalizationKey? = nil, onDone: AddOrUpdateTagOnDone) {
-        
-        persistence.persistTag(
-            value: value,
-            key: key,
-            id: id,
-            localizationKey: localizationKey
-        ) {
-            maybeTag, maybeError in
+    public func addOrUpdate(tag: DeviceTag, onDone: @escaping AddOrUpdateTagOnDone) {
+
+        persistence.persist(tag: tag) {
+            
+            [weak self] maybeTag, maybeError in
             
             guard let tag = maybeTag else {
                 onDone(nil, maybeError)
                 return
             }
             
-            add(tag: tag) {
+            self?.add(tag: tag) {
                 onDone($0.0?.first, $0.1)
             }
         }
+
+    }
+
+    public func addOrUpdateTag(with value: DeviceTag.Value, groupedUsing key: DeviceTag.Key?, identifiedBy id: DeviceTag.Id? = nil, using localizationKey: DeviceTag.LocalizationKey? = nil, onDone: @escaping AddOrUpdateTagOnDone) {
         
+        addOrUpdate(tag: DeviceTag(id: id, key: key, value: value, localizationKey: localizationKey), onDone: onDone)
     }
     
-    public typealias DeleteTagOnDone = DeviceTagPersisting.DeleteTagOnDone
+    /// Type for response handler for `deleteTag`
+    public typealias DeleteTagOnDone = (DeviceTag.Id?, Error?) -> Void
     
     public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeleteTagOnDone) {
         
         persistence.purgeTag(with: id) {
 
-            maybeId, maybeError in
+            [weak self] maybeId, maybeError in
 
             guard let id = maybeId else {
                 onDone(nil, maybeError)
                 return
             }
             
-            remove(withId: id) {
+            self?.remove(withId: id) {
                 onDone(id, $0.1)
             }
             
