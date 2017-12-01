@@ -210,9 +210,9 @@ public extension AferoAPIClientProto {
         return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/location", object: location)
     }
     
-    @available(*, deprecated, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
+    @available(*, unavailable, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: LocationSourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
-        return setLocation(as: location, with: locationSourceType, formattedAddressLines: formattedAddressLines, for: deviceId, in: accountId)
+        fatalError("Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     }
     
 }
