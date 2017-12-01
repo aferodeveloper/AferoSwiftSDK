@@ -197,7 +197,7 @@ public class DeviceTagCollection {
     }
 
     /// Get the last `deviceTag` for the given key.
-    /// - parameter key: The key to fliter by.
+    /// - parameter key: The key to filter by.
     /// - returns: The last `DeviceTag` matching the key, if any.
     /// - warning: There is no unique constraint on device tags in the Afero
     ///            cloud as of this writing, so it is possible that more than
@@ -211,13 +211,13 @@ public class DeviceTagCollection {
     
     // MARK: Signaling
     
-    enum Event: Hashable {
+    public enum Event: Hashable {
         
         case addedTag(DeviceTag)
         case updatedTag(oldValue: DeviceTag, newValue: DeviceTag)
         case deletedTag(DeviceTag)
         
-        static func ==(lhs: Event, rhs: Event) -> Bool {
+        public static func ==(lhs: Event, rhs: Event) -> Bool {
             
             switch (lhs, rhs) {
                 
@@ -235,7 +235,7 @@ public class DeviceTagCollection {
             }
         }
         
-        var hashValue: Int {
+        public var hashValue: Int {
             
             switch self {
             case let .addedTag(t): return t.hashValue

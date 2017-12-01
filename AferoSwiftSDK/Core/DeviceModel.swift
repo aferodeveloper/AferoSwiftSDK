@@ -56,7 +56,7 @@ extension NSError {
 // MARK: - Service-connected device model
 
 public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, Hashable, Comparable {
-    
+
     internal(set) public var utcMigrationIsInProgress: Bool = false {
         didSet {
             DDLogVerbose("Offline Schedule UTC migration in progress: \(utcMigrationIsInProgress)", tag: TAG)
@@ -486,7 +486,6 @@ public class DeviceModel: BaseDeviceModel {
         )
     }
     
-
     // MARK: <DeviceCommandConsuming>
     
     /// The current state of the device; canonical storage for isAvailable, attributes, and profileId.
@@ -604,15 +603,17 @@ public class DeviceModel: BaseDeviceModel {
         }
     }
     
-    lazy private var deviceTagCollection: DeviceTagCollection = {
+    // MARK: Tags
+    
+    lazy var deviceTagCollection: DeviceTagCollection = {
         return DeviceTagCollection(with: self)
     }()
     
-    var deviceTags: Set<DeviceTagCollection.DeviceTag> {
+    public typealias DeviceTag = DeviceModelable.DeviceTag
+    
+    public var deviceTags: Set<DeviceTag> {
         return deviceTagCollection.tags
     }
-    
-    public typealias DeviceTag = DeviceTagCollection.DeviceTag
     
     /// Get a deviceTag for the given identifier.
     /// - parameter id: The `UUID` of the tag to fetch.
@@ -639,20 +640,25 @@ public class DeviceModel: BaseDeviceModel {
     ///            keys is not supported by this API. If you would like to see
     ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
     
-    func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
         return deviceTagCollection.deviceTags(forKey: key).first
     }
     
-    public typealias AddOrUpdateTagOnDone = DeviceTagCollection.AddOrUpdateTagOnDone
-    
-    public func addOrUpdate(tag: DeviceTag, onDone: @escaping AddOrUpdateTagOnDone) {
+    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+        deviceTagCollection.addOrUpdate(tag: tag, onDone: onDone)
     }
     
+    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+        deviceTagCollection.deleteTag(identifiedBy: id, onDone: onDone)
+    }
+
 }
 
 extension DeviceModel: DeviceTagPersisting {
 
     // MARK: DeviceTagPersisting
+    //
+    // These calls are used by the DeviceTagCollection to commit its changes.
     
     /// Leverage our `deviceCloudSupporting` to purge a tag from the cloud for this device.
     /// - warning: While public, this is a low-level implementation used by the underlying
@@ -698,9 +704,50 @@ extension DeviceModel: DeviceTagPersisting {
         }
         
     }
-    
 
 }
+
+extension DeviceModel {
+    
+    // These calls are used by the DeviceCollection to reflect changes from the
+    // cloud back to the DeviceTagCollection.
+    
+    func _addOrUpdate(tag: DeviceTag) {
+        
+        let logtag = TAG
+        
+        deviceTagCollection.add(tag: tag) {
+            t, e in
+            
+            if let e = e {
+                DDLogError("Error adding tag \(tag) from cloud: \(String(reflecting: e))", tag: logtag)
+                return
+            }
+            
+            DDLogDebug("Added tag from cloud: \(tag)", tag: logtag)
+            
+        }
+    }
+    
+    func _removeTag(with id: DeviceTag.Id) {
+
+        let logtag = TAG
+
+        deviceTagCollection.remove(withId: id) {
+            t, e in
+            
+            if let e = e {
+                DDLogError("Error removing tag id:\(id) from cloud: \(String(reflecting: e))", tag: logtag)
+                return
+            }
+            
+            DDLogDebug("Tag id:\(id) removed by cloud.", tag: logtag)
+            
+        }
+    }
+}
+
+
 
 // MARK: RecordingDeviceModel
 

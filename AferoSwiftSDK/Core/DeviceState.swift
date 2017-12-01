@@ -30,31 +30,34 @@ public enum DeviceModelEvent: CustomDebugStringConvertible {
         
         switch(self) {
             
-        case .profileUpdate: return "<DeviceModelEvent.ProfileUpdate>"
+        case .profileUpdate: return "<DeviceModelEvent.profileUpdate>"
             
         case let .stateUpdate(newState):
-            return "<DeviceModelEvent.StateUpdate> \(newState)"
+            return "<DeviceModelEvent.stateUpdate> \(newState)"
             
         case  let .writeStateChange(newState):
-            return "<DeviceModelEvent.WriteStateChange \(newState)"
+            return "<DeviceModelEvent.writeStateChange \(newState)"
             
-        case .deleted: return "<DeviceModelEvent.Deleted>"
+        case .deleted: return "<DeviceModelEvent.deleted>"
             
-        case .otaStart: return "<DeviceModelEvent.OTAStart>"
+        case .otaStart: return "<DeviceModelEvent.otaStart>"
             
         case let .otaProgress(progress):
-            return "<DeviceModelEvent.OTAProgress> progress: \(progress)"
+            return "<DeviceModelEvent.otaProgress> progress: \(progress)"
             
-        case .otaFinish: return "<DeviceModelEvent.OTAFinish>"
+        case .otaFinish: return "<DeviceModelEvent.otaFinish>"
             
         case let .error(deviceError):
-            return "<DeviceModelEvent.Error> cid: \(String(reflecting: deviceError))"
+            return "<DeviceModelEvent.error> cid: \(String(reflecting: deviceError))"
             
         case let .errorResolved(status):
-            return "<DeviceModelEvent.ErrorResolved> status:\(status)"
+            return "<DeviceModelEvent.errorResolved> status:\(status)"
             
         case let .muted(timeout):
-            return "<DeviceModelEvent.Muted> timout:\(timeout)s"
+            return "<DeviceModelEvent.muted> timout:\(timeout)s"
+            
+        case let .tagEvent(event: e):
+            return "<DeviceModelevent.tagsUpdate> event: \(e)"
         }
     }
 
@@ -93,6 +96,8 @@ public enum DeviceModelEvent: CustomDebugStringConvertible {
     /// The device has been muted (throttled), and will not accept additional
     /// writes for the next `timeout` seconds.
     case muted(timeout: TimeInterval)
+    
+    case tagEvent(event: DeviceModelable.DeviceTagEvent)
     
 }
 
@@ -538,12 +543,73 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     
     func notifyViewing(_ isViewing: Bool)
     
+    typealias DeviceTag = DeviceTagCollection.DeviceTag
+    typealias DeviceTagEvent = DeviceTagCollection.Event
+    
+    /// All tags associated with this instance.
+    var deviceTags: Set<DeviceTag> { get }
+
+    /// Get a deviceTag for the given identifier.
+    /// - parameter id: The `UUID` of the tag to fetch.
+    /// - returns: The matching `DeviceTag`, if any.
+    func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag?
+
+    /// Get all `deviceTag` for the given `key`.
+    /// - parameter key: The `DeviceTag.Key` to match.
+    /// - returns: All `DeviceTag`s whose key equals `key`
+    func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag>
+
+    /// Get the last `deviceTag` for the given key.
+    /// - parameter key: The key to fliter by.
+    /// - returns: The last `DeviceTag` matching the key, if any.
+    /// - warning: There is no unique constraint on device tags in the Afero
+    ///            cloud as of this writing, so it is possible that more than
+    ///            one tag for a given key could exist (however, creating duplicate
+    ///            keys is not supported by this API. If you would like to see
+    ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
+    func getTag(for key: DeviceTag.Key) -> DeviceTag?
+
+    func addOrUpdate(tag: DeviceTagCollection.DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone)
+    func deleteTag(identifiedBy id: DeviceTagCollection.DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone)
+
+}
+
+public extension DeviceModelable {
+    
+    public var deviceTags: Set<DeviceTag> {
+        DDLogWarn("deviceTags default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+
+    public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
+        DDLogWarn("deviceTag(forIdentifier:\(id)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+
+    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
+        DDLogWarn("deviceTags(forKey:\(key)) default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+
+    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+        DDLogWarn("getTag(for:\(key)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+
+    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+        DDLogWarn("addOrUpdate(tag:\(String(describing: tag))) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(tag, nil) }
+    }
+
+    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+        DDLogWarn("deleteTag(identifiedBy:\(id) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(id, nil) }
+    }
+    
 }
 
 protocol DeviceModelableInternal: DeviceModelable {
-
     var deviceCloudSupporting: DeviceCloudSupporting? { get }
-
 }
 
 public extension DeviceModelable {

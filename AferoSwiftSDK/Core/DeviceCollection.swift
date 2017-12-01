@@ -1062,6 +1062,45 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
 
     }
+    
+    func applyTagUpdate(for peripheralId: String, info: InvalidationEvent.EventInfo) {
+        
+        guard let peripheral = peripheral(for: peripheralId) else {
+            DDLogWarn("No peripheral found for id \(peripheralId); ignoring tag update \(String(reflecting: info))", tag: TAG)
+            return
+        }
+        
+        enum TagAction: String {
+            case add = "ADD"
+            case update = "UPDATE"
+            case delete = "DELETE"
+        }
+        
+        guard
+            let actionName = info["deviceTagAction"] as? TagAction.RawValue,
+            let action = TagAction(rawValue: actionName) else {
+                DDLogWarn("No tag action found in \(String(reflecting: info))", tag: TAG)
+                return
+        }
+        
+        switch action {
+        case .add: fallthrough
+        case .update:
+            guard let deviceTag: DeviceModelable.DeviceTag = |<info["deviceTag"] else {
+                DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
+                return
+            }
+            peripheral._addOrUpdate(tag: deviceTag)
+            
+        case .delete:
+            guard let id = info["deviceTagId"] as? String else {
+                DDLogWarn("Unable to capture deviceTagId from \(String(describing: info)) for delete.", tag: TAG)
+                return
+            }
+            peripheral._removeTag(with: id)
+        }
+
+    }
 
     // MARK: - Public Stream Controls
 
