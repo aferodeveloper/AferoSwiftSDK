@@ -106,7 +106,14 @@ extension DeviceCollection: DeviceActionable {
     }
     
     public func setLocation(as location: CLLocation, with sourceType: DeviceLocation.SourceType, formattedAddressLines: [String]?, for deviceId: String, in accountId: String) -> Promise<Void> {
-        return apiClient.setLocation(as: location, with: sourceType, formattedAddressLines: formattedAddressLines, for: deviceId, in: accountId)
+        
+        let location = DeviceLocation(
+            location: location,
+            sourceType: sourceType,
+            formattedAddressLines: formattedAddressLines
+        )
+        
+        return apiClient.setLocation(as: location, for: deviceId, in: accountId)
     }
     
 }
