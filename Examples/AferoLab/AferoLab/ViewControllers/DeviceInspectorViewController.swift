@@ -101,6 +101,64 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
     
 }
 
+extension DeviceTagCollection.DeviceTag: Comparable {
+    
+    public static func <(lhs: DeviceTagCollection.DeviceTag, rhs: DeviceTagCollection.DeviceTag) -> Bool {
+        if lhs.value < rhs.value { return true }
+        if lhs.value > rhs.value { return false }
+        guard let lk = lhs.key, let rk = rhs.key else {
+            return true
+        }
+        return lk < rk
+    }
+    
+}
+
+class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    func set(tags: Set<DeviceTagCollection.DeviceTag>) {
+        self.tags = tags.sorted()
+    }
+    
+    var tags: [DeviceModelable.DeviceTag] = [] {
+        didSet {
+            tagCollectionView?.reloadData()
+            preferredHeight = tagCollectionView?.collectionViewLayout.collectionViewContentSize.height ?? 0
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tags.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TagCell", for: indexPath)
+        configure(cell: cell as! TagCollectionViewCell, for: indexPath)
+        return cell
+    }
+    
+    func configure(cell: TagCollectionViewCell, for indexPath: IndexPath) {
+        let tag = tags[indexPath.item]
+        cell.key = tag.key
+        cell.value = tag.value
+    }
+    
+    @IBOutlet weak var tagCollectionView: UICollectionView! {
+        didSet {
+            tagCollectionView?.dataSource = self
+            tagCollectionView?.delegate = self
+        }
+    }
+    
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    
+    var preferredHeight: CGFloat {
+        get { return heightConstraint.constant }
+        set { heightConstraint.constant = newValue }
+    }
+    
+}
+
 // MARK: - DeviceInspectorViewController -
 
 class DeviceInspectorViewController: UITableViewController, DeviceModelableObserving {
@@ -111,11 +169,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         case deviceInfo
         case deviceCharacteristic
+        case tags
         case genericAttribute
         
         var reuseClass: AnyClass {
             switch self {
             case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
+            case .tags: return DeviceInspectorTagCollectionCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -124,13 +184,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         var reuseIdentifier: String {
             switch self {
             case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
+            case .tags: return "DeviceInspectorTagCollectionCell"
             case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
         }
         
         static var allCases: Set<Reuse> {
-            return [ .deviceCharacteristic, .deviceInfo, .genericAttribute ]
+            return [ .deviceCharacteristic, .tags, .deviceInfo, .genericAttribute ]
         }
         
     }
@@ -138,6 +199,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
+        case tags
         case mcuApplicationSpecificAttributes
         case gpioAttributes
         case aferoVersionsAttributes
@@ -150,6 +212,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         static let all: [Section] = [
             .deviceInfo,
+            .tags,
             .mcuApplicationSpecificAttributes,
             .gpioAttributes,
             .aferoVersionsAttributes,
@@ -167,6 +230,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Device Info"
+            case .tags: name = "Tags"
             case .mcuApplicationSpecificAttributes: name = "MCU Application Attributes"
             case .gpioAttributes: name = "GPIO Attributes"
             case .aferoVersionsAttributes: name = "Afero Versions"
@@ -185,6 +249,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Section.deviceInfo"
+            case .tags: name = "Section.tags"
             case .mcuApplicationSpecificAttributes: name = "Section.mcuApplicationSpecificAttributes"
             case .gpioAttributes: name = "Section.gpioAttributes"
             case .aferoVersionsAttributes: name = "Section.aferoVersionsAttributes"
@@ -207,6 +272,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 name = NSLocalizedString(
                     "Device Info",
                     comment: "DeviceInspectorViewController Section.deviceInfo name"
+                )
+                
+            case .tags:
+                name = NSLocalizedString(
+                    "Tags",
+                    comment: "DeviceTags section name"
                 )
                 
             case .mcuApplicationSpecificAttributes:
@@ -388,6 +459,15 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         updateWriteStateIndicator()
     }
 
+    func handleTagEvent(event: DeviceModelable.DeviceTagEvent) {
+        
+        let indexPath = IndexPath.tagCellIndexPath
+        guard let cell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        configure(cell: cell, for: indexPath)
+    }
+    
     // MARK: Display Updates
     
     func updateErrorDisplay() {
@@ -727,8 +807,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        if section == 0 {
+        if section == Section.deviceInfo.rawValue {
             return DeviceCharacteristicRow.all.count
+        }
+        
+        if section == Section.tags.rawValue {
+            return 1
         }
         
         let sections = Section.all.filter({ visibleSections.contains($0) })
@@ -744,11 +828,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         return ret
         
     }
-    
+
     func reuseIdentifier(for indexPath: IndexPath) -> String {
         let section = visibleSections[indexPath.section]
         switch section {
         case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
+        case .tags: return Reuse.tags.reuseIdentifier
         default: return Reuse.genericAttribute.reuseIdentifier
         }
     }
@@ -779,7 +864,20 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         if let attributeCell = cell as? DeviceInspectorGenericAttributeCell {
             configure(attributeCell: attributeCell, for: indexPath)
+            return
         }
+        
+        if let tagCell = cell as? DeviceInspectorTagCollectionCell {
+            configure(tagCell: tagCell)
+            return
+        }
+        
+    }
+    
+    func configure(tagCell cell: DeviceInspectorTagCollectionCell) {
+        cell.set(tags: deviceModelable.deviceTags)
+        tableView.beginUpdates()
+        tableView.endUpdates()
     }
     
     func configure(characteristicCell cell: DeviceInspectorDeviceCharacteristicCell, for indexPath: IndexPath) {
@@ -944,6 +1042,10 @@ fileprivate extension IndexPath {
     
     var deviceInspectorSection: DeviceInspectorViewController.Section? {
         return DeviceInspectorViewController.Section(rawValue: section)
+    }
+    
+    static var tagCellIndexPath: IndexPath {
+        return self.init(row: 0, section: DeviceInspectorViewController.Section.tags.rawValue)
     }
     
 }

@@ -56,8 +56,14 @@ public class DeviceTagCollection {
     /// - parameter persistence: The persistence backend that will be used,
     ///                          if any.
     
-    init(with persistence: DeviceTagPersisting) {
-        self.persistence = persistence
+    init<T: Sequence>(with persistence: DeviceTagPersisting, tags: T? = nil)
+        where T.Element == DeviceTag {
+            self.persistence = persistence
+            tags?.forEach {
+                _add(tag: $0) {
+                    tag, _ in DDLogDebug("Added tag: \(String(describing: tag))", tag: "DeviceTagCollection")
+                }
+            }
     }
     
     public typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag

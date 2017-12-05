@@ -496,7 +496,8 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         static let CoderKeyStatus = "status"
         static let CoderKeyFriendlyName = "friendlyName"
         static let CoderKeyVirtual = "virtual"
-        static let CoderKeyTags = "deviceTags"
+        static let CoderKeyTags = "tags"
+        static let CoderKeyDeviceTags = "deviceTags"
         static let CoderKeyCreatedTimestamp = "createdTimestamp"
         static let CoderKeyLocationState = "locationState"
         
@@ -508,7 +509,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 type(of: self).CoderKeyAttributes: Array(attributes.values.map { $0.JSONDict! }),
                 type(of: self).CoderKeyStatus: status.JSONDict!,
                 type(of: self).CoderKeyVirtual: virtual,
-                type(of: self).CoderKeyTags: tags.JSONDict,
+                type(of: self).CoderKeyDeviceTags: tags.JSONDict,
                 type(of: self).CoderKeyCreatedTimestamp: createdTimestampMs
             ]
             
@@ -551,6 +552,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 locationState = .known(loc)
             }
             
+            let tags = jsonDict[type(of: self).CoderKeyTags]
+            let deviceTags = jsonDict[type(of: self).CoderKeyDeviceTags]
+            
             self.init(
                 id: id,
                 profileId: profileId,
@@ -559,7 +563,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 friendlyName: jsonDict[type(of: self).CoderKeyFriendlyName] as? String,
                 virtual: virtual,
                 locationState: locationState,
-                tags: (|<(jsonDict[type(of: self).CoderKeyTags] as? [Any]) ?? []),
+                tags: (|<((tags ?? deviceTags) as? [Any]) ?? []),
                 createdTimestampMs: createdTimestampMs
             )
             

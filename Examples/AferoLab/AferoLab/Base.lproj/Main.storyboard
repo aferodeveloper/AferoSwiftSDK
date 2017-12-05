@@ -463,17 +463,19 @@
                                     <outlet property="characteristicValueLabel" destination="Cyg-ve-SSw" id="Z96-2c-nwA"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInpectorTagCell" rowHeight="66" id="aRE-4x-lEx" customClass="DeviceInspectorDeviceCharacteristicCell" customModule="AferoLab" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorTagCollectionCell" rowHeight="66" id="aRE-4x-lEx" customClass="DeviceInspectorTagCollectionCell" customModule="AferoLab" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="237" width="375" height="66"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aRE-4x-lEx" id="hEu-hs-YT3">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="66"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LKC-fc-uCy">
+                                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="LKC-fc-uCy">
                                             <rect key="frame" x="16" y="11" width="343" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="CMo-Yg-1EH"/>
+                                            </constraints>
                                             <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uah-A6-JLC">
                                                 <size key="itemSize" width="106" height="20"/>
                                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -507,7 +509,17 @@
                                             </cells>
                                         </collectionView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="LKC-fc-uCy" firstAttribute="top" secondItem="hEu-hs-YT3" secondAttribute="top" constant="11" id="9MO-sR-W9F"/>
+                                        <constraint firstAttribute="trailing" secondItem="LKC-fc-uCy" secondAttribute="trailing" constant="16" id="Uf3-wx-s30"/>
+                                        <constraint firstAttribute="bottom" secondItem="LKC-fc-uCy" secondAttribute="bottom" constant="11" id="gfg-G7-Okf"/>
+                                        <constraint firstItem="LKC-fc-uCy" firstAttribute="leading" secondItem="hEu-hs-YT3" secondAttribute="leading" constant="16" id="nr5-0V-CQ8"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="heightConstraint" destination="CMo-Yg-1EH" id="aaJ-cI-Vml"/>
+                                    <outlet property="tagCollectionView" destination="LKC-fc-uCy" id="tI8-H0-d4w"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

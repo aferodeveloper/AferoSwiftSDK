@@ -782,6 +782,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         device.currentState.connectionState = modelState
         device.profileId = profileId
         
+        if let tags: [DeviceTagCollection.DeviceTag] = |<(json["deviceTags"] as? [[String: Any]]) {
+            device.deviceTags = Set(tags)
+        }
+        
         device.updateProfile {
             
             [weak device] updateProfileSuccess, maybeError in
@@ -815,6 +819,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
             onDone(nil)
             return
         }
+        
+        device.deviceTags = Set(peripheral.tags)
         
         device.updateProfile {
             
@@ -959,8 +965,16 @@ public class DeviceCollection: NSObject, MetricsReportable {
             updateTimeZoneState(for: peripheralId, retryInterval: 10.0)
             
         case .tags:
-            assert(false, "Handle update tags for \(String(reflecting: event))")
-
+            
+            guard let info = event.info else {
+                let msg = "Got tags invalidation for \(peripheralId):\(String(reflecting: event)), but no info."
+                DDLogWarn(msg, tag: TAG)
+                assert(false, msg)
+                return
+            }
+            
+            applyTagUpdate(for: peripheralId, info: info)
+            
         default:
             break
             
@@ -1093,13 +1107,15 @@ public class DeviceCollection: NSObject, MetricsReportable {
             peripheral._addOrUpdate(tag: deviceTag)
             
         case .delete:
-            guard let id = info["deviceTagId"] as? String else {
-                DDLogWarn("Unable to capture deviceTagId from \(String(describing: info)) for delete.", tag: TAG)
-                return
+            guard
+                let deviceTag: DeviceModelable.DeviceTag = |<info["deviceTag"],
+                let deviceTagId = deviceTag.id else {
+                    DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
+                    return
             }
-            peripheral._removeTag(with: id)
+            peripheral._removeTag(with: deviceTagId)
         }
-
+        
     }
 
     // MARK: - Public Stream Controls

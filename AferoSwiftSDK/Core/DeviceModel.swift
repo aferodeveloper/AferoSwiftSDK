@@ -425,6 +425,39 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         eventSink.send(value: .errorResolved(status: status))
     }
     
+    // MARK: Tags
+    
+    public var deviceTags: Set<DeviceTag> {
+        DDLogWarn("deviceTags default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+    
+    public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
+        DDLogWarn("deviceTag(forIdentifier:\(id)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+    
+    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
+        DDLogWarn("deviceTags(forKey:\(key)) default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+    
+    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+        DDLogWarn("getTag(for:\(key)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+    
+    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+        DDLogWarn("addOrUpdate(tag:\(String(describing: tag))) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(tag, nil) }
+    }
+    
+    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+        DDLogWarn("deleteTag(identifiedBy:\(id) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(id, nil) }
+    }
+
+    
 }
 
 /// A DeviceModelable which is connected to the Afero cloud.
@@ -436,6 +469,7 @@ public class DeviceModel: BaseDeviceModel {
         accountId: String,
         associationId: String? = nil,
         state: DeviceState = DeviceState(),
+        tags: [DeviceTag] = [],
         profile: DeviceProfile? = nil,
         deviceCloudSupporting: DeviceCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
@@ -443,7 +477,6 @@ public class DeviceModel: BaseDeviceModel {
         ) {
         
         self.viewingNotificationConsumer = viewingNotificationConsumer
-        
         super.init(
             deviceId: deviceId,
             accountId: accountId,
@@ -453,6 +486,8 @@ public class DeviceModel: BaseDeviceModel {
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
         )
+        self.deviceTagCollection = DeviceTagCollection(with: self, tags: tags)
+
     }
     
     convenience init(
@@ -462,6 +497,7 @@ public class DeviceModel: BaseDeviceModel {
         profileId: String,
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
+        tags: [DeviceTag] = [],
         connectionState: DeviceModelState = DeviceModelState(),
         deviceCloudSupporting: DeviceCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
@@ -480,6 +516,7 @@ public class DeviceModel: BaseDeviceModel {
             accountId: accountId,
             associationId: associationId,
             state: state,
+            tags: tags,
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource,
             viewingNotificationConsumer: viewingNotificationConsumer
@@ -605,21 +642,34 @@ public class DeviceModel: BaseDeviceModel {
     
     // MARK: Tags
     
-    lazy var deviceTagCollection: DeviceTagCollection = {
-        return DeviceTagCollection(with: self)
-    }()
+    private(set) var deviceTagCollection: DeviceTagCollection!
     
     public typealias DeviceTag = DeviceModelable.DeviceTag
     
-    public var deviceTags: Set<DeviceTag> {
-        return deviceTagCollection.tags
+    override internal(set) public var deviceTags: Set<DeviceTag> {
+        
+        get { return deviceTagCollection.tags }
+        
+        set {
+            
+            let tagsToRemove = deviceTagCollection.tags.subtracting(newValue)
+            
+            tagsToRemove.forEach {
+                deviceTagCollection.remove(tag: $0) { _, _ in }
+            }
+            
+            newValue.forEach {
+                deviceTagCollection.add(tag: $0) { _, _ in }
+            }
+        }
+        
     }
     
     /// Get a deviceTag for the given identifier.
     /// - parameter id: The `UUID` of the tag to fetch.
     /// - returns: The matching `DeviceTag`, if any.
     
-    public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
+    override public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
         return deviceTagCollection.deviceTag(forIdentifier: id)
     }
     
@@ -627,7 +677,7 @@ public class DeviceModel: BaseDeviceModel {
     /// - parameter key: The `DeviceTag.Key` to match.
     /// - returns: All `DeviceTag`s whose key equals `key`
     
-    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
+    override public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
         return deviceTagCollection.deviceTags(forKey: key)
     }
     
@@ -640,15 +690,15 @@ public class DeviceModel: BaseDeviceModel {
     ///            keys is not supported by this API. If you would like to see
     ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
     
-    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+    override public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
         return deviceTagCollection.deviceTags(forKey: key).first
     }
     
-    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+    override public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
         deviceTagCollection.addOrUpdate(tag: tag, onDone: onDone)
     }
     
-    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+    override public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
         deviceTagCollection.deleteTag(identifiedBy: id, onDone: onDone)
     }
 
@@ -726,6 +776,8 @@ extension DeviceModel {
             
             DDLogDebug("Added tag from cloud: \(tag)", tag: logtag)
             
+            eventSink.send(value: DeviceModelEvent.tagEvent(event: DeviceModelable.DeviceTagEvent.addedTag(tag)))
+            
         }
     }
     
@@ -742,7 +794,16 @@ extension DeviceModel {
             }
             
             DDLogDebug("Tag id:\(id) removed by cloud.", tag: logtag)
+
+            guard let tag = t?.first else {
+                let msg = "Expected exactly one tag from removal, got zero."
+                assert(false, msg)
+                DDLogError(msg, tag: self.TAG)
+                return
+            }
             
+            eventSink.send(value: DeviceModelEvent.tagEvent(event: DeviceModelable.DeviceTagEvent.deletedTag(tag)))
+
         }
     }
 }
