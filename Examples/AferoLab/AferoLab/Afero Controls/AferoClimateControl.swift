@@ -11,7 +11,7 @@ import UIKit
 import CocoaLumberjack
 import Afero
 
-@IBDesignable class AferoClimateControl: UIView {
+@IBDesignable @objcMembers class AferoClimateControl: UIView {
     
     @IBOutlet var contentView: UIView!
     @IBOutlet weak var titleLabel: UILabel!

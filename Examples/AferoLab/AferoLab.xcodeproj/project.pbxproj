@@ -33,6 +33,8 @@
 		CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */; };
 		CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */; };
 		CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */; };
+		CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA475431FD5BABF00D4C25C /* TagViewContent.xib */; };
+		CBA475461FD5D55500D4C25C /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA475451FD5D55500D4C25C /* TagView.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -105,6 +107,8 @@
 		CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCollectionCollator.swift; sourceTree = "<group>"; };
 		CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SofthubMinder.swift; sourceTree = "<group>"; };
 		CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountInfoZeroStateView.xib; sourceTree = "<group>"; };
+		CBA475431FD5BABF00D4C25C /* TagViewContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagViewContent.xib; sourceTree = "<group>"; };
+		CBA475451FD5D55500D4C25C /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -270,6 +274,8 @@
 				CB34C37B1E7C689700547FD9 /* LaunchScreen.storyboard */,
 				CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */,
 				CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */,
+				CBA475431FD5BABF00D4C25C /* TagViewContent.xib */,
+				CBA475451FD5D55500D4C25C /* TagView.swift */,
 			);
 			name = nibs;
 			sourceTree = "<group>";
@@ -420,6 +426,7 @@
 				CB3376201F170112009BFA9E /* APIClientConfig.plist in Resources */,
 				CB34C37A1E7C689700547FD9 /* Assets.xcassets in Resources */,
 				CB34C3781E7C689700547FD9 /* Main.storyboard in Resources */,
+				CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */,
 				CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +630,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBA475461FD5D55500D4C25C /* TagView.swift in Sources */,
 				CB82FED31E7CD7DD0088CC0C /* Utils.swift in Sources */,
 				CB3248101F9A92D900D210F9 /* AferoClimateControl.swift in Sources */,
 				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
