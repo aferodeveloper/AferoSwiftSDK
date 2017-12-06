@@ -114,7 +114,14 @@ extension DeviceTagCollection.DeviceTag: Comparable {
     
 }
 
+protocol DeviceInspectorTagCollectionCellDelegate: class {
+    
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat)
+}
+
 class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    weak var delegate: DeviceInspectorTagCollectionCellDelegate?
     
     func set(tags: Set<DeviceTagCollection.DeviceTag>) {
         self.tags = tags.sorted()
@@ -123,7 +130,7 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     var tags: [DeviceModelable.DeviceTag] = [] {
         didSet {
             tagCollectionView?.reloadData()
-            preferredHeight = tagCollectionView?.collectionViewLayout.collectionViewContentSize.height ?? 0
+            tagCollectionView?.collectionViewLayout.invalidateLayout()
         }
     }
     
@@ -143,10 +150,24 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
         cell.value = tag.value
     }
     
+    private var contentSizeObservation: NSKeyValueObservation?
+    
     @IBOutlet weak var tagCollectionView: UICollectionView! {
+        
         didSet {
             tagCollectionView?.dataSource = self
             tagCollectionView?.delegate = self
+            
+            if let flowLayout = tagCollectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+                flowLayout.estimatedItemSize = CGSize(width: 100, height: 32)
+                flowLayout.minimumLineSpacing = 5.0
+                flowLayout.minimumInteritemSpacing = 5.0
+            }
+            
+            contentSizeObservation = tagCollectionView?.observe(\.contentSize) {
+                [weak self] obj, change in
+                self?.preferredHeight = obj.collectionViewLayout.collectionViewContentSize.height
+            }
         }
     }
     
@@ -154,7 +175,10 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     
     var preferredHeight: CGFloat {
         get { return heightConstraint.constant }
-        set { heightConstraint.constant = newValue }
+        set {
+            heightConstraint.constant = newValue
+            delegate?.tagCollectionCell(self, preferredHeightDidChangeTo: newValue)
+        }
     }
     
 }
@@ -875,9 +899,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     func configure(tagCell cell: DeviceInspectorTagCollectionCell) {
+        cell.delegate = self
         cell.set(tags: deviceModelable.deviceTags)
-        tableView.beginUpdates()
-        tableView.endUpdates()
     }
     
     func configure(characteristicCell cell: DeviceInspectorDeviceCharacteristicCell, for indexPath: IndexPath) {
@@ -1008,6 +1031,16 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
     }
     
+}
+
+extension DeviceInspectorViewController: DeviceInspectorTagCollectionCellDelegate {
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat) {
+        asyncMain {
+            [weak tableView] in
+            tableView?.beginUpdates()
+            tableView?.endUpdates()
+        }
+    }
 }
 
 // MARK: - Convenience Extensions -
