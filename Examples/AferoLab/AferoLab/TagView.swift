@@ -32,6 +32,12 @@ import UIKit
         tagView.translatesAutoresizingMaskIntoConstraints = false
         tagView.setContentHuggingPriority(.required, for: .horizontal)
         tagView.setContentHuggingPriority(.required, for: .vertical)
+        tagView.layoutMargins = layoutMargins
+        tagView.layer.shadowColor = UIColor.black.cgColor
+        tagView.layer.shadowOffset = CGSize(width: 3, height: 3)
+        tagView.layer.shadowRadius = 6.0
+        tagView.layer.shadowOpacity = 0.5
+        tagView.clipsToBounds = true
         addSubview(tagView)
     }
     
@@ -75,7 +81,7 @@ import UIKit
         get { return tagView.textColor }
         set { tagView.textColor = newValue }
     }
-
+    
 }
 
 @IBDesignable @objcMembers class TagView: UIView {
@@ -140,8 +146,6 @@ import UIKit
         
         initializeView()
         setupConstraints()
-        
-        layoutMargins = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         
         key = nil
         value = nil
