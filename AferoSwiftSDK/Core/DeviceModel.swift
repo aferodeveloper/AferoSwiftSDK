@@ -655,11 +655,11 @@ public class DeviceModel: BaseDeviceModel {
     
     override internal(set) public var deviceTags: Set<DeviceTag> {
         
-        get { return _deviceTagCollection.tagSet }
+        get { return _deviceTagCollection.deviceTags }
         
         set {
             
-            let tagsToRemove = _deviceTagCollection.tagSet.subtracting(newValue)
+            let tagsToRemove = _deviceTagCollection.deviceTags.subtracting(newValue)
             
             tagsToRemove.forEach {
                 _deviceTagCollection.remove(tag: $0) { _, _ in }

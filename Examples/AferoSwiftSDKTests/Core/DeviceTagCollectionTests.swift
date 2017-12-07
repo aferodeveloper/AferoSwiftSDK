@@ -125,7 +125,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1
                         ])
 
@@ -153,7 +153,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 1
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1updated
                         ])
                     
@@ -165,7 +165,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1
                         ])
                     
@@ -193,7 +193,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 1
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1
                         ])
 
@@ -206,7 +206,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1
                         ])
                     
@@ -230,7 +230,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 2
                     
-                    expect(c.tagSet) == Set([
+                    expect(c.deviceTags) == Set([
                         t1, t2
                         ])
                     
@@ -251,7 +251,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 it("should delete tags when recognized ids are specified") {
                     
-                    expect(c.tagSet) == Set([t1])
+                    expect(c.deviceTags) == Set([t1])
                     expect(c.count) == 1
                     expect(persistence.deleteCalledCount) == 0
                     
@@ -260,7 +260,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         maybeError = $1
                     }
                     
-                    expect(c.tagSet).to(beEmpty())
+                    expect(c.deviceTags).to(beEmpty())
                     expect(c.count) == 0
                     expect(persistence.deleteCalledCount) == 1
                     expect(maybeId) == t1.id
@@ -270,7 +270,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 it("should fail to delete tags when unrecognized ids are specified.") {
 
-                    expect(c.tagSet) == Set([t1])
+                    expect(c.deviceTags) == Set([t1])
                     expect(c.count) == 1
                     expect(persistence.deleteCalledCount) == 0
                     
@@ -284,7 +284,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 1
                     expect(maybeId).to(beNil())
                     expect(maybeError).toNot(beNil())
-                    expect(c.tagSet) == Set([t1])
+                    expect(c.deviceTags) == Set([t1])
                     expect(c.count) == 1
 
                 }
@@ -339,12 +339,13 @@ class DeviceTagCollectionSpec: QuickSpec {
                         
                         expect(c.isEmpty).to(beFalse())
                         expect(c.count) == 1
-                        expect(c.tagSet.first) == t1c
+                        expect(c.deviceTags.first) == t1c
                         
                         expect(events).toEventually(
                             equal(
                                 [
                                     DeviceTagCollection.Event.addedTag(t1),
+                                    DeviceTagCollection.Event.deletedTag(t1),
                                     DeviceTagCollection.Event.addedTag(t1c)
                                 ]
                             ),
@@ -380,7 +381,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 1
-                        expect(c.tagSet.first) == t1
+                        expect(c.deviceTags.first) == t1
                         
                         expect(events).toEventually(
                             equal(
@@ -418,7 +419,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 1
-                        expect(c.tagSet) == Set([t1])
+                        expect(c.deviceTags) == Set([t1])
                         
                         expect(events).toEventually(
                             equal(
@@ -456,7 +457,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 2
-                        expect(c.tagSet) == Set([t1, t2])
+                        expect(c.deviceTags) == Set([t1, t2])
                         
                         expect(events).toEventually(
                             equal(
@@ -493,7 +494,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(removed).toEventually(equal(Set([t1, t1b])))
                         expect(err != nil).toNotEventually(beTrue())
                         expect(c.count) == 1
-                        expect(c.tagSet) == Set([t2])
+                        expect(c.deviceTags) == Set([t2])
                         
                         expect(Set(events)).toEventually(
                             equal(
@@ -535,7 +536,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(removed).toEventually(equal(Set([t3, t3b])))
                         expect(err != nil).toNotEventually(beTrue())
                         expect(c.count) == 3
-                        expect(c.tagSet) == Set([t1, t1b, t2])
+                        expect(c.deviceTags) == Set([t1, t1b, t2])
                         
                         expect(events).toEventually(
                             equal(
@@ -577,7 +578,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 2
-                        expect(c.tagSet) == Set([t1, t2])
+                        expect(c.deviceTags) == Set([t1, t2])
                         
                         expect(events.count).toNotEventually(
                             beGreaterThan(2),

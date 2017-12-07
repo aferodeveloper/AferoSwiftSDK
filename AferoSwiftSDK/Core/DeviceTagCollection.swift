@@ -215,10 +215,12 @@ internal protocol DeviceTagPersisting: class {
     /// The persistence backend to use.
     weak var persistence: DeviceTagPersisting!
     
+    var tagSetObservation: NSKeyValueObservation?
+    
     init(with persistence: DeviceTagPersisting) {
         self.persistence = persistence
     }
-
+    
     /// Initialize this collection with the given persistence backend.
     /// - parameter persistence: The persistence backend that will be used,
     ///                          if any.
@@ -236,16 +238,66 @@ internal protocol DeviceTagPersisting: class {
     
     // MARK: Private
     
-    @objc private(set) public dynamic var deviceTags: [DeviceTag.Id: DeviceTag] = [:] {
-        didSet { invalidate() }
+    @objc override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+        switch key {
+        case "deviceTags": fallthrough
+        case "idsToDeviceTags": fallthrough
+        case "keysToDeviceTags":
+            return false
+        default:
+            return true
+        }
+    }
+
+    @objc private(set) public dynamic var deviceTags: Set<DeviceTag> = [] {
+        didSet {
+            
+            let deleted = oldValue.subtracting(deviceTags)
+            let added = deviceTags.subtracting(oldValue)
+            
+            reindex()
+            
+            deleted.sorted { $0.0.value < $0.1.value }.forEach {
+                eventSink.send(value: .deletedTag($0))
+            }
+            
+            added.sorted { $0.0.value < $0.1.value }.forEach {
+                eventSink.send(value: .addedTag($0))
+            }
+
+        }
     }
     
+    func reindex() {
+        
+        willChangeValue(for: \.idsToDeviceTags)
+        willChangeValue(for: \.keysToDeviceTags)
+        let newDeviceTags: [DeviceTag.Id: DeviceTag] = deviceTags.reduce([:]) {
+            curr, next in
+            guard let id = next.id else { return curr }
+            var ret = curr
+            ret[id] = next
+            return ret
+        }
+        idsToDeviceTags = newDeviceTags
+        
+        let newKeysToDeviceTags: [DeviceTag.Key: Set<DeviceTag>] = deviceTags.reduce([:]) {
+            curr, next in
+            guard let key = next.key else { return curr }
+            var ret = curr
+            var s = ret[key] ?? []
+            s.insert(next)
+            ret[key] = s
+            return ret
+        }
+        keysToDeviceTags = newKeysToDeviceTags
+        
+        didChangeValue(for: \.idsToDeviceTags)
+        didChangeValue(for: \.keysToDeviceTags)
+    }
+    
+    @objc private(set) public dynamic var idsToDeviceTags: [DeviceTag.Id: DeviceTag] = [:]
     @objc private dynamic var keysToDeviceTags: [DeviceTag.Key: Set<DeviceTag>] = [:]
-    
-    func invalidate() {
-        keysToDeviceTags = [:]
-        _tagSet = nil
-    }
     
     typealias AddTagOnDone = (Set<DeviceTag>?, Error?) -> Void
 
@@ -265,28 +317,23 @@ internal protocol DeviceTagPersisting: class {
         
         defer {
             onDone(ret, error)
-            ret?.forEach {
-                eventSink.send(value: .addedTag($0))
-            }
         }
-        
-        if let maybeExisting = deviceTags[id],
-            maybeExisting == tag {
+
+        if deviceTags.contains(tag) {
             onDone(ret, error)
             return
         }
         
         let newTag = tag.copy() as! AferoDeviceTag
+        var newDeviceTags = deviceTags
         
-        deviceTags[id] = newTag
-
+        let tagsToReplace = newDeviceTags.filter { $0.id == newTag.id }
+        tagsToReplace.forEach { newDeviceTags.remove($0) }
+        newDeviceTags.insert(newTag)
+        deviceTags = newDeviceTags
         
-        if let key = tag.key  {
-            keysToDeviceTags.removeValue(forKey: key)
-        }
-    
         ret = [newTag]
-
+        
     }
     
     typealias RemoveTagOnDone = (Set<DeviceTag>?, Error?)->Void
@@ -294,23 +341,15 @@ internal protocol DeviceTagPersisting: class {
     private func _remove(where isIncluded: (DeviceTag)->Bool, onDone: RemoveTagOnDone) {
         
         var ret: Set<DeviceTag>?
-        var error: Error?
         
-        defer {
-            onDone(ret, error)
-            ret?.forEach {
-                eventSink.send(value: .deletedTag($0))
-            }
-        }
-        
-        let deleteIds = deviceTags
-            .filter { isIncluded($1) }
-            .map { $0.key }
-        
-        ret = Set(deleteIds.flatMap {
-            deviceTags.removeValue(forKey: $0)
+        var newDeviceTags = deviceTags
+        ret = Set(newDeviceTags.filter(isIncluded)
+            .flatMap {
+                return newDeviceTags.remove($0)
         })
+        deviceTags = newDeviceTags
         
+        onDone(ret, nil)
     }
     
     /// Remove a tag from the collection.
@@ -324,22 +363,13 @@ internal protocol DeviceTagPersisting: class {
     // MARK: Getters
 
     var isEmpty: Bool {
-        return deviceTags.isEmpty
+        return idsToDeviceTags.isEmpty
     }
     
     /// All of the tags.
     
     var count: Int {
-        return deviceTags.count
-    }
-    
-    private var _tagSet: Set<DeviceTag>?
-    
-    var tagSet: Set<DeviceTag>! {
-        if let ret = _tagSet { return ret }
-        let ret = Set(deviceTags.values)
-        _tagSet = ret
-        return ret
+        return idsToDeviceTags.count
     }
     
     /// Get a deviceTag for the given identifier.
@@ -347,7 +377,7 @@ internal protocol DeviceTagPersisting: class {
     /// - returns: The matching `DeviceTag`, if any.
     
     public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
-        return deviceTags[id]
+        return idsToDeviceTags[id]
     }
     
     /// Get all `deviceTag` for the given `key`.
@@ -360,7 +390,7 @@ internal protocol DeviceTagPersisting: class {
             return ret
         }
         
-        let ret = Set(deviceTags
+        let ret = Set(idsToDeviceTags
             .filter { $0.value.key == key }
             .map { $0.value })
         
