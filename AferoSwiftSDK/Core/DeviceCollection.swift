@@ -782,8 +782,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
         device.currentState.connectionState = modelState
         device.profileId = profileId
         
-        if let tags: [DeviceTagCollection.DeviceTag] = |<(json["deviceTags"] as? [[String: Any]]) {
-            device.deviceTags = Set(tags)
+        if let tags: [DeviceTagCollection.DeviceTag.Model] = |<(json["deviceTags"] as? [[String: Any]]) {
+            device.deviceTags = Set(tags.map { return DeviceTagCollection.DeviceTag(model: $0) } )
         }
         
         device.updateProfile {
@@ -820,7 +820,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             return
         }
         
-        device.deviceTags = Set(peripheral.tags)
+        device.deviceTags = Set(peripheral.deviceTags)
         
         device.updateProfile {
             
@@ -1100,15 +1100,15 @@ public class DeviceCollection: NSObject, MetricsReportable {
         switch action {
         case .add: fallthrough
         case .update:
-            guard let deviceTag: DeviceModelable.DeviceTag = |<info["deviceTag"] else {
+            guard let deviceTag: DeviceModelable.DeviceTag.Model = |<info["deviceTag"] else {
                 DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
                 return
             }
-            peripheral._addOrUpdate(tag: deviceTag)
+            peripheral._addOrUpdate(tag: DeviceModelable.DeviceTag(model: deviceTag))
             
         case .delete:
             guard
-                let deviceTag: DeviceModelable.DeviceTag = |<info["deviceTag"],
+                let deviceTag: DeviceModelable.DeviceTag.Model = |<info["deviceTag"],
                 let deviceTagId = deviceTag.id else {
                     DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
                     return
@@ -1344,3 +1344,8 @@ public extension DeviceCollection {
     
 }
 
+extension DeviceStreamEvent.Peripheral {
+    var deviceTags: [DeviceTagCollection.DeviceTag] {
+        return tags.map { DeviceTagCollection.DeviceTag(model: $0) }
+    }
+}

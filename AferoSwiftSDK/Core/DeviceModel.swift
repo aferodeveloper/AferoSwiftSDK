@@ -56,6 +56,7 @@ extension NSError {
 // MARK: - Service-connected device model
 
 public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, Hashable, Comparable {
+    
 
     internal(set) public var utcMigrationIsInProgress: Bool = false {
         didSet {
@@ -427,6 +428,8 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
     
     // MARK: Tags
     
+    public var deviceTagCollection: DeviceTagCollection? { return nil }
+    
     public var deviceTags: Set<DeviceTag> {
         DDLogWarn("deviceTags default (no-op) implementation called.", tag: TAG)
         return Set()
@@ -486,7 +489,7 @@ public class DeviceModel: BaseDeviceModel {
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
         )
-        self.deviceTagCollection = DeviceTagCollection(with: self, tags: tags)
+        self._deviceTagCollection = DeviceTagCollection(with: self, tags: tags)
 
     }
     
@@ -642,24 +645,28 @@ public class DeviceModel: BaseDeviceModel {
     
     // MARK: Tags
     
-    private(set) var deviceTagCollection: DeviceTagCollection!
+    var _deviceTagCollection: DeviceTagCollection!
+    
+    override public var deviceTagCollection: DeviceTagCollection? {
+        return _deviceTagCollection
+    }
     
     public typealias DeviceTag = DeviceModelable.DeviceTag
     
     override internal(set) public var deviceTags: Set<DeviceTag> {
         
-        get { return deviceTagCollection.tags }
+        get { return _deviceTagCollection.tagSet }
         
         set {
             
-            let tagsToRemove = deviceTagCollection.tags.subtracting(newValue)
+            let tagsToRemove = _deviceTagCollection.tagSet.subtracting(newValue)
             
             tagsToRemove.forEach {
-                deviceTagCollection.remove(tag: $0) { _, _ in }
+                _deviceTagCollection.remove(tag: $0) { _, _ in }
             }
             
             newValue.forEach {
-                deviceTagCollection.add(tag: $0) { _, _ in }
+                _deviceTagCollection.add(tag: $0) { _, _ in }
             }
         }
         
@@ -670,7 +677,7 @@ public class DeviceModel: BaseDeviceModel {
     /// - returns: The matching `DeviceTag`, if any.
     
     override public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
-        return deviceTagCollection.deviceTag(forIdentifier: id)
+        return _deviceTagCollection.deviceTag(forIdentifier: id)
     }
     
     /// Get all `deviceTag` for the given `key`.
@@ -678,7 +685,7 @@ public class DeviceModel: BaseDeviceModel {
     /// - returns: All `DeviceTag`s whose key equals `key`
     
     override public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
-        return deviceTagCollection.deviceTags(forKey: key)
+        return _deviceTagCollection.deviceTags(forKey: key)
     }
     
     /// Get the last `deviceTag` for the given key.
@@ -691,15 +698,15 @@ public class DeviceModel: BaseDeviceModel {
     ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
     
     override public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
-        return deviceTagCollection.deviceTags(forKey: key).first
+        return _deviceTagCollection.deviceTags(forKey: key).first
     }
     
     override public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
-        deviceTagCollection.addOrUpdate(tag: tag, onDone: onDone)
+        _deviceTagCollection.addOrUpdate(tag: tag, onDone: onDone)
     }
     
     override public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
-        deviceTagCollection.deleteTag(identifiedBy: id, onDone: onDone)
+        _deviceTagCollection.deleteTag(identifiedBy: id, onDone: onDone)
     }
 
 }
@@ -766,7 +773,7 @@ extension DeviceModel {
         
         let logtag = TAG
         
-        deviceTagCollection.add(tag: tag) {
+        _deviceTagCollection.add(tag: tag) {
             t, e in
             
             if let e = e {
@@ -785,7 +792,7 @@ extension DeviceModel {
 
         let logtag = TAG
 
-        deviceTagCollection.remove(withId: id) {
+        _deviceTagCollection.remove(withId: id) {
             t, e in
             
             if let e = e {

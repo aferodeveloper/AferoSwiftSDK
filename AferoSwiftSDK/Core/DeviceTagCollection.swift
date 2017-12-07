@@ -11,6 +11,169 @@ import ReactiveSwift
 import PromiseKit
 import Result
 
+/// Protocol to which DeviceTags (reference or value types) adhere.
+@objc public protocol AferoDeviceTagProto: NSCopying, NSMutableCopying {
+    
+    typealias Id = String
+    @objc var id: Id? { get }
+    
+    typealias Value = String
+    @objc var value: Value { get }
+    
+    typealias Key = String
+    @objc var key: Key? { get }
+    
+    typealias LocalizationKey = String
+    @objc var localizationKey: LocalizationKey? { get }
+    
+    typealias TagTypeRawValue = String
+    @objc var tagTypeRawValue: TagTypeRawValue { get }
+    
+}
+
+@objc public class AferoDeviceTag: NSObject, AferoDeviceTagProto, Codable, NSCopying, NSMutableCopying {
+    
+    typealias Model = DeviceStreamEvent.Peripheral.DeviceTag
+    var model: Model
+    
+    init(model: Model) {
+        self.model = model
+    }
+    
+    @objc convenience init?(id: AferoDeviceTagProto.Id?, value: AferoDeviceTagProto.Value, key: AferoDeviceTagProto.Key? = nil, localizationKey: AferoDeviceTagProto.LocalizationKey? = nil, tagTypeRawValue: AferoDeviceTagProto.TagTypeRawValue = Model.TagType.account.rawValue) {
+
+        guard let tagType = Model.TagType(rawValue: tagTypeRawValue) else {
+            print("invalid tagTypeRawValue: \(tagTypeRawValue)")
+            return nil
+        }
+        
+        self.init(model: AferoDeviceTag.Model(id: id, key: key, value: value, localizationKey: localizationKey, type: tagType))
+    }
+    
+    @objc public var id: AferoDeviceTagProto.Id? {
+        get { return model.id }
+    }
+    
+    @objc public var value: AferoDeviceTagProto.Value {
+        get { return model.value }
+    }
+    
+    @objc public var key: AferoDeviceTagProto.Key? {
+        get { return model.key }
+    }
+    
+    @objc public var localizationKey: AferoDeviceTagProto.LocalizationKey? {
+        get { return model.localizationKey }
+    }
+    
+    @objc public var tagTypeRawValue: AferoDeviceTagProto.TagTypeRawValue {
+        get { return model.type.rawValue }
+    }
+    
+    public override var debugDescription: String {
+        return "<\(type(of: self))> model: \(String(reflecting: model))"
+    }
+    
+    public override var description: String {
+        return "<\(type(of: self))> model: \(String(describing: model))"
+    }
+    
+    // MARK: <Codable>
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "deviceTagId"
+        case value = "value"
+        case key = "key"
+        case localizationKey = "localizationKey"
+        case tagTypeRawValue = "deviceTagType"
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(value, forKey: .value)
+        try container.encode(key, forKey: .key)
+        try container.encode(localizationKey, forKey: .localizationKey)
+        try container.encode(tagTypeRawValue, forKey: .tagTypeRawValue)
+    }
+    
+    required convenience public init(from decoder: Decoder) throws {
+        
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let id = try values.decode(AferoDeviceTagProto.Id.self, forKey: .id)
+        let value = try values.decode(AferoDeviceTagProto.Value.self, forKey: .value)
+        let key = try values.decode(AferoDeviceTagProto.Key.self, forKey: .key)
+        let localizationKey = try values.decode(AferoDeviceTagProto.LocalizationKey.self, forKey: .localizationKey)
+        let tagTypeRawValue = try values.decode(AferoDeviceTagProto.LocalizationKey.self, forKey: .tagTypeRawValue)
+        
+        guard let tagType = Model.TagType(rawValue: tagTypeRawValue) else {
+            throw "Invalid value for tagType: \(tagTypeRawValue)"
+        }
+        
+        self.init(model: AferoDeviceTag.Model(id: id, key: key, value: value, localizationKey: localizationKey, type: tagType))
+
+    }
+    
+    // MARK: <Copying>
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoDeviceTag(model: self.model)
+    }
+    
+    // MARK: <MutableCopying>
+    
+    public func mutableCopy(with zone: NSZone? = nil) -> Any {
+        return AferoMutableDeviceTag(model: self.model)
+    }
+    
+    // MARK: <Hashable>
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let model = (object as? AferoDeviceTag)?.model else { return false }
+        return self.model == model
+    }
+    
+    override public var hashValue: Int {
+        return model.hashValue
+    }
+    
+}
+
+/// Mutable variant of `AferoDeviceTag`
+
+@objc public class AferoMutableDeviceTag: AferoDeviceTag {
+    
+    override public var id: AferoDeviceTagProto.Id? {
+        get { return super.id }
+        set { model.id = newValue }
+    }
+    
+    override public var value: AferoDeviceTagProto.Value {
+        get { return super.value }
+        set { model.value = newValue }
+    }
+    
+    override public var key: AferoDeviceTagProto.Key? {
+        get { return super.key }
+        set { model.key = newValue }
+    }
+    
+    override public var localizationKey: AferoDeviceTagProto.LocalizationKey? {
+        get { return super.localizationKey }
+        set { model.localizationKey = newValue }
+    }
+    
+    override public var tagTypeRawValue: AferoDeviceTagProto.TagTypeRawValue {
+        get { return super.tagTypeRawValue }
+        set {
+            guard let newType  = Model.TagType(rawValue: newValue) else {
+                fatalError("Invalid TagType rawValue: \(newValue)")
+            }
+            model.type = newType
+        }
+    }
+    
+}
 
 /// An implementation of deviceTag persistence methods. The
 /// implementation does not itself preserve any state; the `DeviceTagCollection`
@@ -20,7 +183,7 @@ internal protocol DeviceTagPersisting: class {
     
     // MARK: Types
 
-    typealias DeviceTag = DeviceTagCollection.DeviceTag
+    typealias DeviceTag = AferoDeviceTag
 
     /// Type for response handler for `deleteTag`
     typealias DeleteTagOnDone = (DeviceTag.Id?, Error?) -> Void
@@ -47,40 +210,41 @@ internal protocol DeviceTagPersisting: class {
     
 }
 
-public class DeviceTagCollection {
+@objc public class DeviceTagCollection: NSObject {
     
     /// The persistence backend to use.
     weak var persistence: DeviceTagPersisting!
     
+    init(with persistence: DeviceTagPersisting) {
+        self.persistence = persistence
+    }
+
     /// Initialize this collection with the given persistence backend.
     /// - parameter persistence: The persistence backend that will be used,
     ///                          if any.
     
-    init<T: Sequence>(with persistence: DeviceTagPersisting, tags: T? = nil)
-        where T.Element == DeviceTag {
-            self.persistence = persistence
-            tags?.forEach {
+    convenience init(with persistence: DeviceTagPersisting, tags: [DeviceTag]) {
+            self.init(with: persistence)
+            tags.forEach {
                 _add(tag: $0) {
                     tag, _ in DDLogDebug("Added tag: \(String(describing: tag))", tag: "DeviceTagCollection")
                 }
             }
     }
     
-    public typealias DeviceTag = DeviceStreamEvent.Peripheral.DeviceTag
+    public typealias DeviceTag = AferoDeviceTag
     
     // MARK: Private
     
-    private var _identifierTagMap: [DeviceTag.Id: DeviceTag] = [:] {
-        didSet {
-            invalidate()
-        }
+    @objc private(set) public dynamic var deviceTags: [DeviceTag.Id: DeviceTag] = [:] {
+        didSet { invalidate() }
     }
     
-    private var _keyTagMap: [DeviceTag.Key: Set<DeviceTag>] = [:]
+    @objc private dynamic var keysToDeviceTags: [DeviceTag.Key: Set<DeviceTag>] = [:]
     
     func invalidate() {
-        _keyTagMap = [:]
-        _tags = nil
+        keysToDeviceTags = [:]
+        _tagSet = nil
     }
     
     typealias AddTagOnDone = (Set<DeviceTag>?, Error?) -> Void
@@ -106,20 +270,22 @@ public class DeviceTagCollection {
             }
         }
         
-        if let maybeExisting = _identifierTagMap[id],
+        if let maybeExisting = deviceTags[id],
             maybeExisting == tag {
             onDone(ret, error)
             return
         }
         
-        _identifierTagMap[id] = tag
+        let newTag = tag.copy() as! AferoDeviceTag
+        
+        deviceTags[id] = newTag
 
         
         if let key = tag.key  {
-            _keyTagMap.removeValue(forKey: key)
+            keysToDeviceTags.removeValue(forKey: key)
         }
     
-        ret = [tag]
+        ret = [newTag]
 
     }
     
@@ -137,12 +303,12 @@ public class DeviceTagCollection {
             }
         }
         
-        let deleteIds = _identifierTagMap
+        let deleteIds = deviceTags
             .filter { isIncluded($1) }
             .map { $0.key }
         
         ret = Set(deleteIds.flatMap {
-            _identifierTagMap.removeValue(forKey: $0)
+            deviceTags.removeValue(forKey: $0)
         })
         
     }
@@ -158,21 +324,21 @@ public class DeviceTagCollection {
     // MARK: Getters
 
     var isEmpty: Bool {
-        return _identifierTagMap.isEmpty
+        return deviceTags.isEmpty
     }
     
     /// All of the tags.
     
     var count: Int {
-        return _identifierTagMap.count
+        return deviceTags.count
     }
     
-    private var _tags: Set<DeviceTag>?
+    private var _tagSet: Set<DeviceTag>?
     
-    var tags: Set<DeviceTag>! {
-        if let ret = _tags { return ret }
-        let ret = Set(_identifierTagMap.values)
-        _tags = ret
+    var tagSet: Set<DeviceTag>! {
+        if let ret = _tagSet { return ret }
+        let ret = Set(deviceTags.values)
+        _tagSet = ret
         return ret
     }
     
@@ -181,7 +347,7 @@ public class DeviceTagCollection {
     /// - returns: The matching `DeviceTag`, if any.
     
     public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
-        return _identifierTagMap[id]
+        return deviceTags[id]
     }
     
     /// Get all `deviceTag` for the given `key`.
@@ -190,15 +356,15 @@ public class DeviceTagCollection {
     
     public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
 
-        if let ret = _keyTagMap[key] {
+        if let ret = keysToDeviceTags[key] {
             return ret
         }
         
-        let ret = Set(_identifierTagMap
+        let ret = Set(deviceTags
             .filter { $0.value.key == key }
             .map { $0.value })
         
-        _keyTagMap[key] = ret
+        keysToDeviceTags[key] = ret
         return ret
     }
 
@@ -305,8 +471,13 @@ public class DeviceTagCollection {
     public typealias AddOrUpdateTagOnDone = (DeviceTag?, Error?) -> Void
 
     
-    public func addOrUpdate(tag: DeviceTag, onDone: @escaping AddOrUpdateTagOnDone) {
+    public func addOrUpdate(tag: DeviceTag?, onDone: @escaping AddOrUpdateTagOnDone) {
 
+        guard let tag = tag else {
+            onDone(nil, "Nil deviceTag provided.")
+            return
+        }
+        
         persistence.persist(tag: tag) {
             
             [weak self] maybeTag, maybeError in
@@ -324,8 +495,13 @@ public class DeviceTagCollection {
     }
 
     public func addOrUpdateTag(with value: DeviceTag.Value, groupedUsing key: DeviceTag.Key?, identifiedBy id: DeviceTag.Id? = nil, using localizationKey: DeviceTag.LocalizationKey? = nil, onDone: @escaping AddOrUpdateTagOnDone) {
+
+        guard let tag = DeviceTag(id: id, value: value, key: key, localizationKey: localizationKey) else {
+            onDone(nil, "Unable to create DeviceTag with value:\(value) key:\(String(describing: key)) id:\(String(describing: id)) localizationKey:\(String(describing: localizationKey))")
+            return
+        }
         
-        addOrUpdate(tag: DeviceTag(id: id, key: key, value: value, localizationKey: localizationKey), onDone: onDone)
+        addOrUpdate(tag: tag, onDone: onDone)
     }
     
     /// Type for response handler for `deleteTag`

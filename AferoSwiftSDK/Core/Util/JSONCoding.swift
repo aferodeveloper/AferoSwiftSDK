@@ -105,3 +105,5 @@ public extension Array where Element: AferoJSONCoding {
     }
     
 }
+
+

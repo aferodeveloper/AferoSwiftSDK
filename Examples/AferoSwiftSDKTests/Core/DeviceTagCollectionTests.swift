@@ -16,6 +16,8 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
 
     // MARK: Delete
     
+    typealias DeviceTag = DeviceTagPersisting.DeviceTag
+    
     private(set) var deleteCalledCount: Int = 0
     func resetDeleteCalledCount() { deleteCalledCount = 0 }
     
@@ -26,7 +28,7 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedDeleteTagResult: ExpectedDeleteTagResult = .success
     
-    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: @escaping (DeviceStreamEvent.Peripheral.DeviceTag.Id?, Error?) -> Void) {
+    func purgeTag(with id: DeviceTag.Id, onDone: @escaping DeviceTagPersisting.DeleteTagOnDone) {
         deleteCalledCount += 1
         switch expectedDeleteTagResult {
         case .success: onDone(id, nil)
@@ -46,14 +48,14 @@ class MockDeviceTagPersisting: DeviceTagPersisting {
     
     var expectedAddOrUpdateTagResult: ExpectedAddOrUpdateTagResult = .success(id: "foo")
     
-    func persist(tag: DeviceTagPersisting.DeviceTag, onDone: @escaping DeviceTagPersisting.AddOrUpdateTagOnDone) {
+    func persist(tag: DeviceTag, onDone: @escaping DeviceTagPersisting.AddOrUpdateTagOnDone) {
         
         addOrUpdateCalledCount += 1
         
         switch expectedAddOrUpdateTagResult {
             
         case .success(let expectedId):
-            var resultTag = tag
+            let resultTag = tag.mutableCopy() as! AferoMutableDeviceTag
             if resultTag.id == nil {
                 resultTag.id = expectedId
             }
@@ -76,11 +78,11 @@ class DeviceTagCollectionSpec: QuickSpec {
         var c: DeviceTagCollection!
         var d: Disposable?
         
-        let t1 = DeviceTag(id: "id1", key: "k1", value: "v1")
-        let t1b = DeviceTag(id: "id1b", key: "k1", value: "v1b")
-        let t2 = DeviceTag(id: "id2", key: "k2", value: "v2")
-        let t3 = DeviceTag(id: "id3", value: "v3")
-        let t3b = DeviceTag(id: "id3b", value: "v3b")
+        let t1 = DeviceTag(id: "id1", value: "v1", key: "k1")!
+        let t1b = DeviceTag(id: "id1b", value: "v1b", key: "k1")!
+        let t2 = DeviceTag(id: "id2", value: "v2", key: "k2")!
+        let t3 = DeviceTag(id: "id3", value: "v3")!
+        let t3b = DeviceTag(id: "id3b", value: "v3b")!
         
         beforeEach {
             persistence = MockDeviceTagPersisting()
@@ -123,7 +125,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1
                         ])
 
@@ -132,8 +134,13 @@ class DeviceTagCollectionSpec: QuickSpec {
 
                     persistence.expectedAddOrUpdateTagResult = .success(id: "foo")
                     
-                    var t1updated = t1
+                    let t1updated = t1.mutableCopy() as! AferoMutableDeviceTag
                     t1updated.value = "v1updated"
+                    
+//                    let o = c.observe(\.deviceTags, options: [.prior, .new, .old, .initial ]) {
+//                        obj, chg in
+//                        print("\(obj) \(chg)")
+//                    }
                     
                     c.addOrUpdateTag(with: t1updated.value, groupedUsing: t1updated.key, identifiedBy: t1updated.id, using: t1updated.localizationKey) {
                         maybeTag = $0
@@ -146,7 +153,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 1
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1updated
                         ])
                     
@@ -158,7 +165,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1
                         ])
                     
@@ -167,7 +174,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     persistence.expectedAddOrUpdateTagResult = .failure(error: "Unknown id")
                     
-                    var t1updated = t1
+                    let t1updated = t1.mutableCopy() as! AferoMutableDeviceTag
                     t1updated.value = "v1updated"
                     
                     c.addOrUpdateTag(
@@ -186,7 +193,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 1
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1
                         ])
 
@@ -199,7 +206,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     
                     expect(c.count) == 1
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1
                         ])
                     
@@ -223,7 +230,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 0
                     expect(c.count) == 2
                     
-                    expect(c.tags) == Set([
+                    expect(c.tagSet) == Set([
                         t1, t2
                         ])
                     
@@ -244,7 +251,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 it("should delete tags when recognized ids are specified") {
                     
-                    expect(c.tags) == Set([t1])
+                    expect(c.tagSet) == Set([t1])
                     expect(c.count) == 1
                     expect(persistence.deleteCalledCount) == 0
                     
@@ -253,7 +260,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         maybeError = $1
                     }
                     
-                    expect(c.tags).to(beEmpty())
+                    expect(c.tagSet).to(beEmpty())
                     expect(c.count) == 0
                     expect(persistence.deleteCalledCount) == 1
                     expect(maybeId) == t1.id
@@ -263,7 +270,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                 
                 it("should fail to delete tags when unrecognized ids are specified.") {
 
-                    expect(c.tags) == Set([t1])
+                    expect(c.tagSet) == Set([t1])
                     expect(c.count) == 1
                     expect(persistence.deleteCalledCount) == 0
                     
@@ -277,7 +284,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                     expect(persistence.deleteCalledCount) == 1
                     expect(maybeId).to(beNil())
                     expect(maybeError).toNot(beNil())
-                    expect(c.tags) == Set([t1])
+                    expect(c.tagSet) == Set([t1])
                     expect(c.count) == 1
 
                 }
@@ -302,7 +309,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(c.isEmpty).to(beFalse())
                         expect(c.count) == 1
                         
-                        let t1b = DeviceTag(id: "id1b", key: "k1", value: "v1b")
+                        let t1b = DeviceTag(id: "id1b", value: "v1b", key: "k1")!
                         c.add(tag: t1b) { _, _ in }
                         expect(c.isEmpty).to(beFalse())
                         expect(c.count) == 2
@@ -326,13 +333,13 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(c.isEmpty).to(beFalse())
                         expect(c.count) == 1
                         
-                        var t1c = t1
+                        let t1c = t1.mutableCopy() as! AferoMutableDeviceTag
                         t1c.value = "v1c"
                         c.add(tag: t1c) { _, _ in }
                         
                         expect(c.isEmpty).to(beFalse())
                         expect(c.count) == 1
-                        expect(c.tags.first) == t1c
+                        expect(c.tagSet.first) == t1c
                         
                         expect(events).toEventually(
                             equal(
@@ -373,7 +380,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 1
-                        expect(c.tags.first) == t1
+                        expect(c.tagSet.first) == t1
                         
                         expect(events).toEventually(
                             equal(
@@ -411,7 +418,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 1
-                        expect(c.tags) == Set([t1])
+                        expect(c.tagSet) == Set([t1])
                         
                         expect(events).toEventually(
                             equal(
@@ -449,7 +456,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 2
-                        expect(c.tags) == Set([t1, t2])
+                        expect(c.tagSet) == Set([t1, t2])
                         
                         expect(events).toEventually(
                             equal(
@@ -486,7 +493,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(removed).toEventually(equal(Set([t1, t1b])))
                         expect(err != nil).toNotEventually(beTrue())
                         expect(c.count) == 1
-                        expect(c.tags) == Set([t2])
+                        expect(c.tagSet) == Set([t2])
                         
                         expect(Set(events)).toEventually(
                             equal(
@@ -528,7 +535,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(removed).toEventually(equal(Set([t3, t3b])))
                         expect(err != nil).toNotEventually(beTrue())
                         expect(c.count) == 3
-                        expect(c.tags) == Set([t1, t1b, t2])
+                        expect(c.tagSet) == Set([t1, t1b, t2])
                         
                         expect(events).toEventually(
                             equal(
@@ -570,7 +577,7 @@ class DeviceTagCollectionSpec: QuickSpec {
                         expect(err != nil).toNotEventually(beTrue())
                         
                         expect(c.count) == 2
-                        expect(c.tags) == Set([t1, t2])
+                        expect(c.tagSet) == Set([t1, t2])
                         
                         expect(events.count).toNotEventually(
                             beGreaterThan(2),

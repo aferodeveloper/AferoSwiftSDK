@@ -306,10 +306,16 @@ extension AferoAPIClientProto {
         }
 
         guard let _ = tag.id else {
-            return POST("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag")
+            return POST("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag").then {
+                (t: DeviceStreamEvent.Peripheral.DeviceTag) -> DeviceTagPersisting.DeviceTag in
+                return AferoDeviceTag(model: t)
+            }
         }
         
-        return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag")
+        return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag").then {
+            (t: DeviceStreamEvent.Peripheral.DeviceTag) -> DeviceTagPersisting.DeviceTag in
+            return AferoDeviceTag(model: t)
+        }
     }
 
     /// Delete a tag with the given `id`, on the device identified by `deviceId` and `accountId`.

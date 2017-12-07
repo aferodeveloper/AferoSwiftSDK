@@ -168,6 +168,7 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
                 [weak self] obj, change in
                 self?.preferredHeight = obj.collectionViewLayout.collectionViewContentSize.height
             }
+            
         }
     }
     
@@ -415,6 +416,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     deinit {
         stopObservingDeviceEvents()
     }
+    
+    private var tagObservation: NSKeyValueObservation?
 
     // MARK: <DeviceModelableObserving>
     
@@ -424,9 +427,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     ///         `DeviceCollection`.
     
     weak var deviceModelable: DeviceModelable! {
-        didSet { title = deviceModelable?.displayName }
+        didSet {
+            title = deviceModelable?.displayName
+            tagObservation = deviceModelable.deviceTagCollection?.observe(\.deviceTags, options: [.initial, .new]) {
+                [weak self] obj, chg in
+                self?.updateTagCell()
+            }
+        }
     }
-    
 
     /// The `disposable`, which is our handle to DeviceEventSignal
     /// observation.
@@ -484,7 +492,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
 
     func handleTagEvent(event: DeviceModelable.DeviceTagEvent) {
-        
+//        updateTagCell()
+    }
+    
+    func updateTagCell() {
         let indexPath = IndexPath.tagCellIndexPath
         guard let cell = tableView.cellForRow(at: indexPath) else {
             return
@@ -871,6 +882,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         let section = visibleSections[section]
         return section.localizedName
     }
+    
+//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        <#code#>
+//    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         

@@ -588,15 +588,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ie3-Yj-A1A">
-                                <rect key="frame" x="16" y="269.5" width="343" height="129"/>
+                                <rect key="frame" x="16" y="270.5" width="343" height="127"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBt-bk-Lgo" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ac-9q-5uL">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KLt-gs-eeQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -685,7 +685,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView" customClass="AferoAttributeUITextView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="89" width="253" height="20"/>
+                                        <rect key="frame" x="70" y="89" width="253" height="18"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" identifier="valueTextViewHeight" id="cYh-Ju-ueK"/>
                                         </constraints>
@@ -800,7 +800,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3242" y="307"/>
+            <point key="canvasLocation" x="3241" y="-480"/>
         </scene>
         <!--Slider Attribute Inspector View Controller-->
         <scene sceneID="3jc-wt-Mqd">
@@ -1036,7 +1036,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4070" y="500"/>
+            <point key="canvasLocation" x="4014" y="-481"/>
         </scene>
         <!--Switch Attribute Inspector View Controller-->
         <scene sceneID="5xH-O9-tff">
@@ -1271,7 +1271,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4831" y="832"/>
+            <point key="canvasLocation" x="4756" y="-482"/>
         </scene>
         <!--Picker Attribute Inspector View Controller-->
         <scene sceneID="248-F8-9P7">
@@ -1497,7 +1497,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="5581.6000000000004" y="1241.8290854572715"/>
+            <point key="canvasLocation" x="5502" y="-483"/>
         </scene>
         <!--Segmented Control Attribute Inspector View Controller-->
         <scene sceneID="b4s-5v-9pq">
@@ -1723,7 +1723,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4831" y="1654"/>
+            <point key="canvasLocation" x="6204" y="-484"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="ZiJ-cj-p85">
@@ -1737,7 +1737,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
                                 <rect key="frame" x="124.5" y="290" width="126.5" height="87.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <userDefinedRuntimeAttributes>
@@ -1772,7 +1772,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zae-M4-dRS" customClass="TagView" customModule="AferoLab" customModuleProvider="target">
+                            <view contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zae-M4-dRS" customClass="TagView" customModule="AferoLab" customModuleProvider="target">
                                 <rect key="frame" x="179.5" y="326" width="16" height="16"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -2021,7 +2021,86 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="4070" y="2092"/>
+            <point key="canvasLocation" x="6903" y="-484"/>
+        </scene>
+        <!--Edit Tag-->
+        <scene sceneID="rxo-E9-0rB">
+            <objects>
+                <viewController title="Edit Tag" id="Tcx-6j-HB3" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="R7D-rO-4jv"/>
+                        <viewControllerLayoutGuide type="bottom" id="Eoo-7o-OkN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="IhK-e3-wm4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uWh-Gq-qOq">
+                                <rect key="frame" x="62" y="282.5" width="250" height="101.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit Tag" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1kt-7y-v4J">
+                                        <rect key="frame" x="8" y="8" width="234" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Key" borderStyle="roundedRect" placeholder="Key" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hb4-Ug-ugm">
+                                        <rect key="frame" x="8" y="24.5" width="234" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Value" borderStyle="roundedRect" placeholder="Value" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Tmo-Ii-DUz">
+                                        <rect key="frame" x="8" y="44.5" width="234" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Unc-P1-bhz">
+                                        <rect key="frame" x="208" y="63.5" width="34" height="30"/>
+                                        <state key="normal" title="Save"/>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uvd-Eq-5qW">
+                                        <rect key="frame" x="155" y="63.5" width="48" height="30"/>
+                                        <state key="normal" title="Cancel"/>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="Tmo-Ii-DUz" firstAttribute="firstBaseline" secondItem="hb4-Ug-ugm" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="1DA-j9-vhE"/>
+                                    <constraint firstItem="Tmo-Ii-DUz" firstAttribute="leading" secondItem="hb4-Ug-ugm" secondAttribute="leading" id="95K-KP-1eN"/>
+                                    <constraint firstAttribute="trailing" secondItem="1kt-7y-v4J" secondAttribute="trailing" constant="8" id="Bm8-eS-zpk"/>
+                                    <constraint firstItem="1kt-7y-v4J" firstAttribute="leading" secondItem="uWh-Gq-qOq" secondAttribute="leading" constant="8" id="GsT-su-duR"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="Ora-ne-6cZ"/>
+                                    <constraint firstItem="hb4-Ug-ugm" firstAttribute="leading" secondItem="1kt-7y-v4J" secondAttribute="leading" id="PBK-bQ-0lU"/>
+                                    <constraint firstItem="1kt-7y-v4J" firstAttribute="top" secondItem="uWh-Gq-qOq" secondAttribute="top" constant="8" id="SOa-rn-e62"/>
+                                    <constraint firstItem="hb4-Ug-ugm" firstAttribute="trailing" secondItem="1kt-7y-v4J" secondAttribute="trailing" id="SR4-an-fQV"/>
+                                    <constraint firstItem="Unc-P1-bhz" firstAttribute="trailing" secondItem="Tmo-Ii-DUz" secondAttribute="trailing" id="SRN-PP-tY1"/>
+                                    <constraint firstItem="Uvd-Eq-5qW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uWh-Gq-qOq" secondAttribute="leading" constant="20" symbolic="YES" id="U2Q-8F-6eA"/>
+                                    <constraint firstAttribute="bottom" secondItem="Unc-P1-bhz" secondAttribute="bottom" constant="8" id="V7d-mo-zT7"/>
+                                    <constraint firstItem="Uvd-Eq-5qW" firstAttribute="firstBaseline" secondItem="Unc-P1-bhz" secondAttribute="firstBaseline" id="aFJ-uz-EZV"/>
+                                    <constraint firstItem="Uvd-Eq-5qW" firstAttribute="firstBaseline" secondItem="Tmo-Ii-DUz" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="mZQ-dF-45T"/>
+                                    <constraint firstItem="hb4-Ug-ugm" firstAttribute="firstBaseline" secondItem="1kt-7y-v4J" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="ncG-FU-pzX"/>
+                                    <constraint firstItem="Unc-P1-bhz" firstAttribute="leading" secondItem="Uvd-Eq-5qW" secondAttribute="trailing" constant="5" id="pNy-X8-Nf3"/>
+                                    <constraint firstItem="Tmo-Ii-DUz" firstAttribute="trailing" secondItem="hb4-Ug-ugm" secondAttribute="trailing" id="zu6-aS-xrB"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="uWh-Gq-qOq" firstAttribute="centerX" secondItem="IhK-e3-wm4" secondAttribute="centerX" id="BCP-VO-eeg"/>
+                            <constraint firstItem="uWh-Gq-qOq" firstAttribute="centerY" secondItem="IhK-e3-wm4" secondAttribute="centerY" id="THt-aC-9ae"/>
+                            <constraint firstItem="uWh-Gq-qOq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="R7D-rO-4jv" secondAttribute="bottom" id="jbL-q4-ylA"/>
+                            <constraint firstItem="uWh-Gq-qOq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IhK-e3-wm4" secondAttribute="leading" id="qkB-7u-0aF"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uWh-Gq-qOq" secondAttribute="trailing" id="rCY-fw-gdz"/>
+                            <constraint firstItem="Eoo-7o-OkN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uWh-Gq-qOq" secondAttribute="bottom" id="vND-TY-dPw"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UcL-xY-5oZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3111" y="2095"/>
         </scene>
         <!--Progress View Attribute Inspector View Controller-->
         <scene sceneID="7tz-yJ-HW9">
@@ -2257,7 +2336,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3242" y="2353"/>
+            <point key="canvasLocation" x="7606" y="-484"/>
         </scene>
     </scenes>
     <resources>
