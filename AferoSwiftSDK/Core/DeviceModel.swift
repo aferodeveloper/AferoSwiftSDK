@@ -804,7 +804,7 @@ extension DeviceModel {
 
             guard let tag = t?.first else {
                 let msg = "Expected exactly one tag from removal, got zero."
-                assert(false, msg)
+//                assert(false, msg)
                 DDLogError(msg, tag: self.TAG)
                 return
             }

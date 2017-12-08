@@ -31,7 +31,7 @@ import Result
     
 }
 
-@objc public class AferoDeviceTag: NSObject, AferoDeviceTagProto, Codable, NSCopying, NSMutableCopying {
+@objc public class AferoDeviceTag: NSObject, AferoDeviceTagProto, Codable, NSCopying, NSMutableCopying, AferoJSONCoding {
     
     typealias Model = DeviceStreamEvent.Peripheral.DeviceTag
     var model: Model
@@ -112,6 +112,17 @@ import Result
         
         self.init(model: AferoDeviceTag.Model(id: id, key: key, value: value, localizationKey: localizationKey, type: tagType))
 
+    }
+    
+    // MARK: <AferoJSONCoding>
+    
+    public var JSONDict: AferoJSONCodedType? { return model.JSONDict }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        guard let model = Model(json: json) else {
+            return nil
+        }
+        self.init(model: model)
     }
     
     // MARK: <Copying>
@@ -236,7 +247,7 @@ internal protocol DeviceTagPersisting: class {
     
     public typealias DeviceTag = AferoDeviceTag
     
-    // MARK: Private
+    // MARK: Model
     
     @objc override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
         switch key {
@@ -250,12 +261,21 @@ internal protocol DeviceTagPersisting: class {
     }
 
     @objc private(set) public dynamic var deviceTags: Set<DeviceTag> = [] {
+        
+        willSet {
+            if deviceTags == newValue { return }
+            willChangeValue(for: \.deviceTags)
+        }
+        
         didSet {
             
+            if oldValue == deviceTags { return }
+
+            didChangeValue(for: \.deviceTags)
+            reindex()
+
             let deleted = oldValue.subtracting(deviceTags)
             let added = deviceTags.subtracting(oldValue)
-            
-            reindex()
             
             deleted.sorted { $0.0.value < $0.1.value }.forEach {
                 eventSink.send(value: .deletedTag($0))

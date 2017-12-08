@@ -35,6 +35,7 @@
 		CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */; };
 		CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA475431FD5BABF00D4C25C /* TagViewContent.xib */; };
 		CBA475461FD5D55500D4C25C /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA475451FD5D55500D4C25C /* TagView.swift */; };
+		CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -109,6 +110,7 @@
 		CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountInfoZeroStateView.xib; sourceTree = "<group>"; };
 		CBA475431FD5BABF00D4C25C /* TagViewContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagViewContent.xib; sourceTree = "<group>"; };
 		CBA475451FD5D55500D4C25C /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
+		CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagViewController.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -236,6 +238,7 @@
 				CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */,
 				CB79624D1F830D26002E0C6C /* DeviceInspectorViewController.swift */,
 				CB241A301F8D6AD100480CCA /* AttributeInspectorViewController.swift */,
+				CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
 				CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */,
 				CB82FED71E7CDA4D0088CC0C /* SignInViewcontroller.swift in Sources */,
+				CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */,
 				CB82FED11E7CD7A30088CC0C /* Extensions.swift in Sources */,
 				CB82FED51E7CD9CF0088CC0C /* AccountInfoTableViewController.swift in Sources */,
 			);

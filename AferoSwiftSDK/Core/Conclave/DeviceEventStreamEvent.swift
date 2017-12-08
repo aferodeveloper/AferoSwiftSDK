@@ -887,7 +887,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
 
                 var ret: [String: Any] = [
                     type(of: self).CoderKeyValue: value,
-                    type(of: self).CoderKeyType: type,
+                    type(of: self).CoderKeyType: type.rawValue,
                 ]
                 
                 if let id = id {

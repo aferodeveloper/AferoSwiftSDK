@@ -33,10 +33,6 @@ import UIKit
         tagView.setContentHuggingPriority(.required, for: .horizontal)
         tagView.setContentHuggingPriority(.required, for: .vertical)
         tagView.layoutMargins = layoutMargins
-        tagView.layer.shadowColor = UIColor.black.cgColor
-        tagView.layer.shadowOffset = CGSize(width: 3, height: 3)
-        tagView.layer.shadowRadius = 6.0
-        tagView.layer.shadowOpacity = 0.5
         tagView.clipsToBounds = true
         addSubview(tagView)
     }
@@ -77,9 +73,36 @@ import UIKit
         set { tagView.backgroundColor = newValue }
     }
     
+    @IBInspectable var normalBackgroundColor: UIColor?
+    @IBInspectable var selectedTagBackgroundColor: UIColor?
+    
     @IBInspectable var textColor: UIColor? {
         get { return tagView.textColor }
         set { tagView.textColor = newValue }
+    }
+    
+    func updateBackgroundColorForSelectionState(animated: Bool = true) {
+        
+        let updates: ()->Void = {
+            
+            if self.isSelected {
+                self.tagBackgroundColor = self.selectedTagBackgroundColor
+            } else {
+                self.tagBackgroundColor = self.normalBackgroundColor
+            }
+            
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 0.125, delay: 0.0, options: .curveEaseInOut, animations: updates, completion: nil)
+            return
+        }
+        
+        updates()
+    }
+    
+    override var isSelected: Bool {
+        didSet { updateBackgroundColorForSelectionState(animated: true) }
     }
     
 }
