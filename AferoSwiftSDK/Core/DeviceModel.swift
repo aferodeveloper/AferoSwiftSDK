@@ -55,7 +55,8 @@ extension NSError {
 
 // MARK: - Service-connected device model
 
-public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable, Comparable {
+public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, Hashable, Comparable {
+    
 
     internal(set) public var utcMigrationIsInProgress: Bool = false {
         didSet {
@@ -104,7 +105,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
          associationId: String? = nil,
          state: DeviceState = DeviceState(),
          profile: DeviceProfile? = nil,
-         deviceActionable: DeviceActionable? = nil,
+         deviceCloudSupporting: DeviceCloudSupporting? = nil,
          profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -120,7 +121,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         self.currentState = localState
         self.profile = profile
         self.profileSource = profileSource
-        self.deviceActionable = deviceActionable
+        self.deviceCloudSupporting = deviceCloudSupporting
     }
     
     convenience init(
@@ -131,7 +132,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceActionable: DeviceActionable? = nil,
+        deviceCloudSupporting: DeviceCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -147,7 +148,7 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
             accountId: accountId,
             associationId: associationId,
             state: state,
-            deviceActionable: deviceActionable,
+            deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
         )
     }
@@ -207,12 +208,12 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
     // MARK: Signals and Pipes
     
     /**
-     The `DeviceActionable` to which attribute writes are sent. These may
+     The `DeviceCloudSupporting` to which attribute writes are sent. These may
      go to Conclave or the API, depending upon how things are configured.
      By default, this is nil, so writes are ignored.
      */
     
-    weak fileprivate(set) public var deviceActionable: DeviceActionable? = nil
+    weak fileprivate(set) var deviceCloudSupporting: DeviceCloudSupporting? = nil
     
     // MARK: State Signaling
     
@@ -263,10 +264,21 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         return eventPipeForAttributeId(attributeId)?.signal
     }
     
+    fileprivate static var attributeSignalQ = DispatchQueue(
+        label: "io.afero.attributeSignaling",
+        qos: .default,
+        attributes: .concurrent
+    )
+    
     public func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue) {
         
-        guard let
-            attribute = attribute(for: attributeId) else { return }
+        let TAG = self.TAG
+        
+        guard
+            let attribute = attribute(for: attributeId),
+            let pipe = eventPipeForAttributeId(attributeId) else {
+                return
+        }
         
         let event: AttributeEvent = .update(
             accountId: accountId,
@@ -274,8 +286,11 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
             attribute: attribute
         )
         
-        DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)
-        eventPipeForAttributeId(attributeId)?.sendNext(event)
+        type(of: self).attributeSignalQ.async {
+            DDLogVerbose("Signaling AttributeEvent \(event)", tag: TAG)
+            pipe.sendNext(event)
+        }
+        
     }
     
     fileprivate func completeAllAttributeSignals() {
@@ -322,13 +337,13 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
                 completion(results, maybeError)
             }
             
-            guard let deviceActionable = deviceActionable else {
-                DDLogDebug("No deviceActionable; bailing.", tag: TAG)
-                localOnDone(nil, "No deviceActionable configured.")
+            guard let deviceCloudSupporting = deviceCloudSupporting else {
+                DDLogDebug("No deviceCloudSupporting; bailing.", tag: TAG)
+                localOnDone(nil, "No deviceCloudSupporting configured.")
                 return
             }
             
-            deviceActionable.post(
+            deviceCloudSupporting.post(
                 actions: actions,
                 forDeviceId: self.deviceId,
                 withAccountId: accountId,
@@ -411,6 +426,41 @@ public class BaseDeviceModel: DeviceModelable, CustomStringConvertible, Hashable
         eventSink.send(value: .errorResolved(status: status))
     }
     
+    // MARK: Tags
+    
+    public var deviceTagCollection: DeviceTagCollection? { return nil }
+    
+    public var deviceTags: Set<DeviceTag> {
+        DDLogWarn("deviceTags default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+    
+    public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
+        DDLogWarn("deviceTag(forIdentifier:\(id)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+    
+    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
+        DDLogWarn("deviceTags(forKey:\(key)) default (no-op) implementation called.", tag: TAG)
+        return Set()
+    }
+    
+    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+        DDLogWarn("getTag(for:\(key)) default (no-op) implementation called.", tag: TAG)
+        return nil
+    }
+    
+    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+        DDLogWarn("addOrUpdate(tag:\(String(describing: tag))) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(tag, nil) }
+    }
+    
+    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+        DDLogWarn("deleteTag(identifiedBy:\(id) default (no-op) implementation called.", tag: TAG)
+        asyncMain { onDone(id, nil) }
+    }
+
+    
 }
 
 /// A DeviceModelable which is connected to the Afero cloud.
@@ -422,23 +472,25 @@ public class DeviceModel: BaseDeviceModel {
         accountId: String,
         associationId: String? = nil,
         state: DeviceState = DeviceState(),
+        tags: [DeviceTag] = [],
         profile: DeviceProfile? = nil,
-        deviceActionable: DeviceActionable? = nil,
+        deviceCloudSupporting: DeviceCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
         ) {
         
         self.viewingNotificationConsumer = viewingNotificationConsumer
-        
         super.init(
             deviceId: deviceId,
             accountId: accountId,
             associationId: associationId,
             state: state,
             profile: profile,
-            deviceActionable: deviceActionable,
+            deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
         )
+        self._deviceTagCollection = DeviceTagCollection(with: self, tags: tags)
+
     }
     
     convenience init(
@@ -448,8 +500,9 @@ public class DeviceModel: BaseDeviceModel {
         profileId: String,
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
+        tags: [DeviceTag] = [],
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceActionable: DeviceActionable? = nil,
+        deviceCloudSupporting: DeviceCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -466,13 +519,13 @@ public class DeviceModel: BaseDeviceModel {
             accountId: accountId,
             associationId: associationId,
             state: state,
-            deviceActionable: deviceActionable,
+            tags: tags,
+            deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource,
             viewingNotificationConsumer: viewingNotificationConsumer
         )
     }
     
-
     // MARK: <DeviceCommandConsuming>
     
     /// The current state of the device; canonical storage for isAvailable, attributes, and profileId.
@@ -590,7 +643,179 @@ public class DeviceModel: BaseDeviceModel {
         }
     }
     
+    // MARK: Tags
+    
+    var _deviceTagCollection: DeviceTagCollection!
+    
+    override public var deviceTagCollection: DeviceTagCollection? {
+        return _deviceTagCollection
+    }
+    
+    public typealias DeviceTag = DeviceModelable.DeviceTag
+    
+    override internal(set) public var deviceTags: Set<DeviceTag> {
+        
+        get { return _deviceTagCollection.deviceTags }
+        
+        set {
+            
+            let tagsToRemove = _deviceTagCollection.deviceTags.subtracting(newValue)
+            
+            tagsToRemove.forEach {
+                _deviceTagCollection.remove(tag: $0) { _, _ in }
+            }
+            
+            newValue.forEach {
+                _deviceTagCollection.add(tag: $0) { _, _ in }
+            }
+        }
+        
+    }
+    
+    /// Get a deviceTag for the given identifier.
+    /// - parameter id: The `UUID` of the tag to fetch.
+    /// - returns: The matching `DeviceTag`, if any.
+    
+    override public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
+        return _deviceTagCollection.deviceTag(forIdentifier: id)
+    }
+    
+    /// Get all `deviceTag` for the given `key`.
+    /// - parameter key: The `DeviceTag.Key` to match.
+    /// - returns: All `DeviceTag`s whose key equals `key`
+    
+    override public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
+        return _deviceTagCollection.deviceTags(forKey: key)
+    }
+    
+    /// Get the last `deviceTag` for the given key.
+    /// - parameter key: The key to fliter by.
+    /// - returns: The last `DeviceTag` matching the key, if any.
+    /// - warning: There is no unique constraint on device tags in the Afero
+    ///            cloud as of this writing, so it is possible that more than
+    ///            one tag for a given key could exist (however, creating duplicate
+    ///            keys is not supported by this API. If you would like to see
+    ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
+    
+    override public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
+        return _deviceTagCollection.deviceTags(forKey: key).first
+    }
+    
+    override public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
+        _deviceTagCollection.addOrUpdate(tag: tag, onDone: onDone)
+    }
+    
+    override public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
+        _deviceTagCollection.deleteTag(identifiedBy: id, onDone: onDone)
+    }
+
 }
+
+extension DeviceModel: DeviceTagPersisting {
+
+    // MARK: DeviceTagPersisting
+    //
+    // These calls are used by the DeviceTagCollection to commit its changes.
+    
+    /// Leverage our `deviceCloudSupporting` to purge a tag from the cloud for this device.
+    /// - warning: While public, this is a low-level implementation used by the underlying
+    ///            `DeviceTagCollection` instance.
+    
+    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, onDone: @escaping DeviceTagPersisting.DeleteTagOnDone) {
+        
+        let missingActionableMsg = "No deviceCloudSupporting to perform purgeTag()."
+        assert(deviceCloudSupporting != nil, missingActionableMsg)
+        
+        guard let deviceCloudSupporting = deviceCloudSupporting else {
+            DDLogError(missingActionableMsg, tag: TAG)
+            onDone(nil, missingActionableMsg)
+            return
+        }
+        
+        deviceCloudSupporting.purgeTag(with: id, for: deviceId, in: accountId).then {
+            tag in onDone(tag, nil)
+            }.catch {
+                err in onDone(nil, err)
+        }
+    }
+    
+    /// Leverage our `deviceCloudSupporting` to add a tag to the cloud for this device.
+    /// - warning: While public, this is a low-level implementation used by the underlying
+    ///            `DeviceTagCollection` instance.
+    
+    func persist(tag: DeviceTagPersisting.DeviceTag, onDone: @escaping DeviceTagPersisting.AddOrUpdateTagOnDone) {
+        
+        let missingActionableMsg = "No deviceCloudSupporting to perform persistTag()."
+        assert(deviceCloudSupporting != nil, missingActionableMsg)
+        
+        guard let deviceCloudSupporting = deviceCloudSupporting else {
+            DDLogError(missingActionableMsg, tag: TAG)
+            onDone(nil, missingActionableMsg)
+            return
+        }
+        
+        deviceCloudSupporting.persistTag(tag: tag, for: deviceId, in: accountId).then {
+            tag in onDone(tag, nil)
+            }.catch {
+                err in onDone(nil, err)
+        }
+        
+    }
+
+}
+
+extension DeviceModel {
+    
+    // These calls are used by the DeviceCollection to reflect changes from the
+    // cloud back to the DeviceTagCollection.
+    
+    func _addOrUpdate(tag: DeviceTag) {
+        
+        let logtag = TAG
+        
+        _deviceTagCollection.add(tag: tag) {
+            t, e in
+            
+            if let e = e {
+                DDLogError("Error adding tag \(tag) from cloud: \(String(reflecting: e))", tag: logtag)
+                return
+            }
+            
+            DDLogDebug("Added tag from cloud: \(tag)", tag: logtag)
+            
+            eventSink.send(value: DeviceModelEvent.tagEvent(event: DeviceModelable.DeviceTagEvent.addedTag(tag)))
+            
+        }
+    }
+    
+    func _removeTag(with id: DeviceTag.Id) {
+
+        let logtag = TAG
+
+        _deviceTagCollection.remove(withId: id) {
+            t, e in
+            
+            if let e = e {
+                DDLogError("Error removing tag id:\(id) from cloud: \(String(reflecting: e))", tag: logtag)
+                return
+            }
+            
+            DDLogDebug("Tag id:\(id) removed by cloud.", tag: logtag)
+
+            guard let tag = t?.first else {
+                let msg = "Expected exactly one tag from removal, got zero."
+//                assert(false, msg)
+                DDLogError(msg, tag: self.TAG)
+                return
+            }
+            
+            eventSink.send(value: DeviceModelEvent.tagEvent(event: DeviceModelable.DeviceTagEvent.deletedTag(tag)))
+
+        }
+    }
+}
+
+
 
 // MARK: RecordingDeviceModel
 
@@ -624,7 +849,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
                   associationId: String? = nil,
                   state: DeviceState = DeviceState(),
                   profile: DeviceProfile? = nil,
-                  deviceActionable: DeviceActionable? = nil,
+                  deviceCloudSupporting: DeviceCloudSupporting? = nil,
                   profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -634,11 +859,11 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
             associationId: associationId,
             state: state,
             profile: profile,
-            deviceActionable: deviceActionable,
+            deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
         )
         
-        self.deviceActionable = self
+        self.deviceCloudSupporting = self
     }
     
     public convenience init(model: DeviceModelable, copyState: Bool = false) {
@@ -651,7 +876,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
             profile: model.profile
         )
         
-        deviceActionable = self
+        deviceCloudSupporting = self
     }
     
     deinit {
@@ -661,11 +886,33 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
 
 }
 
-// MARK: RecordingDeviceModel - <DeviceActionable>
+// MARK: RecordingDeviceModel - <DeviceCloudSupporting>
+
+extension RecordingDeviceModel: DeviceTagPersisting, DeviceTagCloudPersisting {
+    
+    func purgeTag(with id: DeviceStreamEvent.Peripheral.DeviceTag.Id, onDone: @escaping DeviceTagPersisting.DeleteTagOnDone) {
+        DDLogDebug("FYI: RecordingDeviceModels don't purge tags.", tag: TAG)
+        onDone(id, nil)
+    }
+    
+    func persist(tag: DeviceTagPersisting.DeviceTag, onDone: @escaping DeviceTagPersisting.AddOrUpdateTagOnDone) {
+        DDLogDebug("FYI: RecordingDeviceModels don't persist tags.", tag: TAG)
+        onDone(tag, nil)
+    }
+    
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
+        return Promise { fulfill, _ in fulfill(tag) }
+    }
+    
+    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
+        return Promise { fulfill, _ in fulfill(id) }
+    }
+
+}
 
 extension RecordingDeviceModel: DeviceActionable {
-
-    /// We masquerade as a DeviceActionable so that we're able to be wired directly
+    
+    /// We masquerade as a DeviceCloudSupporting so that we're able to be wired directly
     /// to ProfileControls, which in turn allows us to both record and publish state changes
     /// without going through a service.
     

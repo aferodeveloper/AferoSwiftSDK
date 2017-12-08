@@ -62,7 +62,6 @@ class DeviceInspectorDeviceCharacteristicCell: UITableViewCell {
     
 }
 
-
 // MARK: - Attribute Cells -
 
 /// A cell which displays a single attribute. To configure,
@@ -101,6 +100,125 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
     
 }
 
+// MARK: - DeviceInspectorTagCollectionCell -
+
+// MARK: DeviceInspectorTagCollectionCellDelegate
+
+protocol DeviceInspectorTagCollectionCellDelegate: class {
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat)
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, presentTagEditorForTagAt indexPath: IndexPath)
+}
+
+// MARK: DeviceInspectorTagCollectionCell
+
+class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    weak var delegate: DeviceInspectorTagCollectionCellDelegate?
+    
+    // MARK: Model
+    
+    func set(tags: Set<DeviceTagCollection.DeviceTag>) {
+        self.tags = tags.sorted()
+    }
+    
+    var tags: [DeviceModelable.DeviceTag] = [] {
+        didSet {
+            collectionView?.reloadData()
+            collectionView?.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    func tag(for indexPath: IndexPath) -> DeviceModelable.DeviceTag? {
+        guard indexPath.item > 0 else { return nil }
+        return tags[indexPath.item - 1]
+    }
+    
+    func indexPath(for tag: DeviceModelable.DeviceTag) -> IndexPath? {
+        guard let tagId = tag.id else {
+            return nil
+        }
+        guard let item = tags.index(where: { $0.id == tagId }) else {
+            return nil
+        }
+        
+        return IndexPath(item: item + 1, section: 0)
+    }
+    
+    // MARK: <UICollectionViewDataSource>
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tags.count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let reuseId: String
+        switch indexPath.item {
+        case 0: reuseId = "AddTagCell"
+        default: reuseId = "TagCell"
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
+        
+        if let collectionCell = cell as? TagCollectionViewCell {
+            configure(cell: collectionCell, for: indexPath)
+        }
+
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.tagCollectionCell(self, presentTagEditorForTagAt: indexPath)
+    }
+    
+    func configure(cell: TagCollectionViewCell, for indexPath: IndexPath) {
+        guard let t = tag(for: indexPath) else { return }
+        cell.key = t.key
+        cell.value = t.value
+    }
+    
+    // MARK: UI
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        tags = []
+    }
+    
+    private var contentSizeObservation: NSKeyValueObservation?
+    
+    @IBOutlet weak var collectionView: UICollectionView! {
+        
+        didSet {
+
+            collectionView?.dataSource = self
+            collectionView?.delegate = self
+            
+            if let flowLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+                flowLayout.estimatedItemSize = CGSize(width: 100, height: 32)
+                flowLayout.minimumLineSpacing = 5.0
+                flowLayout.minimumInteritemSpacing = 5.0
+            }
+            
+            contentSizeObservation = collectionView?.observe(\.contentSize) {
+                [weak self] obj, change in
+                self?.preferredHeight = obj.collectionViewLayout.collectionViewContentSize.height
+            }
+            
+        }
+    }
+    
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    
+    var preferredHeight: CGFloat {
+        get { return heightConstraint.constant }
+        set {
+            heightConstraint.constant = newValue
+            delegate?.tagCollectionCell(self, preferredHeightDidChangeTo: newValue)
+        }
+    }
+    
+}
+
 // MARK: - DeviceInspectorViewController -
 
 class DeviceInspectorViewController: UITableViewController, DeviceModelableObserving {
@@ -111,11 +229,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         case deviceInfo
         case deviceCharacteristic
+        case tags
         case genericAttribute
         
         var reuseClass: AnyClass {
             switch self {
             case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
+            case .tags: return DeviceInspectorTagCollectionCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -124,13 +244,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         var reuseIdentifier: String {
             switch self {
             case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
+            case .tags: return "DeviceInspectorTagCollectionCell"
             case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
         }
         
         static var allCases: Set<Reuse> {
-            return [ .deviceCharacteristic, .deviceInfo, .genericAttribute ]
+            return [ .deviceCharacteristic, .tags, .deviceInfo, .genericAttribute ]
         }
         
     }
@@ -138,6 +259,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
+        case tags
         case mcuApplicationSpecificAttributes
         case gpioAttributes
         case aferoVersionsAttributes
@@ -150,6 +272,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         static let all: [Section] = [
             .deviceInfo,
+            .tags,
             .mcuApplicationSpecificAttributes,
             .gpioAttributes,
             .aferoVersionsAttributes,
@@ -167,6 +290,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Device Info"
+            case .tags: name = "Tags"
             case .mcuApplicationSpecificAttributes: name = "MCU Application Attributes"
             case .gpioAttributes: name = "GPIO Attributes"
             case .aferoVersionsAttributes: name = "Afero Versions"
@@ -185,6 +309,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Section.deviceInfo"
+            case .tags: name = "Section.tags"
             case .mcuApplicationSpecificAttributes: name = "Section.mcuApplicationSpecificAttributes"
             case .gpioAttributes: name = "Section.gpioAttributes"
             case .aferoVersionsAttributes: name = "Section.aferoVersionsAttributes"
@@ -207,6 +332,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 name = NSLocalizedString(
                     "Device Info",
                     comment: "DeviceInspectorViewController Section.deviceInfo name"
+                )
+                
+            case .tags:
+                name = NSLocalizedString(
+                    "Tags",
+                    comment: "DeviceTags section name"
                 )
                 
             case .mcuApplicationSpecificAttributes:
@@ -320,6 +451,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     deinit {
         stopObservingDeviceEvents()
     }
+    
+    private var tagObservation: NSKeyValueObservation?
 
     // MARK: <DeviceModelableObserving>
     
@@ -329,9 +462,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     ///         `DeviceCollection`.
     
     weak var deviceModelable: DeviceModelable! {
-        didSet { title = deviceModelable?.displayName }
+        didSet {
+            title = deviceModelable?.displayName
+            tagObservation = deviceModelable.deviceTagCollection?.observe(\.deviceTags, options: [.initial, .new]) {
+                [weak self] obj, chg in
+                self?.updateTagCell()
+            }
+        }
     }
-    
 
     /// The `disposable`, which is our handle to DeviceEventSignal
     /// observation.
@@ -388,6 +526,22 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         updateWriteStateIndicator()
     }
 
+    func handleTagEvent(event: DeviceModelable.DeviceTagEvent) {
+//        updateTagCell()
+    }
+    
+    var tagCollectionCell: DeviceInspectorTagCollectionCell? {
+        let indexPath = IndexPath.tagCellIndexPath
+        return tableView.cellForRow(at: indexPath) as? DeviceInspectorTagCollectionCell
+    }
+    
+    func updateTagCell() {
+        guard let cell = tagCollectionCell else {
+            return
+        }
+        configure(tagCell: cell)
+    }
+    
     // MARK: Display Updates
     
     func updateErrorDisplay() {
@@ -476,6 +630,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case showSegmentedControlAttributeInspector = "ShowSegmentedControlAttributeInspector"
         case showStepperAttributeInspector = "ShowStepperAttributeInspector"
         case showProgressAttributeInspector = "ShowProgressAttributeInspector"
+        case showTagEditor = "ShowTagEditor"
     }
     
     func performSegue(withIdentifier identifier: SegueIdentifier, sender: Any?) {
@@ -506,7 +661,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
             guard let attribute = attribute(for: selectedIndex) else {
-                DDLogError("No attribute for row: \(selectedIndex.row) in section: \(selectedIndex.section)", tag: TAG)
+                DDLogDebug("No attribute for row: \(selectedIndex.row) in section: \(selectedIndex.section)", tag: TAG)
                 return
             }
             
@@ -518,7 +673,32 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             inspector.deviceModelable = deviceModelable
             inspector.attributeId = attribute.config.descriptor.id
             
+        case .showTagEditor:
+            
+            guard let editor = segue.destination as? EditTagViewController else {
+                DDLogError("Unable to cast \(segue.destination) to EditTagViewController", tag: TAG)
+                return
+            }
+            
+            editor.modalPresentationStyle = .popover
+            editor.popoverPresentationController?.delegate = self
+            editor.deviceTagCollection = deviceModelable.deviceTagCollection
+            
+            if
+                let tagCell = (sender as? TagCollectionViewCell) ?? (sender as? AddTagCollectionViewCell),
+                let tagCollectionCell = tagCollectionCell,
+                let indexPath = tagCollectionCell.collectionView.indexPath(for: tagCell) {
+
+                editor.popoverPresentationController?.sourceView = tagCell
+                editor.popoverPresentationController?.sourceRect = tagCell.bounds
+                editor.tag = tagCollectionCell.tag(for: indexPath)
+                
+            } else {
+                editor.popoverPresentationController?.sourceView = sender as? UIView
+            }
+            
         }
+        
     }
 
     func presentActionSheet(for row: DeviceCharacteristicRow) {
@@ -673,6 +853,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     /// -
     func attribute(for indexPath: IndexPath) -> DeviceModelable.Attribute? {
         
+        if indexPath == IndexPath.tagCellIndexPath { return nil }
+        
         guard let attributeId = config(for: indexPath)?.descriptor.id else {
             let msg = "No attributeId for \(String(describing: indexPath))"
             assert(false, msg)
@@ -727,8 +909,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        if section == 0 {
+        if section == Section.deviceInfo.rawValue {
             return DeviceCharacteristicRow.all.count
+        }
+        
+        if section == Section.tags.rawValue {
+            return 1
         }
         
         let sections = Section.all.filter({ visibleSections.contains($0) })
@@ -744,11 +930,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         return ret
         
     }
-    
+
     func reuseIdentifier(for indexPath: IndexPath) -> String {
         let section = visibleSections[indexPath.section]
         switch section {
         case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
+        case .tags: return Reuse.tags.reuseIdentifier
         default: return Reuse.genericAttribute.reuseIdentifier
         }
     }
@@ -762,6 +949,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         let section = visibleSections[section]
         return section.localizedName
     }
+    
+//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        <#code#>
+//    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -779,7 +970,20 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         if let attributeCell = cell as? DeviceInspectorGenericAttributeCell {
             configure(attributeCell: attributeCell, for: indexPath)
+            return
         }
+        
+        if let tagCell = cell as? DeviceInspectorTagCollectionCell {
+            configure(tagCell: tagCell)
+            return
+        }
+        
+    }
+    
+    func configure(tagCell cell: DeviceInspectorTagCollectionCell) {
+        cell.delegate = self
+        cell.selectionStyle = .none
+        cell.set(tags: deviceModelable.deviceTags)
     }
     
     func configure(characteristicCell cell: DeviceInspectorDeviceCharacteristicCell, for indexPath: IndexPath) {
@@ -823,6 +1027,11 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     // MARK: <UITableViewDelegate>
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath == IndexPath.tagCellIndexPath { return nil }
+        return indexPath
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -912,7 +1121,72 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
 }
 
+// MARK: <TagCollectionCellDelegate>
+
+extension DeviceInspectorViewController: DeviceInspectorTagCollectionCellDelegate {
+    
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, presentTagEditorForTagAt indexPath: IndexPath) {
+
+        guard
+            let tagCell = cell.collectionView.cellForItem(at: indexPath) else {
+                print("No tagCell to present")
+                return
+        }
+        performSegue(withIdentifier: .showTagEditor, sender: tagCell)
+    }
+    
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat) {
+        asyncMain {
+            [weak tableView] in
+            tableView?.beginUpdates()
+            tableView?.endUpdates()
+        }
+    }
+}
+
+// MARK: <UIPopoverPresentationControllerDelegate>
+
+extension DeviceInspectorViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
+        popoverPresentationController.backgroundColor = presentedViewController?.view.backgroundColor
+    }
+    
+    func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
+        
+        guard let tagBeingEdited = (popoverPresentationController.presentedViewController as? EditTagViewController)?.tag else {
+            tagCollectionCell?.collectionView.deselectItem(at: IndexPath(item: 0, section: 0), animated: true)
+            return true
+        }
+        
+        if let indexPath = tagCollectionCell?.indexPath(for: tagBeingEdited) {
+            tagCollectionCell?.collectionView.deselectItem(at: indexPath, animated: true)
+        }
+        
+        return true
+        
+    }
+    
+}
+
 // MARK: - Convenience Extensions -
+
+extension DeviceTagCollection.DeviceTag: Comparable {
+    
+    public static func <(lhs: DeviceTagCollection.DeviceTag, rhs: DeviceTagCollection.DeviceTag) -> Bool {
+        if lhs.value < rhs.value { return true }
+        if lhs.value > rhs.value { return false }
+        guard let lk = lhs.key, let rk = rhs.key else {
+            return true
+        }
+        return lk < rk
+    }
+    
+}
 
 fileprivate extension AferoPlatformAttributeRange {
     
@@ -944,6 +1218,10 @@ fileprivate extension IndexPath {
     
     var deviceInspectorSection: DeviceInspectorViewController.Section? {
         return DeviceInspectorViewController.Section(rawValue: section)
+    }
+    
+    static var tagCellIndexPath: IndexPath {
+        return self.init(row: 0, section: DeviceInspectorViewController.Section.tags.rawValue)
     }
     
 }

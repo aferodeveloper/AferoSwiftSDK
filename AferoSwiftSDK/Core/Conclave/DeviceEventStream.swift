@@ -51,7 +51,7 @@ extension DeviceEventStreamable {
 class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvertible {
     
     var debugDescription: String {
-        return "<\(TAG)> accountId:\(accountId) clientType:\(clientType) clientVersion:\(clientVersion) access: \(conclaveAccess.debugDescription) token: \(conclaveAccessToken.debugDescription) client:\(conclaveClient.debugDescription)"
+        return "<\(TAG)> accountId:\(accountId) clientType:\(String(describing: clientType)) clientVersion:\(String(describing: clientVersion)) access: \(conclaveAccess.debugDescription) token: \(conclaveAccessToken.debugDescription) client:\(conclaveClient.debugDescription)"
     }
     
     /// The object responsible for handling Conclave authentication.
@@ -368,11 +368,13 @@ class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvert
         
         if eventName == "invalidate" {
             
-            guard let kindName = data["kind"] as? String else {
-                return
+            guard
+                let kindName = data["kind"] as? InvalidationEvent.Kind.RawValue,
+                let kind = InvalidationEvent.Kind(rawValue: kindName) else {
+                    return
             }
             
-            handleInvalidation(InvalidationEvent(rawValue: kindName))
+            handleInvalidation(InvalidationEvent(kind: kind, info: data["data"] as? InvalidationEvent.EventInfo))
         }
         
         guard let event = DeviceStreamEvent(name: eventName, seq: seq, data: data, target: target) else {
@@ -388,9 +390,9 @@ class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvert
     fileprivate func handleInvalidation(_ event: InvalidationEvent?) {
 
         guard
-            let name = event?.notificationName else { return }
+            let name = event?.kind.notificationName else { return }
         
-        NotificationCenter.default.post(name: Notification.Name(rawValue: name), object: self)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: name), object: self, userInfo: event?.info)
     }
     
     // MARK: Client State

@@ -210,9 +210,9 @@ public extension AferoAPIClientProto {
         return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/location", object: location)
     }
     
-    @available(*, deprecated, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
+    @available(*, unavailable, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: LocationSourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
-        return setLocation(as: location, with: locationSourceType, formattedAddressLines: formattedAddressLines, for: deviceId, in: accountId)
+        fatalError("Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     }
     
 }
@@ -282,6 +282,60 @@ public extension AferoAPIClientProto {
         
         return GET("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/timezone")
     }
+}
+
+extension AferoAPIClientProto {
+    
+    /// Add or update the given DeviceTag on the device identified by `deviceId` and `accountId`.
+    /// - parameter tag: The tag to update. If `tag.id` is non-nil, then its existing representation in
+    ///                  the cloud will be replaced the given instance. If `tag.id` is nil, then a new
+    ///                  tag will be added.
+    /// - parameter deviceId: The `id` of the device on which to set the tag.
+    /// - parameter accountId: The `id` of the account to which the given device is associated.
+    /// - returns: A `Promise` that resolves to the tag resulting from the add or update request, and throws
+    ///            any errors emitted by the cloud.
+    
+    func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
+
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString else {
+                let msg = "Unable to safely encode deviceId=`\(deviceId)' or accountId='\(accountId)'"
+                DDLogError(msg, tag: TAG)
+                return Promise { _, reject in reject(msg) }
+        }
+
+        guard let _ = tag.id else {
+            return POST("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag", object: tag)
+        }
+        
+        return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag", object: tag)
+    }
+
+    /// Delete a tag with the given `id`, on the device identified by `deviceId` and `accountId`.
+    /// - parameter id: The `id` of the tag to delete.
+    /// - parameter deviceId: The `id` of the device from which to remove the tag.
+    /// - parameter accountId: The `id` of the account to which the given device is associated.
+    /// - returns: A `Promise` which resoles to the given tag id if successfully deleted, and throws
+    ///            any errors emitted by the cloud.
+    /// - note: The Afero REST API returns no content upon a successful deletion; the given tag is simply
+    ///         returned in the promise upon success.
+    
+    func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
+
+        guard
+            let safeDeviceId = deviceId.pathAllowedURLEncodedString,
+            let safeAccountId = accountId.pathAllowedURLEncodedString,
+            let safeTagId = id.pathAllowedURLEncodedString else {
+                let msg = "Unable to safely encode deviceId=`\(deviceId)' or accountId='\(accountId)'"
+                DDLogError(msg, tag: TAG)
+                return Promise { _, reject in reject(msg) }
+        }
+
+        return DELETE("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag/\(safeTagId)")
+            .then { safeTagId }
+    }
+
 }
 
 

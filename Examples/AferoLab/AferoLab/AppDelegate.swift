@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func configureLogging() {
         
-        defaultDebugLevel = DDLogLevel.debug
+        defaultDebugLevel = DDLogLevel.verbose
         
         #if DEBUG
             DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()

@@ -396,7 +396,7 @@ extension Data {
 func bytesFromHexString(_ hexString: String?) -> [UInt8]? {
     if let hexString = hexString {
         
-        if hexString.characters.count % 2 != 0 {
+        if hexString.count % 2 != 0 {
             DDLogError("Error: invalid hex string '\(hexString)")
             return nil
         }

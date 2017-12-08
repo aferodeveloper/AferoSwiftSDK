@@ -269,11 +269,4 @@ extension DeviceModelState {
     }
 }
 
-struct DeviceModelTag {
-    
-    var id: String
-    var localizationKey: String
-    var value: String
-    var type: String
-    
-}
+

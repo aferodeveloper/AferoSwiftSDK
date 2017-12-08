@@ -558,8 +558,15 @@ public class DeviceCollection: NSObject, MetricsReportable {
             onDeviceOTAProgress(peripheralId: peripheralId, progress: progress, seq: seq)
             
         case let .invalidate(seq, maybePeripheralId, eventName, data):
+            
             DDLogDebug(String(format: "invalidate received: %@", data), tag: TAG)
-            onInvalidate(maybePeripheralId: maybePeripheralId, eventName: eventName, data: data, seq: seq)
+            
+            guard let invalidation = InvalidationEvent(kind: eventName, info: data) else {
+                DDLogWarn("Unrecognized invalidation event kind \(eventName); ignoring.", tag: TAG)
+                break
+            }
+            
+            onInvalidate(maybePeripheralId: maybePeripheralId, event: invalidation, seq: seq)
             
         case let .deviceError(seq, _, error):
             onDeviceError(error: error, seq: seq)
@@ -669,7 +676,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             associationId: nil,
             profileId: profileId,
             attributes: [:],
-            deviceActionable: self,
+            deviceCloudSupporting: self,
             profileSource: profileSource,
             viewingNotificationConsumer: {
                 [weak self] isViewing, deviceId in
@@ -775,6 +782,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         device.currentState.connectionState = modelState
         device.profileId = profileId
         
+        if let tags: [DeviceTagCollection.DeviceTag.Model] = |<(json["deviceTags"] as? [[String: Any]]) {
+            device.deviceTags = Set(tags.map { return DeviceTagCollection.DeviceTag(model: $0) } )
+        }
+        
         device.updateProfile {
             
             [weak device] updateProfileSuccess, maybeError in
@@ -808,6 +819,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
             onDone(nil)
             return
         }
+        
+        device.deviceTags = Set(peripheral.deviceTags)
         
         device.updateProfile {
             
@@ -934,25 +947,37 @@ public class DeviceCollection: NSObject, MetricsReportable {
     ///         are computed and sent by the service based upon internal state changes.
     ///         For this reason, we only forward the name and the raw daa.
     
-    fileprivate func onInvalidate(maybePeripheralId: String?, eventName: InvalidationEventKind, data: [String: Any], seq: DeviceStreamEventSeq?) {
+    fileprivate func onInvalidate(maybePeripheralId: String?, event: InvalidationEvent, seq: DeviceStreamEventSeq?) {
 
         guard
             let peripheralId = maybePeripheralId,
             let device = peripheral(for: peripheralId) else { return }
         
-        switch eventName {
+        switch event.kind {
             
-        case InvalidationEvent.profiles.rawValue:
+        case .profiles:
             device.profileId = nil
             
-        case InvalidationEvent.location.rawValue:
+        case .location:
             updateLocation(for: peripheralId, retryInterval: 10.0)
             
-        case InvalidationEvent.timezone.rawValue:
+        case .timezone:
             updateTimeZoneState(for: peripheralId, retryInterval: 10.0)
-
+            
+        case .tags:
+            
+            guard let info = event.info else {
+                let msg = "Got tags invalidation for \(peripheralId):\(String(reflecting: event)), but no info."
+                DDLogWarn(msg, tag: TAG)
+                assert(false, msg)
+                return
+            }
+            
+            applyTagUpdate(for: peripheralId, info: info)
+            
         default:
             break
+            
         }
     }
     
@@ -1050,6 +1075,47 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 DDLogDebug("After timeZoneState update of \(peripheralId): \(String(reflecting: peripheral))", tag: self.TAG)
         }
 
+    }
+    
+    func applyTagUpdate(for peripheralId: String, info: InvalidationEvent.EventInfo) {
+        
+        guard let peripheral = peripheral(for: peripheralId) else {
+            DDLogWarn("No peripheral found for id \(peripheralId); ignoring tag update \(String(reflecting: info))", tag: TAG)
+            return
+        }
+        
+        enum TagAction: String {
+            case add = "ADD"
+            case update = "UPDATE"
+            case delete = "DELETE"
+        }
+        
+        guard
+            let actionName = info["deviceTagAction"] as? TagAction.RawValue,
+            let action = TagAction(rawValue: actionName) else {
+                DDLogWarn("No tag action found in \(String(reflecting: info))", tag: TAG)
+                return
+        }
+        
+        switch action {
+        case .add: fallthrough
+        case .update:
+            guard let deviceTag: DeviceModelable.DeviceTag.Model = |<info["deviceTag"] else {
+                DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
+                return
+            }
+            peripheral._addOrUpdate(tag: DeviceModelable.DeviceTag(model: deviceTag))
+            
+        case .delete:
+            guard
+                let deviceTag: DeviceModelable.DeviceTag.Model = |<info["deviceTag"],
+                let deviceTagId = deviceTag.id else {
+                    DDLogWarn("Unable to decode tag from \(String(describing: info))", tag: TAG)
+                    return
+            }
+            peripheral._removeTag(with: deviceTagId)
+        }
+        
     }
 
     // MARK: - Public Stream Controls
@@ -1278,3 +1344,8 @@ public extension DeviceCollection {
     
 }
 
+extension DeviceStreamEvent.Peripheral {
+    var deviceTags: [DeviceTagCollection.DeviceTag] {
+        return tags.map { DeviceTagCollection.DeviceTag(model: $0) }
+    }
+}
