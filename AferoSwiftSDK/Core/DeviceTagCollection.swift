@@ -40,6 +40,10 @@ import Result
         self.model = model
     }
     
+    public convenience override init() {
+        self.init(model: Model(id: nil, value: ""))
+    }
+    
     @objc convenience init?(id: AferoDeviceTagProto.Id?, value: AferoDeviceTagProto.Value, key: AferoDeviceTagProto.Key? = nil, localizationKey: AferoDeviceTagProto.LocalizationKey? = nil, tagTypeRawValue: AferoDeviceTagProto.TagTypeRawValue = Model.TagType.account.rawValue) {
 
         guard let tagType = Model.TagType(rawValue: tagTypeRawValue) else {

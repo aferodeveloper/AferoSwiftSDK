@@ -56,11 +56,11 @@ class EditTagViewController: UIViewController, UITextFieldDelegate {
     }
     
     lazy var workingTag: AferoMutableDeviceTag! = {
-        return tag?.mutableCopy() as! AferoMutableDeviceTag
+        return (tag?.mutableCopy() as? AferoMutableDeviceTag) ?? AferoMutableDeviceTag()
     }()
     
     func resetModel() {
-        workingTag = tag?.mutableCopy() as! AferoMutableDeviceTag
+        workingTag = (tag?.mutableCopy() as? AferoMutableDeviceTag) ?? AferoMutableDeviceTag()
     }
     
     // MARK: - UI

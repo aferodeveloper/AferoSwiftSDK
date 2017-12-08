@@ -128,8 +128,9 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
         }
     }
     
-    func tag(for indexPath: IndexPath) -> DeviceModelable.DeviceTag {
-        return tags[indexPath.item]
+    func tag(for indexPath: IndexPath) -> DeviceModelable.DeviceTag? {
+        guard indexPath.item > 0 else { return nil }
+        return tags[indexPath.item - 1]
     }
     
     func indexPath(for tag: DeviceModelable.DeviceTag) -> IndexPath? {
@@ -140,18 +141,29 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
             return nil
         }
         
-        return IndexPath(item: item, section: 0)
+        return IndexPath(item: item + 1, section: 0)
     }
     
     // MARK: <UICollectionViewDataSource>
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tags.count
+        return tags.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TagCell", for: indexPath)
-        configure(cell: cell as! TagCollectionViewCell, for: indexPath)
+        
+        let reuseId: String
+        switch indexPath.item {
+        case 0: reuseId = "AddTagCell"
+        default: reuseId = "TagCell"
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath)
+        
+        if let collectionCell = cell as? TagCollectionViewCell {
+            configure(cell: collectionCell, for: indexPath)
+        }
+
         return cell
     }
     
@@ -160,7 +172,7 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     }
     
     func configure(cell: TagCollectionViewCell, for indexPath: IndexPath) {
-        let t = tag(for: indexPath)
+        guard let t = tag(for: indexPath) else { return }
         cell.key = t.key
         cell.value = t.value
     }
@@ -673,7 +685,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             editor.deviceTagCollection = deviceModelable.deviceTagCollection
             
             if
-                let tagCell = sender as? TagCollectionViewCell,
+                let tagCell = (sender as? TagCollectionViewCell) ?? (sender as? AddTagCollectionViewCell),
                 let tagCollectionCell = tagCollectionCell,
                 let indexPath = tagCollectionCell.collectionView.indexPath(for: tagCell) {
 
@@ -682,7 +694,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 editor.tag = tagCollectionCell.tag(for: indexPath)
                 
             } else {
-                
                 editor.popoverPresentationController?.sourceView = sender as? UIView
             }
             
@@ -1147,9 +1158,12 @@ extension DeviceInspectorViewController: UIPopoverPresentationControllerDelegate
     
     func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
         
-        if
-            let tagBeingEdited = (popoverPresentationController.presentedViewController as? EditTagViewController)?.tag,
-            let indexPath = tagCollectionCell?.indexPath(for: tagBeingEdited) {
+        guard let tagBeingEdited = (popoverPresentationController.presentedViewController as? EditTagViewController)?.tag else {
+            tagCollectionCell?.collectionView.deselectItem(at: IndexPath(item: 0, section: 0), animated: true)
+            return true
+        }
+        
+        if let indexPath = tagCollectionCell?.indexPath(for: tagBeingEdited) {
             tagCollectionCell?.collectionView.deselectItem(at: indexPath, animated: true)
         }
         

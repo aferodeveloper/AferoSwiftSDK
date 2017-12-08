@@ -8,6 +8,11 @@
 
 import UIKit
 
+@IBDesignable @objcMembers class AddTagCollectionViewCell: UICollectionViewCell {
+    @IBOutlet weak var imageView: UIImageView!
+}
+
+
 @IBDesignable @objcMembers class TagCollectionViewCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
