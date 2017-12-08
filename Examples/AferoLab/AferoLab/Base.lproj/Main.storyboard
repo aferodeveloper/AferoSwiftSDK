@@ -581,6 +581,28 @@
                                     <outlet property="heightConstraint" destination="CMo-Yg-1EH" id="aaJ-cI-Vml"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorWifiNetworkCell" rowHeight="66" id="5lD-gA-lCs" customClass="DeviceInspectorTagCollectionCell" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="303" width="375" height="66"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5lD-gA-lCs" id="GvR-1c-Gu8">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="66"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SSID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lj-4e-4Mc">
+                                            <rect key="frame" x="16" y="23" width="37" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7CI-6i-7qI" customClass="AferoWifiRSSIView" customModule="AferoLab" customModuleProvider="target">
+                                            <rect key="frame" x="272" y="11" width="87" height="44"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </view>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="H4S-Ll-Whl" id="gtY-4E-Mt4"/>
@@ -647,15 +669,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ie3-Yj-A1A">
-                                <rect key="frame" x="16" y="270.5" width="343" height="127"/>
+                                <rect key="frame" x="16" y="269.5" width="343" height="129"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBt-bk-Lgo" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ac-9q-5uL">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KLt-gs-eeQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="127"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="129"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -744,7 +766,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView" customClass="AferoAttributeUITextView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="89" width="253" height="18"/>
+                                        <rect key="frame" x="70" y="89" width="253" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" identifier="valueTextViewHeight" id="cYh-Ju-ueK"/>
                                         </constraints>
@@ -1796,7 +1818,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
                                 <rect key="frame" x="124.5" y="290" width="126.5" height="87.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <userDefinedRuntimeAttributes>
@@ -1817,35 +1839,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wYN-SJ-sSh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2256.8000000000002" y="3614.8425787106448"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="du5-av-uzP">
-            <objects>
-                <viewController id="dkN-Oj-jSM" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Wo6-ca-UU3"/>
-                        <viewControllerLayoutGuide type="bottom" id="0OW-C2-Jup"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="lSA-hr-gw1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zae-M4-dRS" customClass="TagView" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="179.5" y="326" width="16" height="16"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="Zae-M4-dRS" firstAttribute="centerY" secondItem="lSA-hr-gw1" secondAttribute="centerY" id="EaR-h5-so3"/>
-                            <constraint firstItem="Zae-M4-dRS" firstAttribute="centerX" secondItem="lSA-hr-gw1" secondAttribute="centerX" id="xXd-os-v8t"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZPw-G0-cc5" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3172" y="3650.8245877061472"/>
+            <point key="canvasLocation" x="393" y="2633"/>
         </scene>
         <!--Stepper Attribute Inspector View Controller-->
         <scene sceneID="lpu-gB-7Nw">
@@ -2207,6 +2201,40 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UcL-xY-5oZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3207" y="1588"/>
+        </scene>
+        <!--Collection View Controller-->
+        <scene sceneID="AUf-Bh-vOZ">
+            <objects>
+                <collectionViewController id="Yky-8H-TIp" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Yfo-qn-7fB">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="2Ov-55-wa4">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Xen-cN-wiC">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="Yky-8H-TIp" id="jJ6-5l-s5E"/>
+                            <outlet property="delegate" destination="Yky-8H-TIp" id="pgd-31-K68"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8TC-FB-Gzd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4545" y="1355"/>
         </scene>
         <!--Progress View Attribute Inspector View Controller-->
         <scene sceneID="7tz-yJ-HW9">

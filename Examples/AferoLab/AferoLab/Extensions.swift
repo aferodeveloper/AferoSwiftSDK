@@ -511,3 +511,21 @@ public extension Timer {
     }
     
 }
+
+extension ClosedRange {
+    
+    func clamp(value : Bound) -> Bound {
+        return lowerBound > value ? lowerBound
+            : upperBound < value ? upperBound
+            : value
+    }
+}
+
+extension CountableClosedRange {
+    
+    func clamp(value : Bound) -> Bound {
+        return lowerBound > value ? lowerBound
+            : upperBound < value ? upperBound
+            : value
+    }
+}

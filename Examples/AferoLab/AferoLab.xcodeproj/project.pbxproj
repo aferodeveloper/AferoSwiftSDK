@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		491A6C774265D5E4E887AC8D /* Pods_AferoLabUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */; };
 		7C90D7040159EEF26D6D8852 /* Pods_AferoLab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */; };
+		CB1134411FDB233800AECFAB /* AferoWifiRSSIView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB1134401FDB233800AECFAB /* AferoWifiRSSIView.xib */; };
+		CB1134431FDB29F600AECFAB /* AferoWifiRSSIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1134421FDB29F600AECFAB /* AferoWifiRSSIView.swift */; };
 		CB1C82F31F9925C1004DD348 /* AferoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1C82F21F9925C1004DD348 /* AferoViews.swift */; };
 		CB1C82F51F993154004DD348 /* AferoClimateControlContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB1C82F41F993154004DD348 /* AferoClimateControlContent.xib */; };
 		CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */; };
@@ -35,6 +37,7 @@
 		CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */; };
 		CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA475431FD5BABF00D4C25C /* TagViewContent.xib */; };
 		CBA475461FD5D55500D4C25C /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA475451FD5D55500D4C25C /* TagView.swift */; };
+		CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA578181FDB3FCC000D349C /* XibBasedView.swift */; };
 		CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
 /* End PBXBuildFile section */
@@ -77,6 +80,8 @@
 		982FD2D8DADC37CF187B6F3E /* Pods-AferoLabUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.release.xcconfig"; sourceTree = "<group>"; };
 		BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C000460375D6E9ED982A6C4E /* Pods-AferoLabTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CB1134401FDB233800AECFAB /* AferoWifiRSSIView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AferoWifiRSSIView.xib; sourceTree = "<group>"; };
+		CB1134421FDB29F600AECFAB /* AferoWifiRSSIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoWifiRSSIView.swift; sourceTree = "<group>"; };
 		CB1C82F21F9925C1004DD348 /* AferoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoViews.swift; sourceTree = "<group>"; };
 		CB1C82F41F993154004DD348 /* AferoClimateControlContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AferoClimateControlContent.xib; sourceTree = "<group>"; };
 		CB1CED9C1EF8AC1B00B86534 /* AferoLogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AferoLogFormatter.swift; sourceTree = "<group>"; };
@@ -110,6 +115,7 @@
 		CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountInfoZeroStateView.xib; sourceTree = "<group>"; };
 		CBA475431FD5BABF00D4C25C /* TagViewContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagViewContent.xib; sourceTree = "<group>"; };
 		CBA475451FD5D55500D4C25C /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
+		CBA578181FDB3FCC000D349C /* XibBasedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibBasedView.swift; sourceTree = "<group>"; };
 		CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagViewController.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
@@ -151,6 +157,20 @@
 				96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CB11343F1FDB22C700AECFAB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CBA475431FD5BABF00D4C25C /* TagViewContent.xib */,
+				CBA475451FD5D55500D4C25C /* TagView.swift */,
+				CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */,
+				CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */,
+				CB1134401FDB233800AECFAB /* AferoWifiRSSIView.xib */,
+				CB1134421FDB29F600AECFAB /* AferoWifiRSSIView.swift */,
+				CBA578181FDB3FCC000D349C /* XibBasedView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		CB1C82F11F99254F004DD348 /* UIKit Additions */ = {
@@ -201,7 +221,8 @@
 				CB33761F1F170112009BFA9E /* APIClientConfig.plist */,
 				CB34C3721E7C689700547FD9 /* AppDelegate.swift */,
 				CB34C3791E7C689700547FD9 /* Assets.xcassets */,
-				CB82FEFC1E7D9A400088CC0C /* nibs */,
+				CB82FEFC1E7D9A400088CC0C /* Storyboards */,
+				CB11343F1FDB22C700AECFAB /* Views */,
 				CB82FEE41E7D151E0088CC0C /* ViewControllers */,
 				CB82FEE81E7D16250088CC0C /* Services */,
 				CB82FEE91E7D16460088CC0C /* Utils */,
@@ -270,17 +291,13 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
-		CB82FEFC1E7D9A400088CC0C /* nibs */ = {
+		CB82FEFC1E7D9A400088CC0C /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
 				CB34C3761E7C689700547FD9 /* Main.storyboard */,
 				CB34C37B1E7C689700547FD9 /* LaunchScreen.storyboard */,
-				CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */,
-				CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */,
-				CBA475431FD5BABF00D4C25C /* TagViewContent.xib */,
-				CBA475451FD5D55500D4C25C /* TagView.swift */,
 			);
-			name = nibs;
+			name = Storyboards;
 			sourceTree = "<group>";
 		};
 		F65B2B5B090F0EECF0F3A66B /* Pods */ = {
@@ -430,6 +447,7 @@
 				CB34C37A1E7C689700547FD9 /* Assets.xcassets in Resources */,
 				CB34C3781E7C689700547FD9 /* Main.storyboard in Resources */,
 				CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */,
+				CB1134411FDB233800AECFAB /* AferoWifiRSSIView.xib in Resources */,
 				CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -639,10 +657,12 @@
 				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
 				CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */,
 				CB72D8931F91750C000D8925 /* AferoUIControls.swift in Sources */,
+				CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */,
 				CB1C82F31F9925C1004DD348 /* AferoViews.swift in Sources */,
 				CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */,
 				CB241A311F8D6AD100480CCA /* AttributeInspectorViewController.swift in Sources */,
 				CB241A331F8D839F00480CCA /* DeviceModelableObserving.swift in Sources */,
+				CB1134431FDB29F600AECFAB /* AferoWifiRSSIView.swift in Sources */,
 				CB79624E1F830D26002E0C6C /* DeviceInspectorViewController.swift in Sources */,
 				CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */,
 				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
