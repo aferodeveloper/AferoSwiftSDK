@@ -338,87 +338,8 @@
                                     <outlet property="profileIdValueLabel" destination="SOh-iC-LnC" id="8Sa-7N-9KX"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorGenericAttributeCell" rowHeight="73" id="LPr-zE-DlN" customClass="DeviceInspectorGenericAttributeCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="113" width="375" height="73"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LPr-zE-DlN" id="yXM-Sy-5HH">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="bbA-RV-kuP" userLabel="InnerContent">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="254" verticalCompressionResistancePriority="1000" text="Attribute Name" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q4K-iu-ZMe">
-                                                    <rect key="frame" x="16" y="16" width="122" height="20.5"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GcV-09-CNI">
-                                                    <rect key="frame" x="16" y="40.5" width="77.5" height="16.5"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="66666" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvg-Je-cIw">
-                                                            <rect key="frame" x="0.0" y="0.0" width="38.5" height="16.5"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="/" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HbC-bU-XSF">
-                                                            <rect key="frame" x="38.5" y="0.0" width="4" height="16.5"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="INT64" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ukB-TU-NrM">
-                                                            <rect key="frame" x="42.5" y="0.0" width="35" height="16.5"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <constraints>
-                                                        <constraint firstItem="vvg-Je-cIw" firstAttribute="firstBaseline" secondItem="HbC-bU-XSF" secondAttribute="firstBaseline" id="jJ7-mP-pwa"/>
-                                                        <constraint firstItem="HbC-bU-XSF" firstAttribute="firstBaseline" secondItem="ukB-TU-NrM" secondAttribute="firstBaseline" id="wTv-ki-Qcp"/>
-                                                    </constraints>
-                                                </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="01234567891011" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c0d-cs-fWH">
-                                                    <rect key="frame" x="226.5" y="16" width="132.5" height="20.5"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <constraints>
-                                                <constraint firstItem="GcV-09-CNI" firstAttribute="leading" secondItem="q4K-iu-ZMe" secondAttribute="leading" id="5n3-5Y-Z21"/>
-                                                <constraint firstItem="c0d-cs-fWH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="q4K-iu-ZMe" secondAttribute="trailing" constant="8" symbolic="YES" id="8O2-HA-U4B"/>
-                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="top" secondItem="bbA-RV-kuP" secondAttribute="top" constant="16" id="8VM-Xk-4r8"/>
-                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="leading" secondItem="bbA-RV-kuP" secondAttribute="leading" constant="16" id="O76-Ki-mzr"/>
-                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="c0d-cs-fWH" secondAttribute="bottom" constant="16" id="b90-SJ-J1j"/>
-                                                <constraint firstItem="GcV-09-CNI" firstAttribute="firstBaseline" secondItem="q4K-iu-ZMe" secondAttribute="baseline" constant="20" id="bzV-g9-L2B"/>
-                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="firstBaseline" secondItem="c0d-cs-fWH" secondAttribute="firstBaseline" id="gmR-Td-aeb"/>
-                                                <constraint firstAttribute="trailing" secondItem="c0d-cs-fWH" secondAttribute="trailing" constant="16" id="nH5-tV-2PO"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="GcV-09-CNI" secondAttribute="bottom" constant="8" id="piL-AX-StO"/>
-                                                <constraint firstAttribute="bottom" secondItem="c0d-cs-fWH" secondAttribute="bottom" priority="250" constant="16" id="wSp-Sk-R0O"/>
-                                            </constraints>
-                                        </view>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="bbA-RV-kuP" secondAttribute="bottom" id="GkL-84-th4"/>
-                                        <constraint firstAttribute="trailing" secondItem="bbA-RV-kuP" secondAttribute="trailing" id="dqj-qX-fz4"/>
-                                        <constraint firstItem="bbA-RV-kuP" firstAttribute="leading" secondItem="yXM-Sy-5HH" secondAttribute="leading" id="fEA-wk-fjP"/>
-                                        <constraint firstItem="bbA-RV-kuP" firstAttribute="top" secondItem="yXM-Sy-5HH" secondAttribute="top" id="x20-qa-K6S"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="attributeIdLabel" destination="vvg-Je-cIw" id="sCP-A0-J81"/>
-                                    <outlet property="attributeNameLabel" destination="q4K-iu-ZMe" id="j4v-MG-MrK"/>
-                                    <outlet property="attributeStringValueLabel" destination="c0d-cs-fWH" id="Wia-18-OoG"/>
-                                    <outlet property="attributeTypeLabel" destination="ukB-TU-NrM" id="xNP-ZV-uyW"/>
-                                </connections>
-                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorDeviceCharacteristicCell" rowHeight="51" id="H9O-Wi-OzE" customClass="DeviceInspectorDeviceCharacteristicCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="186" width="375" height="51"/>
+                                <rect key="frame" x="0.0" y="113" width="375" height="51"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H9O-Wi-OzE" id="Hkh-18-IDq">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
@@ -464,8 +385,60 @@
                                     <outlet property="characteristicValueLabel" destination="Cyg-ve-SSw" id="Z96-2c-nwA"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorWifiNetworkCell" rowHeight="66" id="5lD-gA-lCs" customClass="DeviceInspectorWifiNetworkCell" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="164" width="375" height="66"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5lD-gA-lCs" id="GvR-1c-Gu8">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="66"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Lw-Nb-ETB">
+                                            <rect key="frame" x="16" y="8" width="343" height="50"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="82u-jq-pKr">
+                                                    <rect key="frame" x="0.0" y="0.0" width="243.5" height="50"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" text="SSID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lj-4e-4Mc">
+                                                            <rect key="frame" x="0.0" y="0.0" width="243.5" height="35.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6wH-UP-NV6">
+                                                            <rect key="frame" x="0.0" y="35.5" width="243.5" height="14.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7CI-6i-7qI" customClass="AferoWifiRSSIView" customModule="AferoLab" customModuleProvider="target">
+                                                    <rect key="frame" x="243.5" y="0.0" width="99.5" height="50"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </view>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="2Lw-Nb-ETB" firstAttribute="leading" secondItem="GvR-1c-Gu8" secondAttribute="leading" constant="16" id="SxQ-Kw-CUp"/>
+                                        <constraint firstAttribute="bottom" secondItem="2Lw-Nb-ETB" secondAttribute="bottom" constant="8" id="r6c-5v-jna"/>
+                                        <constraint firstAttribute="trailing" secondItem="2Lw-Nb-ETB" secondAttribute="trailing" constant="16" id="tDU-8D-fCY"/>
+                                        <constraint firstItem="2Lw-Nb-ETB" firstAttribute="top" secondItem="GvR-1c-Gu8" secondAttribute="top" constant="8" id="zdR-2a-owK"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="rssi">
+                                        <integer key="value" value="88"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="connectedLabel" destination="6wH-UP-NV6" id="reZ-XJ-bQ4"/>
+                                    <outlet property="rssiView" destination="7CI-6i-7qI" id="x5h-MB-nEW"/>
+                                    <outlet property="ssidLabel" destination="3Lj-4e-4Mc" id="QcQ-cv-r8R"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorTagCollectionCell" rowHeight="66" id="aRE-4x-lEx" customClass="DeviceInspectorTagCollectionCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="237" width="375" height="66"/>
+                                <rect key="frame" x="0.0" y="230" width="375" height="66"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aRE-4x-lEx" id="hEu-hs-YT3">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="66"/>
@@ -581,27 +554,84 @@
                                     <outlet property="heightConstraint" destination="CMo-Yg-1EH" id="aaJ-cI-Vml"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorWifiNetworkCell" rowHeight="66" id="5lD-gA-lCs" customClass="DeviceInspectorTagCollectionCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="303" width="375" height="66"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorGenericAttributeCell" rowHeight="73" id="LPr-zE-DlN" customClass="DeviceInspectorGenericAttributeCell" customModule="AferoLab" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="296" width="375" height="73"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5lD-gA-lCs" id="GvR-1c-Gu8">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="66"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LPr-zE-DlN" id="yXM-Sy-5HH">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SSID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lj-4e-4Mc">
-                                            <rect key="frame" x="16" y="23" width="37" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7CI-6i-7qI" customClass="AferoWifiRSSIView" customModule="AferoLab" customModuleProvider="target">
-                                            <rect key="frame" x="272" y="11" width="87" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="bbA-RV-kuP" userLabel="InnerContent">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="254" verticalCompressionResistancePriority="1000" text="Attribute Name" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q4K-iu-ZMe">
+                                                    <rect key="frame" x="16" y="16" width="122" height="20.5"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GcV-09-CNI">
+                                                    <rect key="frame" x="16" y="40.5" width="77.5" height="16.5"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="66666" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvg-Je-cIw">
+                                                            <rect key="frame" x="0.0" y="0.0" width="38.5" height="16.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="/" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HbC-bU-XSF">
+                                                            <rect key="frame" x="38.5" y="0.0" width="4" height="16.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="INT64" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ukB-TU-NrM">
+                                                            <rect key="frame" x="42.5" y="0.0" width="35" height="16.5"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="vvg-Je-cIw" firstAttribute="firstBaseline" secondItem="HbC-bU-XSF" secondAttribute="firstBaseline" id="jJ7-mP-pwa"/>
+                                                        <constraint firstItem="HbC-bU-XSF" firstAttribute="firstBaseline" secondItem="ukB-TU-NrM" secondAttribute="firstBaseline" id="wTv-ki-Qcp"/>
+                                                    </constraints>
+                                                </stackView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="01234567891011" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c0d-cs-fWH">
+                                                    <rect key="frame" x="226.5" y="16" width="132.5" height="20.5"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="GcV-09-CNI" firstAttribute="leading" secondItem="q4K-iu-ZMe" secondAttribute="leading" id="5n3-5Y-Z21"/>
+                                                <constraint firstItem="c0d-cs-fWH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="q4K-iu-ZMe" secondAttribute="trailing" constant="8" symbolic="YES" id="8O2-HA-U4B"/>
+                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="top" secondItem="bbA-RV-kuP" secondAttribute="top" constant="16" id="8VM-Xk-4r8"/>
+                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="leading" secondItem="bbA-RV-kuP" secondAttribute="leading" constant="16" id="O76-Ki-mzr"/>
+                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="c0d-cs-fWH" secondAttribute="bottom" constant="16" id="b90-SJ-J1j"/>
+                                                <constraint firstItem="GcV-09-CNI" firstAttribute="firstBaseline" secondItem="q4K-iu-ZMe" secondAttribute="baseline" constant="20" id="bzV-g9-L2B"/>
+                                                <constraint firstItem="q4K-iu-ZMe" firstAttribute="firstBaseline" secondItem="c0d-cs-fWH" secondAttribute="firstBaseline" id="gmR-Td-aeb"/>
+                                                <constraint firstAttribute="trailing" secondItem="c0d-cs-fWH" secondAttribute="trailing" constant="16" id="nH5-tV-2PO"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="GcV-09-CNI" secondAttribute="bottom" constant="8" id="piL-AX-StO"/>
+                                                <constraint firstAttribute="bottom" secondItem="c0d-cs-fWH" secondAttribute="bottom" priority="250" constant="16" id="wSp-Sk-R0O"/>
+                                            </constraints>
                                         </view>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="bbA-RV-kuP" secondAttribute="bottom" id="GkL-84-th4"/>
+                                        <constraint firstAttribute="trailing" secondItem="bbA-RV-kuP" secondAttribute="trailing" id="dqj-qX-fz4"/>
+                                        <constraint firstItem="bbA-RV-kuP" firstAttribute="leading" secondItem="yXM-Sy-5HH" secondAttribute="leading" id="fEA-wk-fjP"/>
+                                        <constraint firstItem="bbA-RV-kuP" firstAttribute="top" secondItem="yXM-Sy-5HH" secondAttribute="top" id="x20-qa-K6S"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="attributeIdLabel" destination="vvg-Je-cIw" id="sCP-A0-J81"/>
+                                    <outlet property="attributeNameLabel" destination="q4K-iu-ZMe" id="j4v-MG-MrK"/>
+                                    <outlet property="attributeStringValueLabel" destination="c0d-cs-fWH" id="Wia-18-OoG"/>
+                                    <outlet property="attributeTypeLabel" destination="ukB-TU-NrM" id="xNP-ZV-uyW"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

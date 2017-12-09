@@ -219,6 +219,46 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     
 }
 
+@IBDesignable class DeviceInspectorWifiNetworkCell: UITableViewCell {
+    
+    @IBOutlet weak var rssiView: AferoWifiRSSIView!
+    
+    var rssiIsHidden: Bool {
+        get { return rssiView?.isHidden ?? true }
+        set { rssiView?.isHidden = newValue }
+    }
+    
+    var rssiValueIsHidden: Bool {
+        get { return rssiView?.valueIsHidden ?? true }
+        set { rssiView?.valueIsHidden = newValue }
+    }
+    
+    var rssi: Int {
+        get { return rssiView?.rssi ?? 0 }
+        set { rssiView?.rssi = newValue }
+    }
+    
+    var isSecure: Bool {
+        get { return rssiView?.isSecure ?? false }
+        set { rssiView?.isSecure = newValue }
+    }
+    
+    @IBOutlet weak var ssidLabel: UILabel!
+
+    var ssid: String? {
+        get { return ssidLabel?.text }
+        set { ssidLabel?.text = newValue }
+    }
+    
+    @IBOutlet weak var connectedLabel: UILabel!
+    
+    var isConnected: Bool {
+        get { return !(connectedLabel?.isHidden ?? true) }
+        set { connectedLabel?.isHidden = !isConnected }
+    }
+    
+}
+
 // MARK: - DeviceInspectorViewController -
 
 class DeviceInspectorViewController: UITableViewController, DeviceModelableObserving {
@@ -229,6 +269,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         case deviceInfo
         case deviceCharacteristic
+        case wifiNetwork
         case tags
         case genericAttribute
         
@@ -236,6 +277,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             switch self {
             case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
             case .tags: return DeviceInspectorTagCollectionCell.self
+            case .wifiNetwork: return DeviceInspectorWifiNetworkCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -245,6 +287,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             switch self {
             case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
             case .tags: return "DeviceInspectorTagCollectionCell"
+            case .wifiNetwork: return "DeviceInspectorWifiNetworkCell"
             case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
@@ -259,6 +302,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
+        case wifi
         case tags
         case mcuApplicationSpecificAttributes
         case gpioAttributes
@@ -272,6 +316,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         static let all: [Section] = [
             .deviceInfo,
+            .wifi,
             .tags,
             .mcuApplicationSpecificAttributes,
             .gpioAttributes,
@@ -290,6 +335,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Device Info"
+            case .wifi: name = "WiFi Config"
             case .tags: name = "Tags"
             case .mcuApplicationSpecificAttributes: name = "MCU Application Attributes"
             case .gpioAttributes: name = "GPIO Attributes"
@@ -309,6 +355,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Section.deviceInfo"
+            case .wifi: name = "Section.wifiConfig"
             case .tags: name = "Section.tags"
             case .mcuApplicationSpecificAttributes: name = "Section.mcuApplicationSpecificAttributes"
             case .gpioAttributes: name = "Section.gpioAttributes"
@@ -332,6 +379,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 name = NSLocalizedString(
                     "Device Info",
                     comment: "DeviceInspectorViewController Section.deviceInfo name"
+                )
+                
+            case .wifi:
+                name = NSLocalizedString(
+                    "WiFi Config",
+                    comment:  "DeviceInspectorViewController Section.wifi name"
                 )
                 
             case .tags:
@@ -909,25 +962,25 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        if section == Section.deviceInfo.rawValue {
-            return DeviceCharacteristicRow.all.count
+        switch section {
+
+        case Section.deviceInfo.rawValue: return DeviceCharacteristicRow.all.count
+        case Section.wifi.rawValue: return 1
+        case Section.tags.rawValue: return  1
+
+        default:
+            let sections = Section.all.filter({ visibleSections.contains($0) })
+            
+            guard sections.count > section else {
+                fatalError("\(section) is not a valid section.")
+            }
+            
+            guard let ret = sectionAttributeConfigMap[sections[section]]?.count else {
+                fatalError("No configs found for section \(section).")
+            }
+            
+            return ret
         }
-        
-        if section == Section.tags.rawValue {
-            return 1
-        }
-        
-        let sections = Section.all.filter({ visibleSections.contains($0) })
-        
-        guard sections.count > section else {
-            fatalError("\(section) is not a valid section.")
-        }
-        
-        guard let ret = sectionAttributeConfigMap[sections[section]]?.count else {
-            fatalError("No configs found for section \(section).")
-        }
-        
-        return ret
         
     }
 
@@ -935,6 +988,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         let section = visibleSections[indexPath.section]
         switch section {
         case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
+        case .wifi: return Reuse.wifiNetwork.reuseIdentifier
         case .tags: return Reuse.tags.reuseIdentifier
         default: return Reuse.genericAttribute.reuseIdentifier
         }
@@ -949,10 +1003,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         let section = visibleSections[section]
         return section.localizedName
     }
-    
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        <#code#>
-//    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -975,6 +1025,11 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         if let tagCell = cell as? DeviceInspectorTagCollectionCell {
             configure(tagCell: tagCell)
+            return
+        }
+        
+        if let wifiNetworkCell = cell as? DeviceInspectorWifiNetworkCell {
+            configure(wifiNetworkCell: wifiNetworkCell)
             return
         }
         
@@ -1024,6 +1079,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
         
         cell.attribute = attribute
+    }
+    
+    func configure(wifiNetworkCell cell: DeviceInspectorWifiNetworkCell) {
+        cell.ssid = "Test Network"
+        cell.isConnected = true
+        cell.rssi = -66
+        cell.isSecure = true
+        cell.selectionStyle = .none
     }
     
     // MARK: <UITableViewDelegate>
