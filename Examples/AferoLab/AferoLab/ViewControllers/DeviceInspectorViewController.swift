@@ -130,31 +130,33 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     
     func tag(for indexPath: IndexPath) -> DeviceModelable.DeviceTag? {
         guard indexPath.item > 0 else { return nil }
-        return tags[indexPath.item - 1]
+        return tags[indexPath.item]
     }
     
     func indexPath(for tag: DeviceModelable.DeviceTag) -> IndexPath? {
+
         guard let tagId = tag.id else {
             return nil
         }
+        
         guard let item = tags.index(where: { $0.id == tagId }) else {
             return nil
         }
         
-        return IndexPath(item: item + 1, section: 0)
+        return IndexPath(item: item, section: 0)
     }
     
     // MARK: <UICollectionViewDataSource>
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tags.count + 1
+        return tags.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let reuseId: String
+
         switch indexPath.item {
-        case 0: reuseId = "AddTagCell"
         default: reuseId = "TagCell"
         }
         
@@ -265,7 +267,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     var TAG: String { return "\(type(of: self))" }
     
-    enum Reuse {
+    enum TableViewCellReuse {
         
         case deviceInfo
         case deviceCharacteristic
@@ -293,8 +295,30 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
         }
         
-        static var allCases: Set<Reuse> {
+        static var allCases: Set<TableViewCellReuse> {
             return [ .deviceCharacteristic, .tags, .deviceInfo, .genericAttribute ]
+        }
+        
+    }
+    
+    enum TableViewHeaderFooterViewReuse {
+        
+        case sectionHeader
+        
+        var reuseClass: AnyClass {
+            switch self {
+            case .sectionHeader: return SectionHeaderTableViewHeaderFooterView.self
+            }
+        }
+        
+        var reuseIdentifier: String {
+            switch self {
+            case .sectionHeader: return "SectionHeaderTableViewHeaderFooterView"
+            }
+        }
+        
+        static var allCases: Set<TableViewHeaderFooterViewReuse> {
+            return [ .sectionHeader ]
         }
         
     }
@@ -494,7 +518,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         tableView.allowsSelection = true
         tableView.remembersLastFocusedIndexPath = true
         tableView.estimatedRowHeight = 55
+        tableView.estimatedSectionHeaderHeight = 25
+        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        TableViewHeaderFooterViewReuse.allCases.forEach {
+            tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
+        }
         
         startObservingDeviceEvents()
         updateVisibleCells()
@@ -737,17 +767,17 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             editor.popoverPresentationController?.delegate = self
             editor.deviceTagCollection = deviceModelable.deviceTagCollection
             
+            if let sourceView = sender as? UIView {
+                editor.popoverPresentationController?.sourceView = sourceView
+                editor.popoverPresentationController?.sourceRect = sourceView.bounds
+            }
+            
             if
                 let tagCell = (sender as? TagCollectionViewCell) ?? (sender as? AddTagCollectionViewCell),
                 let tagCollectionCell = tagCollectionCell,
                 let indexPath = tagCollectionCell.collectionView.indexPath(for: tagCell) {
-
-                editor.popoverPresentationController?.sourceView = tagCell
-                editor.popoverPresentationController?.sourceRect = tagCell.bounds
                 editor.tag = tagCollectionCell.tag(for: indexPath)
                 
-            } else {
-                editor.popoverPresentationController?.sourceView = sender as? UIView
             }
             
         }
@@ -987,23 +1017,65 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     func reuseIdentifier(for indexPath: IndexPath) -> String {
         let section = visibleSections[indexPath.section]
         switch section {
-        case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
-        case .wifi: return Reuse.wifiNetwork.reuseIdentifier
-        case .tags: return Reuse.tags.reuseIdentifier
-        default: return Reuse.genericAttribute.reuseIdentifier
+        case .deviceInfo: return TableViewCellReuse.deviceCharacteristic.reuseIdentifier
+        case .wifi: return TableViewCellReuse.wifiNetwork.reuseIdentifier
+        case .tags: return TableViewCellReuse.tags.reuseIdentifier
+        default: return TableViewCellReuse.genericAttribute.reuseIdentifier
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
-        guard self.tableView(tableView, numberOfRowsInSection: section) > 0 else {
-            return nil
-        }
-        
-        let section = visibleSections[section]
+//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//
+//        guard self.tableView(tableView, numberOfRowsInSection: section) > 0 else {
+//            return nil
+//        }
+//
+//        let section = visibleSections[section]
+//        return section.localizedName
+//    }
+//
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: TableViewHeaderFooterViewReuse.sectionHeader.reuseIdentifier
+            ) as! SectionHeaderTableViewHeaderFooterView
+        configure(headerView: view, for: section)
+        return view
+    }
+    
+    func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: Int) {
+        let sectionCase = visibleSections[section]
+        configure(headerView: headerView, for: sectionCase)
+    }
+    
+    func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: Section) {
+        headerView.headerText =  title(forHeaderViewIn: section)
+        headerView.accessoryViews = accessoryViews(forHeaderViewIn: section) ?? []
+    }
+    
+    func title(forHeaderViewIn section: Section) -> String {
         return section.localizedName
     }
     
+    func accessoryViews(forHeaderViewIn section: Section) -> [UIView]? {
+        
+        switch section {
+            
+        case .tags:
+            let addButton = UIButton(frame: .zero)
+            addButton.setImage(UIImage(named: "AddButtonSmall"), for: .normal)
+            addButton.addTarget(self, action: #selector(addTagTapped(sender:)), for: .touchUpInside)
+            return [addButton]
+            
+        default:
+            return nil
+        }
+        
+    }
+    
+    @IBAction func addTagTapped(sender: Any?) {
+        performSegue(withIdentifier: .showTagEditor, sender: sender)
+    }
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier(for: indexPath), for: indexPath)

@@ -38,6 +38,8 @@
 		CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA475431FD5BABF00D4C25C /* TagViewContent.xib */; };
 		CBA475461FD5D55500D4C25C /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA475451FD5D55500D4C25C /* TagView.swift */; };
 		CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA578181FDB3FCC000D349C /* XibBasedView.swift */; };
+		CBA5781B1FDCACCC000D349C /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA5781A1FDCACCC000D349C /* SectionHeaderView.xib */; };
+		CBA5781D1FDCB0E8000D349C /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA5781C1FDCB0E8000D349C /* SectionHeaderView.swift */; };
 		CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
 /* End PBXBuildFile section */
@@ -116,6 +118,8 @@
 		CBA475431FD5BABF00D4C25C /* TagViewContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagViewContent.xib; sourceTree = "<group>"; };
 		CBA475451FD5D55500D4C25C /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		CBA578181FDB3FCC000D349C /* XibBasedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibBasedView.swift; sourceTree = "<group>"; };
+		CBA5781A1FDCACCC000D349C /* SectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeaderView.xib; sourceTree = "<group>"; };
+		CBA5781C1FDCB0E8000D349C /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagViewController.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 				CB1134401FDB233800AECFAB /* AferoWifiRSSIView.xib */,
 				CB1134421FDB29F600AECFAB /* AferoWifiRSSIView.swift */,
 				CBA578181FDB3FCC000D349C /* XibBasedView.swift */,
+				CBA5781A1FDCACCC000D349C /* SectionHeaderView.xib */,
+				CBA5781C1FDCB0E8000D349C /* SectionHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -445,6 +451,7 @@
 				CB34C37D1E7C689700547FD9 /* LaunchScreen.storyboard in Resources */,
 				CB3376201F170112009BFA9E /* APIClientConfig.plist in Resources */,
 				CB34C37A1E7C689700547FD9 /* Assets.xcassets in Resources */,
+				CBA5781B1FDCACCC000D349C /* SectionHeaderView.xib in Resources */,
 				CB34C3781E7C689700547FD9 /* Main.storyboard in Resources */,
 				CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */,
 				CB1134411FDB233800AECFAB /* AferoWifiRSSIView.xib in Resources */,
@@ -655,6 +662,7 @@
 				CB82FED31E7CD7DD0088CC0C /* Utils.swift in Sources */,
 				CB3248101F9A92D900D210F9 /* AferoClimateControl.swift in Sources */,
 				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
+				CBA5781D1FDCB0E8000D349C /* SectionHeaderView.swift in Sources */,
 				CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */,
 				CB72D8931F91750C000D8925 /* AferoUIControls.swift in Sources */,
 				CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */,
