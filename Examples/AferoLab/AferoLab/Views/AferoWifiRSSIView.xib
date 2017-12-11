@@ -22,24 +22,24 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="88" height="28"/>
+            <rect key="frame" x="0.0" y="0.0" width="99" height="28"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="sEa-wb-LSf">
-                    <rect key="frame" x="0.0" y="0.0" width="88" height="28"/>
+                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="sEa-wb-LSf">
+                    <rect key="frame" x="0.0" y="0.0" width="99" height="28"/>
                     <subviews>
                         <view contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Adq-4h-k6i">
                             <rect key="frame" x="0.0" y="0.0" width="52.5" height="28"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-55" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Xa-Oc-AWC">
-                                    <rect key="frame" x="0.0" y="4" width="35.5" height="20.5"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                    <rect key="frame" x="0.0" y="10.5" width="36.5" height="18"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="db" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kZr-CS-fQq">
-                                    <rect key="frame" x="37.5" y="8.5" width="15" height="14.5"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                    <rect key="frame" x="38.5" y="14.5" width="14" height="13.5"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
@@ -48,15 +48,19 @@
                             <constraints>
                                 <constraint firstItem="kZr-CS-fQq" firstAttribute="leading" secondItem="3Xa-Oc-AWC" secondAttribute="trailing" constant="2" id="VNi-Qe-QI8"/>
                                 <constraint firstAttribute="trailing" secondItem="kZr-CS-fQq" secondAttribute="trailing" id="eDW-Me-vXD"/>
-                                <constraint firstItem="3Xa-Oc-AWC" firstAttribute="centerY" secondItem="Adq-4h-k6i" secondAttribute="centerY" id="jEh-lb-W19"/>
+                                <constraint firstItem="3Xa-Oc-AWC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Adq-4h-k6i" secondAttribute="top" id="jEh-lb-W19"/>
                                 <constraint firstItem="kZr-CS-fQq" firstAttribute="firstBaseline" secondItem="3Xa-Oc-AWC" secondAttribute="firstBaseline" id="odV-4R-fNc"/>
                                 <constraint firstItem="3Xa-Oc-AWC" firstAttribute="leading" secondItem="Adq-4h-k6i" secondAttribute="leading" id="w3M-vP-l85"/>
                             </constraints>
                         </view>
-                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WiFiRSSI4-Secure" translatesAutoresizingMaskIntoConstraints="NO" id="Bf4-qf-GSX">
-                            <rect key="frame" x="52.5" y="0.0" width="35.5" height="28"/>
+                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WiFiRSSI4-Secure-Large" translatesAutoresizingMaskIntoConstraints="NO" id="Bf4-qf-GSX">
+                            <rect key="frame" x="56.5" y="0.0" width="42.5" height="28"/>
                         </imageView>
                     </subviews>
+                    <constraints>
+                        <constraint firstItem="Adq-4h-k6i" firstAttribute="bottom" secondItem="Bf4-qf-GSX" secondAttribute="bottom" id="OC7-Ij-1I7"/>
+                        <constraint firstItem="Bf4-qf-GSX" firstAttribute="bottom" secondItem="kZr-CS-fQq" secondAttribute="bottom" id="VSL-Ww-ZO7"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -68,10 +72,10 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="-205" y="-401"/>
+            <point key="canvasLocation" x="-199.5" y="-401"/>
         </view>
     </objects>
     <resources>
-        <image name="WiFiRSSI4-Secure" width="37" height="28"/>
+        <image name="WiFiRSSI4-Secure-Large" width="37" height="28"/>
     </resources>
 </document>

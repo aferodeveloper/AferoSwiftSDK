@@ -42,7 +42,7 @@ import CocoaLumberjack
 
     func updateUI() {
         rssiValueLabel.text = numberFormatter.string(from: NSNumber(value: rssi))
-        rssiIndicatorImageView.image = rssiBars.wifiIndicatorImage(for: securityType, in: Bundle(for: type(of: self)))
+        rssiIndicatorImageView.image = rssiBars.wifiIndicatorImage(for: securityType, iconSize: iconSize, in: Bundle(for: type(of: self)))
     }
     
     /// The number formatter to use for displaying RSSI.
@@ -51,6 +51,18 @@ import CocoaLumberjack
         ret.allowsFloats = false
         return ret
     }()
+    
+    enum IconSize: String {
+        case small = "Small"
+        case large = "Large"
+    }
+    
+    var iconSize: IconSize = .small
+    
+    @IBInspectable var useSmallIcon: Bool {
+        get { return iconSize == .small }
+        set { iconSize = newValue ? .small : .large }
+    }
     
     // MARK: RSSI
     
@@ -100,8 +112,8 @@ import CocoaLumberjack
         case three = 3
         case four = 4
         
-        func wifiIndicatorImage(for securityType: WiFiSecurityType, in bundle: Bundle? = nil, compatibleWith traitCollection: UITraitCollection? = nil) -> UIImage {
-            let name = "WiFiRSSI\(rawValue)-\(securityType.rawValue)"
+        func wifiIndicatorImage(for securityType: WiFiSecurityType, iconSize: IconSize, in bundle: Bundle? = nil, compatibleWith traitCollection: UITraitCollection? = nil) -> UIImage {
+            let name = "WiFiRSSI\(rawValue)-\(securityType.rawValue)-\(iconSize.rawValue)"
             guard let image = UIImage(named: name, in: bundle, compatibleWith: traitCollection) else {
                 fatalError("No image named \(name) found in bundle.")
             }

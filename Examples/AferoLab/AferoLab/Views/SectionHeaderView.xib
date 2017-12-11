@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Baseline standard spacing" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -21,47 +20,45 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="166" height="25"/>
+            <rect key="frame" x="0.0" y="0.0" width="186" height="31"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="leb-oI-We9">
-                    <rect key="frame" x="0.0" y="0.0" width="43.5" height="20"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                    <rect key="frame" x="0.0" y="0.0" width="48" height="24"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" ambiguous="YES" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hql-hk-ziC">
-                    <rect key="frame" x="146" y="0.0" width="20" height="20"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="20" id="H3p-54-kqT"/>
-                    </constraints>
-                </stackView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ubb-lf-ajr" userLabel="Underscore">
-                    <rect key="frame" x="0.0" y="24" width="166" height="1"/>
+                    <rect key="frame" x="0.0" y="30.5" width="186" height="0.5"/>
                     <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="0.5" id="YJe-oS-xpP"/>
                     </constraints>
                 </view>
+                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" ambiguous="YES" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hql-hk-ziC">
+                    <rect key="frame" x="166" y="-1" width="20" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="H3p-54-kqT"/>
+                    </constraints>
+                </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="hql-hk-ziC" secondAttribute="bottom" constant="4" id="2at-yj-syb"/>
                 <constraint firstItem="hql-hk-ziC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="leb-oI-We9" secondAttribute="trailing" constant="8" symbolic="YES" id="2mT-kT-cHV"/>
-                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="leb-oI-We9" secondAttribute="baseline" id="BEn-OF-q1E"/>
+                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="leb-oI-We9" secondAttribute="bottom" id="BEn-OF-q1E"/>
                 <constraint firstItem="leb-oI-We9" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="HKn-Rn-OWd"/>
                 <constraint firstItem="leb-oI-We9" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="M4V-cQ-Rza"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="ubb-lf-ajr" secondAttribute="bottom" id="WZQ-aI-11s"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ubb-lf-ajr" secondAttribute="trailing" id="aBT-nA-BXJ"/>
-                <constraint firstItem="hql-hk-ziC" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="cF7-X9-Ecs"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="hql-hk-ziC" secondAttribute="trailing" id="ddO-iR-qOm"/>
-                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" secondItem="hql-hk-ziC" secondAttribute="bottom" priority="750" constant="4" id="mLL-Or-ScQ"/>
-                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" secondItem="leb-oI-We9" secondAttribute="baseline" priority="750" symbolic="YES" id="sOb-Yk-hWF"/>
+                <constraint firstAttribute="trailing" secondItem="ubb-lf-ajr" secondAttribute="trailing" id="aBT-nA-BXJ"/>
+                <constraint firstAttribute="trailing" secondItem="hql-hk-ziC" secondAttribute="trailing" id="ddO-iR-qOm"/>
+                <constraint firstItem="hql-hk-ziC" firstAttribute="bottom" secondItem="leb-oI-We9" secondAttribute="baseline" id="oh3-yU-6v6"/>
+                <constraint firstItem="ubb-lf-ajr" firstAttribute="top" secondItem="leb-oI-We9" secondAttribute="bottom" priority="750" constant="8" symbolic="YES" id="sOb-Yk-hWF"/>
                 <constraint firstItem="ubb-lf-ajr" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="xrw-Nz-uMS"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="-75" y="-269.5"/>
+            <point key="canvasLocation" x="-65" y="-266.5"/>
         </view>
     </objects>
 </document>
