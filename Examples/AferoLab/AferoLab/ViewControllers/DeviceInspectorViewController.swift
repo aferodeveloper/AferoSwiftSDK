@@ -1066,6 +1066,12 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             addButton.addTarget(self, action: #selector(addTagTapped(sender:)), for: .touchUpInside)
             return [addButton]
             
+        case .wifi:
+            let configureButton = UIButton(frame: .zero)
+            configureButton.setImage(UIImage(named: "ConfigureButtonSmall"), for: .normal)
+            configureButton.addTarget(self, action: #selector(configureConnectivityTapped(sender:)), for: .touchUpInside)
+            return [configureButton]
+            
         default:
             return nil
         }
@@ -1074,6 +1080,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     @IBAction func addTagTapped(sender: Any?) {
         performSegue(withIdentifier: .showTagEditor, sender: sender)
+    }
+    
+    @IBAction func configureConnectivityTapped(sender: Any?) {
+        
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
