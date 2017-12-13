@@ -1087,7 +1087,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     @IBAction func configureConnectivityTapped(sender: Any?) {
-        
+        performSegue(withIdentifier: .showWifiConfig, sender: sender)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
