@@ -41,7 +41,7 @@
 		CBA5781B1FDCACCC000D349C /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA5781A1FDCACCC000D349C /* SectionHeaderView.xib */; };
 		CBA5781D1FDCB0E8000D349C /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA5781C1FDCB0E8000D349C /* SectionHeaderView.swift */; };
 		CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */; };
-		CBFC89F01FDE1FBE00924666 /* ConfigureWifiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFC89EF1FDE1FBE00924666 /* ConfigureWifiViewController.swift */; };
+		CBFC89F01FDE1FBE00924666 /* ScanWifiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */; };
 		CBFC89F21FDF08BF00924666 /* AferoWifiNetworkView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBFC89F11FDF08BF00924666 /* AferoWifiNetworkView.xib */; };
 		CBFC89F41FDF097000924666 /* AferoWifiNetworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFC89F31FDF097000924666 /* AferoWifiNetworkView.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
@@ -124,7 +124,7 @@
 		CBA5781A1FDCACCC000D349C /* SectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeaderView.xib; sourceTree = "<group>"; };
 		CBA5781C1FDCB0E8000D349C /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagViewController.swift; sourceTree = "<group>"; };
-		CBFC89EF1FDE1FBE00924666 /* ConfigureWifiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureWifiViewController.swift; sourceTree = "<group>"; };
+		CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanWifiViewController.swift; sourceTree = "<group>"; };
 		CBFC89F11FDF08BF00924666 /* AferoWifiNetworkView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AferoWifiNetworkView.xib; sourceTree = "<group>"; };
 		CBFC89F31FDF097000924666 /* AferoWifiNetworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoWifiNetworkView.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -274,7 +274,7 @@
 				CB79624D1F830D26002E0C6C /* DeviceInspectorViewController.swift */,
 				CB241A301F8D6AD100480CCA /* AttributeInspectorViewController.swift */,
 				CBC51D4D1FD8E0ED00E9968E /* EditTagViewController.swift */,
-				CBFC89EF1FDE1FBE00924666 /* ConfigureWifiViewController.swift */,
+				CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -686,7 +686,7 @@
 				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
 				CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */,
 				CB82FED71E7CDA4D0088CC0C /* SignInViewcontroller.swift in Sources */,
-				CBFC89F01FDE1FBE00924666 /* ConfigureWifiViewController.swift in Sources */,
+				CBFC89F01FDE1FBE00924666 /* ScanWifiViewController.swift in Sources */,
 				CBC51D4E1FD8E0ED00E9968E /* EditTagViewController.swift in Sources */,
 				CBFC89F41FDF097000924666 /* AferoWifiNetworkView.swift in Sources */,
 				CB82FED11E7CD7A30088CC0C /* Extensions.swift in Sources */,

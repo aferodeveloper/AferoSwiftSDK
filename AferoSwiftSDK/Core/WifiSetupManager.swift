@@ -557,7 +557,7 @@ public enum WifiSetupEvent {
     case commandStateChange(newState: AferoSofthubSetupWifiCommandState)
     
     /// A new SSID list has arrived
-    case ssidListChanged(newList: [AferoSofthubWifiSSIDEntryWrapper])
+    case ssidListChanged(newList: WifiSetupManaging.WifiNetworkList)
     
     /// The managed device's live network type has changed.
     case networkTypeChanged(newType: AferoSofthubWifiNetworkType)
@@ -653,6 +653,10 @@ public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, NoError>
 /// Protocol for anything which manages a wifi-configurable device.
 
 public protocol WifiSetupManaging: class {
+    
+    typealias WifiNetwork = AferoSofthubWifiSSIDEntryWrapper
+    typealias WifiNetworkList = [WifiNetwork]
+    
     
     var wifiSetupEventSignal: WifiSetupEventSignal { get }
     
@@ -853,7 +857,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                 }
         }
         
-        // This, on the other hand, actuall modifies the manager's state. We'll keep it
+        // This, on the other hand, actually modifies the manager's state. We'll keep it
         // on the main queue.
         
         deviceAvailabilityDisposable = deviceModel.eventSignal

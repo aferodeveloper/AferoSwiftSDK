@@ -71,37 +71,15 @@ import CocoaLumberjack
         didSet { updateUI() }
     }
     
-    typealias RSSIToBars = (Int) -> Int
-    
-    /// Function for converting from an integer RSSI to a number of bars.
-    /// By default, will clamp to `[-99, -44]` and scale linearly to a value
-    /// in [0, 4]. Replace this with your own function to perform custom RSSI
-    /// calculation.
-    
-    var rssiToBarsConverter: RSSIToBars =
-        {
-            rssi in
-            return Int((Float((((-99)...(-44)).clamp(value: rssi) + 99)) / 55.0) * 4)
-        }
-        
-        {
-            didSet {
-                updateUI()
-            }
-        }
+    @IBInspectable var rssiBarCount: Int {
+        get { return rssiBars.rawValue }
+        set { rssiBars = RSSIBars(barCount: newValue) }
+    }
     
     /// The `RSSIBars` case associated with the current `rssi`.
     
-    var rssiBars: RSSIBars {
-        
-        let normalizedRSSI = rssiToBarsConverter(rssi)
-        
-        guard let bars = RSSIBars(rawValue: normalizedRSSI) else {
-            DDLogError("Unable to determine bars for rssi:\(rssi) with normalized value \(normalizedRSSI)", tag: type(of: self).description())
-            return .zero
-        }
-        
-        return bars
+    var rssiBars: RSSIBars = .zero {
+        didSet { updateUI() }
     }
     
     enum RSSIBars: Int {
@@ -119,7 +97,11 @@ import CocoaLumberjack
             }
             return image
         }
-
+        
+        init(barCount: RawValue) {
+            self = RSSIBars(rawValue: ((RSSIBars.zero.rawValue)...(RSSIBars.four.rawValue)).clamp(value: barCount))!
+        }
+        
     }
     
     // MARK: Security Type
@@ -135,9 +117,7 @@ import CocoaLumberjack
     
     @IBInspectable var isSecure: Bool {
         get { return securityType != .open }
-        set {
-            securityType = newValue ? .secure : .open
-        }
+        set { securityType = newValue ? .secure : .open }
     }
     
 }

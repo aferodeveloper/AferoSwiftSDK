@@ -714,6 +714,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case showStepperAttributeInspector = "ShowStepperAttributeInspector"
         case showProgressAttributeInspector = "ShowProgressAttributeInspector"
         case showTagEditor = "ShowTagEditor"
+        case showWifiConfig = "ShowWifiConfig"
     }
     
     func performSegue(withIdentifier identifier: SegueIdentifier, sender: Any?) {
@@ -779,6 +780,9 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 editor.tag = tagCollectionCell.tag(for: indexPath)
                 
             }
+            
+        case .showWifiConfig:
+            break
             
         }
         
@@ -1195,6 +1199,9 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             
             presentActionSheet(for: characteristic)
             tableView.deselectRow(at: indexPath, animated: true)
+            
+        case .wifi:
+            performSegue(withIdentifier: .showWifiConfig, sender: self)
             
         default:
             

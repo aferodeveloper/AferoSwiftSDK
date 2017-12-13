@@ -8,9 +8,18 @@
 
 import UIKit
 import AferoSofthub
+import Afero
+
+protocol WifiNetwork: Hashable {
+    var ssid: String { get }
+    var rssi: Int { get }
+    var rssiBars: Int { get }
+    var isSecure: Bool { get }
+    var isConnected: Bool { get }
+}
 
 @IBDesignable class AferoWifiNetworkView: XibBasedView {
-
+    
     override var xibName: String { return "AferoWifiNetworkView" }
     
     @IBOutlet weak var rssiView: AferoWifiRSSIView!
@@ -42,13 +51,13 @@ import AferoSofthub
         set { rssiView?.rssi = newValue }
     }
     
-    var rssiToBarsConverter : AferoWifiRSSIView.RSSIToBars {
-        get { return rssiView?.rssiToBarsConverter ?? { _ in return 0 } }
-        set { rssiView?.rssiToBarsConverter = newValue }
-    }
-    
     var rssiBars: AferoWifiRSSIView.RSSIBars {
         return rssiView?.rssiBars ?? .zero
+    }
+    
+    @IBInspectable var rssiBarCount: Int {
+        get { return rssiView?.rssiBarCount ?? 0 }
+        set { rssiView?.rssiBarCount = newValue }
     }
     
     var securityType: AferoWifiRSSIView.WiFiSecurityType {
@@ -77,6 +86,11 @@ import AferoSofthub
         didSet { updateUI() }
     }
     
+    @IBInspectable var isConnected: Bool {
+        get { return connectionState == .connected }
+        set { connectionState = newValue ? .connected : .notConnected }
+    }
+    
     @IBInspectable var connectionStateRawValue: Int {
         get { return connectionState.rawValue }
         set {
@@ -94,9 +108,22 @@ import AferoSofthub
     
 }
 
+extension AferoWifiNetworkView {
+    
+    func configure<T: WifiNetwork>(with network: T) {
+            rssi = network.rssi
+            rssiBarCount = network.rssiBars
+            ssid = network.ssid
+            isSecure = network.isSecure
+            isConnected = network.isConnected
+    }
+    
+}
+
+
 /// A `UITableViewCell` whose content is an `AferoWifiNetworkView`
 
-@IBDesignable class AferoWifiNetworkTableViewCell: UITableViewCell {
+@IBDesignable @objcMembers class AferoWifiNetworkTableViewCell: UITableViewCell {
     
     private var wifiNetworkView: AferoWifiNetworkView!
     
@@ -172,11 +199,6 @@ import AferoSofthub
         set { wifiNetworkView?.rssi = newValue }
     }
     
-    var rssiToBarsConverter : AferoWifiRSSIView.RSSIToBars {
-        get { return wifiNetworkView?.rssiToBarsConverter ?? { _ in return 0 } }
-        set { wifiNetworkView?.rssiToBarsConverter = newValue }
-    }
-    
     var rssiBars: AferoWifiRSSIView.RSSIBars {
         return wifiNetworkView?.rssiBars ?? .zero
     }
@@ -201,6 +223,11 @@ import AferoSofthub
         set { wifiNetworkView?.connectionStatusString = newValue }
     }
     
+    @IBInspectable var isConnected: Bool {
+        get { return wifiNetworkView?.isConnected ?? false }
+        set { wifiNetworkView?.isConnected = newValue }
+    }
+    
     var connectionState: AferoSofthubWifiState {
         get { return wifiNetworkView?.connectionState ?? .notConnected }
         set { wifiNetworkView?.connectionState = newValue }
@@ -210,9 +237,16 @@ import AferoSofthub
         get { return wifiNetworkView?.connectionStateRawValue ?? AferoSofthubWifiState.notConnected.rawValue }
         set { wifiNetworkView?.connectionStateRawValue = newValue }
     }
-
+    
 }
 
+extension AferoWifiNetworkTableViewCell {
+
+    func configure<T: WifiNetwork>(with network: T) {
+        wifiNetworkView.configure(with: network)
+    }
+
+}
 
 extension AferoSofthubWifiState {
     

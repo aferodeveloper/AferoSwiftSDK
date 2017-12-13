@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AferoWifiNetworkView" customModule="AferoLab" customModuleProvider="target">
             <connections>
-                <outlet property="connectionStateLabel" destination="VTt-bM-cOu" id="4Ui-h2-Hi7"/>
+                <outlet property="connectionStateLabel" destination="0aN-F9-7TE" id="PhE-je-kHa"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="orF-5P-vvK"/>
                 <outlet property="rssiView" destination="0Tz-kn-S32" id="ETG-xH-Q63"/>
                 <outlet property="ssidLabel" destination="VTt-bM-cOu" id="Vfj-Yv-hmh"/>
