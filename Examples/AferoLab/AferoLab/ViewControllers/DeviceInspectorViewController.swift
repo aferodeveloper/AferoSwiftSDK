@@ -21,7 +21,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     enum TableViewCellReuse {
         
-        case deviceInfo
         case deviceCharacteristic
         case wifiNetwork
         case tags
@@ -29,7 +28,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         var reuseClass: AnyClass {
             switch self {
-            case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
             case .tags: return DeviceInspectorTagCollectionCell.self
             case .wifiNetwork: return DeviceInspectorWifiNetworkCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
@@ -39,7 +37,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         var reuseIdentifier: String {
             switch self {
-            case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
             case .tags: return "DeviceInspectorTagCollectionCell"
             case .wifiNetwork: return "DeviceInspectorWifiNetworkCell"
             case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
@@ -48,7 +45,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
         
         static var allCases: Set<TableViewCellReuse> {
-            return [ .deviceCharacteristic, .tags, .deviceInfo, .genericAttribute ]
+            return [ .deviceCharacteristic, .tags, .genericAttribute ]
         }
         
     }

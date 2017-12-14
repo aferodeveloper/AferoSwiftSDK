@@ -10,38 +10,7 @@ import Foundation
 import UIKit
 import Afero
 
-// MARK: - Device Info Cell -
-
-class DeviceInspectorDeviceInfoCell: UITableViewCell {
-    
-    @IBOutlet weak var deviceTypeLabel: UILabel!
-    var deviceType: String? {
-        get { return deviceTypeLabel.text }
-        set { deviceTypeLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var deviceIdHeaderLabel: UILabel!
-    @IBOutlet weak var deviceIdValueLabel: UILabel!
-    var deviceId: String? {
-        get { return deviceIdValueLabel.text }
-        set { deviceIdValueLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var deviceTypeIdHeaderLabel: UILabel!
-    @IBOutlet weak var deviceTypeIdValueLabel: UILabel!
-    var deviceTypeId: String? {
-        get { return deviceTypeIdValueLabel.text }
-        set { deviceTypeIdValueLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var profileIdHeaderLabel: UILabel!
-    @IBOutlet weak var profileIdValueLabel: UILabel!
-    var profileId: String? {
-        get { return profileIdValueLabel.text }
-        set { profileIdValueLabel.text = newValue }
-    }
-    
-}
+// MARK: - Device Characteristic Cell
 
 class DeviceInspectorDeviceCharacteristicCell: UITableViewCell {
     
