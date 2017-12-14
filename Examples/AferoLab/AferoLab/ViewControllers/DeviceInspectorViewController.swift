@@ -224,6 +224,85 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             return name
         }
         
+        var title: String { return localizedName }
+        
+        var caption: String? {
+            let name: String
+            switch self {
+                
+            case .deviceInfo: return nil
+                
+            case .wifi:
+                name = NSLocalizedString(
+                    "This device supports communication with the Afero cloud via Wi-Fi.",
+                    comment:  "DeviceInspectorViewController Section.wifi name"
+                )
+                
+            case .tags:
+                name = NSLocalizedString(
+                    "Device tags are arbitrary values you can associate with your device.",
+                    comment: "DeviceTags section name"
+                )
+                
+            case .mcuApplicationSpecificAttributes:
+                name = NSLocalizedString(
+                    "MCU Application Attributes are defined used by your MCU application code.",
+                    comment: "DeviceInspectorViewController Section.mcuApplicationSpecificAttributes name"
+                )
+                
+            case .gpioAttributes:
+                name = NSLocalizedString(
+                    "GPIO Attributes are associated with the GPIO pins on your Afero Secure Radio module.",
+                    comment: "DeviceInspectorViewController Section.gpioAttributes name"
+                )
+                
+            case .aferoVersionsAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoVersionsAttributes name"
+//                )
+                
+            case .mcuVersionsAttributes: return nil
+//                name = NSLocalizedString(
+//                "The following are for internal use.",
+//                comment: "DeviceInspectorViewController Section.mcuVersionsAttributes name"
+//                )
+                
+            case .aferoApplicationSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoApplicationSpecificAttributes name"
+//                )
+                
+            case .aferoHubSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoHubSpecificAttributes name"
+//                )
+                
+            case .aferoCloudProvidedAttributes:
+                name = NSLocalizedString(
+                    "Cloud-Provided Attributes are virtual attributes provided by the Afero cloud.",
+                    comment: "DeviceInspectorViewController Section.aferoCloudProvidedAttributes name"
+                )
+                
+            case .aferoOfflineSchedulesAttributes:
+                name = NSLocalizedString(
+                    "Attributes used to store offline schedule settings for devices that support them.",
+                    comment: "DeviceInspectorViewController Section.aferoOfflineSchedulesAttributes name"
+                )
+                
+            case .aferoSystemSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoSystemSpecificAttributes name"
+//                )
+                
+            }
+            
+            return name
+        }
+        
         var localizedDescription: String {
             return String(
                 format: NSLocalizedString(
@@ -801,7 +880,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: Section) {
-        headerView.headerText =  title(forHeaderViewIn: section)
+        headerView.headerText =  section.title
+        headerView.captionText = section.caption
         headerView.accessoryViews = accessoryViews(forHeaderViewIn: section) ?? []
     }
     
