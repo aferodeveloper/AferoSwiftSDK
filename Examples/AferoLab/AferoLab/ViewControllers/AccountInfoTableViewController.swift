@@ -34,6 +34,29 @@ class AccountInfoCell: UITableViewCell {
     
 }
 
+enum AccountInfoHeaderFooterViewReuse {
+    
+    case sectionHeader
+    
+    var reuseClass: AnyClass {
+        switch self {
+        case .sectionHeader: return SectionHeaderTableViewHeaderFooterView.self
+        }
+    }
+    
+    var reuseIdentifier: String {
+        switch self {
+        case .sectionHeader: return "SectionHeaderTableViewHeaderFooterView"
+        }
+    }
+    
+    static var allCases: Set<AccountInfoHeaderFooterViewReuse> {
+        return [ .sectionHeader ]
+    }
+    
+}
+
+
 enum AccountInfoSection: Int {
     
     case accountInfo = 0
@@ -45,6 +68,14 @@ enum AccountInfoSection: Int {
         case .devices: return NSLocalizedString("Devices", comment: "Devices header title")
         }
     }
+    
+    var caption: String? {
+        switch self {
+        case .devices: return NSLocalizedString("The following devices are associated with your account.", comment: "Devices header title")
+        case .accountInfo: return nil
+        }
+    }
+
     
     var cellIdentifier: String {
         switch self {
@@ -101,6 +132,14 @@ class AccountViewController: UITableViewController {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        tableView.estimatedSectionHeaderHeight = 25
+        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+
+        AccountInfoHeaderFooterViewReuse.allCases.forEach {
+            tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
+        }
+
         updateBackgroundVisibility(animated: false)
         refreshAccountAccess()
     }
@@ -374,11 +413,26 @@ class AccountViewController: UITableViewController {
         return AccountInfoSection.Count
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
         if !shouldShowTableContent { return nil }
-        return AccountInfoSection(rawValue: section)?.title
+        
+        guard let section = AccountInfoSection(rawValue: section) else {
+            return nil
+        }
+        
+        let headerView = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: AccountInfoHeaderFooterViewReuse.sectionHeader.reuseIdentifier
+            ) as! SectionHeaderTableViewHeaderFooterView
+        configure(headerView: headerView, for: section)
+        return headerView
     }
     
+    func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: AccountInfoSection) {
+        headerView.headerText = section.title
+        headerView.captionText = section.caption
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if !shouldShowTableContent { return 0 }

@@ -24,6 +24,21 @@ import UIKit
         set { headerLabel.textColor = newValue }
     }
     
+    @IBOutlet weak var captionLabel: UILabel!
+
+    @IBInspectable var captionText: String? {
+        get { return captionLabel.text }
+        set {
+            captionLabel.text = newValue
+            updateUI()
+        }
+    }
+    
+    @IBInspectable var captionTextColor: UIColor? {
+        get { return captionLabel.textColor }
+        set { captionLabel.textColor = newValue }
+    }
+
     @IBOutlet weak var accessoryStackView: UIStackView!
     
     public var accessoryViews: [UIView] {
@@ -56,6 +71,9 @@ import UIKit
         accessoryViews.forEach { remove(accessoryView: $0) }
     }
     
+    func updateUI() {
+        captionLabel.isHidden = captionLabel.text?.isEmpty ?? true
+    }
 }
 
 @IBDesignable class SectionHeaderTableViewHeaderFooterView: UITableViewHeaderFooterView {
@@ -63,15 +81,25 @@ import UIKit
     private var sectionHeaderView: SectionHeaderView!
     
     @IBInspectable var headerText: String? {
-        get { return sectionHeaderView?.headerLabel?.text }
-        set { sectionHeaderView?.headerLabel?.text = newValue }
+        get { return sectionHeaderView?.headerText }
+        set { sectionHeaderView?.headerText = newValue }
     }
     
     @IBInspectable var headerTextColor: UIColor? {
-        get { return sectionHeaderView?.headerLabel?.textColor }
-        set { sectionHeaderView?.headerLabel?.textColor = newValue }
+        get { return sectionHeaderView?.headerTextColor }
+        set { sectionHeaderView?.headerTextColor = newValue }
+    }
+
+    @IBInspectable var captionText: String? {
+        get { return sectionHeaderView?.captionText }
+        set { sectionHeaderView?.captionText = newValue }
     }
     
+    @IBInspectable var captionTextColor: UIColor? {
+        get { return sectionHeaderView?.captionTextColor }
+        set { sectionHeaderView?.captionTextColor = newValue }
+    }
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         commonInit()

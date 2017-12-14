@@ -76,10 +76,11 @@ protocol WifiNetwork: Hashable {
         set { ssidLabel?.text = newValue }
     }
     
-    @IBOutlet weak var connectionStateLabel: UILabel!
-    @IBInspectable var connectionStatusString: String? {
-        get { return connectionStateLabel?.text }
-        set { connectionStateLabel?.text = newValue }
+    @IBOutlet weak var connectionStateImageView: UIImageView!
+    
+    @IBInspectable var connectionStateIsHidden: Bool {
+        get { return connectionStateImageView?.isHidden ?? true }
+        set { connectionStateImageView?.isHidden = newValue}
     }
     
     var connectionState: AferoSofthubWifiState = .notConnected {
@@ -103,7 +104,7 @@ protocol WifiNetwork: Hashable {
     }
     
     func updateUI() {
-        connectionStatusString = connectionState.localizedDescription
+        connectionStateImageView.image = connectionState.iconImage(in: Bundle(for: type(of: self)))
     }
     
 }
@@ -125,6 +126,11 @@ extension AferoWifiNetworkView {
     
     private(set) var contentStackView: UIStackView!
     
+    @IBInspectable var contentSpacing: CGFloat {
+        get { return contentStackView?.spacing ?? 0 }
+        set { contentStackView?.spacing = newValue }
+    }
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         commonInit()
@@ -140,10 +146,8 @@ extension AferoWifiNetworkView {
         contentStackView = UIStackView()
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
-        contentStackView.spacing = 8.0
         contentStackView.distribution = .fill
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         contentView.addSubview(contentStackView)
         setupConstraints()
     }
@@ -201,16 +205,16 @@ extension AferoWifiNetworkView {
         }
     }
     
-    @IBInspectable var useSmallIcon: Bool {
-        get { return wifiNetworkView?.useSmallIcon ?? true }
-        set { wifiNetworkView?.useSmallIcon = newValue }
-    }
-    
     @IBInspectable var rssi: Int {
         get { return wifiNetworkView?.rssi ?? 0 }
         set { wifiNetworkView?.rssi = newValue }
     }
     
+    @IBInspectable var rssiBarCount: Int {
+        get { return wifiNetworkView?.rssiBarCount ?? 0 }
+        set { wifiNetworkView?.rssiBarCount = newValue }
+    }
+
     var rssiBars: AferoWifiRSSIView.RSSIBars {
         return wifiNetworkView?.rssiBars ?? .zero
     }
@@ -225,16 +229,21 @@ extension AferoWifiNetworkView {
         set { wifiNetworkView?.isSecure = newValue }
     }
     
+    @IBInspectable var useSmallNetworkStatusIcon: Bool {
+        get { return wifiNetworkView?.useSmallIcon ?? true }
+        set { wifiNetworkView?.useSmallIcon = newValue }
+    }
+    
     @IBInspectable var ssid: String? {
         get { return wifiNetworkView?.ssidLabel?.text }
         set { wifiNetworkView?.ssidLabel?.text = newValue }
     }
-
-    @IBInspectable var connectionStatusString: String? {
-        get { return wifiNetworkView?.connectionStatusString }
-        set { wifiNetworkView?.connectionStatusString = newValue }
-    }
     
+    @IBInspectable var connectionStateIsHidden: Bool {
+        get { return wifiNetworkView?.connectionStateIsHidden ?? true }
+        set { wifiNetworkView?.connectionStateIsHidden = newValue}
+    }
+
     @IBInspectable var isConnected: Bool {
         get { return wifiNetworkView?.isConnected ?? false }
         set { wifiNetworkView?.isConnected = newValue }
@@ -316,7 +325,7 @@ extension AferoWifiNetworkTableViewCell {
         set { passwordPromptView.passwordIsEnabled = newValue }
     }
     
-    @IBInspectable var statusIsHidden: Bool {
+    @IBInspectable var passworPromptStatusIsHidden: Bool {
         get { return passwordPromptView.statusIsHidden }
         set { passwordPromptView.statusIsHidden = newValue }
     }
@@ -340,15 +349,20 @@ extension AferoWifiNetworkTableViewCell {
     var passwordPromptView: AferoWifiPasswordPromptView!
     
     override func commonInit() {
+
         super.commonInit()
         
         titleLabel = UILabel()
         titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
-        titleLabel.text = NSLocalizedString("Other…", comment: "Custom SSID prompt label text")
         contentStackView.addArrangedSubview(titleLabel)
         
         passwordPromptView = AferoWifiPasswordPromptView()
         contentStackView.addArrangedSubview(passwordPromptView)
+    }
+    
+    @IBInspectable var titleText: String? {
+        get { return titleLabel?.text }
+        set { titleLabel?.text = newValue }
     }
     
     @IBInspectable var validTextColor: UIColor {
@@ -390,6 +404,12 @@ extension AferoWifiNetworkTableViewCell {
         get { return passwordPromptView.statusIsHidden }
         set { passwordPromptView.statusIsHidden = newValue }
     }
+    
+    @IBInspectable var passwordPromptIsHidden: Bool {
+        get { return passwordPromptView?.isHidden ?? true }
+        set { passwordPromptView?.isHidden = newValue }
+    }
+    
     @IBOutlet weak var passwordPromptDelegate: AferoWifiPasswordPromptDelegate? {
         get { return passwordPromptView?.delegate }
         set { passwordPromptView.delegate = newValue }
@@ -398,7 +418,7 @@ extension AferoWifiNetworkTableViewCell {
 }
 
 
-extension AferoSofthubWifiState {
+extension WifiSetupManaging.WifiState {
     
     public var localizedDescription: String {
         switch self {
@@ -412,5 +432,22 @@ extension AferoSofthubWifiState {
         case .unknownFailure: return NSLocalizedString("Unknown Failure", comment: "AferoSofthubWifiState .unknownFailure description")
         }
     }
+    
+    public var iconName: String? {
+        
+        switch self {
+        case .pending: return "PendingSmall"
+        case .connected: return "CheckmarkSmall"
+        case .notConnected: return nil
+        default: return "ErrorSmall"
+        }
+        
+    }
+    
+    func iconImage(in bundle: Bundle? = nil, compatibleWith traitCollection: UITraitCollection? = nil) -> UIImage? {
+        guard let name = iconName else { return nil }
+        return UIImage(named: name, in: bundle, compatibleWith: traitCollection)
+    }
+
 
 }

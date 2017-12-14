@@ -72,7 +72,7 @@ import Afero
     
 }
 
-class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ScanWifiViewController: UITableViewController {
     
     // MARK: Section and Cell Config
     
@@ -110,6 +110,16 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         }
         
+        var caption: String? {
+            switch self {
+                
+            case .current: return NSLocalizedString("Your device is currently configured for the following network. Swipe to remove it, or tap to reconfigure it.", comment: "ConfigureWifiViewController current network section caption")
+                
+            case .visible: return NSLocalizedString("The following networks are currently visible to your device. Select one to connect to it.", comment: "ConfigureWifiViewController current network section caption")
+            }
+            
+        }
+        
         var reuse: TableViewHeaderFooterViewReuse {
             return .sectionHeader
         }
@@ -137,7 +147,7 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     
-    @IBOutlet weak var tableView: UITableView!
+//    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         
@@ -156,6 +166,8 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.rowHeight = UITableViewAutomaticDimension
         
         tableView.layer.cornerRadius = 10
+        
+        tableView.reloadData()
 
         reloadTestNetworks()
     }
@@ -252,11 +264,11 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: - <UITableViewDatasource> -
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return Section.count
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 
         guard let sectionCase = Section(rawValue: section) else {
             return nil
@@ -275,10 +287,11 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     func configure(headerView: UITableViewHeaderFooterView, for section: Section) {
         if let sectionHeaderView = headerView as? SectionHeaderTableViewHeaderFooterView {
             sectionHeaderView.headerText = section.title
+            sectionHeaderView.captionText = section.caption
         }
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         guard let sectionCase = Section(rawValue: section) else {
             fatalError("Unrecognized section")
@@ -291,7 +304,7 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let sectionCase = Section(rawValue: indexPath.section) else {
             fatalError("Unrecognized section")
@@ -363,7 +376,7 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
 //        <#code#>
 //    }
 //
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
     
         guard indexPath == currentNetworkIndexPath else {
             return nil
@@ -414,4 +427,78 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     
 
 
+}
+
+@IBDesignable @objcMembers class ScanWifiTableView: UITableView {
+    
+    var headerStackView: UIStackView!
+    
+    @IBInspectable var headerSpacing: CGFloat {
+        get { return headerStackView?.spacing ?? 0 }
+        set { headerStackView?.spacing = newValue }
+    }
+    
+    var headerTitleLabel: UILabel!
+    @IBInspectable var headerTitle: String? {
+        get { return headerTitleLabel?.text }
+        set { headerTitleLabel?.text = newValue }
+    }
+    
+    var headerBodyLabel: UILabel!
+    @IBInspectable var headerBody: String? {
+        get { return headerBodyLabel?.text }
+        set { headerBodyLabel?.text = newValue }
+    }
+    
+    override init(frame: CGRect, style: UITableViewStyle) {
+        super.init(frame: frame, style: style)
+        commonInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    func commonInit() {
+
+        let headerContainerView = UIView()
+        headerContainerView.autoresizingMask = [ .flexibleWidth, .flexibleHeight ]
+        headerContainerView.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+
+        headerStackView = UIStackView()
+        headerStackView.alignment = .fill
+        headerStackView.distribution = .fill
+        headerStackView.axis = .vertical
+        headerStackView.spacing = 8
+        headerStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        headerContainerView.addSubview(headerStackView)
+
+        let views: [String: Any] = [ "v": headerStackView ]
+        let vfl: [String] = [ "H:|-[v]-|", "V:|-[v]-|", ]
+        
+        let constraints = vfl.flatMap {
+            NSLayoutConstraint.constraints(
+                withVisualFormat: $0,
+                options: [],
+                metrics: nil,
+                views: views
+            )
+        }
+        NSLayoutConstraint.activate(constraints)
+        
+        headerTitleLabel = UILabel()
+        headerTitleLabel.font = UIFont.preferredFont(forTextStyle: .title1)
+        headerTitleLabel.numberOfLines = 0
+        headerStackView.addArrangedSubview(headerTitleLabel)
+        
+        headerBodyLabel = UILabel()
+        headerBodyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        headerBodyLabel.numberOfLines = 0
+        headerStackView.addArrangedSubview(headerBodyLabel)
+        
+        tableHeaderView = headerContainerView
+    }
+    
 }
