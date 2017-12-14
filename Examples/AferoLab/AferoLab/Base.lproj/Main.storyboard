@@ -2200,7 +2200,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CQ7-os-kTm">
-                                <rect key="frame" x="16" y="72" width="343" height="116"/>
+                                <rect key="frame" x="16" y="80" width="343" height="116"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Configure Wi-Fi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bSC-yP-4NA">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="31.5"/>
@@ -2227,14 +2227,14 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BUL-wV-1Jh">
-                                <rect key="frame" x="16" y="208" width="343" height="439"/>
+                                <rect key="frame" x="16" y="216" width="343" height="431"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WifiNetworkCell" rowHeight="71" id="Rkz-zO-LXx" customClass="AferoWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="343" height="71"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WifiNetworkCell" rowHeight="61" id="Rkz-zO-LXx" customClass="AferoAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="61"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Rkz-zO-LXx" id="uGv-96-Fh4">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="71"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="61"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <edgeInsets key="layoutMargins" top="8" left="0.0" bottom="8" right="8"/>
                                         </tableViewCellContentView>
@@ -2244,6 +2244,27 @@
                                                 <integer key="value" value="-55"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomSSIDWifiNetworkCell" rowHeight="98" id="Skd-ix-8PA" customClass="AferoCustomSSIDAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="89" width="343" height="98"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Skd-ix-8PA" id="wMS-m4-mjG">
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="98"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <edgeInsets key="layoutMargins" top="8" left="0.0" bottom="8" right="8"/>
+                                        </tableViewCellContentView>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ssid" value="Custom SSID"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="rssi">
+                                                <integer key="value" value="-55"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="password" value="ch@ng3m3"/>
                                         </userDefinedRuntimeAttributes>
                                     </tableViewCell>
                                 </prototypes>
@@ -2257,7 +2278,7 @@
                         <constraints>
                             <constraint firstItem="BUL-wV-1Jh" firstAttribute="top" secondItem="CQ7-os-kTm" secondAttribute="bottom" constant="20" id="FGh-qh-zwX"/>
                             <constraint firstAttribute="trailing" secondItem="CQ7-os-kTm" secondAttribute="trailing" constant="16" id="FQ1-m8-Hb3"/>
-                            <constraint firstItem="CQ7-os-kTm" firstAttribute="top" secondItem="rUm-Bc-elF" secondAttribute="bottom" constant="8" id="Fz7-TW-6Oa"/>
+                            <constraint firstItem="CQ7-os-kTm" firstAttribute="top" secondItem="rUm-Bc-elF" secondAttribute="bottom" constant="16" id="Fz7-TW-6Oa"/>
                             <constraint firstItem="BUL-wV-1Jh" firstAttribute="leading" secondItem="vLF-Pr-oeH" secondAttribute="leading" constant="16" id="GhC-1u-0nS"/>
                             <constraint firstItem="m4y-tc-Wx0" firstAttribute="top" secondItem="BUL-wV-1Jh" secondAttribute="bottom" constant="20" id="Irh-us-f9a"/>
                             <constraint firstItem="CQ7-os-kTm" firstAttribute="leading" secondItem="vLF-Pr-oeH" secondAttribute="leading" constant="16" id="TJi-Lf-1pz"/>
@@ -2284,7 +2305,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pjj-Cj-zPy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4103" y="2119"/>
+            <point key="canvasLocation" x="4101.6000000000004" y="2117.9910044977514"/>
         </scene>
         <!--Collection View Controller-->
         <scene sceneID="AUf-Bh-vOZ">

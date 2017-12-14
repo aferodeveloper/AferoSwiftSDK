@@ -569,10 +569,10 @@ public enum WifiSetupEvent {
     case wifiCurrentSSIDChanged(newSSID: String)
     
     /// The managed device's state setup process wifi state changed.
-    case wifiSetupStateChanged(newState: AferoSofthubWifiState)
+    case wifiSetupStateChanged(newState: WifiSetupManaging.WifiState)
     
     /// The managed device's steady (configured) wifi state changed.
-    case wifiSteadyStateChanged(newState: AferoSofthubWifiState)
+    case wifiSteadyStateChanged(newState: WifiSetupManaging.WifiState)
     
     /// The managed device's signal strength changed (in decibels)
     case wifiRSSIChanged(newRSSI: Int)
@@ -656,7 +656,7 @@ public protocol WifiSetupManaging: class {
     
     typealias WifiNetwork = AferoSofthubWifiSSIDEntryWrapper
     typealias WifiNetworkList = [WifiNetwork]
-    
+    typealias WifiState = AferoSofthubWifiState
     
     var wifiSetupEventSignal: WifiSetupEventSignal { get }
     

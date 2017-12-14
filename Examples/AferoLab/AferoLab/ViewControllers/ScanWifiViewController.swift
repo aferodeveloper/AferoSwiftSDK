@@ -11,14 +11,14 @@ import UIKit
 import CocoaLumberjack
 import Afero
 
-struct TestWifiNetwork: WifiNetwork {
+@objc class TestWifiNetwork: NSObject, WifiNetwork {
     
-    var ssid: String
-    var rssi: Int
-    var rssiBars: Int
-    var isSecure: Bool
-    var isConnected: Bool
-    var sortId: Int = Int(arc4random())
+    let ssid: String
+    let rssi: Int
+    let rssiBars: Int
+    let isSecure: Bool
+    let isConnected: Bool
+    let sortId: Int = Int(arc4random())
     
     init(ssid: String, rssi: Int, rssiBars: Int, isSecure: Bool, isConnected: Bool) {
         self.ssid = ssid
@@ -28,11 +28,26 @@ struct TestWifiNetwork: WifiNetwork {
         self.isConnected = isConnected
     }
     
-    var hashValue: Int { return ssid.hashValue
+    override var hashValue: Int { return ssid.hashValue
         ^ rssi.hashValue
         ^ rssiBars.hashValue
         ^ isSecure.hashValue
         ^ isConnected.hashValue
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+
+        guard let rhs = object as? TestWifiNetwork else {
+            return false
+        }
+        
+        return self.ssid == rhs.ssid
+            && self.rssi == rhs.rssi
+            && self.rssiBars == self.rssiBars
+            && self.isSecure == rhs.isSecure
+            && self.isConnected == rhs.isConnected
+            && self.sortId == rhs.sortId
+
     }
     
     static func ==(lhs: TestWifiNetwork, rhs: TestWifiNetwork) -> Bool {
@@ -110,10 +125,12 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     enum CellReuse {
         
         case networkCell
+        case customNetworkCell
         
         var reuseIdentifier: String {
             switch self {
             case .networkCell: return "WifiNetworkCell"
+            case .customNetworkCell: return "CustomSSIDWifiNetworkCell"
             }
         }
         
@@ -269,24 +286,49 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
         
         switch sectionCase {
         case .current: return currentNetwork == nil ? 0 : 1
-        case .visible: return visibleNetworks.count
+        case .visible: return visibleNetworks.count + 1
         }
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CellReuse.networkCell.reuseIdentifier, for: indexPath)
-        configure(networkCell: cell, for: indexPath)
+        
+        guard let sectionCase = Section(rawValue: indexPath.section) else {
+            fatalError("Unrecognized section")
+        }
+        
+        let cell: UITableViewCell
+        
+        switch sectionCase {
+
+        case .current:
+            cell = tableView.dequeueReusableCell(withIdentifier: CellReuse.networkCell.reuseIdentifier, for: indexPath)
+            
+        case .visible:
+            
+            guard indexPath.row < visibleNetworks.count else {
+                cell = tableView.dequeueReusableCell(withIdentifier: CellReuse.customNetworkCell.reuseIdentifier, for: indexPath)
+                break
+            }
+            
+            cell = tableView.dequeueReusableCell(withIdentifier: CellReuse.networkCell.reuseIdentifier, for: indexPath)
+
+        }
+
+        configure(cell: cell, for: indexPath)
         return cell
     }
     
-    func configure(networkCell cell: UITableViewCell, for indexPath: IndexPath) {
+    func configure(cell: UITableViewCell, for indexPath: IndexPath) {
+        
         if let networkCell = cell as? AferoWifiNetworkTableViewCell {
-            configure(cell: networkCell, for: indexPath)
+            configure(networkCell: networkCell, for: indexPath)
+            return
         }
+        
     }
     
-    func configure(cell: AferoWifiNetworkTableViewCell, for indexPath: IndexPath) {
+    func configure(networkCell cell: AferoWifiNetworkTableViewCell, for indexPath: IndexPath) {
 
         guard let sectionCase = Section(rawValue: indexPath.section) else {
             fatalError("Unrecognized section")
@@ -360,6 +402,10 @@ class ScanWifiViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func disconnectFromCurrentNetwork() {
         currentNetwork = nil
+    }
+    
+    func scanForNetworks() {
+        
     }
     
     func connectToNetwork(at indexPath: IndexPath) {
