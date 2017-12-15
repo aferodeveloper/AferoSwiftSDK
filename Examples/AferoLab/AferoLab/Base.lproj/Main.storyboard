@@ -237,15 +237,8 @@
                                 <action selector="signOutTapped:" destination="nFc-5S-3DK" id="LlM-nU-CTb"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="QRCode30" id="bMy-jt-Au2">
-                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="associateDeviceTapped:" destination="nFc-5S-3DK" id="7dy-yc-UHx"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="associateDeviceButtonItem" destination="bMy-jt-Au2" id="VZx-KN-sv8"/>
                         <outlet property="signOutButton" destination="pYM-Km-9YV" id="i6D-eA-6ut"/>
                         <segue destination="taP-RM-A2x" kind="show" identifier="ShowModuloViewController" id="G5F-Ne-TdL"/>
                     </connections>
@@ -2407,7 +2400,6 @@
     <resources>
         <image name="Info.png" width="16" height="16"/>
         <image name="QRCode" width="44" height="44"/>
-        <image name="QRCode30" width="30" height="30"/>
         <image name="Underline" width="3" height="4"/>
     </resources>
     <inferredMetricsTieBreakers>

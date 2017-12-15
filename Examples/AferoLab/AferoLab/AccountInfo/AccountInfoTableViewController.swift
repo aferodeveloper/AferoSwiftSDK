@@ -429,8 +429,19 @@ class AccountViewController: UITableViewController {
     }
     
     func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: AccountInfoSection) {
+        
         headerView.headerText = section.title
         headerView.captionText = section.caption
+        headerView.removeAllAccessoryViews()
+        
+        if section == .devices {
+            let addDeviceButton = UIButton()
+            let image = UIImage(named: "AddButtonSmall", in: Bundle(for: type(of: self)), compatibleWith: nil)
+            addDeviceButton.setImage(image, for: .normal)
+            addDeviceButton.imageView?.contentMode = .scaleAspectFit
+            addDeviceButton.addTarget(self, action: #selector(associateDeviceTapped(_:)), for: .touchUpInside)
+            headerView.accessoryViews = [addDeviceButton]
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
