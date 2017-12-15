@@ -611,7 +611,7 @@ class AccountViewController: UITableViewController {
             inspector.deviceModelable = deviceModel
             
         default:
-            DDLogWarn("No configuration for \(segue.identifier)", tag: TAG)
+            DDLogWarn("No configuration for \(segue.identifier ?? "<nil segue id>")", tag: TAG)
         }
     }
     

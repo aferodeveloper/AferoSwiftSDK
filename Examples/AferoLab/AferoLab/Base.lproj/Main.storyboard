@@ -7,7 +7,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Baseline standard spacing" minToolsVersion="9.0"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
@@ -88,13 +87,12 @@
                             <constraint firstAttribute="leadingMargin" secondItem="tss-FA-KtN" secondAttribute="leading" id="QhE-6W-qjj"/>
                             <constraint firstItem="fXX-uM-g5e" firstAttribute="top" secondItem="IxR-GU-dgX" secondAttribute="bottom" constant="8" id="WEw-3M-omF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tss-FA-KtN" secondAttribute="trailing" id="X8w-Nm-yaG"/>
-                            <constraint firstItem="frb-Th-8K5" firstAttribute="centerX" secondItem="67J-Fd-3CY" secondAttribute="centerX" id="aQL-1G-tbL"/>
                             <constraint firstAttribute="trailingMargin" secondItem="IxR-GU-dgX" secondAttribute="trailing" id="bAT-se-brf"/>
                             <constraint firstItem="qGh-wl-a1Q" firstAttribute="top" secondItem="tss-FA-KtN" secondAttribute="bottom" constant="1" id="cpy-SW-2HV"/>
                             <constraint firstAttribute="leadingMargin" secondItem="qGh-wl-a1Q" secondAttribute="leading" id="eFh-zw-8mY"/>
                             <constraint firstItem="tss-FA-KtN" firstAttribute="top" secondItem="2Qw-31-uH3" secondAttribute="bottom" constant="14" id="mmC-xH-c2C"/>
                             <constraint firstAttribute="leadingMargin" secondItem="IxR-GU-dgX" secondAttribute="leading" id="nSH-TO-E94"/>
-                            <constraint firstItem="fXX-uM-g5e" firstAttribute="centerX" secondItem="IxR-GU-dgX" secondAttribute="centerX" id="rmX-To-Zhu"/>
+                            <constraint firstItem="fXX-uM-g5e" firstAttribute="centerX" secondItem="67J-Fd-3CY" secondAttribute="centerX" id="rmX-To-Zhu"/>
                             <constraint firstAttribute="leadingMargin" secondItem="dLI-dX-dMo" secondAttribute="leading" id="x50-R0-UB6"/>
                         </constraints>
                     </view>
@@ -136,10 +134,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AccountNameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWG-lA-CQM">
-                                            <rect key="frame" x="144" y="11" width="215" height="21"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="215" id="iPg-Uy-L11"/>
-                                            </constraints>
+                                            <rect key="frame" x="204" y="11" width="155" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -151,7 +146,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NetworkStatusLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7V-1m-RXK">
-                                            <rect key="frame" x="144" y="40" width="215" height="21"/>
+                                            <rect key="frame" x="204" y="40" width="155" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -172,9 +167,11 @@
                                         </switch>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="Zcz-gR-67K" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Lf0-Ze-wi8" secondAttribute="trailing" constant="8" symbolic="YES" id="0ui-jN-hl7"/>
                                         <constraint firstItem="Lf0-Ze-wi8" firstAttribute="centerY" secondItem="Zcz-gR-67K" secondAttribute="centerY" id="232-He-RKb"/>
                                         <constraint firstItem="T7V-1m-RXK" firstAttribute="trailing" secondItem="Zcz-gR-67K" secondAttribute="trailing" id="29E-nR-BZd"/>
                                         <constraint firstItem="Lpp-Yr-GLK" firstAttribute="top" secondItem="zdJ-7Q-UQd" secondAttribute="bottom" constant="13" id="5Sx-ZW-Aoc"/>
+                                        <constraint firstItem="FWG-lA-CQM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="zdJ-7Q-UQd" secondAttribute="trailing" constant="8" symbolic="YES" id="6cG-Bu-nZD"/>
                                         <constraint firstAttribute="topMargin" secondItem="FWG-lA-CQM" secondAttribute="top" id="7DR-IB-VYd"/>
                                         <constraint firstItem="Lpp-Yr-GLK" firstAttribute="baseline" secondItem="T7V-1m-RXK" secondAttribute="baseline" id="88v-5T-gKN"/>
                                         <constraint firstAttribute="topMargin" secondItem="zdJ-7Q-UQd" secondAttribute="top" id="AQk-QB-lRF"/>
@@ -182,6 +179,7 @@
                                         <constraint firstItem="zdJ-7Q-UQd" firstAttribute="baseline" secondItem="FWG-lA-CQM" secondAttribute="baseline" id="NXI-3I-w4A"/>
                                         <constraint firstItem="Lf0-Ze-wi8" firstAttribute="top" secondItem="Lpp-Yr-GLK" secondAttribute="bottom" constant="13" id="Pha-LT-eQW"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="Zcz-gR-67K" secondAttribute="bottom" constant="7" id="PiO-O2-3rs"/>
+                                        <constraint firstItem="T7V-1m-RXK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Lpp-Yr-GLK" secondAttribute="trailing" constant="8" symbolic="YES" id="Q33-7n-vKf"/>
                                         <constraint firstItem="FWG-lA-CQM" firstAttribute="trailing" secondItem="SNr-MM-PA5" secondAttribute="trailingMargin" id="bn8-EY-J2h"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="Lf0-Ze-wi8" secondAttribute="bottom" constant="12" id="i42-xS-CIJ"/>
                                         <constraint firstItem="FWG-lA-CQM" firstAttribute="leading" secondItem="T7V-1m-RXK" secondAttribute="leading" id="mrd-2i-73g"/>
@@ -346,61 +344,8 @@
                                                 <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             </collectionViewFlowLayout>
                                             <cells>
-                                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="AddTagCell" id="3AK-vZ-15c" customClass="AddTagCollectionViewCell" customModule="AferoLab" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="33" height="33"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                        <rect key="frame" x="0.0" y="0.0" width="33" height="33"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <subviews>
-                                                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AddTag" translatesAutoresizingMaskIntoConstraints="NO" id="FJo-hV-xze">
-                                                                <rect key="frame" x="0.0" y="0.0" width="33" height="33"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" constant="33" id="ARd-Bc-HxN"/>
-                                                                    <constraint firstAttribute="width" secondItem="FJo-hV-xze" secondAttribute="height" multiplier="1:1" id="KW7-Mo-vW8"/>
-                                                                </constraints>
-                                                            </imageView>
-                                                        </subviews>
-                                                    </view>
-                                                    <constraints>
-                                                        <constraint firstItem="FJo-hV-xze" firstAttribute="top" secondItem="3AK-vZ-15c" secondAttribute="top" id="1fV-9U-Hz2"/>
-                                                        <constraint firstAttribute="bottom" secondItem="FJo-hV-xze" secondAttribute="bottom" id="I4O-es-u7g"/>
-                                                        <constraint firstAttribute="trailing" secondItem="FJo-hV-xze" secondAttribute="trailing" id="IDi-R3-3jS"/>
-                                                        <constraint firstItem="FJo-hV-xze" firstAttribute="leading" secondItem="3AK-vZ-15c" secondAttribute="leading" id="N5N-JS-8WF"/>
-                                                    </constraints>
-                                                    <edgeInsets key="layoutMargins" top="4" left="4" bottom="4" right="4"/>
-                                                    <size key="customSize" width="33" height="33"/>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="string" keyPath="value" value="someVal"/>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="tagBackgroundColor">
-                                                            <color key="value" white="0.0" alpha="0.04498741610738255" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="tagCornerRadius">
-                                                            <real key="value" value="10"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="textColor">
-                                                            <color key="value" cocoaTouchSystemColor="darkTextColor"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="string" keyPath="key" value="someKey"/>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                                                            <color key="value" white="0.0" alpha="0.044987416109999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="selectedTagBackgroundColor">
-                                                            <color key="value" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="0.44819630872483224" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
-                                                            <color key="value" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                            <color key="value" white="0.0" alpha="0.044987416109999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <outlet property="imageView" destination="FJo-hV-xze" id="mKJ-TW-dyc"/>
-                                                    </connections>
-                                                </collectionViewCell>
                                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="TagCell" id="yJ1-n1-30K" customClass="TagCollectionViewCell" customModule="AferoLab" customModuleProvider="target">
-                                                    <rect key="frame" x="43" y="0.0" width="106" height="33"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="106" height="33"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                                         <rect key="frame" x="0.0" y="0.0" width="106" height="33"/>
@@ -2148,10 +2093,11 @@
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
                                     <userDefinedRuntimeAttribute type="number" keyPath="rssiBarCount">
                                         <integer key="value" value="2"/>
                                     </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="connectionStateIsHidden" value="NO"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="passworPromptStatusIsHidden" value="NO"/>
                                 </userDefinedRuntimeAttributes>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomSSIDWifiNetworkCell" rowHeight="53" id="IUb-dX-oK5" customClass="AferoCustomSSIDAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
@@ -2164,12 +2110,7 @@
                                 </tableViewCellContentView>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="ssid" value="Custom SSID"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="rssi">
-                                        <integer key="value" value="-55"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="password" value="ch@ng3m3"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="titleText" value="Other…"/>
                                     <userDefinedRuntimeAttribute type="number" keyPath="contentSpacing">
@@ -2207,40 +2148,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DuP-oj-S3w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4332" y="2119"/>
-        </scene>
-        <!--Collection View Controller-->
-        <scene sceneID="AUf-Bh-vOZ">
-            <objects>
-                <collectionViewController id="Yky-8H-TIp" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Yfo-qn-7fB">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="2Ov-55-wa4">
-                            <size key="itemSize" width="50" height="50"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Xen-cN-wiC">
-                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </view>
-                            </collectionViewCell>
-                        </cells>
-                        <connections>
-                            <outlet property="dataSource" destination="Yky-8H-TIp" id="jJ6-5l-s5E"/>
-                            <outlet property="delegate" destination="Yky-8H-TIp" id="pgd-31-K68"/>
-                        </connections>
-                    </collectionView>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8TC-FB-Gzd" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4545" y="1355"/>
         </scene>
         <!--Progress View Attribute Inspector View Controller-->
         <scene sceneID="7tz-yJ-HW9">
@@ -2498,7 +2405,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="AddTag" width="33" height="33"/>
         <image name="Info.png" width="16" height="16"/>
         <image name="QRCode" width="44" height="44"/>
         <image name="QRCode30" width="30" height="30"/>

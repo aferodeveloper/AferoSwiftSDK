@@ -17,16 +17,17 @@ def base_pods
 
     # Else if on XCode 9/Swift 4, use:
     if XCODE_VERSION.start_with?("9")
-        pod 'CryptoSwift', '0.7.2'
+        pod 'CryptoSwift', '0.7.2', :inhibit_warnings => true
     else
-        pod 'CryptoSwift', '0.7.0'
+        pod 'CryptoSwift', '0.7.0', :inhibit_warnings => true
     end
 
-    pod 'CocoaLumberjack/Swift', '~> 3.2'
+    pod 'CocoaLumberjack/Swift', '~> 3.2', :inhibit_warnings => true
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'PromiseKit/CorePromise', '~> 4.3'
     pod 'HTTPStatusCodes', '~> 3.1'
+    pod 'AFNetworking', :inhibit_warnings => true
     pod 'AferoSwiftSDK/AFNetworking', :path => '..'
 end
 
@@ -58,7 +59,7 @@ target 'AferoLab' do
     
     pod 'LKAlertController', '1.12.1'
     pod 'RSEnvironment', '0.0.3'
-    pod 'SVProgressHUD', '1.1.3'
+    pod 'SVProgressHUD', '1.1.3', :inhibit_warnings => true
     pod 'QRCodeReader.swift', '~> 8.0'
     pod 'LKAlertController', '1.12.1'
 

@@ -36,13 +36,13 @@ extension String {
     }
     
     var initialLowerCaseString: String {
-        let first = String(characters.prefix(1)).lowercased()
-        return first + String(characters.dropFirst())
+        let first = prefix(1).lowercased()
+        return first + dropFirst()
     }
     
     var initialCapitalizedString: String {
-        let first = String(characters.prefix(1)).uppercased()
-        return first + String(characters.dropFirst())
+        let first = prefix(1).uppercased()
+        return first + dropFirst()
     }
     
     func components(withPrefix prefix: String) -> (prefix: String, remainder: String)? {
@@ -277,7 +277,7 @@ public extension Data {
         
         guard var localHexEncoded = hexEncoded else { return nil }
         
-        if localHexEncoded.characters.count % 2 != 0 {
+        if localHexEncoded.count % 2 != 0 {
             localHexEncoded = "0" + localHexEncoded
         }
         
