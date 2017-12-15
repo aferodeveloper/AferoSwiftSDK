@@ -10,7 +10,7 @@ import UIKit
 import AferoSofthub
 import Afero
 
-protocol WifiNetwork: Hashable {
+protocol WifiNetworkProto: Hashable {
     var ssid: String { get }
     var rssi: Int { get }
     var rssiBars: Int { get }
@@ -111,7 +111,7 @@ protocol WifiNetwork: Hashable {
 
 extension AferoWifiNetworkView {
     
-    func configure<T: WifiNetwork>(with network: T) {
+    func configure<T: WifiNetworkProto>(with network: T) {
             rssi = network.rssi
             rssiBarCount = network.rssiBars
             ssid = network.ssid
@@ -264,7 +264,7 @@ extension AferoWifiNetworkView {
 
 extension AferoWifiNetworkTableViewCell {
 
-    func configure<T: WifiNetwork>(with network: T) {
+    func configure<T: WifiNetworkProto>(with network: T) {
         wifiNetworkView.configure(with: network)
     }
 

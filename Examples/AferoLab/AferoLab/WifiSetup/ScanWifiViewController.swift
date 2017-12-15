@@ -9,9 +9,10 @@
 import UIKit
 
 import CocoaLumberjack
+import ReactiveSwift
 import Afero
 
-@objc class TestWifiNetwork: NSObject, WifiNetwork {
+@objc class TestWifiNetwork: NSObject, WifiNetworkProto {
     
     let ssid: String
     let rssi: Int
@@ -71,6 +72,8 @@ import Afero
     }
     
 }
+
+extension WifiSetupManaging.WifiNetwork : WifiNetworkProto { }
 
 class ScanWifiViewController: UITableViewController {
     
@@ -169,14 +172,14 @@ class ScanWifiViewController: UITableViewController {
         
         tableView.reloadData()
 
-        reloadTestNetworks()
+        startWifiSetupManager()
     }
     
     // MARK: - Actions -
     
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     @IBAction func refreshTapped(_ sender: Any) {
-        reloadTestNetworks()
+        rescan()
     }
     
     @IBOutlet weak var doneButton: UIBarButtonItem!
@@ -184,15 +187,15 @@ class ScanWifiViewController: UITableViewController {
         presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
-    func reloadTestNetworks() {
+    func rescan() {
         currentNetwork = TestWifiNetwork.testNetworks().first
-        visibleNetworks = TestWifiNetwork.testNetworks().sorted { return $0.sortId < $1.sortId }
+//        visibleNetworks = TestWifiNetwork.testNetworks().sorted { return $0.sortId < $1.sortId }
     }
     
     // MARK: - Model -
     
     typealias WifiNetwork = TestWifiNetwork
-    typealias WifiNetworkList = [WifiNetwork]
+    typealias WifiNetworkList = WifiSetupManaging.WifiNetworkList
     
     /// The current network for which the device is connectred, if any.
     
@@ -285,6 +288,7 @@ class ScanWifiViewController: UITableViewController {
     }
 
     func configure(headerView: UITableViewHeaderFooterView, for section: Section) {
+        
         if let sectionHeaderView = headerView as? SectionHeaderTableViewHeaderFooterView {
             sectionHeaderView.headerText = section.title
             sectionHeaderView.captionText = section.caption
@@ -347,17 +351,17 @@ class ScanWifiViewController: UITableViewController {
             fatalError("Unrecognized section")
         }
         
-        var network: WifiNetwork?
-        defer {
-            guard let network = network else {
-                fatalError("No network to configure.")
-            }
-            cell.configure(with: network)
-        }
-        
         switch sectionCase {
-        case .current: network = currentNetwork
-        case .visible: network = visibleNetworks[indexPath.row]
+        
+        case .current:
+            guard let currentNetwork = currentNetwork else {
+                fatalError("No currentNetwork to configure.")
+            }
+            cell.configure(with: currentNetwork)
+            
+        case .visible:
+            let network = visibleNetworks[indexPath.row]
+            cell.configure(with: network)
         }
 
     }
@@ -397,9 +401,6 @@ class ScanWifiViewController: UITableViewController {
         return ret
     }
     
-    
-    
-    
     /*
     // MARK: - Navigation
 
@@ -413,12 +414,55 @@ class ScanWifiViewController: UITableViewController {
     
     // MARK: Network Interaction
     
+    var wifiSetupManager: WifiSetupManaging?
+    var wifiSetupDisposable: Disposable? {
+        willSet { wifiSetupDisposable?.dispose() }
+    }
+    
+    func startWifiSetupManager() {
+        wifiSetupDisposable = wifiSetupManager?
+            .wifiSetupEventSignal
+            .observe(on: QueueScheduler.main)
+            .observe {
+                [weak self] event in switch event {
+                case .value(let setupEvent): self?.handleWifiSetupEvent(event: setupEvent)
+                case .completed: self?.handleWifiSetupCompleted()
+                case .interrupted: self?.handleWifiSetupInterrupted()
+                }
+        }
+        wifiSetupManager?.start()
+    }
+    
+    func handleWifiSetupEvent(event: WifiSetupEvent) {
+        switch event {
+     
+        case .managerStateChange(let newState):
+            handleWifiSetupManagerStateChanged(to: newState)
+            
+        case .ssidListChanged(let l): self.visibleNetworks = l
+        default: break
+        }
+    }
+    
+    
+    func handleWifiSetupManagerStateChanged(to newState: WifiSetupManagerState) {
+        
+    }
+    
+    func handleWifiSetupCompleted() {
+        
+    }
+    
+    func handleWifiSetupInterrupted() {
+        
+    }
+    
     func disconnectFromCurrentNetwork() {
         currentNetwork = nil
     }
     
     func scanForNetworks() {
-        
+        try? wifiSetupManager?.scan()
     }
     
     func connectToNetwork(at indexPath: IndexPath) {

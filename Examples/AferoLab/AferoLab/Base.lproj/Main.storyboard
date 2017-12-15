@@ -2124,133 +2124,6 @@
             </objects>
             <point key="canvasLocation" x="3207" y="1588"/>
         </scene>
-        <!--Configure Wi-Fi-->
-        <scene sceneID="FOi-ey-VuV">
-            <objects>
-                <viewController title="Configure Wi-Fi" id="zYM-AO-cUo" customClass="ScanWifiViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="rUm-Bc-elF"/>
-                        <viewControllerLayoutGuide type="bottom" id="m4y-tc-Wx0"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="vLF-Pr-oeH">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CQ7-os-kTm">
-                                <rect key="frame" x="16" y="36" width="343" height="116"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Configure Wi-Fi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bSC-yP-4NA">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="31.5"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This device supports Afero Cloud connections via Wi-Fi. Select a network below to connect to it." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gq4-pA-RRs">
-                                        <rect key="frame" x="0.0" y="51.5" width="343" height="64.5"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="Gq4-pA-RRs" secondAttribute="bottom" id="0oL-45-HcE"/>
-                                    <constraint firstItem="Gq4-pA-RRs" firstAttribute="trailing" secondItem="bSC-yP-4NA" secondAttribute="trailing" id="TLh-5N-g9J"/>
-                                    <constraint firstItem="Gq4-pA-RRs" firstAttribute="top" secondItem="bSC-yP-4NA" secondAttribute="bottom" constant="20" id="XiK-33-312"/>
-                                    <constraint firstItem="Gq4-pA-RRs" firstAttribute="leading" secondItem="bSC-yP-4NA" secondAttribute="leading" id="Zsq-Yl-8lF"/>
-                                    <constraint firstItem="bSC-yP-4NA" firstAttribute="top" secondItem="CQ7-os-kTm" secondAttribute="top" id="eUk-5O-t0G"/>
-                                    <constraint firstItem="bSC-yP-4NA" firstAttribute="leading" secondItem="CQ7-os-kTm" secondAttribute="leading" id="exH-Gc-qVs"/>
-                                    <constraint firstAttribute="trailing" secondItem="bSC-yP-4NA" secondAttribute="trailing" id="g9F-lD-9fX"/>
-                                </constraints>
-                            </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BUL-wV-1Jh">
-                                <rect key="frame" x="16" y="172" width="343" height="475"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomSSIDWifiNetworkCell" rowHeight="125" id="Skd-ix-8PA" customClass="AferoCustomSSIDAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="343" height="125"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Skd-ix-8PA" id="wMS-m4-mjG">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="125"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <edgeInsets key="layoutMargins" top="8" left="38" bottom="8" right="8"/>
-                                        </tableViewCellContentView>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="ssid" value="Custom SSID"/>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="rssi">
-                                                <integer key="value" value="-55"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="NO"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="password" value="ch@ng3m3"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="titleText" value="Other…"/>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="contentSpacing">
-                                                <real key="value" value="-1"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WifiNetworkCell" rowHeight="61" id="Rkz-zO-LXx" customClass="AferoAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="153" width="343" height="61"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Rkz-zO-LXx" id="uGv-96-Fh4">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="61"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <edgeInsets key="layoutMargins" top="4" left="0.0" bottom="4" right="8"/>
-                                        </tableViewCellContentView>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="ssid" value="Afero Guest Network"/>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="rssi">
-                                                <integer key="value" value="-55"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isSecure" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="passwordPromptIsHidden" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="statusIsHidden" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="rssiBarCount">
-                                                <integer key="value" value="2"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="zYM-AO-cUo" id="1b2-2I-XYG"/>
-                                    <outlet property="delegate" destination="zYM-AO-cUo" id="BLi-br-P2k"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="BUL-wV-1Jh" firstAttribute="top" secondItem="CQ7-os-kTm" secondAttribute="bottom" constant="20" id="FGh-qh-zwX"/>
-                            <constraint firstAttribute="trailing" secondItem="CQ7-os-kTm" secondAttribute="trailing" constant="16" id="FQ1-m8-Hb3"/>
-                            <constraint firstItem="CQ7-os-kTm" firstAttribute="top" secondItem="rUm-Bc-elF" secondAttribute="bottom" constant="16" id="Fz7-TW-6Oa"/>
-                            <constraint firstItem="BUL-wV-1Jh" firstAttribute="leading" secondItem="vLF-Pr-oeH" secondAttribute="leading" constant="16" id="GhC-1u-0nS"/>
-                            <constraint firstItem="m4y-tc-Wx0" firstAttribute="top" secondItem="BUL-wV-1Jh" secondAttribute="bottom" constant="20" id="Irh-us-f9a"/>
-                            <constraint firstItem="CQ7-os-kTm" firstAttribute="leading" secondItem="vLF-Pr-oeH" secondAttribute="leading" constant="16" id="TJi-Lf-1pz"/>
-                            <constraint firstAttribute="trailing" secondItem="BUL-wV-1Jh" secondAttribute="trailing" constant="16" id="Utt-Qc-tAx"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" title="Configure Wi-Fi" id="LAA-QR-Skb">
-                        <barButtonItem key="leftBarButtonItem" title="Item" systemItem="done" id="Df5-rj-uLm">
-                            <connections>
-                                <action selector="doneButtonTapped:" destination="zYM-AO-cUo" id="2a6-2U-lDL"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="rWQ-CF-dsl">
-                            <connections>
-                                <action selector="refreshTapped:" destination="zYM-AO-cUo" id="3fS-Qc-sKe"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="doneButton" destination="Df5-rj-uLm" id="be4-Ui-cJ7"/>
-                        <outlet property="refreshButton" destination="rWQ-CF-dsl" id="TfN-JX-g2e"/>
-                        <outlet property="tableView" destination="BUL-wV-1Jh" id="t1C-lb-gQT"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="pjj-Cj-zPy" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4101.6000000000004" y="2117.9910044977514"/>
-        </scene>
         <!--Scan Wifi View Controller-->
         <scene sceneID="6OG-YC-zXH">
             <objects>
@@ -2333,7 +2206,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DuP-oj-S3w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4144.8000000000002" y="2911.394302848576"/>
+            <point key="canvasLocation" x="4332" y="2119"/>
         </scene>
         <!--Collection View Controller-->
         <scene sceneID="AUf-Bh-vOZ">
