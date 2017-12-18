@@ -111,11 +111,37 @@ import UIKit
     }
     
     func commonInit() {
-        sectionHeaderView = SectionHeaderView(frame: contentView.bounds)
-        sectionHeaderView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        
         contentView.backgroundColor = .white
+        sectionHeaderView = SectionHeaderView()
+        sectionHeaderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sectionHeaderView)
+
+        setupConstraints()
     }
+    
+    func setupConstraints() {
+        
+        let views: [String: Any] = [ "v": sectionHeaderView ]
+        let vfl: [String] = [ "H:|[v]|", "V:|[v]|", ]
+        
+        let constraints = vfl.flatMap {
+            NSLayoutConstraint.constraints(
+                withVisualFormat: $0,
+                options: [],
+                metrics: nil,
+                views: views
+            )
+        }
+        
+        NSLayoutConstraint.activate(constraints)
+        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+
     
     public var accessoryViews: [UIView] {
         get { return sectionHeaderView.accessoryViews }

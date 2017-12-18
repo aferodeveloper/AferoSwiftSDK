@@ -133,7 +133,7 @@ class AccountViewController: UITableViewController {
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        tableView.estimatedSectionHeaderHeight = 25
+        tableView.estimatedSectionHeaderHeight = 70
         tableView.sectionHeaderHeight = UITableViewAutomaticDimension
 
         AccountInfoHeaderFooterViewReuse.allCases.forEach {
