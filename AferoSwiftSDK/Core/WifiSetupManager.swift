@@ -161,7 +161,7 @@ public enum WifiSetupError: Int, LocalizedError, CustomStringConvertible, Custom
         return "\(description)(\(rawValue))"
     }
     
-    public init?(hubbyCommandState: AferoSofthubSetupWifiCommandState) {
+    public init?(hubbyCommandState: WifiSetupManaging.CommandState) {
         switch hubbyCommandState {
         case .timedOut: self = .hubbyCommandTimedOut
         case .failed: self = .hubbyCommandFailed
@@ -352,13 +352,13 @@ public protocol WifiConfigurable: ConnectionMediaSupporting {
     var wifiCurrentSSID: String? { get }
     
     /// If `isWifiConfigurable`, the current network type used by the receiver.
-    var wifiCurrentNetworkType: AferoSofthubWifiNetworkType? { get }
+    var wifiCurrentNetworkType: WifiSetupManaging.NetworkType? { get }
     
     /// If `isWifiConfigurable`, the `AferoSofthubWifiState` for the setup process.
-    var wifiSetupState: AferoSofthubWifiState? { get }
+    var wifiSetupState: WifiSetupManaging.WifiState? { get }
     
     /// If `isWifiConfigurable`, the `AferoSofthubWifiState` for normal operation.
-    var wifiSteadyState: AferoSofthubWifiState? { get }
+    var wifiSteadyState: WifiSetupManaging.WifiState? { get }
     
     /// If `isWifiConfigurable`, the current `RSSI` in db.
     var wifiRSSI: Int? { get }
@@ -554,7 +554,7 @@ public enum WifiSetupEvent {
     case managerStateChange(newState: WifiSetupManagerState)
     
     /// The state of a previously-submitted wifi management command has changed.
-    case commandStateChange(newState: AferoSofthubSetupWifiCommandState)
+    case commandStateChange(newState: WifiSetupManaging.CommandState)
     
     /// A new SSID list has arrived
     case ssidListChanged(newList: WifiSetupManaging.WifiNetworkList)
@@ -650,6 +650,18 @@ public enum WifiAuthState {
 
 public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, NoError>
 
+public protocol WifiNetworkProto: Hashable {
+    
+    var ssid: String { get }
+    var rssi: Int { get }
+    var rssiBars: Int { get }
+    var isSecure: Bool { get }
+    var isConnected: Bool { get }
+    
+}
+
+extension WifiSetupManaging.WifiNetwork : WifiNetworkProto { }
+
 /// Protocol for anything which manages a wifi-configurable device.
 
 public protocol WifiSetupManaging: class {
@@ -657,6 +669,8 @@ public protocol WifiSetupManaging: class {
     typealias WifiNetwork = AferoSofthubWifiSSIDEntryWrapper
     typealias WifiNetworkList = [WifiNetwork]
     typealias WifiState = AferoSofthubWifiState
+    typealias CommandState = AferoSofthubSetupWifiCommandState
+    typealias NetworkType = AferoSofthubWifiNetworkType
     
     var wifiSetupEventSignal: WifiSetupEventSignal { get }
     

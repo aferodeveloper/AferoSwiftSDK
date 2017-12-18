@@ -10,14 +10,6 @@ import UIKit
 import AferoSofthub
 import Afero
 
-protocol WifiNetworkProto: Hashable {
-    var ssid: String { get }
-    var rssi: Int { get }
-    var rssiBars: Int { get }
-    var isSecure: Bool { get }
-    var isConnected: Bool { get }
-}
-
 @IBDesignable class AferoWifiNetworkView: XibBasedView {
     
     override var xibName: String { return "AferoWifiNetworkView" }
