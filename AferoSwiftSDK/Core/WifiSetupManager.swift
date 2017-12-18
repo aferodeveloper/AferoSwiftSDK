@@ -382,7 +382,7 @@ extension WifiConfigurable {
     }
     
     public func getWifiSetupManager() -> WifiSetupManaging? {
-        if !isWifiConfigurable { return nil }
+//        if !isWifiConfigurable { return nil }
         return LiveWifiSetupManager(deviceModel: self, writeAttributeCallback: writeAttributeCallback())
     }
     
