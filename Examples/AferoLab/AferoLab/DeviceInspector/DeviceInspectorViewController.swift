@@ -610,8 +610,25 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
         case .showWifiConfig:
-            break
             
+            guard
+                let deviceModel = deviceModelable as? DeviceModel else {
+                    DDLogError("Device model of type \(type(of: deviceModelable)) is not a DeviceModel subclass.", tag: TAG)
+                    return
+            }
+            
+            var wifiSetupAware: WifiSetupAware?
+            
+            if let maybeSetupAware = segue.destination as? WifiSetupAware {
+                wifiSetupAware = maybeSetupAware
+            } else if
+                let navController = (segue.destination as? UINavigationController),
+                let maybeSetupAware = navController.viewControllers.first as? WifiSetupAware {
+                wifiSetupAware = maybeSetupAware
+            }
+            
+            wifiSetupAware?.deviceModel = deviceModel
+
         }
         
     }
@@ -779,7 +796,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         guard let ret = deviceModelable?.attribute(for: attributeId) else {
             let msg = "No attribute for attributeId \(attributeId); will ignore."
-            DDLogWarn(msg, tag: TAG)
+            DDLogVerbose(msg, tag: TAG)
             return nil
         }
         
