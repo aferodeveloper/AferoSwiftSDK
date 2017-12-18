@@ -38,6 +38,7 @@
 		CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */; };
 		CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */; };
 		CB82FEFE1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */; };
+		CB8F131C1FE44BC900B0791F /* WifiSetupAware.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8F131B1FE44BC900B0791F /* WifiSetupAware.swift */; };
 		CBA475441FD5BABF00D4C25C /* TagViewContent.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBA475431FD5BABF00D4C25C /* TagViewContent.xib */; };
 		CBA475461FD5D55500D4C25C /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA475451FD5D55500D4C25C /* TagView.swift */; };
 		CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA578181FDB3FCC000D349C /* XibBasedView.swift */; };
@@ -124,6 +125,7 @@
 		CB82FEF41E7D22760088CC0C /* DeviceCollectionCollator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCollectionCollator.swift; sourceTree = "<group>"; };
 		CB82FEFA1E7D38BC0088CC0C /* SofthubMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SofthubMinder.swift; sourceTree = "<group>"; };
 		CB82FEFD1E7D9AC60088CC0C /* AccountInfoZeroStateView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountInfoZeroStateView.xib; sourceTree = "<group>"; };
+		CB8F131B1FE44BC900B0791F /* WifiSetupAware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiSetupAware.swift; sourceTree = "<group>"; };
 		CBA475431FD5BABF00D4C25C /* TagViewContent.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagViewContent.xib; sourceTree = "<group>"; };
 		CBA475451FD5D55500D4C25C /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		CBA578181FDB3FCC000D349C /* XibBasedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibBasedView.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				CB5641EA1FE1B73F008DDB58 /* AferoWifiPasswordPromptView.xib */,
 				CB5641EC1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift */,
 				CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */,
+				CB8F131B1FE44BC900B0791F /* WifiSetupAware.swift */,
 			);
 			path = WifiSetup;
 			sourceTree = "<group>";
@@ -719,6 +722,7 @@
 				CB72D8931F91750C000D8925 /* AferoUIControls.swift in Sources */,
 				CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */,
 				CB5641ED1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift in Sources */,
+				CB8F131C1FE44BC900B0791F /* WifiSetupAware.swift in Sources */,
 				CB1C82F31F9925C1004DD348 /* AferoViews.swift in Sources */,
 				CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */,
 				CB241A311F8D6AD100480CCA /* AttributeInspectorViewController.swift in Sources */,
