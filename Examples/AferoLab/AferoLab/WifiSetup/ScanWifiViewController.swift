@@ -387,8 +387,6 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     // ========================================================================
     // MARK: - Model Accessors
     
-    fileprivate var SSIDEntries: WifiNetworkList = []
-    
     /// Replace existing SSID entries with new ones, and animate.
     /// - parameter entries: The entries to set
     /// - parameter anmated: Whether or not to animate changes (defaults to `true`)
@@ -397,60 +395,59 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     /// - note: `completion` is a `(Bool)->Void`. In this case, the `Bool` refers to whether or not the completion
     ///         should be animated, NOT to whether or not the changes completed.
     
-    fileprivate func setSSIDEntries(_ entries: WifiNetworkList) {
+    fileprivate func setVisibleNetworks(_ entries: WifiNetworkList) {
         
-        if !(refreshControl?.isRefreshing ?? false) {
-            refreshControl?.beginRefreshing()
-        }
+        startAnimatingRefreshIndicators()
         
-        SSIDEntries = entries.filter({ (entry) -> Bool in
+        visibleNetworks = entries.filter({ (entry) -> Bool in
             !entry.ssid.trimmingCharacters(in: .whitespaces).isEmpty
         })
         
-        refreshControl?.endRefreshing()
+        stopAnimatingRefreshIndicators()
+
         scanningState = .scanned
     }
     
     /// Translate a model index to an indexPath.
-    func indexPathForSSIDEntryIndex(_ index: Int) -> IndexPath {
+    func indexPathForVisibleNetworksIndex(_ index: Int) -> IndexPath {
         return IndexPath(row: index, section: 0)
     }
     
     /// Translate a `WifiNetwork` entry into an indexPath.
-    func indexPathForSSIDEntry(_ entry: WifiNetwork?) -> IndexPath? {
+    func indexPathForVisibleNetwork(_ entry: WifiNetwork?) -> IndexPath? {
         guard let entry = entry else { return nil }
-        guard let entryIndex = SSIDEntries.index(of: entry) else { return nil }
-        return indexPathForSSIDEntryIndex(entryIndex)
+        guard let entryIndex = visibleNetworks.index(of: entry) else { return nil }
+        return indexPathForVisibleNetworksIndex(entryIndex)
     }
     
     /// Translate an `SSID` into an indexPath.
-    func indexPathForSSID(_ ssid: String?) -> IndexPath? {
+    func indexPathForVisibleNetworkSSID(_ ssid: String?) -> IndexPath? {
         guard let ssid = ssid else { return nil }
-        guard let entryIndex = SSIDEntries.index(where: { (entry: WifiNetwork) -> Bool in
+        guard let entryIndex = visibleNetworks.index(where: { (entry: WifiNetwork) -> Bool in
             return entry.ssid == ssid
         }) else { return nil }
-        return indexPathForSSIDEntryIndex(entryIndex)
+        return indexPathForVisibleNetworksIndex(entryIndex)
     }
     
-    func cellForSSIDEntry(_ entry: WifiNetwork?) -> UITableViewCell? {
-        guard let indexPath = indexPathForSSIDEntry(entry) else { return nil }
+    func cellForVisibleNetwork(_ entry: WifiNetwork?) -> UITableViewCell? {
+        guard let indexPath = indexPathForVisibleNetwork(entry) else { return nil }
         return tableView.cellForRow(at: indexPath)
     }
     
     func cellForSSID(_ SSID: String?) -> UITableViewCell? {
-        guard let indexPath = indexPathForSSID(SSID) else { return nil }
+        guard let indexPath = indexPathForVisibleNetworkSSID(SSID) else { return nil }
         return tableView.cellForRow(at: indexPath)
     }
 
     /// Translate an indexPath to a model index.
-    fileprivate func SSIDEntryIndexForIndexPath(_ indexPath: IndexPath) -> Int? {
+    fileprivate func visibleNetworkIndexForIndexPath(_ indexPath: IndexPath) -> Int? {
         return indexPath.row
     }
     
     /// Get a model value for the given indexPath.
-    fileprivate func SSIDEntryForIndexPath(_ indexPath: IndexPath) -> WifiNetwork? {
-        guard let entryIndex = SSIDEntryIndexForIndexPath(indexPath) else { return nil }
-        return SSIDEntries[entryIndex]
+    fileprivate func visibleNetworkForIndexPath(_ indexPath: IndexPath) -> WifiNetwork? {
+        guard let entryIndex = visibleNetworkIndexForIndexPath(indexPath) else { return nil }
+        return visibleNetworks[entryIndex]
     }
     
     // MARK: - <UITableViewDatasource> -
@@ -557,7 +554,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func configureCell(forWifiNetwork wifiNetwork: WifiNetwork?) {
         
         guard
-            let indexPath = indexPathForSSIDEntry(wifiNetwork),
+            let indexPath = indexPathForVisibleNetwork(wifiNetwork),
             let cell = tableView.cellForRow(at: indexPath) else { return }
         
         configure(cell: cell, for: indexPath)
@@ -566,7 +563,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func configureCell(forSSID SSID: String?) {
         
         guard
-            let indexPath = indexPathForSSID(SSID),
+            let indexPath = indexPathForVisibleNetworkSSID(SSID),
             let cell = tableView.cellForRow(at: indexPath) else { return }
         
         configure(cell: cell, for: indexPath)
@@ -701,9 +698,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     // MARK: - Wifi setup attribute observation
     // ========================================================================
     
-    func handleManagerStateChanged(_ newState: WifiSetupManagerState) {
+    override func handleManagerStateChanged(_ newState: WifiSetupManagerState) {
         DDLogInfo("Got new wifi setup manager state: \(newState)", tag: TAG)
-        
+
         switch newState {
         case .ready:
             transitionToScanningState(.scanning)
@@ -711,7 +708,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
             transitionToScanningState(.waiting)
         case .managing:
             break
-            
+
         case .completed:
             break
         }
@@ -748,6 +745,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     fileprivate func scan() {
         do {
             try wifiSetupManager?.scan()
+            startAnimatingRefreshIndicators()
         } catch {
             DDLogError("Error thrown attempting to scan for wifi SSIDs: \(String(describing: error))", tag: TAG)
             handleWifiSetupError(error)
@@ -759,6 +757,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func cancelScan() {
         do {
             try wifiSetupManager?.cancelScan()
+            stopAnimatingRefreshIndicators()
         } catch {
             DDLogError("Error thrown attempting to cancel scan for wifi SSIDs: \(String(describing: error))", tag: TAG)
             handleWifiSetupError(error)
@@ -766,9 +765,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     }
     
     /// Handle receipt of scan results.
-    func handleSSIDListChanged(_ newList: WifiSetupManaging.WifiNetworkList) {
+    override func handleSSIDListChanged(_ newList: WifiSetupManaging.WifiNetworkList) {
         DDLogInfo("Device \(deviceModel!.deviceId) got new SSID list: \(String(describing: newList))", tag: TAG)
-        setSSIDEntries(newList)
+        setVisibleNetworks(newList)
     }
     
     // MARK: Association/Authentication
@@ -795,39 +794,39 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     /// The credentials were successfully sent to the device; it will proceed to attempt to associate
     /// with the given wifi network.
     
-    func handlePasswordCommitted() {
+    override func handlePasswordCommitted() {
         DDLogInfo("Device \(deviceModel!.deviceId) committed password", tag: TAG)
     }
     
     /// Association with the wifi network succeeded (we were able to establish a pre-authentication connection)
-    func handleAssociateSucceeded() {
+    override func handleAssociateSucceeded() {
         DDLogInfo("Device \(deviceModel!.deviceId) associate succeeded (default impl)", tag: TAG)
     }
 
     /// Association with the wifi network failed. This is likely unrecoverable.
-    func handleAssociateFailed() {
+    override func handleAssociateFailed() {
         DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
     }
     
     /// Handshake succeeded; we were able to authenticate to the network and get an IP address.
-    func handleHandshakeSucceeded() {
+    override func handleHandshakeSucceeded() {
         DDLogInfo("Device \(deviceModel!.deviceId) handshake succeeded (default impl)", tag: TAG)
     }
     
     /// Handshake failed. The *may* be due to a bad password, and so may be recoverable through a retry.
-    func handleHandshakeFailed() {
+    override func handleHandshakeFailed() {
         DDLogError("Device \(deviceModel!.deviceId) handshake failed (default impl)", tag: TAG)
     }
     
     /// We were able to connect to the network and get an IP address, but we were unable to see the
     /// Afero cloud from this network. This is likely due to a configuration or connectivity issue
     /// with the network itself.
-    func handleEchoFailed() {
+    override func handleEchoFailed() {
         DDLogError("Device \(deviceModel!.deviceId) echo failed (unable to ping Afero cloud) (default impl)", tag: TAG)
     }
 
     /// We were unable to find a network with the given SSID.
-    func handleSSIDNotFound() {
+    override func handleSSIDNotFound() {
         DDLogError("Device \(deviceModel!.deviceId) SSID not found (default impl)", tag: TAG)
     }
     

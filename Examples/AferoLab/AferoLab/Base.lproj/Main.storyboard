@@ -2127,15 +2127,9 @@
                                 <action selector="doneButtonTapped:" destination="sTv-7i-JMZ" id="mWR-nn-Hbp"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="1uk-Ly-n0g">
-                            <connections>
-                                <action selector="refreshTapped:" destination="sTv-7i-JMZ" id="j5n-XU-j2A"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="doneButton" destination="de4-bf-m98" id="1Ww-nn-QAU"/>
-                        <outlet property="refreshButton" destination="1uk-Ly-n0g" id="05b-ds-Ipy"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DuP-oj-S3w" userLabel="First Responder" sceneMemberID="firstResponder"/>

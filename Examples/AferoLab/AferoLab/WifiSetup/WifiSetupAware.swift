@@ -140,6 +140,44 @@ public extension WifiSetupAware {
         
     }
 
+
+}
+
+class WifiSetupAwareViewController: UIViewController, Tagged, WifiSetupAware {
+
+    var deviceId: String? { return deviceModel?.deviceId }
+    
+    var deviceModel: DeviceModel?
+    
+    var wifiSetupManager: WifiSetupManaging? {
+        
+        willSet {
+            wifiEventDisposable = nil
+            wifiSetupManager?.stop()
+        }
+        
+        didSet {
+            subscribeToWifiSetupManager()
+            wifiSetupManager?.start()
+        }
+    }
+    
+    var wifiEventDisposable: Disposable? {
+        willSet {
+            wifiEventDisposable?.dispose()
+            DDLogDebug("unsubscribed from wifi event signal.", tag: TAG)
+        }
+    }
+    
+    deinit {
+        wifiSetupManager = nil
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        wifiSetupManager = deviceModel?.getWifiSetupManager()
+    }
+    
     func handleSSIDListChanged(_ newList: WifiSetupManaging.WifiNetworkList) {
         DDLogInfo("Device \(deviceModel!.deviceId) sees SSIDs: \(String(describing: newList)) (default impl)", tag: TAG)
     }
@@ -227,47 +265,6 @@ public extension WifiSetupAware {
 
 }
 
-class WifiSetupAwareViewController: UIViewController, Tagged, WifiSetupAware {
-
-    var deviceId: String? { return deviceModel?.deviceId }
-    
-    var deviceModel: DeviceModel?
-    
-    var wifiSetupManager: WifiSetupManaging? {
-        
-        willSet {
-            wifiEventDisposable = nil
-            wifiSetupManager?.stop()
-        }
-        
-        didSet {
-            subscribeToWifiSetupManager()
-            wifiSetupManager?.start()
-        }
-    }
-    
-    var wifiEventDisposable: Disposable? {
-        willSet {
-            wifiEventDisposable?.dispose()
-            DDLogDebug("unsubscribed from wifi event signal.", tag: TAG)
-        }
-    }
-    
-    deinit {
-        wifiSetupManager = nil
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        wifiSetupManager = deviceModel?.getWifiSetupManager()
-    }
-    
-    func onWifiSetupEvent(_ event: WifiSetupEvent) {
-        DDLogDebug("Got wifi setup event \(event)", tag: TAG)
-    }
-    
-}
-
 class WifiSetupAwareTableViewController: UITableViewController, Tagged, WifiSetupAware {
     
     var deviceId: String? { return deviceModel?.deviceId }
@@ -303,8 +300,89 @@ class WifiSetupAwareTableViewController: UITableViewController, Tagged, WifiSetu
         wifiSetupManager = deviceModel?.getWifiSetupManager()
     }
     
-    func onWifiSetupEvent(_ event: WifiSetupEvent) {
-        DDLogDebug("Got wifi setup event \(event)", tag: TAG)
+    func handleSSIDListChanged(_ newList: WifiSetupManaging.WifiNetworkList) {
+        DDLogInfo("Device \(deviceModel!.deviceId) sees SSIDs: \(String(describing: newList)) (default impl)", tag: TAG)
+    }
+    
+    func handlePasswordCommitted() {
+        DDLogInfo("Device \(deviceModel!.deviceId) committed password (default impl)", tag: TAG)
+    }
+    
+    func handleAssociateSucceeded() {
+        DDLogInfo("Device \(deviceModel!.deviceId) associate succeeded (default impl)", tag: TAG)
+    }
+    
+    func handleAssociateFailed() {
+        DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
+    }
+    
+    func handleHandshakeSucceeded() {
+        DDLogInfo("Device \(deviceModel!.deviceId) handshake succeeded (default impl)", tag: TAG)
+    }
+    
+    func handleHandshakeFailed() {
+        DDLogError("Device \(deviceModel!.deviceId) handshake failed (default impl)", tag: TAG)
+    }
+    
+    func handleEchoFailed() {
+        DDLogError("Device \(deviceModel!.deviceId) echo failed (unable to ping Afero cloud) (default impl)", tag: TAG)
+    }
+    
+    func handleSSIDNotFound() {
+        DDLogError("Device \(deviceModel!.deviceId) SSID not found (default impl)", tag: TAG)
+    }
+    
+    func handleUnknownFailure() {
+        DDLogError("Device \(deviceModel!.deviceId) encountered an unknown wifi setup error. (default impl)", tag: TAG)
+    }
+    
+    // Events related to the currently-configured wifi network
+    
+    func handleNetworkTypeChanged(_ newType: WifiSetupManaging.NetworkType) {
+        DDLogInfo("Device \(deviceModel!.deviceId) network type changed to \(newType) (default impl)")
+    }
+    
+    func handleWifiSteadyStateChanged(_ newState: WifiSetupManaging.WifiState) {
+        DDLogInfo("Device \(deviceModel!.deviceId) new wifi steady state: \(newState) (default impl)", tag: TAG)
+    }
+    
+    func handleWifiCurrentSSIDChanged(_ newSSID: String) {
+        DDLogInfo("Device \(deviceModel!.deviceId) new SSID: \(newSSID) (default impl)", tag: TAG)
+    }
+    
+    func handleWifiRSSIBarsChanged(_ newRSSIBars: Int) {
+        DDLogInfo("Device \(deviceModel!.deviceId) new RSSI Bars: \(newRSSIBars) (default impl)", tag: TAG)
+    }
+    
+    func handleWifiRSSIChanged(_ newRSSI: Int) {
+        DDLogInfo("Device \(deviceModel!.deviceId) new RSSI: \(newRSSI) (default impl)", tag: TAG)
+    }
+    
+    func handleWifiSetupStateChanged(_ newState: WifiSetupManaging.WifiState) {
+        DDLogInfo("Device \(deviceModel!.deviceId) new wifi setup state: \(String(describing: newState)) (default impl)", tag: TAG)
+    }
+    
+    func handleWifiConnected() {
+        DDLogInfo("Device \(deviceModel!.deviceId) connected to wifi. (default impl)", tag: TAG)
+    }
+    
+    // Events related to the setup process
+    
+    func handleManagerStateChanged(_ newState: WifiSetupManagerState) {
+        DDLogInfo("Got new wifi setup manager state: \(newState) (default impl)", tag: TAG)
+    }
+    
+    func handleCommandStateChanged(_ newState: WifiSetupManaging.CommandState) {
+        
+        DDLogInfo("Got new command state: \(newState) (default impl)", tag: TAG)
+        
+        if let error = WifiSetupError(hubbyCommandState: newState) {
+            handleWifiCommandError(error)
+        }
+    }
+    
+    func handleWifiCommandError(_ error: Error) {
+        DDLogInfo("Device \(deviceModel!.deviceId) encountered command error: \(String(reflecting: error)). (default impl)", tag: TAG)
     }
     
 }
