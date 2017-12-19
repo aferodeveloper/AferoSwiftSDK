@@ -135,11 +135,13 @@ import SVProgressHUD
         
         headerTitleLabel = UILabel()
         headerTitleLabel.font = UIFont.preferredFont(forTextStyle: .title1)
+        headerTitleLabel.lineBreakMode = .byWordWrapping
         headerTitleLabel.numberOfLines = 0
         headerStackView.addArrangedSubview(headerTitleLabel)
         
         headerBodyLabel = UILabel()
         headerBodyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        headerBodyLabel.lineBreakMode = .byWordWrapping
         headerBodyLabel.numberOfLines = 0
         headerStackView.addArrangedSubview(headerBodyLabel)
         
@@ -255,9 +257,8 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         tableView.estimatedRowHeight = 55
         tableView.rowHeight = UITableViewAutomaticDimension
         
-//        scan()
-//        updateUI()
-//        startWifiSetupManager()
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(refreshTapped(_:)), for: .valueChanged)
     }
 
     // Turn the idle timer off when we're in front, so that
@@ -275,6 +276,16 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     // MARK: - Actions -
     
+    func startAnimatingRefreshIndicators() {
+        if !(refreshControl?.isRefreshing ?? false) {
+            refreshControl?.beginRefreshing()
+        }
+    }
+    
+    func stopAnimatingRefreshIndicators() {
+        refreshControl?.endRefreshing()
+    }
+    
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     @IBAction func refreshTapped(_ sender: Any) {
         scan()
@@ -284,13 +295,6 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     @IBAction func doneButtonTapped(_ sender: Any) {
         presentingViewController?.dismiss(animated: true, completion: nil)
     }
-    
-//    func scan() {
-//        transitionToScanningState(.scanning)
-//        currentNetwork = TestWifiNetwork.testNetworks().first
-//        visibleNetworks = TestWifiNetwork.testNetworks().sorted { return $0.sortId < $1.sortId }
-//    }
-    
     
     // MARK: - General UI Updates -
     
@@ -478,6 +482,8 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
             sectionHeaderView.headerText = section.title
             sectionHeaderView.captionText = section.caption
         }
+        
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

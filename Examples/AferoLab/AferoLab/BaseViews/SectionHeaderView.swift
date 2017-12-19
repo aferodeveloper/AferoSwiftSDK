@@ -53,6 +53,9 @@ import UIKit
     }
     
     public func add(accessoryView: UIView) {
+        guard !accessoryViews.contains(accessoryView) else {
+            return
+        }
         accessoryStackView.addArrangedSubview(accessoryView)
     }
     

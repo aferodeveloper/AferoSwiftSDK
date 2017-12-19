@@ -36,12 +36,13 @@
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hql-hk-ziC">
+                                <stackView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" distribution="equalSpacing" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hql-hk-ziC">
                                     <rect key="frame" x="264" y="0.0" width="20" height="20"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="lessThanOrEqual" priority="500" constant="20" id="698-Jg-SEs"/>
                                         <constraint firstAttribute="width" constant="20" placeholder="YES" id="OsV-Bb-PgS"/>
                                         <constraint firstAttribute="height" constant="20" id="cW5-4g-df9"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="20" id="ogj-jt-8OS"/>
                                     </constraints>
                                 </stackView>
                             </subviews>
