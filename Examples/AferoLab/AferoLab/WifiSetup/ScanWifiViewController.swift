@@ -809,8 +809,24 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func attemptAssociate(to ssid: String, with password: String) {
         do {
             try wifiSetupManager?.attemptAssociate(ssid, password: password)
+            SVProgressHUD.show(
+                withStatus: NSLocalizedString("Connecting to \(ssid)…", comment: "ScanWifiViewcontroller association succeeded status message"),
+                maskType: SVProgressHUDMaskType.gradient
+            )
         } catch {
-            DDLogError("Error thrown attempting to associate SSID \(ssid)): \(String(describing: error))", tag: TAG)
+            
+            let  tmpl = NSLocalizedString(
+                "Unable to associate with %@: %@", comment: "ScanWifiViewController associate error template"
+            )
+            
+            let msg = String(format: tmpl, ssid, error.localizedDescription)
+            
+            DDLogError(msg, tag: TAG)
+            SVProgressHUD.showError(
+                withStatus: msg,
+                maskType: SVProgressHUDMaskType.gradient
+            )
+
         }
     }
     
@@ -823,31 +839,26 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         }
     }
 
-    /// The credentials were successfully sent to the device; it will proceed to attempt to associate
-    /// with the given wifi network.
-    
-    override func handlePasswordCommitted() {
-        DDLogInfo("Device \(deviceModel!.deviceId) committed password", tag: TAG)
-    }
-    
-    /// Association with the wifi network succeeded (we were able to establish a pre-authentication connection)
-    override func handleAssociateSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) associate succeeded (default impl)", tag: TAG)
-    }
-
     /// Association with the wifi network failed. This is likely unrecoverable.
     override func handleAssociateFailed() {
         DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
-    }
-    
-    /// Handshake succeeded; we were able to authenticate to the network and get an IP address.
-    override func handleHandshakeSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) handshake succeeded (default impl)", tag: TAG)
+        SVProgressHUD.showError(
+            withStatus: NSLocalizedString(
+                "Association failed. Verify that this network is properly configured.",
+                comment: "ScanWifiViewcontroller handshake failed status message"),
+            maskType: SVProgressHUDMaskType.gradient
+        )
     }
     
     /// Handshake failed. The *may* be due to a bad password, and so may be recoverable through a retry.
     override func handleHandshakeFailed() {
         DDLogError("Device \(deviceModel!.deviceId) handshake failed (default impl)", tag: TAG)
+        SVProgressHUD.showError(
+            withStatus: NSLocalizedString(
+                "Handshake failed. Verify that your password is correct.",
+                comment: "ScanWifiViewcontroller handshake failed status message"),
+            maskType: SVProgressHUDMaskType.gradient
+        )
     }
     
     /// We were able to connect to the network and get an IP address, but we were unable to see the
@@ -855,11 +866,35 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     /// with the network itself.
     override func handleEchoFailed() {
         DDLogError("Device \(deviceModel!.deviceId) echo failed (unable to ping Afero cloud) (default impl)", tag: TAG)
+        SVProgressHUD.showError(
+            withStatus: NSLocalizedString(
+                "Unable to connect to Afero cloud; verify that your network is correctly configured. Note that captive portal networks are not supported.",
+                comment: "ScanWifiViewcontroller handshake failed status message"),
+            maskType: SVProgressHUDMaskType.gradient
+        )
+
+    }
+    
+    /// We were successfully able to connect to the Afero cloud over the given network.
+    override func handleWifiConnected() {
+        
+        DDLogInfo("Device \(deviceModel!.deviceId) connected to cloud!", tag: TAG)
+        SVProgressHUD.showSuccess(
+            withStatus: NSLocalizedString("Connected!", comment: "ScanWifiViewcontroller connected status message"),
+            maskType: SVProgressHUDMaskType.gradient
+        )
+
     }
 
     /// We were unable to find a network with the given SSID.
     override func handleSSIDNotFound() {
         DDLogError("Device \(deviceModel!.deviceId) SSID not found (default impl)", tag: TAG)
+        SVProgressHUD.showError(
+            withStatus: NSLocalizedString(
+                "Unable to find network.",
+                comment: "ScanWifiViewcontroller handshake failed status message"),
+            maskType: SVProgressHUDMaskType.gradient
+        )
     }
     
     // MARK: - <AferoWifiPasswordPromptViewDelegate> -

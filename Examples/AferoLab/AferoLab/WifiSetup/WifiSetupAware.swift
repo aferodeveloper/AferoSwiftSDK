@@ -32,9 +32,7 @@ public protocol WifiSetupAware: class {
     func handleSSIDListChanged(_ newList: WifiSetupManaging.WifiNetworkList)
     
     func handlePasswordCommitted()
-    func handleAssociateSucceeded()
     func handleAssociateFailed()
-    func handleHandshakeSucceeded()
     func handleHandshakeFailed()
     func handleEchoFailed()
     func handleSSIDNotFound()
@@ -186,16 +184,8 @@ class WifiSetupAwareViewController: UIViewController, Tagged, WifiSetupAware {
         DDLogInfo("Device \(deviceModel!.deviceId) committed password (default impl)", tag: TAG)
     }
     
-    func handleAssociateSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) associate succeeded (default impl)", tag: TAG)
-    }
-    
     func handleAssociateFailed() {
         DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
-    }
-    
-    func handleHandshakeSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) handshake succeeded (default impl)", tag: TAG)
     }
     
     func handleHandshakeFailed() {
@@ -308,16 +298,8 @@ class WifiSetupAwareTableViewController: UITableViewController, Tagged, WifiSetu
         DDLogInfo("Device \(deviceModel!.deviceId) committed password (default impl)", tag: TAG)
     }
     
-    func handleAssociateSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) associate succeeded (default impl)", tag: TAG)
-    }
-    
     func handleAssociateFailed() {
         DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
-    }
-    
-    func handleHandshakeSucceeded() {
-        DDLogInfo("Device \(deviceModel!.deviceId) handshake succeeded (default impl)", tag: TAG)
     }
     
     func handleHandshakeFailed() {
