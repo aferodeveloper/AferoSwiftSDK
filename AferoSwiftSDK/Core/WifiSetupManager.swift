@@ -465,6 +465,34 @@ extension WifiConfigurable {
         }
         
     }
+    
+    /// The state of the wifi network when setup is not in progress.
+    public var steadyStateWifiNetwork: WifiNetwork? {
+        
+        guard
+            let state = wifiSteadyState,
+            let ssid = wifiCurrentSSID,
+            let rssi = wifiRSSI,
+            let rssiBars = wifiRSSIBars else {
+                return nil
+        }
+        
+        return WifiNetwork(ssid: ssid, rssi: rssi, rssiBars: rssiBars, state: state)
+    }
+    
+    /// The state of the wifi network when setup is in progress.
+    public var setupWifiNetwork: WifiNetwork? {
+        
+        guard
+            let state = wifiSetupState,
+            let ssid = wifiCurrentSSID,
+            let rssi = wifiRSSI,
+            let rssiBars = wifiRSSIBars else {
+                return nil
+        }
+        
+        return WifiNetwork(ssid: ssid, rssi: rssi, rssiBars: rssiBars, state: state)
+    }
 
 }
 
@@ -630,22 +658,69 @@ extension WifiSetupEvent: CustomDebugStringConvertible {
 public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, NoError>
 
 public protocol WifiNetworkProto: Hashable {
-    
+
     var ssid: String { get }
     var rssi: Int { get }
     var rssiBars: Int { get }
-    var isSecure: Bool { get }
+    var isSecure: Bool? { get }
     var isConnected: Bool { get }
     
-}
+    typealias State = AferoSofthubWifiState
+    var state: State { get }
 
-extension WifiSetupManaging.WifiNetwork : WifiNetworkProto { }
+}
 
 /// Protocol for anything which manages a wifi-configurable device.
 
+public struct WifiNetwork: WifiNetworkProto {
+    
+    public var ssid: String
+    public var rssi: Int = -99
+    public var rssiBars: Int = 0
+    public var isSecure: Bool? = false
+    
+    public var isConnected: Bool {
+        return state == .connected
+    }
+    
+    public var state: WifiNetworkProto.State = .notConnected
+    
+    public init(ssid: String, rssi: Int = -99, rssiBars: Int = 0, isSecure: Bool? = nil, state: WifiNetworkProto.State = .notConnected) {
+        self.ssid = ssid
+        self.rssi = rssi
+        self.rssiBars = rssiBars
+        self.isSecure = isSecure
+        self.state = state
+    }
+    
+    init(from wifiNetworkWrapper: AferoSofthubWifiSSIDEntryWrapper) {
+        self.init(
+            ssid: wifiNetworkWrapper.ssid,
+            rssi: wifiNetworkWrapper.rssi,
+            rssiBars: wifiNetworkWrapper.rssiBars,
+            isSecure: wifiNetworkWrapper.isSecure,
+            state: wifiNetworkWrapper.isConnected ? .connected : .notConnected
+        )
+    }
+    
+    public var hashValue: Int {
+        return ssid.hashValue ^ rssi.hashValue ^ rssiBars.hashValue
+    }
+    
+    public static func ==(lhs: WifiNetwork, rhs: WifiNetwork) -> Bool {
+        return lhs.ssid == rhs.ssid
+            && lhs.rssi == rhs.rssi
+            && lhs.rssiBars == rhs.rssiBars
+            && lhs.isSecure == rhs.isSecure
+            && lhs.isConnected == rhs.isConnected
+    }
+    
+}
+
 public protocol WifiSetupManaging: class {
     
-    typealias WifiNetwork = AferoSofthubWifiSSIDEntryWrapper
+
+    typealias WifiNetwork = Afero.WifiNetwork
     typealias WifiNetworkList = [WifiNetwork]
     typealias WifiState = AferoSofthubWifiState
     typealias CommandState = AferoSofthubSetupWifiCommandState
@@ -918,7 +993,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                 commandStateChangeCallback: onCommandStateChange,
                 writeAttributeCallback: writeAttributeCallback
             ) {
-                [weak self] deviceId, SSIDList in
+                [weak self] deviceId, SSIDWrapperList in
+                
+                let SSIDList = SSIDWrapperList.map({ WifiNetwork(from: $0)})
                 
                 guard let expectedDeviceId = self?.deviceId else {
                     DDLogDebug("Looks like we've been deallocated; bailing.")

@@ -13,67 +13,6 @@ import ReactiveSwift
 import Afero
 import SVProgressHUD
 
-@objc class TestWifiNetwork: NSObject, WifiNetworkProto {
-    
-    let ssid: String
-    let rssi: Int
-    let rssiBars: Int
-    let isSecure: Bool
-    let isConnected: Bool
-    let sortId: Int = Int(arc4random())
-    
-    init(ssid: String, rssi: Int, rssiBars: Int, isSecure: Bool, isConnected: Bool) {
-        self.ssid = ssid
-        self.rssi = rssi
-        self.rssiBars = rssiBars
-        self.isSecure = isSecure
-        self.isConnected = isConnected
-    }
-    
-    override var hashValue: Int { return ssid.hashValue
-        ^ rssi.hashValue
-        ^ rssiBars.hashValue
-        ^ isSecure.hashValue
-        ^ isConnected.hashValue
-    }
-    
-    override func isEqual(_ object: Any?) -> Bool {
-
-        guard let rhs = object as? TestWifiNetwork else {
-            return false
-        }
-        
-        return self.ssid == rhs.ssid
-            && self.rssi == rhs.rssi
-            && self.rssiBars == self.rssiBars
-            && self.isSecure == rhs.isSecure
-            && self.isConnected == rhs.isConnected
-            && self.sortId == rhs.sortId
-
-    }
-    
-    static func ==(lhs: TestWifiNetwork, rhs: TestWifiNetwork) -> Bool {
-        return lhs.ssid == rhs.ssid
-            && lhs.rssi == rhs.rssi
-            && lhs.rssiBars == lhs.rssiBars
-            && lhs.isSecure == rhs.isSecure
-            && lhs.isConnected == rhs.isConnected
-            && lhs.sortId == rhs.sortId
-    }
-    
-    static func testNetworks() -> [TestWifiNetwork] {
-        return [
-            TestWifiNetwork(ssid: "Test network 1", rssi: -44, rssiBars: 0, isSecure: true, isConnected: true),
-            TestWifiNetwork(ssid: "Test network 2", rssi: -50, rssiBars: 0, isSecure: false, isConnected: true),
-            TestWifiNetwork(ssid: "Test network 3", rssi: -55, rssiBars: 1, isSecure: true, isConnected: false),
-            TestWifiNetwork(ssid: "Test network 4", rssi: -60, rssiBars: 2, isSecure: false, isConnected: true),
-            TestWifiNetwork(ssid: "Test network 5", rssi: -65, rssiBars: 3, isSecure: true, isConnected: false),
-            TestWifiNetwork(ssid: "Test network 6", rssi: -70, rssiBars: 4, isSecure: false, isConnected: true),
-        ]
-    }
-    
-}
-
 @IBDesignable @objcMembers class ScanWifiTableView: UITableView {
     
     var headerStackView: UIStackView!
@@ -317,8 +256,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         return deviceModel?.isWifiConfigurable ?? false
     }
     
+    
     typealias WifiNetwork = WifiSetupManaging.WifiNetwork
-    typealias WifiNetworkList = WifiSetupManaging.WifiNetworkList
+    typealias WifiNetworkList = [WifiNetwork]
     
     /// The current network for which the device is connectred, if any.
     
