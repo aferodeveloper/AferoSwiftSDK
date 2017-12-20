@@ -620,27 +620,6 @@ extension WifiSetupEvent: CustomDebugStringConvertible {
     }
 }
 
-public enum WifiAuthState {
-    
-    /// We haven't tried to auth yet.
-    case untried
-    
-    /// We're trying.
-    case trying
-    
-    /// We tried to auth, but we were unable to connect to the base station
-    /// (e.g. due to MAC filtering)
-    case triedAssociationFailure
-    
-    /// We tried to auth, and were able to connect, but were unable to complete
-    /// the handshake. Password *may* have been the problem, but it also may
-    /// have been a general crypto failure. Can't tell the difference, unfortunately.
-    case triedHandshakeFailure
-    
-    case success
-    
-}
-
 // MARK: -
 // MARK: <WifiSetupManaging>
 // MARK: -
@@ -888,8 +867,6 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         deviceStateChanged(deviceState: deviceModel.currentState)
         
     }
-    
-    /// Handles changes to the status of previous commands (e.g., scan(), attemptAssociate()).
     
     // MARK: -
     // MARK: Public
