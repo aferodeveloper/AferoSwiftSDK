@@ -134,14 +134,18 @@ extension AferoWifiNetworkView {
     }
     
     func commonInit() {
-        
+        setupViews()
+        setupConstraints()
+    }
+    
+    func setupViews() {
         contentStackView = UIStackView()
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
         contentStackView.distribution = .fill
+        contentStackView.spacing = 8
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(contentStackView)
-        setupConstraints()
     }
     
     func setupConstraints() {
@@ -169,9 +173,9 @@ extension AferoWifiNetworkView {
     
     fileprivate var wifiNetworkView: AferoWifiNetworkView!
     
-    override func commonInit() {
+    override func setupViews() {
         
-        super.commonInit()
+        super.setupViews()
         
         wifiNetworkView = AferoWifiNetworkView(frame: contentView.bounds)
         wifiNetworkView.translatesAutoresizingMaskIntoConstraints = false
@@ -251,28 +255,41 @@ extension AferoWifiNetworkView {
         set { wifiNetworkView?.connectionStateRawValue = newValue }
     }
     
-}
-
-
-extension AferoWifiNetworkTableViewCell {
-
     func configure<T: WifiNetworkProto>(with network: T) {
         wifiNetworkView.configure(with: network)
     }
-
+    
 }
+
 
 @IBDesignable @objcMembers class AferoAssociatingWifiNetworkTableViewCell: AferoWifiNetworkTableViewCell {
     
     var passwordPromptView: AferoWifiPasswordPromptView!
     
-    override func commonInit() {
-        super.commonInit()
+    override func setupViews() {
+        super.setupViews()
         passwordPromptView = AferoWifiPasswordPromptView()
         contentStackView.addArrangedSubview(passwordPromptView)
         passwordPromptView.isHidden = true
+        ssidIsHidden = true
         passwordPromptView.ssidIsHidden = true
     }
+    
+    override func setupConstraints() {
+        super.setupConstraints()
+        passwordPromptView.layoutMargins = .zero
+        let indent = NSLayoutConstraint(
+            item: passwordPromptView.contentStack,
+            attribute: .leading,
+            relatedBy: .equal,
+            toItem: wifiNetworkView.ssidLabel,
+            attribute: .leading,
+            multiplier: 1.0,
+            constant: 16.0
+        )
+        NSLayoutConstraint.activate([indent])
+    }
+    
 
     @IBInspectable var validTextColor: UIColor {
         get { return passwordPromptView.validTextColor }
@@ -317,11 +334,6 @@ extension AferoWifiNetworkTableViewCell {
         set { passwordPromptView.passwordIsEnabled = newValue }
     }
     
-    @IBInspectable var passworPromptStatusIsHidden: Bool {
-        get { return passwordPromptView.statusIsHidden }
-        set { passwordPromptView.statusIsHidden = newValue }
-    }
-    
     @IBInspectable var passwordPromptIsHidden: Bool {
         get { return passwordPromptView?.isHidden ?? true }
         set { passwordPromptView?.isHidden = newValue }
@@ -332,6 +344,12 @@ extension AferoWifiNetworkTableViewCell {
         set { passwordPromptView.delegate = newValue }
     }
     
+    override func configure<T: WifiNetworkProto>(with network: T) {
+        super.configure(with: network)
+        passwordPromptView.ssid = network.ssid
+    }
+
+    
 }
 
 @IBDesignable @objcMembers class AferoCustomSSIDAssociatingWifiNetworkTableViewCell: StackViewContentTableViewCell {
@@ -340,9 +358,9 @@ extension AferoWifiNetworkTableViewCell {
     
     var passwordPromptView: AferoWifiPasswordPromptView!
     
-    override func commonInit() {
+    override func setupViews() {
 
-        super.commonInit()
+        super.setupViews()
         
         titleLabel = UILabel()
         titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
@@ -350,6 +368,10 @@ extension AferoWifiNetworkTableViewCell {
         
         passwordPromptView = AferoWifiPasswordPromptView()
         contentStackView.addArrangedSubview(passwordPromptView)
+    }
+    
+    override func setupConstraints() {
+        super.setupConstraints()
     }
     
     @IBInspectable var titleText: String? {
@@ -390,11 +412,6 @@ extension AferoWifiNetworkTableViewCell {
     @IBInspectable var passwordIsEnabled: Bool {
         get { return passwordPromptView.passwordIsEnabled }
         set { passwordPromptView.passwordIsEnabled = newValue }
-    }
-    
-    @IBInspectable var statusIsHidden: Bool {
-        get { return passwordPromptView.statusIsHidden }
-        set { passwordPromptView.statusIsHidden = newValue }
     }
     
     @IBInspectable var passwordPromptIsHidden: Bool {
