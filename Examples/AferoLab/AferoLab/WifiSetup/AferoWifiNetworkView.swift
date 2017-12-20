@@ -107,7 +107,7 @@ extension AferoWifiNetworkView {
             rssi = network.rssi
             rssiBarCount = network.rssiBars
             ssid = network.ssid
-            isSecure = network.isSecure
+            isSecure = network.isSecure ?? false
             isConnected = network.isConnected
     }
     
