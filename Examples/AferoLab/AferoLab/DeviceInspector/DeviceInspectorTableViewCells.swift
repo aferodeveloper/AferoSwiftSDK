@@ -187,43 +187,4 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
     
 }
 
-@IBDesignable class DeviceInspectorWifiNetworkCell: UITableViewCell {
-    
-    @IBOutlet weak var rssiView: AferoWifiRSSIView!
-    
-    var rssiIsHidden: Bool {
-        get { return rssiView?.isHidden ?? true }
-        set { rssiView?.isHidden = newValue }
-    }
-    
-    var rssiValueIsHidden: Bool {
-        get { return rssiView?.valueIsHidden ?? true }
-        set { rssiView?.valueIsHidden = newValue }
-    }
-    
-    var rssi: Int {
-        get { return rssiView?.rssi ?? 0 }
-        set { rssiView?.rssi = newValue }
-    }
-    
-    var isSecure: Bool {
-        get { return rssiView?.isSecure ?? false }
-        set { rssiView?.isSecure = newValue }
-    }
-    
-    @IBOutlet weak var ssidLabel: UILabel!
-    
-    var ssid: String? {
-        get { return ssidLabel?.text }
-        set { ssidLabel?.text = newValue }
-    }
-    
-    @IBOutlet weak var connectedLabel: UILabel!
-    
-    var isConnected: Bool {
-        get { return !(connectedLabel?.isHidden ?? true) }
-        set { connectedLabel?.isHidden = !isConnected }
-    }
-    
-}
 

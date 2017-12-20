@@ -29,7 +29,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         var reuseClass: AnyClass {
             switch self {
             case .tags: return DeviceInspectorTagCollectionCell.self
-            case .wifiNetwork: return DeviceInspectorWifiNetworkCell.self
+            case .wifiNetwork: return AferoWifiNetworkTableViewCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -960,7 +960,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             return
         }
         
-        if let wifiNetworkCell = cell as? DeviceInspectorWifiNetworkCell {
+        if let wifiNetworkCell = cell as? AferoWifiNetworkTableViewCell {
             configure(wifiNetworkCell: wifiNetworkCell)
             return
         }
@@ -1013,12 +1013,15 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         cell.attribute = attribute
     }
     
-    func configure(wifiNetworkCell cell: DeviceInspectorWifiNetworkCell) {
-        cell.ssid = "Test Network"
-        cell.isConnected = true
-        cell.rssi = -66
-        cell.isSecure = true
-        cell.selectionStyle = .none
+    func configure(wifiNetworkCell cell: AferoWifiNetworkTableViewCell) {
+        
+        guard
+            let deviceModel = deviceModelable as? DeviceModel,
+            let network = deviceModel.steadyStateWifiNetwork ?? deviceModel.setupWifiNetwork else {
+                return
+        }
+        
+        cell.configure(with: network)
     }
     
     // MARK: <UITableViewDelegate>
