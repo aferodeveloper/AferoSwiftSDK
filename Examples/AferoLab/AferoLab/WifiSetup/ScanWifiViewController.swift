@@ -529,6 +529,8 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
         
+        cell.selectionStyle = .none
+        
         if let networkCell = cell as? AferoWifiNetworkTableViewCell {
             configure(networkCell: networkCell, for: indexPath)
             return
@@ -552,6 +554,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
             
         case .visible:
             let network = visibleNetworks[indexPath.row]
+            (cell as? AferoAssociatingWifiNetworkTableViewCell)?.passwordPromptDelegate = self
             cell.configure(with: network)
         }
 
@@ -582,9 +585,32 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
 //
 //    }
 //
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        <#code#>
-//    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        guard
+            let cell = tableView.cellForRow(at: indexPath),
+            let networkCell = cell as? AferoAssociatingWifiNetworkTableViewCell else {
+                return
+        }
+        
+        tableView.beginUpdates()
+        networkCell.passwordPromptIsHidden = false
+        networkCell.passwordPromptView.passwordTextField.becomeFirstResponder()
+        tableView.endUpdates()
+
+    }
+    
+    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard
+            let cell = tableView.cellForRow(at: indexPath),
+            let networkCell = cell as? AferoAssociatingWifiNetworkTableViewCell else {
+                return
+        }
+        
+        tableView.beginUpdates()
+        networkCell.passwordPromptIsHidden = true
+        tableView.endUpdates()
+    }
 //
 //    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
 //        <#code#>
@@ -780,11 +806,11 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     /// Forward an SSID/password pair to Hubby to attempt association.
     
-    func attemptAssociate(_ ssidEntry: WifiNetwork, password: String) {
+    func attemptAssociate(to ssid: String, with password: String) {
         do {
-            try wifiSetupManager?.attemptAssociate(ssidEntry.ssid, password: password)
+            try wifiSetupManager?.attemptAssociate(ssid, password: password)
         } catch {
-            DDLogError("Error thrown attempting to associate SSID \(String(describing: ssidEntry)): \(String(describing: error))", tag: TAG)
+            DDLogError("Error thrown attempting to associate SSID \(ssid)): \(String(describing: error))", tag: TAG)
         }
     }
     
@@ -836,15 +862,15 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         DDLogError("Device \(deviceModel!.deviceId) SSID not found (default impl)", tag: TAG)
     }
     
-
-    // MARK: <AferoWifiPasswordPromptViewDelegate
+    // MARK: - <AferoWifiPasswordPromptViewDelegate> -
     
-    func wifiPasswordPromptView(_ promptView: AferoWifiPasswordPromptView, attemptAssociateWith ssid: String, usingPassword: String?, connectionStatusChangeHandler: @escaping (WifiSetupManaging.WifiState) -> Void) {
-//        <#code#>
+    func wifiPasswordPromptView(_ promptView: AferoWifiPasswordPromptView, attemptAssociateWith ssid: String, usingPassword password: String?, connectionStatusChangeHandler: @escaping (WifiSetupManaging.WifiState) -> Void) {
+        print("should attempt associate with \(ssid) using password \(password)")
+        attemptAssociate(to: ssid, with: password ?? "")
     }
     
     func cancelAttemptAssociation(for promptView: AferoWifiPasswordPromptView) {
-//        <#code#>
+        print("cancel attempt association.")
     }
     
     
