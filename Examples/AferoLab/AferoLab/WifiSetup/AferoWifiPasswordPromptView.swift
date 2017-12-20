@@ -21,6 +21,18 @@ import Afero
 
 }
 
+@objc @IBDesignable class LengthCheckedUITextField: UITextField {
+    
+    @IBInspectable var minimumLength: Int = 0
+    @IBInspectable var maximumLength: Int = Int.max
+    
+    override var hasText: Bool {
+        guard let text = text else { return super.hasText }
+        return (minimumLength...maximumLength).contains(text.count)
+    }
+    
+}
+
 @objc @IBDesignable class AferoWifiPasswordPromptView: XibBasedView, UITextFieldDelegate {
 
     override var xibName: String { return "AferoWifiPasswordPromptView" }
@@ -29,10 +41,12 @@ import Afero
         didSet { updateUI() }
     }
     
-    @IBInspectable var invalidTextColor: UIColor = .gray {
+    @IBInspectable var invalidTextColor: UIColor = .lightGray {
         didSet { updateUI() }
     }
 
+    @IBOutlet weak var contentStack: UIStackView!
+    
     // MARK: Activity and Status
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var wifiStateLabel: UILabel!
@@ -73,17 +87,16 @@ import Afero
         set { passwordTextField?.isEnabled = newValue }
     }
     
-    @IBOutlet weak var statusGroup: UIStackView!
-    @IBInspectable var statusIsHidden: Bool {
-        get { return statusGroup?.isHidden ?? true }
-        set { statusGroup.isHidden = newValue }
-    }
-    
     // MARK: UI Sync
     
     func updateUI() {
         ssidTextField.textColor = (ssidTextField?.text?.isValidSSID ?? false) ? validTextColor : invalidTextColor
         
+        if passwordTextField?.text?.isValidWPA2Password ?? false {
+            passwordTextField.textColor = validTextColor
+        } else {
+            
+        }
         passwordTextField.textColor = (passwordTextField?.text?.isValidWPA2Password ?? false) ? validTextColor : invalidTextColor
         
         let showPasswordTitle = passwordTextField.isSecureTextEntry ? NSLocalizedString("Show", comment: "Show password button title") : NSLocalizedString("Hide", comment: "Hide password button title")
@@ -114,7 +127,7 @@ import Afero
 
         switch textField {
         case ssidTextField: return newValue.isValidSSID
-        case passwordTextField: return newValue.isValidWPA2Password
+        case passwordTextField: return (0...63).contains(newValue.count)
         default: return true
         }
     }
