@@ -14,6 +14,7 @@ import Afero
 import SVProgressHUD
 
 @IBDesignable @objcMembers class ScanWifiTableView: UITableView {
+
     
     var headerStackView: UIStackView!
     
@@ -199,6 +200,12 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(refreshTapped(_:)), for: .valueChanged)
     }
+    
+    override var deviceModel: DeviceModel? {
+        didSet {
+            currentNetwork = deviceModel?.steadyStateWifiNetwork
+        }
+    }
 
     // Turn the idle timer off when we're in front, so that
     // we don't turn off the softhub.
@@ -265,42 +272,21 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     var currentNetwork: WifiNetwork? {
         
         didSet {
-            
-            guard oldValue != currentNetwork else { return }
-            
-            tableView.beginUpdates()
-            defer { tableView.endUpdates() }
-            
-            let indexPaths = [IndexPath(row: 0, section: Section.current.rawValue)]
-            
-            if oldValue == nil && currentNetwork != nil {
-
-                // We're adding.
-                tableView.insertRows(at: indexPaths, with: .automatic)
+            guard oldValue != currentNetwork else {
                 return
-                
-            } else if oldValue != nil && currentNetwork == nil {
-                
-                // we're deleting
-                tableView.deleteRows(at: indexPaths, with: .automatic)
-                return
-                
-            } else {
-                
-                // we're updating
-                if oldValue?.ssid == currentNetwork?.ssid {
-                    // we're just reconfiguring the existing cell
-                    guard let cell = tableView.cellForRow(at: indexPaths[0]) as? AferoWifiNetworkTableViewCell else {
-                        return
-                    }
-                    configure(cell: cell, for: indexPaths[0])
-                    return
-                    
-                } else {
-                   tableView.reloadRows(at: indexPaths, with: .automatic)
-                }
             }
             
+            if oldValue?.ssid == currentNetwork?.ssid {
+                guard
+                    let indexPath = currentNetworkIndexPath,
+                    let cell = tableView.cellForRow(at: indexPath) else {
+                        return
+                }
+                self.configure(cell: cell, for: indexPath)
+                return
+            }
+            
+            tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
         }
     }
     
@@ -709,6 +695,21 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     }
     
     // MARK: - Wifi Config -
+    
+    override func handleWifiCurrentSSIDChanged(_ newSSID: String) {
+        DDLogInfo("Current SSID changed to \(newSSID)", tag: TAG)
+        self.currentNetwork = deviceModel?.steadyStateWifiNetwork
+    }
+    
+    override func handleWifiRSSIChanged(_ newRSSI: Int) {
+        DDLogInfo("Current WIFI RSSI changed to \(newRSSI)", tag: TAG)
+        self.currentNetwork = deviceModel?.steadyStateWifiNetwork
+    }
+    
+    override func handleWifiRSSIBarsChanged(_ newRSSIBars: Int) {
+        DDLogInfo("Current WIFI RSSI bars changed to \(newRSSIBars)", tag: TAG)
+        self.currentNetwork = deviceModel?.steadyStateWifiNetwork
+    }
     
     // MARK: SSID Scanning
     
