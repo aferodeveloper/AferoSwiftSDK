@@ -340,7 +340,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     /// Translate a model index to an indexPath.
     func indexPathForVisibleNetworksIndex(_ index: Int) -> IndexPath {
-        return IndexPath(row: index, section: 0)
+        return IndexPath(row: index, section: Section.visible.rawValue)
     }
     
     /// Translate a `WifiNetwork` entry into an indexPath.
@@ -352,11 +352,15 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     /// Translate an `SSID` into an indexPath.
     func indexPathForVisibleNetworkSSID(_ ssid: String?) -> IndexPath? {
+        
         guard let ssid = ssid else { return nil }
+        
         guard let entryIndex = visibleNetworks.index(where: { (entry: WifiNetwork) -> Bool in
             return entry.ssid == ssid
         }) else { return nil }
-        return indexPathForVisibleNetworksIndex(entryIndex)
+        
+        let ret = indexPathForVisibleNetworksIndex(entryIndex)
+        return ret
     }
     
     func cellForVisibleNetwork(_ entry: WifiNetwork?) -> UITableViewCell? {
@@ -747,13 +751,40 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     /// Forward an SSID/password pair to Hubby to attempt association.
     
+    typealias AssociationAttempt = (ssid: String, password: String)
+    var currentAssociationAttempt: AssociationAttempt?
+    
     func attemptAssociate(to ssid: String, with password: String) {
+        
         do {
+            
+            try wifiSetupManager?.cancelAttemptAssociate()
             try wifiSetupManager?.attemptAssociate(ssid, password: password)
+            
+            if let indexPath = indexPathForVisibleNetworkSSID(ssid) {
+
+                tableView.deselectRow(at: indexPath, animated: true)
+                
+                if let cell = tableView.cellForRow(at: indexPath),
+                    let networkCell = cell as? AferoAssociatingWifiNetworkTableViewCell {
+                    
+                    tableView.beginUpdates()
+                    networkCell.password = nil
+                    networkCell.passwordIsHidden = true
+                    tableView.endUpdates()
+                    
+                }
+                
+            }
+            
+            
+            currentAssociationAttempt = (ssid: ssid, password: password)
+            
             SVProgressHUD.show(
                 withStatus: NSLocalizedString("Connecting to \(ssid)…", comment: "ScanWifiViewcontroller association succeeded status message"),
                 maskType: SVProgressHUDMaskType.gradient
             )
+            
         } catch {
             
             let  tmpl = NSLocalizedString(
@@ -775,6 +806,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func cancelAttemptAssociate() {
         do {
             try wifiSetupManager?.cancelAttemptAssociate()
+            currentAssociationAttempt = nil
         } catch {
             DDLogError("Error thrown attempting cancel SSID association: \(String(describing: error))", tag: TAG)
         }
@@ -782,6 +814,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
 
     /// Association with the wifi network failed. This is likely unrecoverable.
     override func handleAssociateFailed() {
+        
+        currentAssociationAttempt = nil
+        
         DDLogError("Device \(deviceModel!.deviceId) associate failed (default impl)", tag: TAG)
         SVProgressHUD.showError(
             withStatus: NSLocalizedString(
@@ -800,35 +835,73 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
                 comment: "ScanWifiViewcontroller handshake failed status message"),
             maskType: SVProgressHUDMaskType.gradient
         )
+        
+        if
+            let currentAssociationAttempt = currentAssociationAttempt,
+            let indexPath = indexPathForVisibleNetworkSSID(currentAssociationAttempt.ssid),
+            let cell = tableView.cellForRow(at: indexPath),
+            let networkCell = cell as? AferoAssociatingWifiNetworkTableViewCell {
+            
+                tableView.beginUpdates()
+            
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+                networkCell.passwordIsHidden = false
+                networkCell.password = currentAssociationAttempt.password
+                networkCell.passwordPromptView.passwordTextField.becomeFirstResponder()
+            
+                tableView.endUpdates()
+        }
+        
+        currentAssociationAttempt = nil
+
     }
     
     /// We were able to connect to the network and get an IP address, but we were unable to see the
     /// Afero cloud from this network. This is likely due to a configuration or connectivity issue
     /// with the network itself.
     override func handleEchoFailed() {
+        
+        currentAssociationAttempt = nil
+        
         DDLogError("Device \(deviceModel!.deviceId) echo failed (unable to ping Afero cloud) (default impl)", tag: TAG)
+        
         SVProgressHUD.showError(
             withStatus: NSLocalizedString(
                 "Unable to connect to Afero cloud; verify that your network is correctly configured. Note that captive portal networks are not supported.",
                 comment: "ScanWifiViewcontroller handshake failed status message"),
             maskType: SVProgressHUDMaskType.gradient
         )
-
+        
     }
     
     /// We were successfully able to connect to the Afero cloud over the given network.
     override func handleWifiConnected() {
+        
+        guard currentAssociationAttempt != nil else {
+            // This is related to connecting to the steady-state network,
+            // so we won't show anything.
+            return
+        }
+        
+        currentAssociationAttempt = nil
         
         DDLogInfo("Device \(deviceModel!.deviceId) connected to cloud!", tag: TAG)
         SVProgressHUD.showSuccess(
             withStatus: NSLocalizedString("Connected!", comment: "ScanWifiViewcontroller connected status message"),
             maskType: SVProgressHUDMaskType.gradient
         )
+        
+        if let currentNetworkIndexPath = currentNetworkIndexPath {
+            tableView.scrollToRow(at: currentNetworkIndexPath, at: .top, animated: true)
+        }
 
     }
 
     /// We were unable to find a network with the given SSID.
     override func handleSSIDNotFound() {
+        
+        currentAssociationAttempt = nil
+        
         DDLogError("Device \(deviceModel!.deviceId) SSID not found (default impl)", tag: TAG)
         SVProgressHUD.showError(
             withStatus: NSLocalizedString(
@@ -842,15 +915,13 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     func wifiPasswordPromptView(_ promptView: AferoWifiPasswordPromptView, attemptAssociateWith ssid: String, usingPassword password: String?, connectionStatusChangeHandler: @escaping (WifiSetupManaging.WifiState) -> Void) {
         print("should attempt associate with \(ssid) using password \(password)")
+        promptView.passwordTextField.resignFirstResponder()
         attemptAssociate(to: ssid, with: password ?? "")
     }
     
     func cancelAttemptAssociation(for promptView: AferoWifiPasswordPromptView) {
         print("cancel attempt association.")
     }
-    
-    
-
     
 }
 
