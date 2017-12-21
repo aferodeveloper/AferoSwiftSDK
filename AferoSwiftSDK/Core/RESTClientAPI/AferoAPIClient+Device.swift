@@ -211,7 +211,7 @@ public extension AferoAPIClientProto {
     }
     
     @available(*, unavailable, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
-    public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: LocationSourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
+    public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
         fatalError("Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     }
     

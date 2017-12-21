@@ -1335,6 +1335,7 @@ public extension DeviceCollection {
     func removeDevice(with deviceId: String, onDone: @escaping RemoveDeviceOnDone) {
         apiClient.removeDevice(with: deviceId, in: accountId).then {
             ()->Void in
+            self.removeDevice(deviceId)
             onDone(deviceId, nil)
             }.catch {
                 err in
