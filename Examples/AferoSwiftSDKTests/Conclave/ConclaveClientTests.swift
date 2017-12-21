@@ -10,7 +10,7 @@ import UIKit
 
 import Quick
 import Nimble
-import Afero
+@testable import Afero
 import ReactiveSwift
 import CocoaLumberjack
 

@@ -13,7 +13,12 @@ import Darwin
 public typealias DisplayRule = [String: Any]
 public typealias DisplayRules = [DisplayRule]
 
-infix operator ++ { associativity right }
+precedencegroup ConcatenatePrecedence {
+    higherThan: AssignmentPrecedence
+    associativity: right
+}
+
+infix operator ++: ConcatenatePrecedence
 
 func ++<A>(a: AnyIterator<A>, b: AnyIterator<A>) -> AnyIterator<A> {
     return AnyIterator { return a.next() ?? b.next() }

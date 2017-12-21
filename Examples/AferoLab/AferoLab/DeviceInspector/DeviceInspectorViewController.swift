@@ -13,109 +13,23 @@ import Afero
 import SVProgressHUD
 import LKAlertController
 
-// MARK: - Device Info Cell -
-
-class DeviceInspectorDeviceInfoCell: UITableViewCell {
-    
-    @IBOutlet weak var deviceTypeLabel: UILabel!
-    var deviceType: String? {
-        get { return deviceTypeLabel.text }
-        set { deviceTypeLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var deviceIdHeaderLabel: UILabel!
-    @IBOutlet weak var deviceIdValueLabel: UILabel!
-    var deviceId: String? {
-        get { return deviceIdValueLabel.text }
-        set { deviceIdValueLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var deviceTypeIdHeaderLabel: UILabel!
-    @IBOutlet weak var deviceTypeIdValueLabel: UILabel!
-    var deviceTypeId: String? {
-        get { return deviceTypeIdValueLabel.text }
-        set { deviceTypeIdValueLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var profileIdHeaderLabel: UILabel!
-    @IBOutlet weak var profileIdValueLabel: UILabel!
-    var profileId: String? {
-        get { return profileIdValueLabel.text }
-        set { profileIdValueLabel.text = newValue }
-    }
-
-}
-
-class DeviceInspectorDeviceCharacteristicCell: UITableViewCell {
-    
-    @IBOutlet weak var characteristicNameLabel: UILabel!
-    var characteristicName: String? {
-        get { return characteristicNameLabel.text }
-        set { characteristicNameLabel.text = newValue }
-    }
-    
-    @IBOutlet weak var characteristicValueLabel: UILabel!
-    var characteristicValue: String? {
-        get { return characteristicValueLabel.text }
-        set { characteristicValueLabel.text = newValue }
-    }
-    
-}
-
-
-// MARK: - Attribute Cells -
-
-/// A cell which displays a single attribute. To configure,
-/// simply set the `attribute` property.
-
-class DeviceInspectorGenericAttributeCell: UITableViewCell {
-    
-    @IBOutlet weak var attributeNameLabel: UILabel!
-    @IBOutlet weak var attributeIdLabel: UILabel!
-    @IBOutlet weak var attributeTypeLabel: UILabel!
-    @IBOutlet weak var attributeStringValueLabel: UILabel!
-    @IBOutlet weak var attributeByteValueLabel: UILabel!
-
-    /// The (compound) value which is used to populate all fields.
-    
-    var attribute: DeviceModelable.Attribute? {
-        
-        didSet {
-            
-            guard let attribute = attribute else {
-                attributeNameLabel?.text = nil
-                attributeIdLabel?.text = nil
-                attributeTypeLabel?.text = nil
-                attributeStringValueLabel?.text = nil
-                attributeByteValueLabel?.text = nil
-                return
-            }
-            
-            attributeNameLabel?.text = attribute.config.descriptor.semanticType
-            attributeIdLabel?.text = "\(attribute.config.descriptor.id)"
-            attributeTypeLabel?.text = attribute.config.descriptor.dataType.stringValue ?? "<unknown>"
-            attributeStringValueLabel?.text = attribute.value.stringValue ?? "<empty>"
-            attributeByteValueLabel?.text = attribute.value.byteArray.description
-        }
-    }
-    
-}
-
 // MARK: - DeviceInspectorViewController -
 
 class DeviceInspectorViewController: UITableViewController, DeviceModelableObserving {
     
     var TAG: String { return "\(type(of: self))" }
     
-    enum Reuse {
+    enum TableViewCellReuse {
         
-        case deviceInfo
         case deviceCharacteristic
+        case wifiNetwork
+        case tags
         case genericAttribute
         
         var reuseClass: AnyClass {
             switch self {
-            case .deviceInfo: return DeviceInspectorDeviceInfoCell.self
+            case .tags: return DeviceInspectorTagCollectionCell.self
+            case .wifiNetwork: return AferoWifiNetworkTableViewCell.self
             case .deviceCharacteristic: return DeviceInspectorDeviceCharacteristicCell.self
             case .genericAttribute: return DeviceInspectorGenericAttributeCell.self
             }
@@ -123,14 +37,37 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         var reuseIdentifier: String {
             switch self {
-            case .deviceInfo: return "DeviceInspectorDeviceInfoCell"
+            case .tags: return "DeviceInspectorTagCollectionCell"
+            case .wifiNetwork: return "DeviceInspectorWifiNetworkCell"
             case .deviceCharacteristic: return "DeviceInspectorDeviceCharacteristicCell"
             case .genericAttribute: return "DeviceInspectorGenericAttributeCell"
             }
         }
         
-        static var allCases: Set<Reuse> {
-            return [ .deviceCharacteristic, .deviceInfo, .genericAttribute ]
+        static var allCases: Set<TableViewCellReuse> {
+            return [ .deviceCharacteristic, .tags, .genericAttribute ]
+        }
+        
+    }
+    
+    enum TableViewHeaderFooterViewReuse {
+        
+        case sectionHeader
+        
+        var reuseClass: AnyClass {
+            switch self {
+            case .sectionHeader: return SectionHeaderTableViewHeaderFooterView.self
+            }
+        }
+        
+        var reuseIdentifier: String {
+            switch self {
+            case .sectionHeader: return "SectionHeaderTableViewHeaderFooterView"
+            }
+        }
+        
+        static var allCases: Set<TableViewHeaderFooterViewReuse> {
+            return [ .sectionHeader ]
         }
         
     }
@@ -138,6 +75,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
+        case wifi
+        case tags
         case mcuApplicationSpecificAttributes
         case gpioAttributes
         case aferoVersionsAttributes
@@ -150,6 +89,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         static let all: [Section] = [
             .deviceInfo,
+            .wifi,
+            .tags,
             .mcuApplicationSpecificAttributes,
             .gpioAttributes,
             .aferoVersionsAttributes,
@@ -167,6 +108,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Device Info"
+            case .wifi: name = "WiFi Config"
+            case .tags: name = "Tags"
             case .mcuApplicationSpecificAttributes: name = "MCU Application Attributes"
             case .gpioAttributes: name = "GPIO Attributes"
             case .aferoVersionsAttributes: name = "Afero Versions"
@@ -185,6 +128,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             let name: String
             switch self {
             case .deviceInfo: name = "Section.deviceInfo"
+            case .wifi: name = "Section.wifiConfig"
+            case .tags: name = "Section.tags"
             case .mcuApplicationSpecificAttributes: name = "Section.mcuApplicationSpecificAttributes"
             case .gpioAttributes: name = "Section.gpioAttributes"
             case .aferoVersionsAttributes: name = "Section.aferoVersionsAttributes"
@@ -207,6 +152,18 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 name = NSLocalizedString(
                     "Device Info",
                     comment: "DeviceInspectorViewController Section.deviceInfo name"
+                )
+                
+            case .wifi:
+                name = NSLocalizedString(
+                    "WiFi Config",
+                    comment:  "DeviceInspectorViewController Section.wifi name"
+                )
+                
+            case .tags:
+                name = NSLocalizedString(
+                    "Tags",
+                    comment: "DeviceTags section name"
                 )
                 
             case .mcuApplicationSpecificAttributes:
@@ -267,6 +224,85 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             return name
         }
         
+        var title: String { return localizedName }
+        
+        var caption: String? {
+            let name: String
+            switch self {
+                
+            case .deviceInfo: return nil
+                
+            case .wifi:
+                name = NSLocalizedString(
+                    "This device supports communication with the Afero cloud via Wi-Fi.",
+                    comment:  "DeviceInspectorViewController Section.wifi name"
+                )
+                
+            case .tags:
+                name = NSLocalizedString(
+                    "Device tags are arbitrary values you can associate with your device.",
+                    comment: "DeviceTags section name"
+                )
+                
+            case .mcuApplicationSpecificAttributes:
+                name = NSLocalizedString(
+                    "MCU Application Attributes are defined used by your MCU application code.",
+                    comment: "DeviceInspectorViewController Section.mcuApplicationSpecificAttributes name"
+                )
+                
+            case .gpioAttributes:
+                name = NSLocalizedString(
+                    "GPIO Attributes are associated with the GPIO pins on your Afero Secure Radio module.",
+                    comment: "DeviceInspectorViewController Section.gpioAttributes name"
+                )
+                
+            case .aferoVersionsAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoVersionsAttributes name"
+//                )
+                
+            case .mcuVersionsAttributes: return nil
+//                name = NSLocalizedString(
+//                "The following are for internal use.",
+//                comment: "DeviceInspectorViewController Section.mcuVersionsAttributes name"
+//                )
+                
+            case .aferoApplicationSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoApplicationSpecificAttributes name"
+//                )
+                
+            case .aferoHubSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoHubSpecificAttributes name"
+//                )
+                
+            case .aferoCloudProvidedAttributes:
+                name = NSLocalizedString(
+                    "Cloud-Provided Attributes are virtual attributes provided by the Afero cloud.",
+                    comment: "DeviceInspectorViewController Section.aferoCloudProvidedAttributes name"
+                )
+                
+            case .aferoOfflineSchedulesAttributes:
+                name = NSLocalizedString(
+                    "Attributes used to store offline schedule settings for devices that support them.",
+                    comment: "DeviceInspectorViewController Section.aferoOfflineSchedulesAttributes name"
+                )
+                
+            case .aferoSystemSpecificAttributes: return nil
+//                name = NSLocalizedString(
+//                    "The following are for internal use.",
+//                    comment: "DeviceInspectorViewController Section.aferoSystemSpecificAttributes name"
+//                )
+                
+            }
+            
+            return name
+        }
+        
         var localizedDescription: String {
             return String(
                 format: NSLocalizedString(
@@ -310,7 +346,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         tableView.allowsSelection = true
         tableView.remembersLastFocusedIndexPath = true
         tableView.estimatedRowHeight = 55
+        tableView.estimatedSectionHeaderHeight = 25
+        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
         tableView.rowHeight = UITableViewAutomaticDimension
+        
+        TableViewHeaderFooterViewReuse.allCases.forEach {
+            tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
+        }
         
         startObservingDeviceEvents()
         updateVisibleCells()
@@ -320,6 +362,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     deinit {
         stopObservingDeviceEvents()
     }
+    
+    private var tagObservation: NSKeyValueObservation?
 
     // MARK: <DeviceModelableObserving>
     
@@ -329,9 +373,17 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     ///         `DeviceCollection`.
     
     weak var deviceModelable: DeviceModelable! {
-        didSet { title = deviceModelable?.displayName }
+        
+        didSet {
+            title = deviceModelable?.displayName
+            tagObservation = deviceModelable.deviceTagCollection?.observe(\.deviceTags, options: [.initial, .new]) {
+                [weak self] obj, chg in
+                self?.updateTagCell()
+            }
+            
+        }
+        
     }
-    
 
     /// The `disposable`, which is our handle to DeviceEventSignal
     /// observation.
@@ -388,6 +440,22 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         updateWriteStateIndicator()
     }
 
+    func handleTagEvent(event: DeviceModelable.DeviceTagEvent) {
+//        updateTagCell()
+    }
+    
+    var tagCollectionCell: DeviceInspectorTagCollectionCell? {
+        let indexPath = IndexPath.tagCellIndexPath
+        return tableView.cellForRow(at: indexPath) as? DeviceInspectorTagCollectionCell
+    }
+    
+    func updateTagCell() {
+        guard let cell = tagCollectionCell else {
+            return
+        }
+        configure(tagCell: cell)
+    }
+    
     // MARK: Display Updates
     
     func updateErrorDisplay() {
@@ -476,6 +544,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case showSegmentedControlAttributeInspector = "ShowSegmentedControlAttributeInspector"
         case showStepperAttributeInspector = "ShowStepperAttributeInspector"
         case showProgressAttributeInspector = "ShowProgressAttributeInspector"
+        case showTagEditor = "ShowTagEditor"
+        case showWifiConfig = "ShowWifiConfig"
     }
     
     func performSegue(withIdentifier identifier: SegueIdentifier, sender: Any?) {
@@ -506,7 +576,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
             guard let attribute = attribute(for: selectedIndex) else {
-                DDLogError("No attribute for row: \(selectedIndex.row) in section: \(selectedIndex.section)", tag: TAG)
+                DDLogDebug("No attribute for row: \(selectedIndex.row) in section: \(selectedIndex.section)", tag: TAG)
                 return
             }
             
@@ -518,7 +588,52 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             inspector.deviceModelable = deviceModelable
             inspector.attributeId = attribute.config.descriptor.id
             
+        case .showTagEditor:
+            
+            guard let editor = segue.destination as? EditTagViewController else {
+                DDLogError("Unable to cast \(segue.destination) to EditTagViewController", tag: TAG)
+                return
+            }
+            
+            editor.modalPresentationStyle = .popover
+            editor.popoverPresentationController?.delegate = self
+            editor.deviceTagCollection = deviceModelable.deviceTagCollection
+            
+            if let sourceView = sender as? UIView {
+                editor.popoverPresentationController?.sourceView = sourceView
+                editor.popoverPresentationController?.sourceRect = sourceView.bounds
+            }
+            
+            if
+                let tagCell = (sender as? TagCollectionViewCell) ?? (sender as? AddTagCollectionViewCell),
+                let tagCollectionCell = tagCollectionCell,
+                let indexPath = tagCollectionCell.collectionView.indexPath(for: tagCell) {
+                editor.tag = tagCollectionCell.tag(for: indexPath)
+                
+            }
+            
+        case .showWifiConfig:
+            
+            guard
+                let deviceModel = deviceModelable as? DeviceModel else {
+                    DDLogError("Device model of type \(type(of: deviceModelable)) is not a DeviceModel subclass.", tag: TAG)
+                    return
+            }
+            
+            var wifiSetupAware: WifiSetupAware?
+            
+            if let maybeSetupAware = segue.destination as? WifiSetupAware {
+                wifiSetupAware = maybeSetupAware
+            } else if
+                let navController = (segue.destination as? UINavigationController),
+                let maybeSetupAware = navController.viewControllers.first as? WifiSetupAware {
+                wifiSetupAware = maybeSetupAware
+            }
+            
+            wifiSetupAware?.deviceModel = deviceModel
+
         }
+        
     }
 
     func presentActionSheet(for row: DeviceCharacteristicRow) {
@@ -673,6 +788,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     /// -
     func attribute(for indexPath: IndexPath) -> DeviceModelable.Attribute? {
         
+        if indexPath == IndexPath.tagCellIndexPath { return nil }
+        
         guard let attributeId = config(for: indexPath)?.descriptor.id else {
             let msg = "No attributeId for \(String(describing: indexPath))"
             assert(false, msg)
@@ -682,7 +799,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         guard let ret = deviceModelable?.attribute(for: attributeId) else {
             let msg = "No attribute for attributeId \(attributeId); will ignore."
-            DDLogWarn(msg, tag: TAG)
+            DDLogVerbose(msg, tag: TAG)
             return nil
         }
         
@@ -727,42 +844,101 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        if section == 0 {
-            return DeviceCharacteristicRow.all.count
+        switch section {
+
+        case Section.deviceInfo.rawValue: return DeviceCharacteristicRow.all.count
+        case Section.wifi.rawValue:
+            guard let deviceModel = deviceModelable as? DeviceModel else { return 0 }
+            return (deviceModel.steadyStateWifiNetwork ?? deviceModel.setupWifiNetwork) != nil ? 1 : 0
+            
+        case Section.tags.rawValue: return  1
+
+        default:
+            let sections = Section.all.filter({ visibleSections.contains($0) })
+            
+            guard sections.count > section else {
+                fatalError("\(section) is not a valid section.")
+            }
+            
+            guard let ret = sectionAttributeConfigMap[sections[section]]?.count else {
+                fatalError("No configs found for section \(section).")
+            }
+            
+            return ret
         }
-        
-        let sections = Section.all.filter({ visibleSections.contains($0) })
-        
-        guard sections.count > section else {
-            fatalError("\(section) is not a valid section.")
-        }
-        
-        guard let ret = sectionAttributeConfigMap[sections[section]]?.count else {
-            fatalError("No configs found for section \(section).")
-        }
-        
-        return ret
         
     }
-    
+
     func reuseIdentifier(for indexPath: IndexPath) -> String {
         let section = visibleSections[indexPath.section]
         switch section {
-        case .deviceInfo: return Reuse.deviceCharacteristic.reuseIdentifier
-        default: return Reuse.genericAttribute.reuseIdentifier
+        case .deviceInfo: return TableViewCellReuse.deviceCharacteristic.reuseIdentifier
+        case .wifi: return TableViewCellReuse.wifiNetwork.reuseIdentifier
+        case .tags: return TableViewCellReuse.tags.reuseIdentifier
+        default: return TableViewCellReuse.genericAttribute.reuseIdentifier
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        guard self.tableView(tableView, numberOfRowsInSection: section) > 0 else {
-            return nil
+        if section == Section.wifi.rawValue {
+            guard (deviceModelable as? WifiConfigurable)?.isWifiConfigurable ?? false else {
+                return nil
+            }
         }
         
-        let section = visibleSections[section]
+        let view = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: TableViewHeaderFooterViewReuse.sectionHeader.reuseIdentifier
+            ) as! SectionHeaderTableViewHeaderFooterView
+        configure(headerView: view, for: section)
+        return view
+    }
+    
+    func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: Int) {
+        let sectionCase = visibleSections[section]
+        configure(headerView: headerView, for: sectionCase)
+    }
+    
+    func configure(headerView: SectionHeaderTableViewHeaderFooterView, for section: Section) {
+        headerView.headerText =  section.title
+        headerView.captionText = section.caption
+        headerView.accessoryViews = accessoryViews(forHeaderViewIn: section) ?? []
+    }
+    
+    func title(forHeaderViewIn section: Section) -> String {
         return section.localizedName
     }
     
+    func accessoryViews(forHeaderViewIn section: Section) -> [UIView]? {
+        
+        switch section {
+            
+        case .tags:
+            let addButton = UIButton(frame: .zero)
+            addButton.setImage(UIImage(named: "AddButtonSmall"), for: .normal)
+            addButton.addTarget(self, action: #selector(addTagTapped(sender:)), for: .touchUpInside)
+            return [addButton]
+            
+        case .wifi:
+            let configureButton = UIButton(frame: .zero)
+            configureButton.setImage(UIImage(named: "ConfigureButtonSmall"), for: .normal)
+            configureButton.addTarget(self, action: #selector(configureConnectivityTapped(sender:)), for: .touchUpInside)
+            return [configureButton]
+            
+        default:
+            return nil
+        }
+        
+    }
+    
+    @IBAction func addTagTapped(sender: Any?) {
+        performSegue(withIdentifier: .showTagEditor, sender: sender)
+    }
+    
+    @IBAction func configureConnectivityTapped(sender: Any?) {
+        performSegue(withIdentifier: .showWifiConfig, sender: sender)
+    }
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier(for: indexPath), for: indexPath)
@@ -779,7 +955,25 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         if let attributeCell = cell as? DeviceInspectorGenericAttributeCell {
             configure(attributeCell: attributeCell, for: indexPath)
+            return
         }
+        
+        if let tagCell = cell as? DeviceInspectorTagCollectionCell {
+            configure(tagCell: tagCell)
+            return
+        }
+        
+        if let wifiNetworkCell = cell as? AferoWifiNetworkTableViewCell {
+            configure(wifiNetworkCell: wifiNetworkCell)
+            return
+        }
+        
+    }
+    
+    func configure(tagCell cell: DeviceInspectorTagCollectionCell) {
+        cell.delegate = self
+        cell.selectionStyle = .none
+        cell.set(tags: deviceModelable.deviceTags)
     }
     
     func configure(characteristicCell cell: DeviceInspectorDeviceCharacteristicCell, for indexPath: IndexPath) {
@@ -822,7 +1016,23 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         cell.attribute = attribute
     }
     
+    func configure(wifiNetworkCell cell: AferoWifiNetworkTableViewCell) {
+        
+        guard
+            let deviceModel = deviceModelable as? DeviceModel,
+            let network = deviceModel.steadyStateWifiNetwork ?? deviceModel.setupWifiNetwork else {
+                return
+        }
+        
+        cell.configure(with: network)
+    }
+    
     // MARK: <UITableViewDelegate>
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath == IndexPath.tagCellIndexPath { return nil }
+        return indexPath
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -841,6 +1051,9 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             
             presentActionSheet(for: characteristic)
             tableView.deselectRow(at: indexPath, animated: true)
+            
+        case .wifi:
+            performSegue(withIdentifier: .showWifiConfig, sender: self)
             
         default:
             
@@ -912,7 +1125,72 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
 }
 
+// MARK: <TagCollectionCellDelegate>
+
+extension DeviceInspectorViewController: DeviceInspectorTagCollectionCellDelegate {
+    
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, presentTagEditorForTagAt indexPath: IndexPath) {
+
+        guard
+            let tagCell = cell.collectionView.cellForItem(at: indexPath) else {
+                print("No tagCell to present")
+                return
+        }
+        performSegue(withIdentifier: .showTagEditor, sender: tagCell)
+    }
+    
+    func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat) {
+        asyncMain {
+            [weak tableView] in
+            tableView?.beginUpdates()
+            tableView?.endUpdates()
+        }
+    }
+}
+
+// MARK: <UIPopoverPresentationControllerDelegate>
+
+extension DeviceInspectorViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
+        popoverPresentationController.backgroundColor = presentedViewController?.view.backgroundColor
+    }
+    
+    func popoverPresentationControllerShouldDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) -> Bool {
+        
+        guard let tagBeingEdited = (popoverPresentationController.presentedViewController as? EditTagViewController)?.tag else {
+            tagCollectionCell?.collectionView.deselectItem(at: IndexPath(item: 0, section: 0), animated: true)
+            return true
+        }
+        
+        if let indexPath = tagCollectionCell?.indexPath(for: tagBeingEdited) {
+            tagCollectionCell?.collectionView.deselectItem(at: indexPath, animated: true)
+        }
+        
+        return true
+        
+    }
+    
+}
+
 // MARK: - Convenience Extensions -
+
+extension DeviceTagCollection.DeviceTag: Comparable {
+    
+    public static func <(lhs: DeviceTagCollection.DeviceTag, rhs: DeviceTagCollection.DeviceTag) -> Bool {
+        if lhs.value < rhs.value { return true }
+        if lhs.value > rhs.value { return false }
+        guard let lk = lhs.key, let rk = rhs.key else {
+            return true
+        }
+        return lk < rk
+    }
+    
+}
 
 fileprivate extension AferoPlatformAttributeRange {
     
@@ -944,6 +1222,10 @@ fileprivate extension IndexPath {
     
     var deviceInspectorSection: DeviceInspectorViewController.Section? {
         return DeviceInspectorViewController.Section(rawValue: section)
+    }
+    
+    static var tagCellIndexPath: IndexPath {
+        return self.init(row: 0, section: DeviceInspectorViewController.Section.tags.rawValue)
     }
     
 }

@@ -161,7 +161,7 @@ public enum WifiSetupError: Int, LocalizedError, CustomStringConvertible, Custom
         return "\(description)(\(rawValue))"
     }
     
-    public init?(hubbyCommandState: AferoSofthubSetupWifiCommandState) {
+    public init?(hubbyCommandState: WifiSetupManaging.CommandState) {
         switch hubbyCommandState {
         case .timedOut: self = .hubbyCommandTimedOut
         case .failed: self = .hubbyCommandFailed
@@ -352,13 +352,13 @@ public protocol WifiConfigurable: ConnectionMediaSupporting {
     var wifiCurrentSSID: String? { get }
     
     /// If `isWifiConfigurable`, the current network type used by the receiver.
-    var wifiCurrentNetworkType: AferoSofthubWifiNetworkType? { get }
+    var wifiCurrentNetworkType: WifiSetupManaging.NetworkType? { get }
     
     /// If `isWifiConfigurable`, the `AferoSofthubWifiState` for the setup process.
-    var wifiSetupState: AferoSofthubWifiState? { get }
+    var wifiSetupState: WifiSetupManaging.WifiState? { get }
     
     /// If `isWifiConfigurable`, the `AferoSofthubWifiState` for normal operation.
-    var wifiSteadyState: AferoSofthubWifiState? { get }
+    var wifiSteadyState: WifiSetupManaging.WifiState? { get }
     
     /// If `isWifiConfigurable`, the current `RSSI` in db.
     var wifiRSSI: Int? { get }
@@ -382,7 +382,7 @@ extension WifiConfigurable {
     }
     
     public func getWifiSetupManager() -> WifiSetupManaging? {
-        if !isWifiConfigurable { return nil }
+//        if !isWifiConfigurable { return nil }
         return LiveWifiSetupManager(deviceModel: self, writeAttributeCallback: writeAttributeCallback())
     }
     
@@ -464,6 +464,34 @@ extension WifiConfigurable {
             return nil
         }
         
+    }
+    
+    /// The state of the wifi network when setup is not in progress.
+    public var steadyStateWifiNetwork: WifiNetwork? {
+        
+        guard
+            let state = wifiSteadyState,
+            let ssid = wifiCurrentSSID,
+            let rssi = wifiRSSI,
+            let rssiBars = wifiRSSIBars else {
+                return nil
+        }
+        
+        return WifiNetwork(ssid: ssid, rssi: rssi, rssiBars: rssiBars, state: state)
+    }
+    
+    /// The state of the wifi network when setup is in progress.
+    public var setupWifiNetwork: WifiNetwork? {
+        
+        guard
+            let state = wifiSetupState,
+            let ssid = wifiCurrentSSID,
+            let rssi = wifiRSSI,
+            let rssiBars = wifiRSSIBars else {
+                return nil
+        }
+        
+        return WifiNetwork(ssid: ssid, rssi: rssi, rssiBars: rssiBars, state: state)
     }
 
 }
@@ -554,10 +582,10 @@ public enum WifiSetupEvent {
     case managerStateChange(newState: WifiSetupManagerState)
     
     /// The state of a previously-submitted wifi management command has changed.
-    case commandStateChange(newState: AferoSofthubSetupWifiCommandState)
+    case commandStateChange(newState: WifiSetupManaging.CommandState)
     
     /// A new SSID list has arrived
-    case ssidListChanged(newList: [AferoSofthubWifiSSIDEntryWrapper])
+    case ssidListChanged(newList: WifiSetupManaging.WifiNetworkList)
     
     /// The managed device's live network type has changed.
     case networkTypeChanged(newType: AferoSofthubWifiNetworkType)
@@ -569,10 +597,10 @@ public enum WifiSetupEvent {
     case wifiCurrentSSIDChanged(newSSID: String)
     
     /// The managed device's state setup process wifi state changed.
-    case wifiSetupStateChanged(newState: AferoSofthubWifiState)
+    case wifiSetupStateChanged(newState: WifiSetupManaging.WifiState)
     
     /// The managed device's steady (configured) wifi state changed.
-    case wifiSteadyStateChanged(newState: AferoSofthubWifiState)
+    case wifiSteadyStateChanged(newState: WifiSetupManaging.WifiState)
     
     /// The managed device's signal strength changed (in decibels)
     case wifiRSSIChanged(newRSSI: Int)
@@ -620,27 +648,6 @@ extension WifiSetupEvent: CustomDebugStringConvertible {
     }
 }
 
-public enum WifiAuthState {
-    
-    /// We haven't tried to auth yet.
-    case untried
-    
-    /// We're trying.
-    case trying
-    
-    /// We tried to auth, but we were unable to connect to the base station
-    /// (e.g. due to MAC filtering)
-    case triedAssociationFailure
-    
-    /// We tried to auth, and were able to connect, but were unable to complete
-    /// the handshake. Password *may* have been the problem, but it also may
-    /// have been a general crypto failure. Can't tell the difference, unfortunately.
-    case triedHandshakeFailure
-    
-    case success
-    
-}
-
 // MARK: -
 // MARK: <WifiSetupManaging>
 // MARK: -
@@ -650,9 +657,74 @@ public enum WifiAuthState {
 
 public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, NoError>
 
+public protocol WifiNetworkProto: Hashable {
+
+    var ssid: String { get }
+    var rssi: Int { get }
+    var rssiBars: Int { get }
+    var isSecure: Bool? { get }
+    var isConnected: Bool { get }
+    
+    typealias State = AferoSofthubWifiState
+    var state: State { get }
+
+}
+
 /// Protocol for anything which manages a wifi-configurable device.
 
+public struct WifiNetwork: WifiNetworkProto {
+    
+    public var ssid: String
+    public var rssi: Int = -99
+    public var rssiBars: Int = 0
+    public var isSecure: Bool? = false
+    
+    public var isConnected: Bool {
+        return state == .connected
+    }
+    
+    public var state: WifiNetworkProto.State = .notConnected
+    
+    public init(ssid: String, rssi: Int = -99, rssiBars: Int = 0, isSecure: Bool? = nil, state: WifiNetworkProto.State = .notConnected) {
+        self.ssid = ssid
+        self.rssi = rssi
+        self.rssiBars = rssiBars
+        self.isSecure = isSecure
+        self.state = state
+    }
+    
+    init(from wifiNetworkWrapper: AferoSofthubWifiSSIDEntryWrapper) {
+        self.init(
+            ssid: wifiNetworkWrapper.ssid,
+            rssi: wifiNetworkWrapper.rssi,
+            rssiBars: wifiNetworkWrapper.rssiBars,
+            isSecure: wifiNetworkWrapper.isSecure,
+            state: wifiNetworkWrapper.isConnected ? .connected : .notConnected
+        )
+    }
+    
+    public var hashValue: Int {
+        return ssid.hashValue ^ rssi.hashValue ^ rssiBars.hashValue
+    }
+    
+    public static func ==(lhs: WifiNetwork, rhs: WifiNetwork) -> Bool {
+        return lhs.ssid == rhs.ssid
+            && lhs.rssi == rhs.rssi
+            && lhs.rssiBars == rhs.rssiBars
+            && lhs.isSecure == rhs.isSecure
+            && lhs.isConnected == rhs.isConnected
+    }
+    
+}
+
 public protocol WifiSetupManaging: class {
+    
+
+    typealias WifiNetwork = Afero.WifiNetwork
+    typealias WifiNetworkList = [WifiNetwork]
+    typealias WifiState = AferoSofthubWifiState
+    typealias CommandState = AferoSofthubSetupWifiCommandState
+    typealias NetworkType = AferoSofthubWifiNetworkType
     
     var wifiSetupEventSignal: WifiSetupEventSignal { get }
     
@@ -853,7 +925,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                 }
         }
         
-        // This, on the other hand, actuall modifies the manager's state. We'll keep it
+        // This, on the other hand, actually modifies the manager's state. We'll keep it
         // on the main queue.
         
         deviceAvailabilityDisposable = deviceModel.eventSignal
@@ -870,8 +942,6 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         deviceStateChanged(deviceState: deviceModel.currentState)
         
     }
-    
-    /// Handles changes to the status of previous commands (e.g., scan(), attemptAssociate()).
     
     // MARK: -
     // MARK: Public
@@ -923,7 +993,9 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                 commandStateChangeCallback: onCommandStateChange,
                 writeAttributeCallback: writeAttributeCallback
             ) {
-                [weak self] deviceId, SSIDList in
+                [weak self] deviceId, SSIDWrapperList in
+                
+                let SSIDList = SSIDWrapperList.map({ WifiNetwork(from: $0)})
                 
                 guard let expectedDeviceId = self?.deviceId else {
                     DDLogDebug("Looks like we've been deallocated; bailing.")

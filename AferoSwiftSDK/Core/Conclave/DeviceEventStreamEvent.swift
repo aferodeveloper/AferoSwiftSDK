@@ -12,36 +12,82 @@ import CocoaLumberjack
 
 /// Describes a kind of invalidate envent that can be received.
 
-public typealias InvalidationEventKind = String
+public struct InvalidationEvent: CustomStringConvertible, CustomDebugStringConvertible {
+    
+    public var description: String {
+        return "<InvalidationEvent.\(kind.rawValue)> info: \(String(describing: info))"
+    }
 
-public enum InvalidationEvent: String {
-    
-    case accounts = "accounts"
-    case invitations = "invitations"
-    case profiles = "profiles"
-    case location = "location"
-    case timezone = "timezone"
-    
-    public init?(notificationName: String) {
-        switch notificationName {
-        case InvalidationEvent.accounts.notificationName: self = .accounts
-        case InvalidationEvent.invitations.notificationName: self = .invitations
-        case InvalidationEvent.profiles.notificationName: self = .profiles
-        case InvalidationEvent.location.notificationName: self = .location
-        default: return nil
+    public var debugDescription: String {
+        return "<InvalidationEvent.\(kind.rawValue)> info: \(String(reflecting: info))"
+    }
+
+    public enum Kind: String {
+        
+        /// Accounts were invalidated. This is received when a the accounts to which a
+        /// given user has access changes.
+        case accounts = "accounts"
+        
+        /// The user's pending sharing invitations list was invalidated. This is received
+        /// when a user is invited to share an account, or when an invitation is rescinded.
+        case invitations = "invitations"
+        
+        /// Profiles have been invalidate for a device.
+        case profiles = "profiles"
+        
+        /// A device's location has been invalidated.
+        case location = "location"
+        
+        /// A device's timezone has been invalidate.
+        case timezone = "timezone"
+        
+        /// A device's tags have been invalidated. This is received when a tag has
+        /// been added to a device, removed from a device, or updated.
+        case tags = "tags"
+        
+        public init?(notificationName: String) {
+            switch notificationName {
+            case Kind.accounts.notificationName: self = .accounts
+            case Kind.invitations.notificationName: self = .invitations
+            case Kind.profiles.notificationName: self = .profiles
+            case Kind.location.notificationName: self = .location
+            case Kind.tags.notificationName: self = .tags
+            default: return nil
+            }
         }
+        
+        public var notificationName: String {
+            switch self {
+            case .accounts: return "InvalidationKindAccounts"
+            case .invitations: return "InvalidationKindInvitations"
+            case .profiles: return "InvalidationKindProfiles"
+            case .location: return "InvalidationKindLocation"
+            case .timezone: return "InvalidationKindTimeZone"
+            case .tags: return "InvalidationKindTags"
+            }
+        }
+        
     }
     
-    public var notificationName: String {
-        switch self {
-        case .accounts: return "InvalidationKindAccounts"
-        case .invitations: return "InvalidationKindInvitations"
-        case .profiles: return "InvalidationKindProfiles"
-        case .location: return "InvalidationKindLocation"
-        case .timezone: return "InvalidationKindTimeZone"
-        }
+    /// The kind of invalidation event.
+    public var kind: Kind
+    
+    public typealias EventInfo = [String: Any]
+    public var info: EventInfo?
+    
+    public init(kind: Kind, info: EventInfo? = nil) {
+        self.kind = kind
+        self.info = info
     }
     
+    public init?(kind: Kind.RawValue, info: EventInfo? = nil) {
+        guard let kind = Kind(rawValue: kind) else {
+            return nil
+        }
+        self.kind = kind
+        self.info = info
+    }
+
 }
 
 // MARK: - DeviceStreamEvent
@@ -104,7 +150,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
     /// * `kind`: The type of the invalidation event. See `InvalidationEventKind`.
     /// * `data`: The raw data provided in the message.
     
-    case invalidate(seq: DeviceStreamEventSeq?, peripheralId: String?, kind: InvalidationEventKind, data: DeviceStreamEventData)
+    case invalidate(seq: DeviceStreamEventSeq?, peripheralId: String?, kind: InvalidationEvent.Kind.RawValue, data: DeviceStreamEventData)
 
     /// An error was encountered for a device.
     ///
@@ -217,7 +263,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
         case .invalidate:
             guard
-                let kind = data["kind"] as? InvalidationEventKind else {
+                let kind = data["kind"] as? InvalidationEvent.Kind.RawValue else {
                     DDLogError("Unable to extract Invalidate from \(String(reflecting: data))", tag: TAG)
                     return nil
             }
@@ -450,7 +496,8 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         static let CoderKeyStatus = "status"
         static let CoderKeyFriendlyName = "friendlyName"
         static let CoderKeyVirtual = "virtual"
-        static let CoderKeyTags = "deviceTags"
+        static let CoderKeyTags = "tags"
+        static let CoderKeyDeviceTags = "deviceTags"
         static let CoderKeyCreatedTimestamp = "createdTimestamp"
         static let CoderKeyLocationState = "locationState"
         
@@ -462,7 +509,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 type(of: self).CoderKeyAttributes: Array(attributes.values.map { $0.JSONDict! }),
                 type(of: self).CoderKeyStatus: status.JSONDict!,
                 type(of: self).CoderKeyVirtual: virtual,
-                type(of: self).CoderKeyTags: tags.JSONDict,
+                type(of: self).CoderKeyDeviceTags: tags.JSONDict,
                 type(of: self).CoderKeyCreatedTimestamp: createdTimestampMs
             ]
             
@@ -505,6 +552,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 locationState = .known(loc)
             }
             
+            let tags = jsonDict[type(of: self).CoderKeyTags]
+            let deviceTags = jsonDict[type(of: self).CoderKeyDeviceTags]
+            
             self.init(
                 id: id,
                 profileId: profileId,
@@ -513,7 +563,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 friendlyName: jsonDict[type(of: self).CoderKeyFriendlyName] as? String,
                 virtual: virtual,
                 locationState: locationState,
-                tags: (|<(jsonDict[type(of: self).CoderKeyTags] as? [Any]) ?? []),
+                tags: (|<((tags ?? deviceTags) as? [Any]) ?? []),
                 createdTimestampMs: createdTimestampMs
             )
             
@@ -757,14 +807,45 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         public struct DeviceTag: Hashable, AferoJSONCoding, CustomDebugStringConvertible {
             
-            public var id: String
-            public var value: String
-            public var localizationKey: String
-            public var type: String
+            public typealias Id = String
             
-            public init(id: String, value: String, localizationKey: String, type: String) {
+            /// A UUID value that identifies this tag, such that it can be deleted
+            /// in the future.
+            public var id: Id?
+            
+            public typealias Value = String
+            
+            /// This is the value of the tag. This is just a simple character string,
+            /// so that it can be used
+            /// alone, or with a delimiter of the developers' choice to create a key/value pair.
+            public var value: Value
+            
+            public typealias Key = String
+
+            /// A free form field that can be used by clients for organizational
+            /// purposes. Optional.
+            public var key: Key?
+            
+            public typealias LocalizationKey = String
+            
+            /// In the future, Afero may create the ability to localize these tags
+            /// for different locales in different global markets. This field is not
+            /// currently in use and can be safely ignored by the developer.
+            public var localizationKey: LocalizationKey?
+            
+            public enum TagType: String {
+                case account = "ACCOUNT"
+            }
+            
+            /// In the future, Afero may deploy different categories of tags.
+            /// This field is not currently in use, will always be `.account`,
+            /// and can be safely ignored by the developer.
+            public var type: TagType
+            
+            public init(id: Id?, key: Key? = nil, value: Value, localizationKey: LocalizationKey? = nil, type: TagType = .account) {
                 self.id = id
                 self.value = value
+                self.key = key
                 self.localizationKey = localizationKey
                 self.type = type
             }
@@ -772,16 +853,24 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <CustomDebugStringConvertible>
             
             public var debugDescription: String {
-                return "<DeviceTag> id: \(id) value: \(value) type: \(type) localizationkey: \(localizationKey)"
+                return "<DeviceTag> id:\(String(describing: id)) value:\(value) type: \(type) key:\(String(describing: key)) localizationkey: \(String(describing :localizationKey))"
             }
             
             // MARK: <Hashable>
             
-            public var hashValue: Int { return value.hashValue ^ localizationKey.hashValue ^ type.hashValue ^ id.hashValue }
+            public var hashValue: Int {
+                
+                return value.hashValue
+                    ^ (key?.hashValue ?? 0)
+                    ^ (localizationKey?.hashValue ?? 0)
+                    ^ type.hashValue
+                    ^ (id?.hashValue ?? 0)
+            }
             
             public static func ==(lhs: DeviceTag, rhs: DeviceTag) -> Bool {
                 return lhs.id == rhs.id
                     && lhs.value == rhs.value
+                    && lhs.key == rhs.key
                     && lhs.type == rhs.type
                     && lhs.localizationKey == rhs.localizationKey
             }
@@ -789,20 +878,35 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <AferoJSONCodeing>
             
             static let CoderKeyValue = "value"
+            static let CoderKeyKey = "key"
             static let CoderKeyLocalizationKey = "localizationKey"
             static let CoderKeyType = "deviceTagType"
             static let CoderKeyId = "deviceTagId"
             
             public var JSONDict: AferoJSONCodedType? {
-                return [
-                    type(of: self).CoderKeyId: id,
+
+                var ret: [String: Any] = [
                     type(of: self).CoderKeyValue: value,
-                    type(of: self).CoderKeyType: type,
-                    type(of: self).CoderKeyLocalizationKey: localizationKey
+                    type(of: self).CoderKeyType: type.rawValue,
                 ]
+                
+                if let id = id {
+                    ret[type(of: self).CoderKeyId] = id
+                }
+                
+                if let key = key {
+                    ret[type(of: self).CoderKeyKey] = key
+                }
+                
+                if let localizationKey = localizationKey {
+                    ret[type(of: self).CoderKeyLocalizationKey] = localizationKey
+                }
+                
+                return ret
             }
             
             public init?(json: AferoJSONCodedType?) {
+                
                 let tag = "DeviceStreamEvent.Peripheral.DeviceTag"
                 
                 guard let jsonDict = json as? [String: Any] else {
@@ -810,16 +914,26 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     return nil
                 }
                 
-                guard
-                    let id = jsonDict[type(of: self).CoderKeyId] as? String,
-                    let value = jsonDict[type(of: self).CoderKeyValue] as? String,
-                    let type = jsonDict[type(of: self).CoderKeyType] as? String,
-                    let localizationKey = jsonDict[type(of: self).CoderKeyLocalizationKey] as? String else {
-                        DDLogWarn("\(jsonDict) doesn't represent a valid DeviceTag", tag: tag)
-                        return nil
+                guard let value = jsonDict[type(of: self).CoderKeyValue] as? Value else {
+                    DDLogWarn("\(jsonDict) doesn't represent a valid DeviceTag (missing 'value')", tag: tag)
+                    return nil
                 }
                 
-                self.init(id: id, value: value, localizationKey: localizationKey, type: type)
+                var type = TagType.account
+
+                if
+                    let maybeTypeRawValue = jsonDict[type(of: self).CoderKeyType] as? TagType.RawValue,
+                    let maybeType = TagType(rawValue: maybeTypeRawValue) {
+                    type = maybeType
+                }
+                
+                self.init(
+                    id: jsonDict[type(of: self).CoderKeyId] as? Id,
+                    key: jsonDict[type(of: self).CoderKeyKey] as? Key,
+                    value: value,
+                    localizationKey: jsonDict[type(of: self).CoderKeyLocalizationKey] as? LocalizationKey,
+                    type: type
+                )
                 
             }
             

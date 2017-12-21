@@ -51,6 +51,7 @@ protocol DeviceModelableObserving: Tagged {
     func handleDeviceStateUpdateEvent(newState: DeviceState)
     func handleDeviceProfileUpdateEvent()
     func handleDeviceWriteStateChangeEvent(newState: DeviceWriteState)
+    func handleTagEvent(event: DeviceModelable.DeviceTagEvent)
     
 }
 
@@ -140,6 +141,9 @@ extension DeviceModelableObserving {
 
         case .writeStateChange(let newState):
             handleDeviceWriteStateChangeEvent(newState: newState)
+            
+        case .tagEvent(let event):
+            handleTagEvent(event: event)
         }
     }
     
@@ -210,6 +214,10 @@ extension DeviceModelableObserving {
     
     func handleDeviceWriteStateChangeEvent(newState: DeviceWriteState) {
         DDLogDebug("Device \(deviceModelable.deviceId) write state now: \(newState) (default impl).", tag: TAG)
+    }
+    
+    func handleTagEvent(event: DeviceModelable.DeviceTagEvent) {
+        DDLogDebug("Device \(deviceModelable.deviceId) got tag event: \(event) (default impl).", tag: TAG)
     }
 
 }

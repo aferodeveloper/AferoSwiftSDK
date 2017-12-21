@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func configureLogging() {
         
         defaultDebugLevel = DDLogLevel.debug
+        UserDefaults.standard.setValue(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
         
         #if DEBUG
             DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
