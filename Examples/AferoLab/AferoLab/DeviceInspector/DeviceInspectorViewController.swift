@@ -373,13 +373,16 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     ///         `DeviceCollection`.
     
     weak var deviceModelable: DeviceModelable! {
+        
         didSet {
             title = deviceModelable?.displayName
             tagObservation = deviceModelable.deviceTagCollection?.observe(\.deviceTags, options: [.initial, .new]) {
                 [weak self] obj, chg in
                 self?.updateTagCell()
             }
+            
         }
+        
     }
 
     /// The `disposable`, which is our handle to DeviceEventSignal
@@ -844,7 +847,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         switch section {
 
         case Section.deviceInfo.rawValue: return DeviceCharacteristicRow.all.count
-        case Section.wifi.rawValue: return 1
+        case Section.wifi.rawValue:
+            guard let deviceModel = deviceModelable as? DeviceModel else { return 0 }
+            return (deviceModel.steadyStateWifiNetwork ?? deviceModel.setupWifiNetwork) != nil ? 1 : 0
+            
         case Section.tags.rawValue: return  1
 
         default:
@@ -873,17 +879,14 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         }
     }
     
-//    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//
-//        guard self.tableView(tableView, numberOfRowsInSection: section) > 0 else {
-//            return nil
-//        }
-//
-//        let section = visibleSections[section]
-//        return section.localizedName
-//    }
-//
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section == Section.wifi.rawValue {
+            guard (deviceModelable as? WifiConfigurable)?.isWifiConfigurable ?? false else {
+                return nil
+            }
+        }
+        
         let view = tableView.dequeueReusableHeaderFooterView(
             withIdentifier: TableViewHeaderFooterViewReuse.sectionHeader.reuseIdentifier
             ) as! SectionHeaderTableViewHeaderFooterView
