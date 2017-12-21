@@ -139,9 +139,6 @@ import Afero
             passwordTextField.becomeFirstResponder()
             
         case passwordTextField:
-            guard let password = passwordTextField.text, password.isValidWPA2Password else {
-                break
-            }
             passwordTextField.resignFirstResponder()
             attemptAssociation()
             

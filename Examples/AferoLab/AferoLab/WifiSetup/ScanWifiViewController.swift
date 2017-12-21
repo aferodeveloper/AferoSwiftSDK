@@ -424,7 +424,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         
         switch sectionCase {
         case .current: return currentNetwork == nil ? 0 : 1
-        case .visible: return visibleNetworks.count + 1
+        // disabling custom network config for now.
+        // case .visible: return visibleNetworks.count + 1
+        case .visible: return visibleNetworks.count
         }
         
     }
