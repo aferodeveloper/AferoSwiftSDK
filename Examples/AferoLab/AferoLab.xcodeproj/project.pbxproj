@@ -909,7 +909,7 @@
 				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DINTERNAL -DDEBUG -Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
@@ -929,7 +929,7 @@
 				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -105,7 +105,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
          associationId: String? = nil,
          state: DeviceState = DeviceState(),
          profile: DeviceProfile? = nil,
-         deviceCloudSupporting: DeviceCloudSupporting? = nil,
+         deviceCloudSupporting: AferoCloudSupporting? = nil,
          profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -132,7 +132,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         friendlyName: String? = nil,
         attributes: DeviceAttributes,
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceCloudSupporting: DeviceCloudSupporting? = nil,
+        deviceCloudSupporting: AferoCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil
         ) {
         
@@ -213,7 +213,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
      By default, this is nil, so writes are ignored.
      */
     
-    weak fileprivate(set) var deviceCloudSupporting: DeviceCloudSupporting? = nil
+    weak fileprivate(set) var deviceCloudSupporting: AferoCloudSupporting? = nil
     
     // MARK: State Signaling
     
@@ -474,7 +474,7 @@ public class DeviceModel: BaseDeviceModel {
         state: DeviceState = DeviceState(),
         tags: [DeviceTag] = [],
         profile: DeviceProfile? = nil,
-        deviceCloudSupporting: DeviceCloudSupporting? = nil,
+        deviceCloudSupporting: AferoCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -502,7 +502,7 @@ public class DeviceModel: BaseDeviceModel {
         attributes: DeviceAttributes,
         tags: [DeviceTag] = [],
         connectionState: DeviceModelState = DeviceModelState(),
-        deviceCloudSupporting: DeviceCloudSupporting? = nil,
+        deviceCloudSupporting: AferoCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
         viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
         ) {
@@ -849,7 +849,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
                   associationId: String? = nil,
                   state: DeviceState = DeviceState(),
                   profile: DeviceProfile? = nil,
-                  deviceCloudSupporting: DeviceCloudSupporting? = nil,
+                  deviceCloudSupporting: AferoCloudSupporting? = nil,
                   profileSource: DeviceProfileSource? = nil
         ) {
         

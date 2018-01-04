@@ -15,7 +15,7 @@ public typealias SetTimeZoneResult = (deviceId: String, tz: TimeZone, isUserOver
 public typealias SetTimeZoneOnDone = (SetTimeZoneResult?, Error?)->Void
 
 
-typealias DeviceCloudSupporting = DeviceActionable & DeviceTagCloudPersisting
+typealias AferoCloudSupporting = DeviceActionable & DeviceTagCloudPersisting
 
 protocol DeviceTagCloudPersisting: class {
     

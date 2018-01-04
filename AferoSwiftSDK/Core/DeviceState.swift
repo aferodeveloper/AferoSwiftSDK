@@ -576,42 +576,8 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
 
 }
 
-//public extension DeviceModelable {
-//    
-//    public var deviceTags: Set<DeviceTag> {
-//        DDLogWarn("deviceTags default (no-op) implementation called.", tag: TAG)
-//        return Set()
-//    }
-//
-//    public func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag? {
-//        DDLogWarn("deviceTag(forIdentifier:\(id)) default (no-op) implementation called.", tag: TAG)
-//        return nil
-//    }
-//
-//    public func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag> {
-//        DDLogWarn("deviceTags(forKey:\(key)) default (no-op) implementation called.", tag: TAG)
-//        return Set()
-//    }
-//
-//    public func getTag(for key: DeviceTag.Key) -> DeviceTag? {
-//        DDLogWarn("getTag(for:\(key)) default (no-op) implementation called.", tag: TAG)
-//        return nil
-//    }
-//
-//    public func addOrUpdate(tag: DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone) {
-//        DDLogWarn("addOrUpdate(tag:\(String(describing: tag))) default (no-op) implementation called.", tag: TAG)
-//        asyncMain { onDone(tag, nil) }
-//    }
-//
-//    public func deleteTag(identifiedBy id: DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone) {
-//        DDLogWarn("deleteTag(identifiedBy:\(id) default (no-op) implementation called.", tag: TAG)
-//        asyncMain { onDone(id, nil) }
-//    }
-//    
-//}
-
 protocol DeviceModelableInternal: DeviceModelable {
-    var deviceCloudSupporting: DeviceCloudSupporting? { get }
+    var deviceCloudSupporting: AferoCloudSupporting? { get }
 }
 
 public extension DeviceModelable {
@@ -772,7 +738,7 @@ extension DeviceModelableInternal {
     /// Set this device's timezone. Upon success, the timeZone will be immediately set on this device
     /// (a conclave invalidation will also be handled), and a device state update will be signaled.
     
-    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
 
         guard let deviceCloudSupporting = deviceCloudSupporting else {
             return Promise { _, reject in reject("No attribute writeable") }
@@ -803,6 +769,17 @@ extension DeviceModelableInternal {
         }
         
     }
+    
+}
+
+public extension DeviceModelable {
+
+    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
+        return (self as? DeviceModelableInternal)?.setTimeZone(as: timeZone, isUserOverride: isUserOverride) ?? Promise {
+            _, reject in reject("No actual setTimeZone implementation.")
+        }
+    }
+
 }
 
 public extension DeviceModelable {
