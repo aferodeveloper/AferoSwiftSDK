@@ -17,7 +17,7 @@ import HTTPStatusCodes
 
 // MARK: - MockDeviceCloudSupporting
 
-class MockDeviceCloudSupporting: DeviceCloudSupporting {
+class MockDeviceCloudSupporting: AferoCloudSupporting {
     
     let persisting = MockDeviceTagPersisting()
     
