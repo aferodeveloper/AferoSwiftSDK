@@ -34,7 +34,7 @@ extension AferoSofthubSetupWifiCommandState: CustomStringConvertible, CustomDebu
     }
     
     var isTerminal: Bool {
-        return self ∈ [ .failed, .timedOut, .timedOutCommunicating, .timedOutConnect, .timedOutNotAvailable, .done, ]
+        return self ∈ [ .failed, .timedOut, .timedOutCommunicating, .timedOutConnect, .timedOutNotAvailable, .done, .cancelled ]
     }
     
     var isError: Bool {
