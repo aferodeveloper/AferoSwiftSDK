@@ -978,7 +978,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
     func scan() throws {
         try scan(timeout: 60.0)
     }
-
+    
     /// Start a scan for SSIDs (In the sim, this just causes us to reload some sample SSIDs.)
     
     func scan(timeout: TimeInterval = 60.0) throws {
@@ -995,24 +995,25 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         
         DDLogDebug("Telling AferoSofthub to tell \(deviceId) to scan.", tag: TAG)
 
-        var timer = Timer.schedule(timeout) {
-            [weak self] _ in
+        let fireBlock: (Timer?)->Void = {
+            [weak self] ltimer in
+            ltimer?.invalidate()
             try! self?.cancelScan()
             self?.emit(.commandStateChange(newState: .timedOut))
         }
         
+        var timer = Timer.schedule(timeout, handler: fireBlock)
+
         let onCommandStateChange: (String, AferoSofthubSetupWifiCommandState) -> Void = {
             
             [weak self] hubId, state in
             DDLogInfo("\(state.debugDescription) for \(hubId)", tag: TAG)
             self?.emit(.commandStateChange(newState: state))
             
-            timer?.invalidate()
-            if !state.isTerminal {
-                timer = Timer.schedule(timeout) {
-                    _ in
-                    try! self?.cancelScan()
-                    self?.emit(.commandStateChange(newState: .timedOut))
+            asyncMain {
+                timer?.invalidate()
+                if !state.isTerminal {
+                    timer = Timer.schedule(timeout, handler: fireBlock)
                 }
             }
         }
@@ -1090,25 +1091,27 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         
         emit(.wifiPasswordCommitted)
 
-        var timer = Timer.schedule(timeout) {
-            [weak self] _ in
+        let fireBlock: (Timer?)->Void = {
+            [weak self] ltimer in
+            ltimer?.invalidate()
             try! self?.cancelAttemptAssociate()
             self?.emit(.commandStateChange(newState: .timedOut))
         }
+
+        var timer = Timer.schedule(timeout, handler: fireBlock)
         
         let onCommandStateChange: (String, AferoSofthubSetupWifiCommandState) -> Void = {
             [weak self] hubId, state in
             DDLogInfo("\(state.debugDescription) for \(hubId)", tag: TAG)
             self?.emit(.commandStateChange(newState: state))
             
-            timer?.invalidate()
-            if !state.isTerminal {
-                timer = Timer.schedule(timeout) {
-                    _ in
-                    try! self?.cancelAttemptAssociate()
-                    self?.emit(.commandStateChange(newState: .timedOut))
+            asyncMain {
+                timer?.invalidate()
+                if !state.isTerminal {
+                    timer = Timer.schedule(timeout, handler: fireBlock)
                 }
             }
+            
         }
         
         do {

@@ -513,10 +513,6 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     // MARK: - <UITableViewDelegate> -
     
-//    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-//
-//    }
-//
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         guard
@@ -543,11 +539,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         networkCell.passwordPromptIsHidden = true
         tableView.endUpdates()
     }
-//
-//    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-//        <#code#>
-//    }
-//
+
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
     
         guard indexPath == currentNetworkIndexPath else {
@@ -909,8 +901,15 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
             withStatus: NSLocalizedString(
                 "Unable to find network.",
                 comment: "ScanWifiViewcontroller handshake failed status message"),
-            maskType: SVProgressHUDMaskType.gradient
+            maskType: .gradient
         )
+    }
+    
+    override func handleWifiCommandError(_ error: Error) {
+        stopAnimatingRefreshIndicators()
+        let message = String(format: NSLocalizedString("Wifi command error: %@", comment: "Wifi command error status template"), error.localizedDescription)
+        DDLogError("Error executing wifi command for device \(deviceModel!.deviceId): \(message)", tag: TAG)
+        SVProgressHUD.showError(withStatus: message, maskType: .gradient)
     }
     
     // MARK: - <AferoWifiPasswordPromptViewDelegate> -
