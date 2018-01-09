@@ -115,7 +115,7 @@ endpoint.
 | - | - | - | - |
 | `platform` | Your app's platform | `IOS` | `IOS`, `ANDROID` |
 | `mobileDeviceId` | A UUID, generated and persisted by your app | `714936D4-31E6-42DA-8691-95632E235140` | Any UUID |
-| `pushId` | The token provided by your platform. | | Plain text token. Binary values must be hex-encoded. |
+| `pushId` | The token provided by your platform. | | Plain text token. **Binary values must be Base64-encoded.** |
 | `extendedData`[^4] | A dict which must contain at least your app ID | {"app_identifier": "io.afero.iTokui"} |
 
 [^4]: [Extended Data Reference](#appendix-3-supported-extendedData-fields)
