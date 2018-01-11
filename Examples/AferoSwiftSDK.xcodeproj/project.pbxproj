@@ -10,6 +10,7 @@
 		2A8F93353CACE9757D8027B6 /* Pods_AferoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE141C3EECD6EA06EA74415 /* Pods_AferoTests.framework */; };
 		AA3A16231D889EE600C5660E /* account.json in Resources */ = {isa = PBXBuildFile; fileRef = AA3A16221D889EDF00C5660E /* account.json */; };
 		CB0E66371FBE20E000E8A5BE /* DeviceTagCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0E66361FBE20E000E8A5BE /* DeviceTagCollectionTests.swift */; };
+		CB1C1E222006F669002F8ADE /* AttributeCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1C1E212006F669002F8ADE /* AttributeCollectionTests.swift */; };
 		CB1CED441EF8A5E500B86534 /* DebounceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED231EF8A5E500B86534 /* DebounceTests.swift */; };
 		CB1CED461EF8A5E500B86534 /* DeviceModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */; };
 		CB1CED471EF8A5E500B86534 /* DeviceProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED261EF8A5E500B86534 /* DeviceProfileTests.swift */; };
@@ -96,6 +97,7 @@
 		966A05E8F9200C490E6C4971 /* Pods-AferoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests.release.xcconfig"; sourceTree = "<group>"; };
 		AA3A16221D889EDF00C5660E /* account.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = account.json; sourceTree = "<group>"; };
 		CB0E66361FBE20E000E8A5BE /* DeviceTagCollectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTagCollectionTests.swift; sourceTree = "<group>"; };
+		CB1C1E212006F669002F8ADE /* AttributeCollectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeCollectionTests.swift; sourceTree = "<group>"; };
 		CB1CED231EF8A5E500B86534 /* DebounceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebounceTests.swift; sourceTree = "<group>"; };
 		CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCollectionTests.swift; sourceTree = "<group>"; };
 		CB1CED251EF8A5E500B86534 /* DeviceModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceModelTests.swift; sourceTree = "<group>"; };
@@ -227,9 +229,18 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		CB1C1E202006F64E002F8ADE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CB1C1E212006F669002F8ADE /* AttributeCollectionTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		CB1CED221EF8A5E500B86534 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				CB1C1E202006F64E002F8ADE /* Models */,
 				CB1CED291EF8A5E500B86534 /* Fixtures */,
 				CB809A8A1F2391110008DDD1 /* RESTClientAPI */,
 				CB1CED231EF8A5E500B86534 /* DebounceTests.swift */,
@@ -648,6 +659,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB1C1E222006F669002F8ADE /* AttributeCollectionTests.swift in Sources */,
 				CB1CED7F1EF8A61900B86534 /* ConclaveClientTests.swift in Sources */,
 				CB1CED811EF8A61900B86534 /* DeviceStreamEventTests.swift in Sources */,
 				CB809A8D1F23F9AD0008DDD1 /* AferoAPIClient+AccountTests.swift in Sources */,
