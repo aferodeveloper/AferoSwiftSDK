@@ -96,7 +96,7 @@
 			"length": 4
 		}, {
 			"id": 50009,
-			"dataType": "FIXED_16_16",
+			"dataType": "Q_15_16",
 			"semanticType": "Desired Temperature",
 			"operations": ["READ", "WRITE"],
 			"defaultValue": "00000000",

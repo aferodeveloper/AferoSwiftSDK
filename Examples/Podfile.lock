@@ -1,10 +1,10 @@
 PODS:
   - AferoSofthub (1.1.1)
-  - AferoSwiftSDK/AFNetworking (1.0.0):
+  - AferoSwiftSDK/AFNetworking (1.0.2):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.0.0):
+  - AferoSwiftSDK/Core (1.0.2):
     - AferoSofthub (~> 1.1)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
@@ -51,7 +51,7 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (6.1.0)
   - OHHTTPStubs/Swift (6.1.0):
     - OHHTTPStubs/Default
-  - PromiseKit/CorePromise (4.5.0)
+  - PromiseKit/CorePromise (4.5.1)
   - QRCodeReader.swift (8.0.4)
   - Quick (1.2.0)
   - ReactiveSwift (1.1.5):
@@ -82,7 +82,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AferoSofthub: 4fbe0656f1cef3b9d261959c862bfd4925ec2c88
-  AferoSwiftSDK: 4d11cd1853ba868d62f21cae494463052e22b4e5
+  AferoSwiftSDK: f264c6a68dc109f35545a11cbc121069a3d87c7d
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: e033a5d8513357af2dd456eb66e202c325c30627
@@ -92,7 +92,7 @@ SPEC CHECKSUMS:
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   OHHTTPStubs: 1e21c7d2c084b8153fc53d48400d8919d2d432d0
-  PromiseKit: 9c1d9f6d7b65e3951a90bea7f407c56972be5d8e
+  PromiseKit: 445dac9b2c3c3b4b31b5f842bc325700b848a8bd
   QRCodeReader.swift: 9730cfa7ed5f0dd839765df8cf18d41db20e4081
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb

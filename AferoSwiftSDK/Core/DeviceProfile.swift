@@ -1261,9 +1261,11 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                     self = .float32
                 case "float64":
                     self = .float64
-                case "fixed_16_16":
+                case "fixed_16_16": fallthrough // legacy
+                case "q_15_16":
                     self = .q1516
-                case "fixed_32_32":
+                case "fixed_32_32": fallthrough // legacy
+                case "q_31_32":
                     self = .q3132
                 case "utf8s":
                     self = .utf8S
