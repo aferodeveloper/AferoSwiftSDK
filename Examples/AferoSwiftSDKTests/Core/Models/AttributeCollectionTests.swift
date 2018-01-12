@@ -58,6 +58,7 @@ class AferoAttributeDataTypeSpec: QuickSpec {
             expect(AferoAttributeDataType.unknown.size).to(beNil())
 
         }
+        
     }
     
 }
@@ -80,15 +81,118 @@ class AferoAttributeOperationsSpec: QuickSpec {
                 expect(AferoAttributeOperations(rawValue: 0)) == []
             }
             
-            let allOperations: AferoAttributeOperations = [.Read, .Write]
-            expect(allOperations.contains(.Read)).to(beTrue())
-            expect(allOperations.contains(.Write)).to(beTrue())
+            it("should initialize from option arrays") {
+                let allOperations: AferoAttributeOperations = [.Read, .Write]
+                expect(allOperations.contains(.Read)).to(beTrue())
+                expect(allOperations.contains(.Write)).to(beTrue())
+            }
             
-            expect(AferoAttributeOperations.Read.contains(.Read)).to(beTrue())
-            expect(AferoAttributeOperations.Read.contains(.Write)).to(beFalse())
+            it("should contain expected values") {
+                expect(AferoAttributeOperations.Read.contains(.Read)).to(beTrue())
+                expect(AferoAttributeOperations.Read.contains(.Write)).to(beFalse())
+                
+                expect(AferoAttributeOperations.Write.contains(.Write)).to(beTrue())
+                expect(AferoAttributeOperations.Write.contains(.Read)).to(beFalse())
+            }
             
-            expect(AferoAttributeOperations.Write.contains(.Write)).to(beTrue())
-            expect(AferoAttributeOperations.Write.contains(.Read)).to(beFalse())
+        }
+        
+        describe("equating") {
+
+            let r1 = AferoAttributeOperations.Read.copy() as! AferoAttributeOperations
+            let w1 = AferoAttributeOperations.Write.copy() as! AferoAttributeOperations
+            let a1: AferoAttributeOperations = [.Read, .Write]
+            let n1: AferoAttributeOperations = []
+
+            it("should properly report simple comparisons.") {
+                
+                expect(AferoAttributeOperations.Read) == AferoAttributeOperations.Read
+                expect(AferoAttributeOperations.Read) != AferoAttributeOperations.Write
+                
+                expect(AferoAttributeOperations.Write) == AferoAttributeOperations.Write
+                expect(AferoAttributeOperations.Write) != AferoAttributeOperations.Read
+            }
+            
+            it("should properly compare copies") {
+                let r2 = r1.copy() as! AferoAttributeOperations
+                expect(r2).toNot(be(r1))
+                expect(r2) == r1
+                
+                let w2 = w1.copy() as! AferoAttributeOperations
+                expect(w2).toNot(be(w1))
+                expect(w2) == w1
+            }
+            
+            it("should equate if two instances contain the same options.") {
+                let readWriteWith7 = AferoAttributeOperations(rawValue: 7)
+                expect(readWriteWith7) == a1
+                expect(readWriteWith7) != w1
+                expect(readWriteWith7) != r1
+                expect(readWriteWith7) != n1
+
+                let writeOnlyWith6 = AferoAttributeOperations(rawValue: 6)
+                expect(writeOnlyWith6) == w1
+                expect(writeOnlyWith6) != r1
+                expect(writeOnlyWith6) != a1
+                expect(writeOnlyWith6) != n1
+
+                let readOnlyWith5 = AferoAttributeOperations(rawValue: 5)
+                expect(readOnlyWith5) == r1
+                expect(readOnlyWith5) != w1
+                expect(readOnlyWith5) != a1
+                expect(readOnlyWith5) != n1
+
+                let nullSetWith8 = AferoAttributeOperations(rawValue: 8)
+                expect(nullSetWith8) != r1
+                expect(nullSetWith8) != w1
+                expect(nullSetWith8) != a1
+                expect(nullSetWith8) == n1
+            }
+            
+        }
+            
+        describe("encoding and decoding using Codable") {
+            
+            it("should decode from json") {
+                
+                do {
+
+                    let encoder = JSONEncoder()
+                    let decoder = JSONDecoder()
+                    
+                    let decode: ([String]) throws -> AferoAttributeOperations? = {
+                        stringArr in
+                        let data = try encoder.encode(stringArr)
+                        return try decoder.decode(AferoAttributeOperations.self, from: data)
+                    }
+                    
+                    expect(try decode(["READ"])) == AferoAttributeOperations.Read
+                    expect(try decode(["WRITE"])) == AferoAttributeOperations.Write
+                    expect(try decode(["READ", "WRITE",])) == [.Read, .Write]
+                    expect(try decode(["READ", "WRITE", "DELETE",])) == [.Read, .Write]
+                    expect(try decode(["DELETE",])) == []
+                    expect(try decode([])) == []
+
+                } catch {
+                    fail(error.localizedDescription)
+                }
+                
+            }
         }
     }
 }
+
+//class AferoAttributeDescriptorSpec: QuickSpec {
+//    
+//    override func spec() {
+//
+//        describe("initializing") {
+//            it("should initialize correctly") {
+//                let a = AferoAttributeDescriptor(id: 5, )
+//                
+//            }
+//        }
+//
+//    }
+//}
+

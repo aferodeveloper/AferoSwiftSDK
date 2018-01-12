@@ -10,7 +10,7 @@ import Foundation
 
 /// Describes a type for an attribute.
 
-@objc public enum AferoAttributeDataType: Int, CustomStringConvertible, CustomDebugStringConvertible {
+@objc public enum AferoAttributeDataType: Int, CustomStringConvertible, CustomDebugStringConvertible, Codable {
     
     case
     unknown,
@@ -105,7 +105,7 @@ import Foundation
 
 }
 
-@objc public final class AferoAttributeOperations: NSObject, OptionSet {
+@objc public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSet {
     
     @objc override public var debugDescription: String {
         
@@ -122,15 +122,6 @@ import Foundation
         return result.joined(separator: ",")
     }
     
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? AferoAttributeOperations else { return false }
-        return other.rawValue == rawValue
-    }
-    
-    @objc override public var hashValue: Int {
-        return rawValue
-    }
-    
     // MARK: OptionSetType
     
     public let rawValue: Int
@@ -143,13 +134,85 @@ import Foundation
         self.rawValue = operation.rawValue
     }
     
+    // MARK: Codable
+    
+    enum PermissionNames: String {
+        case READ
+        case WRITE
+    }
+    
+    public convenience init(from decoder: Decoder) throws {
+        
+        var container = try decoder.unkeyedContainer()
+        var operations = AferoAttributeOperations()
+        
+        while !container.isAtEnd {
+            let name = try container.decode(String.self)
+            switch name {
+            case PermissionNames.READ.rawValue:
+                operations.formUnion(.Read)
+            case PermissionNames.WRITE.rawValue:
+                operations.formUnion(.Write)
+            default:
+                break
+            }
+        }
+        
+        self.init(rawValue: operations.rawValue)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var array = [String]()
+        
+        if contains(.Read) {
+            array.append(PermissionNames.READ.rawValue)
+        }
+        
+        if contains(.Write) {
+            array.append(PermissionNames.WRITE.rawValue)
+        }
+        
+        var container = encoder.unkeyedContainer()
+        try container.encode(contentsOf: array)
+    }
+    
+    // MARK: NSCoding
+
+    public convenience init?(coder aDecoder: NSCoder) {
+        self.init(rawValue: aDecoder.decodeInteger(forKey: "rawValue"))
+    }
+    
+    public func encode(with aCoder: NSCoder) {
+        aCoder.setValue(rawValue, forKey: "rawValue")
+    }
+    
+    // MARK: NSObject
+
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributeOperations else { return false }
+        return other.intersection(type(of: self).ReadWrite).rawValue == intersection(type(of: self).ReadWrite).rawValue
+    }
+    
+    @objc override public var hashValue: Int {
+        return rawValue
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttributeOperations(rawValue: rawValue)
+    }
+    
     public static let Read = AferoAttributeOperations(.read)
     public static let Write = AferoAttributeOperations(.write)
+    public static let ReadWrite = AferoAttributeOperations(rawValue: 3)
     
 }
 
 
-@objc public class AferoAttributeDescriptor: NSObject {
+@objc public class AferoAttributeDescriptor: NSObject, Codable {
+    
+    // MARK: NSCoding
     
     internal(set) public var id: Int
     internal(set) public var dataType: AferoAttributeDataType
@@ -163,6 +226,19 @@ import Foundation
         self.semanticType = semanticType
         self.defaultValue = defaultValue
         self.operations = operations
+    }
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributeDescriptor else { return false }
+        return other.id == id
+            && other.dataType == dataType
+            && other.semanticType == semanticType
+            && other.defaultValue == defaultValue
+            && other.operations == operations
+    }
+    
+    public override var hashValue: Int {
+        return id.hashValue
     }
     
 }
