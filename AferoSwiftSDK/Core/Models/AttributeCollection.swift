@@ -217,33 +217,34 @@ import Foundation
 /// Descriptive metadata about an Afero attribute, including its identifier, type,
 /// "semanticType", default value, and operations.
 
-@objc public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
+@objcMembers
+public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
     
     public override var debugDescription: String {
         return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations))"
     }
     
     /// The id for this attribute, unique to a profile.
-    internal(set) public var id: Int
+    public let id: Int
     
     /// The `AferoAttributeDataType` associated with this attribute.
-    internal(set) public var dataType: AferoAttributeDataType
+    public let dataType: AferoAttributeDataType
     
     /// The "semantic" type (usually a human-readable description) of the associated
     /// attribute.
-    internal(set) public var semanticType: String?
+    public let semanticType: String?
     
     /// A string identifier, unique to the associated attribute on a given
     /// Afero peripheral.
-    internal(set) public var key: String?
+    public let key: String?
     
     /// The default value for this attribute, if any.
-    internal(set) public var defaultValue: String?
+    public let defaultValue: String?
     
     /// The valid operations (readable, writable) for this attribute.
-    internal(set) public var operations: AferoAttributeOperations = AferoAttributeOperations(rawValue: 0)
+    public let operations: AferoAttributeOperations
 
-    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, key: String? = nil, defaultValue: String? = nil, operations: AferoAttributeOperations = [.Read]) {
+    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, key: String? = nil, defaultValue: String? = nil, operations: AferoAttributeOperations = []) {
         self.id = id
         self.dataType = type
         self.semanticType = semanticType
