@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - AferoAttributeDataType -
 
-/// Describes a type for an attribute.
+/// Describes a type for an Afero attribute.
 
 @objc public enum AferoAttributeDataType: Int, CustomStringConvertible, CustomDebugStringConvertible, Codable {
     
@@ -395,7 +395,7 @@ public class AferoAttribute: NSObject, NSCopying, Codable {
     dynamic internal(set) public var pendingValueState: AferoAttributeValueState? {
         willSet {
             guard newValue != pendingValueState else { return }
-            willChangeValue(for: \.currentValueState)
+            willChangeValue(for: \.pendingValueState)
             willChangeValue(for: \.hasPendingValueState)
             willChangeValue(for: \.displayValueState)
         }
@@ -438,13 +438,16 @@ public class AferoAttribute: NSObject, NSCopying, Codable {
     
     @objc override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
         switch key {
+            
         case "currentValueState": fallthrough
         case "pendingValueState": fallthrough
         case "hasPendingValueState": fallthrough
-        case "displayValueState": fallthrough
+        case "displayValueState":
             return false
+            
         default:
             return true
+            
         }
     }
     
@@ -460,9 +463,56 @@ public class AferoAttribute: NSObject, NSCopying, Codable {
 
 }
 
-//
-//@objc public class AferoAttributeCollection: NSObject {
-//
-//
-//}
+// MARK: - AferoAttributeCollectionError -
+
+@objc public enum AferoAttributeCollectionError: Int, Error {
+    
+    case duplicateAttributeId = -1
+    
+    public var localizedDescription: String {
+        switch self {
+        case .duplicateAttributeId: return "One or more duplicate attribute ids found; attribute ids must be unique."
+        }
+    }
+    
+}
+
+// MARK: - AferoAttributeCollection -
+
+@objcMembers public class AferoAttributeCollection: NSObject {
+
+    private var attributeMap: [Int: AferoAttribute] = [:]
+    
+    init(attributes: [AferoAttribute]) throws {
+        
+        attributeMap = try attributes.reduce([:]) {
+            curr, next in
+            guard curr[next.descriptor.id] == nil else {
+                throw AferoAttributeCollectionError.duplicateAttributeId
+            }
+            var ret = curr
+            ret[next.descriptor.id] = next
+            return ret
+        }
+        
+    }
+    
+    convenience override init() {
+        try! self.init(attributes: [])
+    }
+    
+    convenience init(descriptors: [AferoAttributeDescriptor]) throws {
+        let attributes = descriptors.map {
+            return AferoAttribute(descriptor: $0)
+        }
+        try self.init(attributes: attributes)
+    }
+    
+    // MARK: Attribute Access
+    
+    var attributeIds: Set<Int> {
+        return Set(attributeMap.keys)
+    }
+    
+}
 
