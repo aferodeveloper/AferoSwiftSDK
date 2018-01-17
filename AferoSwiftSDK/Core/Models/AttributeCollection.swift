@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - AferoAttributeDataType -
 
 /// Describes a type for an attribute.
 
@@ -75,7 +76,7 @@ import Foundation
         
         switch(name.lowercased()) {
 
-         case type(of: self).boolean.stringValue!:     self = .boolean
+        case type(of: self).boolean.stringValue!:     self = .boolean
         case type(of: self).sInt8.stringValue!:       self = .sInt8
         case type(of: self).sInt16.stringValue!:      self = .sInt16
         case type(of: self).sInt32.stringValue!:      self = .sInt32
@@ -96,6 +97,8 @@ import Foundation
     }
     
 }
+
+// MARK: - AferoAttributeOperation(s) -
 
 @objc public enum AferoAttributeOperation: Int, CustomDebugStringConvertible {
 
@@ -214,6 +217,8 @@ import Foundation
     
 }
 
+// MARK: - AferoAttributeDescriptor -
+
 /// Descriptive metadata about an Afero attribute, including its identifier, type,
 /// "semanticType", default value, and operations.
 
@@ -276,6 +281,8 @@ public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
     }
     
 }
+
+// MARK: - AferoAttributeValueState -
 
 /// Represents the current value state of an Afero attribute—its value, when it
 /// last changed, and any request id. It does not contain interpretation info.
@@ -352,6 +359,8 @@ public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable 
     }
     
 }
+
+// MARK: - AferoAttribute -
 
 /// Represents an Afero attribute on an Afero peripheral device.
 
