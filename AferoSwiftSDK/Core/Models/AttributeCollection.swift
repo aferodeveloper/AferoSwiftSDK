@@ -280,7 +280,8 @@ public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
 /// Represents the current value state of an Afero attribute—its value, when it
 /// last changed, and any request id. It does not contain interpretation info.
 
-@objc public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
+@objcMembers
+public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
     
     public override var debugDescription: String {
         return "<AferoAttributeValueState> value:\(value) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
