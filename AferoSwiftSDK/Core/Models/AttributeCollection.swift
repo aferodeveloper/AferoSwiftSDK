@@ -74,21 +74,47 @@ import Foundation
         }
         
         switch(name.lowercased()) {
-        case "boolean":     self = .boolean
-        case "sint8":       self = .sInt8
-        case "sint16":      self = .sInt16
-        case "sint32":      self = .sInt32
-        case "sint64":      self = .sInt64
+
+         case type(of: self).boolean.stringValue!:     self = .boolean
+        case type(of: self).sInt8.stringValue!:       self = .sInt8
+        case type(of: self).sInt16.stringValue!:      self = .sInt16
+        case type(of: self).sInt32.stringValue!:      self = .sInt32
+        case type(of: self).sInt64.stringValue!:      self = .sInt64
+
+        case type(of: self).utf8S.stringValue!:       self = .utf8S
+        case type(of: self).bytes.stringValue!:       self = .bytes
+
         case "fixed_16_16": fallthrough
-        case "q1516":       self = .q1516
+        case type(of: self).q1516.stringValue!:       self = .q1516
+            
         case "fixed_32_32": fallthrough
-        case "q3132":       self = .q3132
-        case "utf8s":       self = .utf8S
-        case "bytes":       self = .bytes
+        case type(of: self).q3132.stringValue!:       self = .q3132
+            
         default:            break
         }
         
     }
+    
+//    // MARK: Codable
+//
+//    public func encode(to encoder: Encoder) throws {
+//        var container = encoder.unkeyedContainer()
+//        guard let stringValue = stringValue else {
+//            try container.encodeNil()
+//            return
+//        }
+//        try container.encode(stringValue)
+//    }
+//
+//    public init(from decoder: Decoder) throws {
+//        var container = try decoder.unkeyedContainer()
+//        do {
+//            self = AferoAttributeDataType(name: try container.decode(String.self))
+//        } catch {
+//            self = .unknown
+//            return
+//        }
+//    }
 
 }
 
@@ -210,9 +236,7 @@ import Foundation
 }
 
 
-@objc public class AferoAttributeDescriptor: NSObject, Codable {
-    
-    // MARK: NSCoding
+@objc public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
     
     internal(set) public var id: Int
     internal(set) public var dataType: AferoAttributeDataType
@@ -228,6 +252,8 @@ import Foundation
         self.operations = operations
     }
     
+    // MARK: NSObjectProtocol
+    
     public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? AferoAttributeDescriptor else { return false }
         return other.id == id
@@ -241,14 +267,98 @@ import Foundation
         return id.hashValue
     }
     
-}
-
-@objc public class AferoAttribute: NSObject {
+    // MARK: NSCopying
     
-    
-}
-
-@objc public class AferoAttributeCollection: NSObject {
-
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttributeDescriptor(id: id, type: dataType, semanticType: semanticType, defaultValue: defaultValue, operations: operations)
+    }
     
 }
+
+/**
+ Represents the current value state of an Afero attribute—its value, when it
+ last changed, and any request id. It does not contain interpretation info.
+ */
+
+@objc public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
+    
+    public override var debugDescription: String {
+        return "<AferoAttributeValueState> value:\(value) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
+    }
+    
+    /// The string value of this instance.
+    let value: String
+    
+    /// The encoded data value of htis instance (if provided).
+    let data: String?
+    
+    /// When this attribute was last updated.
+    /// - warning: When an Afero device resets and reports its values, `updatedTimestampMs`
+    ///            reflects the time of said report, which will be later than when
+    ///            the value was actually changed due to user action, rule execution,
+    ///            or MCU activity.
+    
+    let updatedTimestampMs: Int64
+    
+    /// Any associated request id, returned from the Afero cloud when setting an attribute.
+    let requestId: Int?
+    
+    init(value: String, data: String?, updatedTimestampMs: Int64, requestId: Int?) {
+        self.value = value
+        self.data = data
+        self.updatedTimestampMs = updatedTimestampMs
+        self.requestId = requestId
+    }
+    
+    convenience init(value: String, data: String?, updatedTimestamp: Date, requestId: Int?) {
+        self.init(value: value, data: data, updatedTimestampMs: Int64(updatedTimestamp.millisSince1970), requestId: requestId)
+    }
+    
+    /// When this attribute was last updated.
+    /// - warning: When an Afero device resets and reports its values, `updatedTimestamp`
+    ///            reflects the time of said report, which will be later than when
+    ///            the value was actually changed due to user action, rule execution,
+    ///            or MCU activity.
+    
+    lazy private(set) public var updatedTimestamp: Date = {
+        return Date.dateWithMillisSince1970(NSNumber(value: self.updatedTimestampMs))
+    }()
+    
+    // MARK: NSObjectProtocol
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributeValueState else { return false }
+        return other.value == value && other.data == data && other.updatedTimestampMs == updatedTimestampMs && other.requestId == requestId
+    }
+    
+    public override var hashValue: Int {
+        return value.hashValue
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+    }
+    
+    // MARK: Comparable
+    
+    public static func <(lhs: AferoAttributeValueState, rhs: AferoAttributeValueState) -> Bool {
+        return lhs.updatedTimestamp < rhs.updatedTimestamp
+    }
+    
+}
+
+//@objc public class AferoAttribute: NSObject {
+//
+//    public let id: Int
+//    dynamic internal(set) public var descriptor: AferoAttributeDescriptor
+//
+//
+//}
+//
+//@objc public class AferoAttributeCollection: NSObject {
+//
+//
+//}
+
