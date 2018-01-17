@@ -727,3 +727,62 @@ class AferoAttributeSpec: QuickSpec {
         
     }
 }
+
+class AferoAttributeCollectionSpec: QuickSpec {
+
+    override func spec() {
+        
+        let adesc = AferoAttributeDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+        let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+        let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
+//        let a = AferoAttribute(descriptor: adesc)
+//        let a2 = AferoAttribute(descriptor: adesc, currentValueState: astate)
+        let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
+        
+        let bdesc = AferoAttributeDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+        let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+        let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
+//        let b = AferoAttribute(descriptor: bdesc)
+//        let b2 = AferoAttribute(descriptor: bdesc, currentValueState: bstate)
+        let b3 = AferoAttribute(descriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
+
+        fdescribe("initializing") {
+            
+            it("should default-initialize") {
+                let c = AferoAttributeCollection()
+                expect(c.attributeIds) == []
+            }
+            
+            it("should initialize with attributes") {
+                do {
+                    let c = try AferoAttributeCollection(attributes: [a3, b3])
+                    expect(c.attributeIds) == [111, 222]
+                } catch {
+                    fail(error.localizedDescription)
+                }
+            }
+            
+            it("should initialize with descriptors") {
+                do {
+                    let c = try AferoAttributeCollection(descriptors: [adesc, bdesc])
+                    expect(c.attributeIds) == [111, 222]
+                } catch {
+                    fail(error.localizedDescription)
+                }
+            }
+
+            it("should throw during initialization with redundant attributes.") {
+                expect {
+                    try AferoAttributeCollection(attributes: [a3, a3])
+                    }.to(throwError(AferoAttributeCollectionError.duplicateAttributeId))
+            }
+
+            it("should throw during initialization with redundant descriptors.") {
+                expect {
+                    try AferoAttributeCollection(descriptors: [adesc, adesc])
+                    }.to(throwError(AferoAttributeCollectionError.duplicateAttributeId))
+            }
+            
+        }
+    }
+}
