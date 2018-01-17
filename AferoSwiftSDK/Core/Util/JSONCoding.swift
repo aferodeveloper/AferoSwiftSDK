@@ -66,6 +66,13 @@ public func FromJSON<T: AferoJSONCoding>(_ json: AferoJSONCodedType?) -> T? {
         return T(json: json)
 }
 
+public func FromJSON<T: Decodable>(_ data: Data?) throws -> T? {
+    guard let data = data else { return nil }
+    let decoder = JSONDecoder()
+    let ret = try decoder.decode(T.self, from: data)
+    return ret
+}
+
 prefix operator |<
 
 public prefix func |< <T: AferoJSONCoding>(json: AferoJSONCodedType?) -> T? {
@@ -82,6 +89,10 @@ public prefix func |< <T: AferoJSONCoding>(json: AferoJSONObject?) -> T? {
 
 public prefix func |< <T: OptionSetJSONCoding>(json: [AferoJSONCodedType]?) -> T {
     return FromJSON(json)
+}
+
+public prefix func |< <T: Decodable>(data: Data?) throws -> T? {
+    return try FromJSON(data)
 }
 
 public extension Dictionary where Key: ExpressibleByStringLiteral, Value: AferoJSONCoding {
