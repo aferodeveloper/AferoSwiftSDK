@@ -353,13 +353,104 @@ public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable 
     
 }
 
-//@objc public class AferoAttribute: NSObject {
-//
-//    public let id: Int
-//    dynamic internal(set) public var descriptor: AferoAttributeDescriptor
-//
-//
-//}
+/// Represents an Afero attribute on an Afero peripheral device.
+
+@objcMembers
+public class AferoAttribute: NSObject, NSCopying, Codable {
+    
+    public override var debugDescription: String {
+        return "<AferoAttribute> desc:\(String(reflecting: descriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
+    }
+
+    /// Metadata describing this attribute's content
+    dynamic internal(set) public var descriptor: AferoAttributeDescriptor
+    
+    /// The current value state reported by the Afero peripheral device to the Afero cloud.
+    dynamic internal(set) public var currentValueState: AferoAttributeValueState? {
+        willSet {
+            guard newValue != currentValueState else { return }
+            willChangeValue(for: \.currentValueState)
+            willChangeValue(for: \.displayValueState)
+        }
+        
+        didSet {
+            guard oldValue != currentValueState else { return }
+            didChangeValue(for: \.currentValueState)
+            didChangeValue(for: \.displayValueState)
+        }
+    }
+    
+    /// The pending value state, resulting from a successful write from the local client
+    /// to the Afero cloud, prior to the associated Afero peripheral device applying
+    /// and reporting the successful application of a new value.
+    dynamic internal(set) public var pendingValueState: AferoAttributeValueState? {
+        willSet {
+            guard newValue != pendingValueState else { return }
+            willChangeValue(for: \.currentValueState)
+            willChangeValue(for: \.hasPendingValueState)
+            willChangeValue(for: \.displayValueState)
+        }
+        
+        didSet {
+            guard oldValue != pendingValueState else { return }
+            didChangeValue(for: \.pendingValueState)
+            didChangeValue(for: \.hasPendingValueState)
+            didChangeValue(for: \.displayValueState)
+        }
+
+    }
+    
+    init(descriptor: AferoAttributeDescriptor, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
+        self.descriptor = descriptor
+        self.currentValueState = currentValueState
+        self.pendingValueState = pendingValueState
+    }
+    
+    // MARK: NSObjectProtocol
+    
+    public override var hashValue: Int { return descriptor.hashValue }
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttribute else { return false }
+        return other.descriptor == descriptor && other.currentValueState == currentValueState && other.pendingValueState == pendingValueState
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttribute(
+            descriptor: descriptor.copy() as! AferoAttributeDescriptor,
+            currentValueState: currentValueState?.copy() as? AferoAttributeValueState,
+            pendingValueState: pendingValueState?.copy() as? AferoAttributeValueState
+        )
+    }
+    
+    // MARK: KVO
+    
+    @objc override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+        switch key {
+        case "currentValueState": fallthrough
+        case "pendingValueState": fallthrough
+        case "hasPendingValueState": fallthrough
+        case "displayValueState": fallthrough
+            return false
+        default:
+            return true
+        }
+    }
+    
+    // MARK: Computed convenience properties
+    
+    dynamic public var hasPendingValueState: Bool {
+        return pendingValueState != nil
+    }
+    
+    dynamic public var displayValueState: AferoAttributeValueState? {
+        return pendingValueState ?? currentValueState
+    }
+
+}
+
 //
 //@objc public class AferoAttributeCollection: NSObject {
 //
