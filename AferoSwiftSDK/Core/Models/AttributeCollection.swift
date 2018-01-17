@@ -95,27 +95,6 @@ import Foundation
         
     }
     
-//    // MARK: Codable
-//
-//    public func encode(to encoder: Encoder) throws {
-//        var container = encoder.unkeyedContainer()
-//        guard let stringValue = stringValue else {
-//            try container.encodeNil()
-//            return
-//        }
-//        try container.encode(stringValue)
-//    }
-//
-//    public init(from decoder: Decoder) throws {
-//        var container = try decoder.unkeyedContainer()
-//        do {
-//            self = AferoAttributeDataType(name: try container.decode(String.self))
-//        } catch {
-//            self = .unknown
-//            return
-//        }
-//    }
-
 }
 
 @objc public enum AferoAttributeOperation: Int, CustomDebugStringConvertible {
@@ -235,19 +214,40 @@ import Foundation
     
 }
 
+/// Descriptive metadata about an Afero attribute, including its identifier, type,
+/// "semanticType", default value, and operations.
 
 @objc public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
     
+    public override var debugDescription: String {
+        return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations))"
+    }
+    
+    /// The id for this attribute, unique to a profile.
     internal(set) public var id: Int
+    
+    /// The `AferoAttributeDataType` associated with this attribute.
     internal(set) public var dataType: AferoAttributeDataType
+    
+    /// The "semantic" type (usually a human-readable description) of the associated
+    /// attribute.
     internal(set) public var semanticType: String?
+    
+    /// A string identifier, unique to the associated attribute on a given
+    /// Afero peripheral.
+    internal(set) public var key: String?
+    
+    /// The default value for this attribute, if any.
     internal(set) public var defaultValue: String?
+    
+    /// The valid operations (readable, writable) for this attribute.
     internal(set) public var operations: AferoAttributeOperations = AferoAttributeOperations(rawValue: 0)
 
-    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, defaultValue: String? = nil, operations: AferoAttributeOperations = [.Read]) {
+    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, key: String? = nil, defaultValue: String? = nil, operations: AferoAttributeOperations = [.Read]) {
         self.id = id
         self.dataType = type
         self.semanticType = semanticType
+        self.key = key
         self.defaultValue = defaultValue
         self.operations = operations
     }
@@ -259,6 +259,7 @@ import Foundation
         return other.id == id
             && other.dataType == dataType
             && other.semanticType == semanticType
+            && other.key == key
             && other.defaultValue == defaultValue
             && other.operations == operations
     }
@@ -270,15 +271,13 @@ import Foundation
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
-        return AferoAttributeDescriptor(id: id, type: dataType, semanticType: semanticType, defaultValue: defaultValue, operations: operations)
+        return AferoAttributeDescriptor(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
     }
     
 }
 
-/**
- Represents the current value state of an Afero attribute—its value, when it
- last changed, and any request id. It does not contain interpretation info.
- */
+/// Represents the current value state of an Afero attribute—its value, when it
+/// last changed, and any request id. It does not contain interpretation info.
 
 @objc public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
     
@@ -342,6 +341,9 @@ import Foundation
     }
     
     // MARK: Comparable
+    
+    /// Compares by updatedTimestamp only. For comparing by value, etc,
+    /// convert the `value` to a meaningful type first.
     
     public static func <(lhs: AferoAttributeValueState, rhs: AferoAttributeValueState) -> Bool {
         return lhs.updatedTimestamp < rhs.updatedTimestamp
