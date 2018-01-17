@@ -483,3 +483,247 @@ class AferoAttributeValueStateSpec: QuickSpec {
         
     }
 }
+
+class AferoAttributeSpec: QuickSpec {
+    
+    override func spec() {
+
+        let adesc = AferoAttributeDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+        let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+        let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
+        
+        let a = AferoAttribute(descriptor: adesc)
+        let ac = a.copy() as! AferoAttribute
+
+        let a2 = AferoAttribute(descriptor: adesc, currentValueState: astate)
+        let ac2 = a2.copy() as! AferoAttribute
+
+        let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
+        let ac3 = a3.copy() as! AferoAttribute
+
+        let bdesc = AferoAttributeDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+        let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+        let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
+        let b = AferoAttribute(descriptor: bdesc)
+        let b2 = AferoAttribute(descriptor: bdesc, currentValueState: bstate)
+        let b3 = AferoAttribute(descriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
+
+        describe("initializing") {
+            
+            it("should initialize") {
+                
+                expect(a.descriptor) == adesc
+                expect(a.currentValueState).to(beNil())
+                expect(a.pendingValueState).to(beNil())
+                
+                expect(a2.descriptor) == adesc
+                expect(a2.currentValueState) == astate
+                expect(a2.pendingValueState).to(beNil())
+
+                expect(a3.descriptor) == adesc
+                expect(a3.currentValueState) == astate
+                expect(a3.pendingValueState) == astatep
+
+                expect(b.descriptor) == bdesc
+                expect(b.currentValueState).to(beNil())
+                expect(b.pendingValueState).to(beNil())
+                
+                expect(b2.descriptor) == bdesc
+                expect(b2.currentValueState) == bstate
+                expect(b2.pendingValueState).to(beNil())
+                
+                expect(b3.descriptor) == bdesc
+                expect(b3.currentValueState) == bstate
+                expect(b3.pendingValueState) == bstatep
+
+            }
+        }
+        
+        describe("copying and equating") {
+            
+            it("should copy") {
+                expect(ac).toNot(beIdenticalTo(a))
+                
+                expect(ac.descriptor) == a.descriptor
+                expect(ac.descriptor).toNot(beIdenticalTo(a.descriptor))
+                expect(ac.currentValueState).to(beNil())
+                expect(ac.pendingValueState).to(beNil())
+                
+                expect(ac2).toNot(beIdenticalTo(a2))
+                
+                expect(ac2.descriptor) == a2.descriptor
+                expect(ac2.descriptor).toNot(beIdenticalTo(a2.descriptor))
+                
+                expect(ac2.currentValueState) == a2.currentValueState
+                expect(ac2.currentValueState).toNot(beIdenticalTo(a2.currentValueState))
+                
+                expect(ac2.pendingValueState).to(beNil())
+
+                expect(ac3) == a3
+                expect(ac3).toNot(beIdenticalTo(a3))
+                
+                expect(ac3.descriptor) == a3.descriptor
+                expect(ac3.descriptor).toNot(beIdenticalTo(a3.descriptor))
+                
+                expect(ac3.currentValueState) == a3.currentValueState
+                expect(ac3.currentValueState).toNot(beIdenticalTo(a3.currentValueState))
+                
+                expect(ac3.pendingValueState) == a3.pendingValueState
+                expect(ac3.pendingValueState).toNot(beIdenticalTo(a3.currentValueState))
+            }
+            
+            it("should equate") {
+                expect(a) == ac
+                expect(a) != a2
+                expect(a) != a3
+                expect(a) != b
+                expect(a) != b2
+                expect(a) != b3
+                
+                expect(a2) == ac2
+                expect(a2) != a
+                expect(a2) != a3
+                expect(a2) != b
+                expect(a2) != b2
+                expect(a2) != b3
+
+                expect(a3) == ac3
+                expect(a3) != a
+                expect(a3) != a2
+                expect(a3) != b
+                expect(a3) != b2
+                expect(a3) != b3
+            }
+            
+        }
+        
+        describe("coding") {
+            
+            it("should roundtrip") {
+                
+                
+                let encoder = JSONEncoder()
+                let decoder = JSONDecoder()
+                
+                let roundtrip: (AferoAttribute) throws -> AferoAttribute = {
+                    desc in
+                    let data = try encoder.encode(desc)
+                    return try decoder.decode(AferoAttribute.self, from: data)
+                }
+                
+                do {
+                    expect(try roundtrip(a)) == ac
+                    expect(try roundtrip(a2)) == ac2
+                    expect(try roundtrip(a3)) == ac3
+                } catch {
+                    fail(error.localizedDescription)
+                }
+                
+
+            }
+        }
+        
+        describe("computed params") {
+            
+            it("should report hasPendingValueState") {
+                expect(a.hasPendingValueState).to(beFalse())
+                expect(a2.hasPendingValueState).to(beFalse())
+                expect(a3.hasPendingValueState).to(beTrue())
+            }
+            
+            it("should report displayValueState") {
+                expect(a.displayValueState).to(beNil())
+                expect(a2.displayValueState) == a2.currentValueState
+                expect(a3.displayValueState) == a3.pendingValueState
+            }
+        }
+        
+        describe("KVO") {
+            
+            it("should report descriptor changes") {
+                
+                let newDesc = AferoAttributeDescriptor(id: 23, type: .bytes, semanticType: "foo", key: "moo", defaultValue: "42", operations: [.Write])
+                var chgDesc: AferoAttributeDescriptor? = nil
+                let la = a.copy() as! AferoAttribute
+                
+                let obs = la.observe(\.descriptor) {
+                    obj, chg in
+                    chgDesc = obj.descriptor
+                }
+                
+                la.descriptor = newDesc
+                
+                expect(chgDesc).toEventually(equal(newDesc), timeout: 0.5, pollInterval: 0.1)
+            }
+            
+            it("should report currentValueState changes") {
+
+                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                var chgState: AferoAttributeValueState? = nil
+                let la = a.copy() as! AferoAttribute
+
+                let obs = la.observe(\.currentValueState) {
+                    obj, chg in
+                    chgState = obj.currentValueState
+                }
+                
+                la.currentValueState = newState
+                
+                expect(chgState).toEventually(equal(newState), timeout: 1.0, pollInterval: 0.1)
+
+            }
+            
+            it("should report pendingValueState changes") {
+
+                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                var chgState: AferoAttributeValueState? = nil
+                let la2 = a2.copy() as! AferoAttribute
+
+                let obs = la2.observe(\.pendingValueState) {
+                    obj, chg in
+                    chgState = obj.pendingValueState
+                }
+                
+                la2.pendingValueState = newState
+                
+                expect(chgState).toEventually(equal(newState), timeout: 1.0, pollInterval: 0.1)
+
+            }
+            
+            it("should report hasPendingValueState changes") {
+
+                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                var chgState: Bool? = nil
+                let la2 = a2.copy() as! AferoAttribute
+                
+                let obs = la2.observe(\.hasPendingValueState) {
+                    obj, chg in
+                    chgState = obj.hasPendingValueState
+                }
+                
+                la2.pendingValueState = newState
+                
+                expect(chgState).toEventually(beTrue(), timeout: 1.0, pollInterval: 0.1)
+
+            }
+            
+            it("should report displayValueState changes") {
+                
+                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                var chgState: AferoAttributeValueState? = nil
+                let la2 = a2.copy() as! AferoAttribute
+                
+                let obs = la2.observe(\.displayValueState) {
+                    obj, chg in
+                    chgState = obj.displayValueState
+                }
+                
+                la2.pendingValueState = newState
+                
+                expect(chgState).toEventually(equal(newState), timeout: 1.0, pollInterval: 0.1)
+
+            }
+        }
+        
+    }
+}
