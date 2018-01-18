@@ -462,13 +462,21 @@ import Foundation
 
 // MARK: - AferoAttributeCollectionError -
 
+/// Errors that can be emitted by an `AferoAttributeCollection`
+
 @objc public enum AferoAttributeCollectionError: Int, Error {
     
-    case duplicateAttributeId = -1
+    /// One or more duplicate attribute ids found during initialization or modification
+    /// of attribute storage. Attribute ids must be unique.
+    case duplicateAttributeId = 1
+    
+    /// One or more duplicate attribute keys were detected. Attribute keys must be unique.
+    case duplicateKey
     
     public var localizedDescription: String {
         switch self {
         case .duplicateAttributeId: return "One or more duplicate attribute ids found; attribute ids must be unique."
+        case .duplicateKey: return "One or more duplicate attribute keys found; attribute keys must be unique."
         }
     }
     
@@ -476,20 +484,18 @@ import Foundation
 
 // MARK: - AferoAttributeCollection -
 
-@objcMembers public class AferoAttributeCollection: NSObject {
+/// A collection of Afero attributes.
 
-    private var attributeMap: [Int: AferoAttribute] = [:]
+@objcMembers public class AferoAttributeCollection: NSObject, Codable {
+
+    // MARK: Lifecycle
     
     init(attributes: [AferoAttribute]) throws {
         
-        attributeMap = try attributes.reduce([:]) {
-            curr, next in
-            guard curr[next.descriptor.id] == nil else {
-                throw AferoAttributeCollectionError.duplicateAttributeId
-            }
-            var ret = curr
-            ret[next.descriptor.id] = next
-            return ret
+        super.init()
+        
+        try attributes.enumerated().forEach {
+            _, attr in try register(attribute: attr)
         }
         
     }
@@ -504,11 +510,130 @@ import Foundation
         }
         try self.init(attributes: attributes)
     }
+
+    // MARK: Model
     
-    // MARK: Attribute Access
+    private var attributeRegistry: [Int: AferoAttribute] = [:]
     
-    var attributeIds: Set<Int> {
-        return Set(attributeMap.keys)
+    private var attributeKeyMap: [String: Int] = [:]
+    
+    private func emitWillChangeNotifications() {
+        willChangeValue(for: \.attributes)
+        willChangeValue(for: \.attributeKeys)
+        willChangeValue(for: \.attributeIds)
+    }
+    
+    private func emitDidChangeNotifications() {
+        didChangeValue(for: \.attributes)
+        didChangeValue(for: \.attributeKeys)
+        didChangeValue(for: \.attributeIds)
+    }
+    
+    func register<T: Sequence>(attributes: T) throws where T.Element == AferoAttribute {
+        emitWillChangeNotifications()
+        defer { emitDidChangeNotifications() }
+        try attributes.forEach { try register(attribute: $0, notifyObservers: false) }
+    }
+    
+    func register(attribute: AferoAttribute, notifyObservers: Bool = true) throws {
+        
+        var key: String?
+        
+        guard attributeRegistry[attribute.descriptor.id] == nil else {
+            afLogError("Duplicate attribute id: \(attribute.descriptor.id) (attribute ids must be unique)")
+            throw AferoAttributeCollectionError.duplicateAttributeId
+        }
+        
+        if let maybeKey = attribute.descriptor.key {
+            guard attributeKeyMap[maybeKey] == nil else {
+                afLogError("Duplicate attribute key: \(maybeKey) (attribute keys must be unique)")
+                throw AferoAttributeCollectionError.duplicateKey
+            }
+            key = maybeKey
+        }
+        
+        if notifyObservers { emitWillChangeNotifications() }
+        defer { if notifyObservers { emitDidChangeNotifications() } }
+        attributeRegistry[attribute.descriptor.id] = attribute
+        if let key = key {
+            attributeKeyMap[key] = attribute.descriptor.id
+        }
+        
+    }
+    
+    @discardableResult
+    func unregister(attributeId id: Int, notifyObservers: Bool = true) -> AferoAttribute? {
+        guard let attribute = attributeRegistry[id] else { return nil }
+        if notifyObservers { emitWillChangeNotifications() }
+        defer { if notifyObservers { emitDidChangeNotifications() }}
+        if let key = attribute.descriptor.key {
+            attributeKeyMap.removeValue(forKey: key)
+        }
+        return attributeRegistry.removeValue(forKey: id)
+    }
+    
+    @discardableResult
+    func unregister(attributeKey key: String?, notifyObservers: Bool = true) -> AferoAttribute? {
+        guard let key = key else { return nil }
+        guard let attributeId = attributeKeyMap[key] else { return nil }
+        return unregister(attributeId: attributeId)
+    }
+    
+    @discardableResult
+    func unregisterAllAttributes() -> [AferoAttribute] {
+        
+        emitWillChangeNotifications()
+        defer { emitDidChangeNotifications() }
+        
+        return attributeIds.flatMap {
+            unregister(attributeId: $0, notifyObservers: false)
+        }
+    }
+    
+    // MARK: KVO
+    
+    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+        return false
+    }
+    
+    // MARK: Public
+    
+    /// A `Set` of all attributeIds in the collection.
+    
+    public dynamic var attributeIds: Set<Int> {
+        return Set(attributeRegistry.keys)
+    }
+    
+    /// A `Set` of all attributeKeys in the collection.
+    
+    public dynamic var attributeKeys: Set<String> {
+        return Set(attributeKeyMap.keys)
+    }
+    
+    /// A `Set` of all `AferoAttributes` in the collection.
+    
+    public dynamic var attributes: Set<AferoAttribute> {
+        return Set(attributeRegistry.values)
+    }
+    
+    /// Fetch an attribute for the given id
+    /// - parameter id: The id of the attribute to fetch. If `nil`, returns `nil`.
+    /// - returns: An `AferoAttribute`, if `id` is non-`nil` and the attribute exists.
+    ///            Otherwise returns nil.
+    
+    public func attribute(forId id: Int?) -> AferoAttribute? {
+        guard let id = id else { return nil }
+        return attributeRegistry[id]
+    }
+    
+    /// Fetch an attribute for the given key.
+    /// - parameter key: The key of the attribute to fetch. If `nil`, returns `nil`.
+    /// - returns: An `AferoAttribute`, if `key` is non-`nil` and an attribute exists
+    ///            with that key. Otherwise returns nil.
+    
+    public func attribute(forKey key: String?) -> AferoAttribute? {
+        guard let key = key else { return nil }
+        return attribute(forId: attributeKeyMap[key])
     }
     
 }
