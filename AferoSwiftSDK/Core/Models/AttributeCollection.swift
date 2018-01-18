@@ -113,9 +113,9 @@ import Foundation
 
 }
 
-@objc public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSet {
+@objcMembers public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSet {
     
-    @objc override public var debugDescription: String {
+    override public var debugDescription: String {
         
         var result: [String] = []
         var shift = 0
@@ -134,7 +134,7 @@ import Foundation
     
     public let rawValue: Int
     
-    @objc public required init(rawValue: Int) {
+    public required init(rawValue: Int) {
         self.rawValue = rawValue
     }
     
@@ -222,8 +222,7 @@ import Foundation
 /// Descriptive metadata about an Afero attribute, including its identifier, type,
 /// "semanticType", default value, and operations.
 
-@objcMembers
-public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
+@objcMembers public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
     
     public override var debugDescription: String {
         return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations))"
@@ -287,8 +286,7 @@ public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
 /// Represents the current value state of an Afero attribute—its value, when it
 /// last changed, and any request id. It does not contain interpretation info.
 
-@objcMembers
-public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
+@objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
     
     public override var debugDescription: String {
         return "<AferoAttributeValueState> value:\(value) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
@@ -364,13 +362,12 @@ public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable 
 
 /// Represents an Afero attribute on an Afero peripheral device.
 
-@objcMembers
-public class AferoAttribute: NSObject, NSCopying, Codable {
+@objcMembers public class AferoAttribute: NSObject, NSCopying, Codable {
     
     public override var debugDescription: String {
         return "<AferoAttribute> desc:\(String(reflecting: descriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
     }
-
+    
     /// Metadata describing this attribute's content
     dynamic internal(set) public var descriptor: AferoAttributeDescriptor
     
@@ -436,7 +433,7 @@ public class AferoAttribute: NSObject, NSCopying, Codable {
     
     // MARK: KVO
     
-    @objc override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
         switch key {
             
         case "currentValueState": fallthrough
