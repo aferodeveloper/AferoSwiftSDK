@@ -618,7 +618,6 @@ class AferoAttributeSpec: QuickSpec {
                 } catch {
                     fail(error.localizedDescription)
                 }
-                
 
             }
         }
@@ -746,7 +745,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
 //        let b2 = AferoAttribute(descriptor: bdesc, currentValueState: bstate)
         let b3 = AferoAttribute(descriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
 
-        fdescribe("initializing") {
+        describe("initializing") {
             
             it("should default-initialize") {
                 let c = AferoAttributeCollection()
@@ -781,6 +780,361 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 expect {
                     try AferoAttributeCollection(descriptors: [adesc, adesc])
                     }.to(throwError(AferoAttributeCollectionError.duplicateAttributeId))
+            }
+            
+        }
+        
+        describe("coding") {
+            
+            it("should roundtrip") {
+                
+                let encoder = JSONEncoder()
+                let decoder = JSONDecoder()
+                
+                let roundtrip: (AferoAttributeCollection) throws -> AferoAttributeCollection = {
+                    desc in
+                    let data = try encoder.encode(desc)
+                    return try decoder.decode(AferoAttributeCollection.self, from: data)
+                }
+                
+                do {
+                    
+                    let c = try AferoAttributeCollection(attributes: [a3, b3])
+                    let cc = try roundtrip(c)
+                    
+                    expect(cc).toNot(beIdenticalTo(c))
+                    expect(cc.attributes) == c.attributes
+
+                } catch {
+                    fail(error.localizedDescription)
+                }
+
+            }
+        }
+        
+        describe("attribute access") {
+            
+            it("return the expected attributes when asked") {
+                
+                do {
+                    let c = try AferoAttributeCollection(attributes: [a3, b3])
+                    expect(c.attributes) == [b3, a3]
+                    expect(c.attributeIds) == [b3.descriptor.id, a3.descriptor.id]
+                    expect(c.attributeKeys) == Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })
+                } catch {
+                    fail(error.localizedDescription)
+                }
+
+            }
+            
+            it("should query attributes by key") {
+
+                do {
+                    let c = try AferoAttributeCollection(attributes: [a3, b3])
+                    expect(c.attribute(forKey: a3.descriptor.key)) == a3
+                    expect(c.attribute(forKey: b3.descriptor.key)) == b3
+                    expect(c.attribute(forKey: nil)).to(beNil())
+                    expect(c.attribute(forKey: "foo")).to(beNil())
+                } catch {
+                    fail(error.localizedDescription)
+                }
+
+            }
+            
+            it("should query attributes by id") {
+                
+                do {
+                    let c = try AferoAttributeCollection(attributes: [a3, b3])
+                    expect(c.attribute(forId: a3.descriptor.id)) == a3
+                    expect(c.attribute(forId: b3.descriptor.id)) == b3
+                    expect(c.attribute(forId: nil)).to(beNil())
+                    expect(c.attribute(forId: 666)).to(beNil())
+                } catch {
+                    fail(error.localizedDescription)
+                }
+                
+            }
+
+        }
+        
+        describe("post-instantiation attribute changes") {
+            
+            describe("registering atributes") {
+
+                it("Should emit events when attributes are added individually") {
+                    
+                    do {
+                        let c = AferoAttributeCollection()
+                        
+                        var newAttributes: Set<AferoAttribute>?
+                        var attrNotifyCount = 0
+                        
+                        var newAttributeIds: Set<Int>?
+                        var attrIdNotifyCount = 0
+                        
+                        var newAttributeKeys: Set<String>?
+                        var attrKeyNotifyCount = 0
+                        
+                        let attrObs = c.observe(\.attributes) {
+                            obj, chg in
+                            newAttributes = obj.attributes
+                            attrNotifyCount += 1
+                        }
+                        
+                        let attrIdObs = c.observe(\.attributeIds) {
+                            obj, chg in
+                            newAttributeIds = obj.attributeIds
+                            attrIdNotifyCount += 1
+                        }
+                        
+                        let attrKeyObs = c.observe(\.attributeKeys) {
+                            obj, chg in
+                            newAttributeKeys = obj.attributeKeys
+                            attrKeyNotifyCount += 1
+                        }
+                        
+                        try c.register(attribute: a3)
+                        try c.register(attribute: b3)
+                        
+                        expect(newAttributes).toEventually(equal([b3, a3]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id, a3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+                
+                it("should emit events when attributes are added as a batch") {
+                    
+                    do {
+                        let c = AferoAttributeCollection()
+                        
+                        var newAttributes: Set<AferoAttribute>?
+                        var attrNotifyCount = 0
+                        
+                        var newAttributeIds: Set<Int>?
+                        var attrIdNotifyCount = 0
+                        
+                        var newAttributeKeys: Set<String>?
+                        var attrKeyNotifyCount = 0
+                        
+                        let attrObs = c.observe(\.attributes) {
+                            obj, chg in
+                            newAttributes = obj.attributes
+                            attrNotifyCount += 1
+                        }
+                        
+                        let attrIdObs = c.observe(\.attributeIds) {
+                            obj, chg in
+                            newAttributeIds = obj.attributeIds
+                            attrIdNotifyCount += 1
+                        }
+                        
+                        let attrKeyObs = c.observe(\.attributeKeys) {
+                            obj, chg in
+                            newAttributeKeys = obj.attributeKeys
+                            attrKeyNotifyCount += 1
+                        }
+                        
+                        try c.register(attributes: [a3, b3])
+                        
+                        expect(newAttributes).toEventually(equal([b3, a3]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id, a3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+
+            }
+            
+            describe("unregistering attributes") {
+                
+                it("should emit events when attributes are removed individually by id") {
+                    
+                    do {
+                        
+                        let c = try AferoAttributeCollection(attributes: [a3, b3])
+                        
+                        var newAttributes: Set<AferoAttribute>?
+                        var attrNotifyCount = 0
+                        
+                        var newAttributeIds: Set<Int>?
+                        var attrIdNotifyCount = 0
+                        
+                        var newAttributeKeys: Set<String>?
+                        var attrKeyNotifyCount = 0
+                        
+                        let attrObs = c.observe(\.attributes) {
+                            obj, chg in
+                            newAttributes = obj.attributes
+                            attrNotifyCount += 1
+                        }
+                        
+                        let attrIdObs = c.observe(\.attributeIds) {
+                            obj, chg in
+                            newAttributeIds = obj.attributeIds
+                            attrIdNotifyCount += 1
+                        }
+                        
+                        let attrKeyObs = c.observe(\.attributeKeys) {
+                            obj, chg in
+                            newAttributeKeys = obj.attributeKeys
+                            attrKeyNotifyCount += 1
+                        }
+                        
+                        let ret = c.unregister(attributeId: a3.descriptor.id)
+                        expect(ret) == a3
+
+                        expect(newAttributes).toEventually(equal([b3]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+                
+                it("should emit events when attributes are removed individually by key") {
+                    
+                    do {
+                        
+                        let c = try AferoAttributeCollection(attributes: [a3, b3])
+                        
+                        var newAttributes: Set<AferoAttribute>?
+                        var attrNotifyCount = 0
+                        
+                        var newAttributeIds: Set<Int>?
+                        var attrIdNotifyCount = 0
+                        
+                        var newAttributeKeys: Set<String>?
+                        var attrKeyNotifyCount = 0
+                        
+                        let attrObs = c.observe(\.attributes) {
+                            obj, chg in
+                            newAttributes = obj.attributes
+                            attrNotifyCount += 1
+                        }
+                        
+                        let attrIdObs = c.observe(\.attributeIds) {
+                            obj, chg in
+                            newAttributeIds = obj.attributeIds
+                            attrIdNotifyCount += 1
+                        }
+                        
+                        let attrKeyObs = c.observe(\.attributeKeys) {
+                            obj, chg in
+                            newAttributeKeys = obj.attributeKeys
+                            attrKeyNotifyCount += 1
+                        }
+                        
+                        let ret = c.unregister(attributeKey: a3.descriptor.key)
+                        expect(ret) == a3
+                        
+                        expect(newAttributes).toEventually(equal([b3]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+
+                
+                it("should emit events when attributes are removed wholesale") {
+
+                    do {
+                        
+                        let c = try AferoAttributeCollection(attributes: [a3, b3])
+                        
+                        var newAttributes: Set<AferoAttribute>?
+                        var attrNotifyCount = 0
+                        
+                        var newAttributeIds: Set<Int>?
+                        var attrIdNotifyCount = 0
+                        
+                        var newAttributeKeys: Set<String>?
+                        var attrKeyNotifyCount = 0
+                        
+                        let attrObs = c.observe(\.attributes) {
+                            obj, chg in
+                            newAttributes = obj.attributes
+                            attrNotifyCount += 1
+                        }
+                        
+                        let attrIdObs = c.observe(\.attributeIds) {
+                            obj, chg in
+                            newAttributeIds = obj.attributeIds
+                            attrIdNotifyCount += 1
+                        }
+                        
+                        let attrKeyObs = c.observe(\.attributeKeys) {
+                            obj, chg in
+                            newAttributeKeys = obj.attributeKeys
+                            attrKeyNotifyCount += 1
+                        }
+                        
+                        let ret = c.unregisterAllAttributes()
+                        
+                        expect(Set(ret)) == [a3, b3]
+                        
+                        expect(newAttributes).toEventually(equal([]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeIds).toEventually(equal([]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                        expect(newAttributeKeys).toEventually(equal([]), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                        expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+
+                }
+                
             }
             
         }
