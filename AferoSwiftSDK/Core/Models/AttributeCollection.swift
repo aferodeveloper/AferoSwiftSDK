@@ -513,8 +513,15 @@ import Foundation
 
     // MARK: Model
     
+    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+        return false
+    }
+    
+    
+    /// Primary storage for attributes, keyed by id.
     private var attributeRegistry: [Int: AferoAttribute] = [:]
     
+    /// An index of keys to attribute ids.
     private var attributeKeyMap: [String: Int] = [:]
     
     private func emitWillChangeNotifications() {
@@ -529,12 +536,29 @@ import Foundation
         didChangeValue(for: \.attributeIds)
     }
     
+    // MARK: Internal
+
+    /// Register the given attribues, and send appropriate change notifications.
+    /// - parameter attributes: The attributes to register.
+    /// - throws: An `AferoAttributeCollectionError` if something goes wrong.
+    /// - warning: This is **not** atomic. If error is thrown, the collection will
+    ///            **not** be reverted to its previous state.
+    
     func register<T: Sequence>(attributes: T) throws where T.Element == AferoAttribute {
         emitWillChangeNotifications()
         defer { emitDidChangeNotifications() }
         try attributes.forEach { try register(attribute: $0, notifyObservers: false) }
     }
     
+    /// Register an `AferoAttribute`, optionally notifying observers.
+    /// - parameter attribute: the attribute to register.
+    /// - parameter notifyObservers: If `true` (default) will notify observers of
+    ///                              non-automatically notified property changes.
+    ///                              If `false`, will not notify, and the caller is responsible
+    ///                              for doing so .
+    /// - seealso: emitWillChangeNotifications()`, `emitDidChangeNotifications()`
+    /// - throws: An AferoAttributeCollectionError if something goes wrong.
+
     func register(attribute: AferoAttribute, notifyObservers: Bool = true) throws {
         
         var key: String?
@@ -561,6 +585,15 @@ import Foundation
         
     }
     
+    /// Unregister an `AferoAttribute` from the collection, optionally notifying observers.
+    /// - parameter id: The `id` of the attribute to remove.
+    /// - parameter notifyObservers: If `true` (default) will notify observers of
+    ///                              non-automatically notified property changes.
+    ///                              If `false`, will not notify, and the caller is responsible
+    ///                              for doing so .
+    /// - seealso: emitWillChangeNotifications()`, `emitDidChangeNotifications()`
+    /// - throws: An AferoAttributeCollectionError if something goes wrong.
+
     @discardableResult
     func unregister(attributeId id: Int, notifyObservers: Bool = true) -> AferoAttribute? {
         guard let attribute = attributeRegistry[id] else { return nil }
@@ -572,12 +605,25 @@ import Foundation
         return attributeRegistry.removeValue(forKey: id)
     }
     
+    /// Unregister an `AferoAttribute` from the collection, optionally notifying observers.
+    /// - parameter key: Possibly a `key` of an attribute to remove. If nil, returns without change.
+    /// - parameter notifyObservers: If `true` (default) will notify observers of
+    ///                              non-automatically notified property changes.
+    ///                              If `false`, will not notify, and the caller is responsible
+    ///                              for doing so .
+    /// - seealso: emitWillChangeNotifications()`, `emitDidChangeNotifications()`
+    /// - throws: An AferoAttributeCollectionError if something goes wrong.
+    
     @discardableResult
     func unregister(attributeKey key: String?, notifyObservers: Bool = true) -> AferoAttribute? {
         guard let key = key else { return nil }
         guard let attributeId = attributeKeyMap[key] else { return nil }
-        return unregister(attributeId: attributeId)
+        return unregister(attributeId: attributeId, notifyObservers: notifyObservers)
     }
+    
+    /// Unregister all attributes, and send appropriate change notifications.
+    /// - warning: This is **not** atomic. If error is thrown, the collection will
+    ///            **not** be reverted to its previous state.
     
     @discardableResult
     func unregisterAllAttributes() -> [AferoAttribute] {
@@ -588,12 +634,6 @@ import Foundation
         return attributeIds.flatMap {
             unregister(attributeId: $0, notifyObservers: false)
         }
-    }
-    
-    // MARK: KVO
-    
-    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
-        return false
     }
     
     // MARK: Public
