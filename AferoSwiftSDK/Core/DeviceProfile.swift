@@ -1148,136 +1148,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             return "<AttributeDescriptor> id: \(id) dataType: \(dataType) semanticType: \(String(reflecting: semanticType)) operations: \(operations)"
         }
         
-        public enum DataType: Int, CustomDebugStringConvertible {
-            
-            case
-            unknown,
-            boolean,
-            uInt8,
-            uInt16,
-            uInt32,
-            uInt64,
-            sInt8,
-            sInt16,
-            sInt32,
-            sInt64,
-            float32,
-            float64,
-            q1516,
-            q3132,
-            utf8S,
-            bytes
-            
-            public var debugDescription: String {
-                let sv = stringValue ?? "<unknown>"
-                return "<DataType> \(sv)"
-            }
-            
-            public var stringValue: String? {
-                switch(self) {
-                case .boolean:
-                    return "boolean"
-                case .uInt8:
-                    return "uint8"
-                case .uInt16:
-                    return "uint16"
-                case .uInt32:
-                    return "uint32"
-                case .uInt64:
-                    return "uint64"
-                case .sInt8:
-                    return "sint8"
-                case .sInt16:
-                    return "sint16"
-                case .sInt32:
-                    return "sint32"
-                case .sInt64:
-                    return "sint64"
-                case .float32:
-                    return "float32"
-                case .float64:
-                    return "float64"
-                case .q1516:
-                    return "float1616"
-                case .q3132:
-                    return "float3232"
-                case .utf8S:
-                    return "utf8s"
-                case .bytes:
-                    return "bytes"
-                case .unknown:
-                    return nil
-                }
-            }
-            
-            /// Byte size of values of this type
-            
-            public var size: Int? {
-                switch self {
-                case .boolean: return MemoryLayout<Bool>.size
-                case .uInt8: return MemoryLayout<Swift.UInt8>.size
-                case .uInt16: return MemoryLayout<Swift.UInt16>.size
-                case .uInt32: return MemoryLayout<Swift.UInt32>.size
-                case .uInt64: return MemoryLayout<Swift.UInt64>.size
-                case .sInt8: return MemoryLayout<Swift.Int8>.size
-                case .sInt16: return MemoryLayout<Swift.Int16>.size
-                case .sInt32: return MemoryLayout<Swift.Int32>.size
-                case .sInt64: return MemoryLayout<Swift.Int64>.size
-                case .float32: return MemoryLayout<Swift.Float32>.size
-                case .float64: return MemoryLayout<Swift.Float64>.size
-                case .q1516: return MemoryLayout<Swift.Int32>.size
-                case .q3132: return MemoryLayout<Swift.Int64>.size
-                default: return nil
-                }
-            }
-            
-            init(type: String?) {
-                
-                if type == nil {
-                    self = .unknown
-                    return
-                }
-                
-                switch(type!.lowercased()) {
-                case "boolean":
-                    self = .boolean
-                case "uint8":
-                    self = .uInt8
-                case "uint16":
-                    self = .uInt16
-                case "uint32":
-                    self = .uInt32
-                case "uint64":
-                    self = .uInt64
-                case "sint8":
-                    self = .sInt8
-                case "sint16":
-                    self = .sInt16
-                case "sint32":
-                    self = .sInt32
-                case "sint64":
-                    self = .sInt64
-                case "float32":
-                    self = .float32
-                case "float64":
-                    self = .float64
-                case "fixed_16_16": fallthrough // legacy
-                case "q_15_16":
-                    self = .q1516
-                case "fixed_32_32": fallthrough // legacy
-                case "q_31_32":
-                    self = .q3132
-                case "utf8s":
-                    self = .utf8S
-                case "bytes":
-                    self = .bytes
-                default:
-                    self = .unknown
-                }
-                
-            }
-            
-        }
+        public typealias DataType = AferoAttributeDataType
         
         init(id: Int = 0, type: DataType, semanticType: String? = nil, defaultValue: String? = nil, value: String? = nil, length: Int? = nil, operations: Operations = [.Read]) {
             self.id = id
@@ -1373,30 +1244,6 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             case .boolean:
                 return AttributeValue(attributeValue.boolValue)
 
-            case .uInt8:
-                if let v = attributeValue.uintValue {
-                    return AttributeValue(UInt8(v))
-                }
-                return nil
-
-            case .uInt16:
-                if let v = attributeValue.uintValue {
-                    return AttributeValue(UInt16(v))
-                }
-                return nil
-                
-            case .uInt32:
-                if let v = attributeValue.uintValue {
-                    return AttributeValue(UInt32(v))
-                }
-                return nil
-                
-            case .uInt64:
-                if let v = attributeValue.uintValue {
-                    return AttributeValue(UInt64(v))
-                }
-                return nil
-                
             case .sInt8:
                 if let v = attributeValue.intValue {
                     return AttributeValue(Int8(v))
@@ -1418,18 +1265,6 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             case .sInt64:
                 if let v = attributeValue.intValue {
                     return AttributeValue(Int64(v))
-                }
-                return nil
-                
-            case .float32:
-                if let v = attributeValue.floatValue {
-                    return AttributeValue(Float(v))
-                }
-                return nil
-                
-            case .float64:
-                if let v = attributeValue.doubleValue {
-                    return AttributeValue(Double(v))
                 }
                 return nil
                 
@@ -1594,11 +1429,6 @@ public extension DeviceProfile.AttributeDescriptor.DataType {
         case .sInt32: return Int32.maxValue
         case .sInt64: return Int64.maxValue
         
-        case .uInt8: return type(of: self).uInt8.maxValue
-        case .uInt16: return type(of: self).uInt16.maxValue
-        case .uInt32: return type(of: self).uInt32.maxValue
-        case .uInt64: return type(of: self).uInt64.maxValue
-
         case .q1516: return .q1516(32_767.9999847412109375) // max is 2**m - 2**(-n)
         case .q3132: return .q1516(2_147_483_647.999999999767169) // max is 2**m - 2**(-n)
             
@@ -1615,11 +1445,6 @@ public extension DeviceProfile.AttributeDescriptor.DataType {
         case .sInt32: return Int32.minValue
         case .sInt64: return Int64.minValue
             
-        case .uInt8: return type(of: self).uInt8.minValue
-        case .uInt16: return type(of: self).uInt16.minValue
-        case .uInt32: return type(of: self).uInt32.minValue
-        case .uInt64: return type(of: self).uInt64.minValue
-
         case .q1516: return .q1516(-32_768.0) // min is -(2**m)
         case .q3132: return .q3132(-2_147_483_648.0) // min is -(2**m)
 
@@ -2368,7 +2193,7 @@ extension DeviceProfile.AttributeDescriptor: AferoJSONCoding {
         }
         
         let semanticType = jsonDict[type(of: self).CoderKeySemantictype] as? String
-        let dataType = DeviceProfile.AttributeDescriptor.DataType(type: jsonDict[type(of: self).CoderKeyDataType] as? String)
+        let dataType = DeviceProfile.AttributeDescriptor.DataType(name: jsonDict[type(of: self).CoderKeyDataType] as? String)
         let operations: DeviceProfile.AttributeDescriptor.Operations = |<operationsJSON
         let defaultValue = jsonDict[type(of: self).CoderKeyDefaultValue] as? String
         let value = jsonDict[type(of: self).CoderKeyValue] as? String

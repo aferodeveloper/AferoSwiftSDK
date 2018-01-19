@@ -1519,8 +1519,6 @@ extension AttributeValue {
     var dataType: DeviceProfile.AttributeDescriptor.DataType {
         switch self {
         case .boolean: return .boolean
-        case .float32: return .float32
-        case .float64: return .float64
         case .q1516: return .q1516
         case .q3132: return .q3132
         case .rawBytes: return .bytes
