@@ -857,6 +857,237 @@ class AferoAttributeCollectionSpec: QuickSpec {
 
         }
         
+        describe("Attribute state modification") {
+            
+//            describe("when updating descriptors") {
+//
+//                it("should update on recognized id") {
+//
+//                    do {
+//                        let c = try AferoAttributeCollection(attributes: [a3, b3])
+//                        let new a3Desc = AferoAttributeDescriptor(id: a3.descriptor.id, type: AferoAttributeDataType.q3132, semanticType: "monkeybutt", key: <#T##String?#>, defaultValue: <#T##String?#>, operations: <#T##AferoAttributeOperations#>)
+//                    } catch {
+//                        fail(error.localizedDescription)
+//                    }
+//
+//                }
+//
+//                it("should throw on unrecognized id") {
+//
+//                }
+//
+//                it("should throw if the new descriptor id doesn't match the old descriptor id.") {
+//
+//                }
+//            }
+
+            describe("when updating current value state") {
+                
+                it("should update on recognized id") {
+                   
+                    do {
+                        let c = try AferoAttributeCollection(attributes: [a3, b3])
+                        
+                        var newAttribute: AferoAttribute?
+                        var newCurrentValueState: AferoAttributeValueState?
+                        var notificationCount: Int = 0
+                        
+                        guard let obs = try c.observeAttribute(
+                            withId: a3.descriptor.id,
+                            on: \.currentValueState,
+                            using: {
+                            attribute, chg in
+                                notificationCount += 1
+                                newAttribute = attribute
+                                newCurrentValueState = attribute.currentValueState
+                        }) else {
+                            fail("Couldn't observe.")
+                            return
+                        }
+                        
+                        expect {
+                            try c.setCurrent(value: "6", forAttributeWithId: 2323)
+                        }.to(throwError(AferoAttributeCollectionError.unrecognizedAttributeId))
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+
+                }
+                
+                it("should throw on unrecognized id") {
+
+                    let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                    expect {
+                        try c.setCurrent(value: "6", forAttributeWithId: 2323)
+                        }.to(throwError(AferoAttributeCollectionError.unrecognizedAttributeId))
+                    
+                }
+                
+            }
+
+            describe("when updating pending value state") {
+                
+                it("should update on recognized id") {
+
+                    do {
+                        let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                        
+                        var newAttribute: AferoAttribute?
+                        var newPendingValueState: AferoAttributeValueState?
+                        var notificationCount: Int = 0
+                        
+                        guard let obs = try c.observeAttribute(
+                            withId: b3.descriptor.id,
+                            on: \.pendingValueState,
+                            using: {
+                                attribute, chg in
+                                notificationCount += 1
+                                newAttribute = attribute
+                                newPendingValueState = attribute.pendingValueState
+                        }) else {
+                            fail("Couldn't observe.")
+                            return
+                        }
+                        
+                        try c.setPending(value: "6", forAttributeWithId: b3.descriptor.id)
+                        expect(newPendingValueState?.value).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttribute).toEventually(equal(b3), timeout: 1.0, pollInterval: 0.1)
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+
+                }
+                
+                it("should throw on unrecognized id") {
+                    
+                    let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                    expect {
+                        try c.setPending(value: "6", forAttributeWithId: 2323)
+                        }.to(throwError(AferoAttributeCollectionError.unrecognizedAttributeId))
+                    
+                }
+
+            }
+            
+        }
+        
+        describe("Observing attributes") {
+            
+            it("should allow subscription to attributes by id") {
+
+                let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                var pendingObs: NSKeyValueObservation?
+                var currentObs: NSKeyValueObservation?
+                
+                expect {
+                    pendingObs = try c.observeAttribute(
+                        withId: b3.descriptor.id,
+                        on: \.pendingValueState) {
+                            _, _ in
+                    }
+                }.toNot(throwError())
+                expect(pendingObs).toNot(beNil())
+                
+                expect {
+                    currentObs = try c.observeAttribute(
+                        withId: b3.descriptor.id,
+                        on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.toNot(throwError())
+                expect(currentObs).toNot(beNil())
+
+            }
+
+            it("should throw when trying to subscribe to an unrecognized id") {
+
+                let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withId: 2323,
+                        on: \.pendingValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withId: 2323,
+                        on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+
+            }
+
+            it("should allow subscription to attributes by key") {
+
+                let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                var pendingObs: NSKeyValueObservation?
+                var currentObs: NSKeyValueObservation?
+                
+                expect {
+                    pendingObs = try c.observeAttribute(
+                        withKey: b3.descriptor.key!,
+                        on: \.pendingValueState) {
+                            _, _ in
+                    }
+                    }.toNot(throwError())
+                expect(pendingObs).toNot(beNil())
+                
+                expect {
+                    currentObs = try c.observeAttribute(
+                        withKey: b3.descriptor.key!,
+                        on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.toNot(throwError())
+                expect(currentObs).toNot(beNil())
+
+            }
+
+            it("should throw when trying to subscribe to an unrecognized key") {
+                
+                let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: "2323",
+                        on: \.pendingValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: "2323",
+                        on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: nil,
+                        on: \.pendingValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+                
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: nil,
+                        on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+
+            }
+            
+        }
+        
         describe("post-instantiation attribute changes") {
             
             describe("registering atributes") {
