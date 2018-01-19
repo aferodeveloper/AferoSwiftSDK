@@ -537,20 +537,9 @@ class DeviceProfileTests: XCTestCase {
         XCTAssert(service200.id == 200, "service200.id == 200")
 
         let service300: DeviceProfile.Service = profile.services[2]
-        XCTAssert(service300.attributes.count == 10, "service300.attributes.count == 10")
+        XCTAssert(service300.attributes.count == 5, "service300.attributes.count == 5")
         XCTAssert(service300.id == 300, "service300.id == 300")
 
-
-        // attribute 100
-        let attribute100: DeviceProfile.AttributeDescriptor = service100.attributes[0]
-        XCTAssert(attribute100.id == 100, "attribute100.id == 100")
-        XCTAssert(attribute100.dataType == DeviceProfile.AttributeDescriptor.DataType.uInt8, "attribute100.dataType == DeviceProfile.AttributeDescriptor.DataType.UInt8")
-
-        // attribute 200
-        let attribute200: DeviceProfile.AttributeDescriptor = service200.attributes[0]
-        XCTAssert(attribute200.id == 200, "attribute200.id == 200")
-        XCTAssert(attribute200.dataType == DeviceProfile.AttributeDescriptor.DataType.uInt8, "attribute200.dataType == DeviceProfile.AttributeDescriptor.DataType.UInt8")
-        XCTAssert(attribute200.semanticType == "power", "attribute200.semanticType == 'power'")
 
         // test the dataTypes for all attributes in service300
         struct AttributeTest {
@@ -562,15 +551,10 @@ class DeviceProfileTests: XCTestCase {
         }
         var attributeTests: [AttributeTest] = [
             AttributeTest(id: 300, dataType: DeviceProfile.AttributeDescriptor.DataType.unknown, defaultValue: nil, value: nil, length: nil),
-                AttributeTest(id: 301, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt8, defaultValue: "01", value: "1", length: 1),
-                AttributeTest(id: 302, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt16, defaultValue: nil, value: nil, length: 2),
-                AttributeTest(id: 303, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt32, defaultValue: nil, value: nil, length: 4),
-                AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8, defaultValue: nil, value: nil, length: 1),
-                AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16, defaultValue: nil, value: nil, length: 2),
-                AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32, defaultValue: nil, value: nil, length: 4),
-                AttributeTest(id: 307, dataType: DeviceProfile.AttributeDescriptor.DataType.float32, defaultValue: nil, value: nil, length: 4),
-                AttributeTest(id: 308, dataType: DeviceProfile.AttributeDescriptor.DataType.float64, defaultValue: nil, value: nil, length: 8),
-                AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S, defaultValue: "7070", value: "PP", length: 2),
+            AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8),
+            AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16),
+            AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32),
+            AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S, defaultValue: "7070", value: "PP", length: 2),
             ]
         var testIndex: Int = 0
 

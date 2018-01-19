@@ -101,26 +101,6 @@
                     "operations": ["read","write"]
                 },
                 {
-                    "id": 301,
-                    "dataType": "uint8",
-                    "semanticType": "power",
-                    "operations": ["read","write"],
-                           "defaultValue": "01",
-                           "value": "1"
-                },
-                {
-                    "id": 302,
-                    "dataType": "uint16",
-                    "semanticType": "power",
-                    "operations": ["read","write"]
-                },
-                {
-                    "id": 303,
-                    "dataType": "uint32",
-                    "semanticType": "power",
-                    "operations": ["read","write"]
-                },
-                {
                     "id": 304,
                     "dataType": "sint8",
                     "semanticType": "power",
@@ -135,18 +115,6 @@
                 {
                     "id": 306,
                     "dataType": "sint32",
-                    "semanticType": "power",
-                    "operations": ["read","write"]
-                },
-                {
-                    "id": 307,
-                    "dataType": "Float32",
-                    "semanticType": "power",
-                    "operations": ["read","write"]
-                },
-                {
-                    "id": 308,
-                    "dataType": "Float64",
                     "semanticType": "power",
                     "operations": ["read","write"]
                 },

@@ -49,8 +49,6 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     case signedInt16(Int16)
     case signedInt32(Int32)
     case signedInt64(Int64)
-    case float32(Float)
-    case float64(Double)
     case q1516(Double)
     case q3132(Double)
     case utf8S(String)
@@ -71,8 +69,6 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
         case .signedInt64:
             return .sIntegral
             
-        case .float32: fallthrough
-        case .float64: fallthrough
         case .q1516: fallthrough
         case .q3132:
             return .fractional
@@ -96,10 +92,6 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
             return preamble + ".SignedInt32(\(value))"
         case .signedInt64(let value):
             return preamble + ".SignedInt64(\(value))"
-        case .float32(let value):
-            return preamble + ".Float32(\(value))"
-        case .float64(let value):
-            return preamble + ".Float64(\(value))"
         case .q1516(let value):
             return preamble + ".Q1516(\(value))"
         case .q3132(let value):
@@ -126,8 +118,6 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
         case .signedInt16(let v):   return v.bytes
         case .signedInt32(let v):   return v.bytes
         case .signedInt64(let v):   return v.bytes
-        case .float32(let v):       return v.bytes
-        case .float64(let v):       return v.bytes
             
         case .q1516(let v):
             return doubleToQ(v, n: 16, t: Int32.self)
@@ -167,11 +157,11 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     }
     
     public init(_ v: Float) {
-        self = .float32(v)
+        self = .q3132(Double(v))
     }
     
     public init(_ v: Double) {
-        self = .float64(v)
+        self = .q3132(v)
     }
     
     public init(_ v: String) {
@@ -200,10 +190,10 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
             self = .signedInt64(value)
             
         case let value as Float:
-            self = .float32(value)
+            self = .q3132(Double(value))
             
         case let value as Double:
-            self = .float64(value)
+            self = .q3132(value)
             
         case let value as String:
             self = .utf8S(value)
@@ -248,16 +238,11 @@ public extension AttributeValue {
         
         switch type {
             
-        case .float32:
-            let roundedValue = value.floatValue
-            self = .float32(roundedValue)
-            
         case .q1516: fallthrough
-        case .q3132: fallthrough
-        case .float64:
+        case .q3132:
             let roundedValue = value.doubleValue
-            self = .float64(roundedValue)
-            
+            self = .q3132(roundedValue)
+
         case .sInt64:
             let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).int64Value
             self = .signedInt64(roundedValue)
@@ -286,11 +271,7 @@ public extension AttributeValue {
             
         case .bytes:
             self = .rawBytes(value.doubleValue.bytes)
-            
-        case .uInt8: fallthrough
-        case .uInt16: fallthrough
-        case .uInt32: fallthrough
-        case .uInt64: fallthrough
+           
         case .unknown:
             return nil
             
@@ -299,8 +280,6 @@ public extension AttributeValue {
     
     init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int) {
         switch type {
-        case .float32: self = .float32(Float(value))
-        case .float64: self = .float64(Double(value))
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
         case .sInt16: self = .signedInt16(Int16(value))
@@ -315,8 +294,6 @@ public extension AttributeValue {
     
     init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int64) {
         switch type {
-        case .float32: self = .float32(Float(value))
-        case .float64: self = .float64(Double(value))
         case .sInt64: self = .signedInt64(value)
         case .sInt32: self = .signedInt32(Int32(value))
         case .sInt16: self = .signedInt16(Int16(value))
@@ -331,8 +308,6 @@ public extension AttributeValue {
     
     init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Float) {
         switch type {
-        case .float32: self = .float32(Float(value))
-        case .float64: self = .float64(Double(value))
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
         case .sInt16: self = .signedInt16(Int16(value))
@@ -349,8 +324,6 @@ public extension AttributeValue {
     
     init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Double) {
         switch type {
-        case .float32: self = .float32(Float(value))
-        case .float64: self = .float64(Double(value))
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
         case .sInt16: self = .signedInt16(Int16(value))
@@ -368,8 +341,6 @@ public extension AttributeValue {
         let intValue = value ? 0 : 1
         
         switch type {
-        case .float32: self = .float32(Float(intValue))
-        case .float64: self = .float64(Double(intValue))
         case .sInt64: self = .signedInt64(Int64(intValue))
         case .sInt32: self = .signedInt32(Int32(intValue))
         case .sInt16: self = .signedInt16(Int16(intValue))
@@ -397,14 +368,6 @@ public extension AttributeValue {
         case .q3132:
             guard let v = qToDouble(bytes, n: 32, t: Int64.self) else { return nil }
             self = .q3132(v)
-            
-        case .float32:
-            guard let v = Float(byteArray: bytes) else { return nil }
-            self = .float32(v)
-            
-        case .float64:
-            guard let v = Double(byteArray: bytes) else { return nil }
-            self = .float64(v)
             
         case .sInt64:
             guard let v = Int64(byteArray: bytes) else { return nil }
@@ -447,15 +410,6 @@ public extension AttributeValue {
         case .q3132:
             guard let v = Double(value) else { return nil }
             self = .q3132(v)
-            
-        case .float32:
-            guard let v = Float(value) else { return nil }
-            self = .float32(v)
-            
-        case .float64:
-            guard let v = Double(value) else { return nil }
-            self = .float64(v)
-            
         case .sInt64:
             guard let v = Int64(value) else { return nil }
             self = .signedInt64(Int64(v))
@@ -547,8 +501,6 @@ extension AttributeValue: Hashable, Comparable {
         case .signedInt16(let value):   return value
         case .signedInt32(let value):   return value
         case .signedInt64(let value):   return value
-        case .float32(let value):       return value
-        case .float64(let value):       return value
         case .q1516(let value):       return value
         case .q3132(let value):       return value
         }
@@ -625,8 +577,6 @@ public func ==(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
     case .signedInt16: fallthrough
     case .signedInt32: fallthrough
     case .signedInt64: fallthrough
-    case .float32: fallthrough
-    case .float64: fallthrough
     case .q1516: fallthrough
     case .q3132: return lhs.number == rhs.number
     }
@@ -704,7 +654,7 @@ extension AttributeValue: ExpressibleByFloatLiteral {
     public typealias FloatLiteralConvertibleType = FloatLiteralType
     
     public init(floatLiteral value: FloatLiteralType) {
-        self = .float64(value)
+        self = .q3132(value)
     }
 }
 
@@ -758,10 +708,6 @@ public extension AttributeValue {
                     return NSDecimalNumber(value: v.intValue ?? 0 as Int)
                 }
                 return NSDecimalNumber(string: v)
-                
-            case .float32(let v): return NSDecimalNumber(string: "\(v)")
-            case .float64(let v): return NSDecimalNumber(string: "\(v)")
-                
             case .q1516(let v): return NSDecimalNumber(string: "\(v)")
             case .q3132(let v): return NSDecimalNumber(string: "\(v)")
                 
@@ -976,9 +922,6 @@ public extension AttributeValue {
         case .signedInt16:   return NSDecimalNumber(value: int16Value ?? 0 as Int16)
         case .signedInt32:   return NSDecimalNumber(value: int32Value ?? 0 as Int32)
         case .signedInt64:   return NSDecimalNumber(value: int64Value ?? 0 as Int64)
-        case .float32:       return NSDecimalNumber(value: floatValue ?? 0 as Float)
-            
-        case .float64: fallthrough
         case .q1516: fallthrough
         case .q3132:
             return NSDecimalNumber(value: doubleValue ?? 0 as Double)
