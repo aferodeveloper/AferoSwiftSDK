@@ -473,10 +473,19 @@ import Foundation
     /// One or more duplicate attribute keys were detected. Attribute keys must be unique.
     case duplicateKey
     
+    /// An attributeId wasn't recognized when attempting to modify an existing attribute.
+    case unrecognizedAttributeId
+    
+    /// An key wasn't recognized when attempting to modify an existing attribute.
+    case unrecognizedKey
+    
+    
     public var localizedDescription: String {
         switch self {
         case .duplicateAttributeId: return "One or more duplicate attribute ids found; attribute ids must be unique."
         case .duplicateKey: return "One or more duplicate attribute keys found; attribute keys must be unique."
+        case .unrecognizedAttributeId: return "The attributeId wasn't recognized when attempting to modify an existing attribute."
+        case .unrecognizedKey: return "The key wasn't recognized when attempting to modify an existing attribute"
         }
     }
     
@@ -536,7 +545,7 @@ import Foundation
         didChangeValue(for: \.attributeIds)
     }
     
-    // MARK: Internal
+    // MARK: Internal — Model Definition
 
     /// Register the given attribues, and send appropriate change notifications.
     /// - parameter attributes: The attributes to register.
@@ -636,6 +645,46 @@ import Foundation
         }
     }
     
+    // MARK: Internal - Model State
+    
+//    func setDescriptor(_ descriptor: AferoAttributeDescriptor, forAttributeWithId id: Int) throws {
+//        guard let attribute = attribute(forId: id) else {
+//            afLogError("Unrecognized attribute id \(id)")
+//            throw AferoAttributeCollectionError.unrecognizedAttributeId
+//        }
+//        attribute.descriptor = descriptor
+//    }
+    
+    func setPending(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
+        
+        guard let attribute = attribute(forId: id) else {
+            afLogError("Unrecognized attribute id \(id)")
+            throw AferoAttributeCollectionError.unrecognizedAttributeId
+        }
+        
+        attribute.pendingValueState = state
+    }
+    
+    func setPending(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+        try setPending(valueState: state, forAttributeWithId: id)
+    }
+    
+    func setCurrent(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
+        
+        guard let attribute = attribute(forId: id) else {
+            afLogError("Unrecognized attribute id \(id)")
+            throw AferoAttributeCollectionError.unrecognizedAttributeId
+        }
+        
+        attribute.currentValueState = state
+    }
+    
+    func setCurrent(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+        try setCurrent(valueState: state, forAttributeWithId: id)
+    }
+    
     // MARK: Public
     
     /// A `Set` of all attributeIds in the collection.
@@ -676,5 +725,45 @@ import Foundation
         return attribute(forId: attributeKeyMap[key])
     }
     
+}
+
+// MARK: - Attribute Collection KVO Proxies -
+
+public extension AferoAttributeCollection {
+
+    /// Register for KVO changes on individual attributes.
+    /// - parameter id: The id of the attribute to observe. If nil, this method returns nil immediately.
+    /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter changeHandler: The handler for changes.
+    /// - returns: An `NSKeyValueObservation` if we've successfully registered for notifications,
+    ///            or nil if `id` is nil or the attribute wasn't found.
+    
+    public func observeAttribute<Value>(withId id: Int?, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
+        
+        guard let attribute = attribute(forId: id) else {
+            afLogError("Unrecognized attributeId: \(String(describing: id))")
+            throw AferoAttributeCollectionError.unrecognizedAttributeId
+        }
+        
+        return attribute.observe(keyPath, changeHandler: changeHandler)
+    }
+    
+    /// Register for KVO changes on individual attributes.
+    /// - parameter id: The id of the attribute to observe. If nil, this method returns nil immediately.
+    /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter changeHandler: The handler for changes.
+    /// - returns: An `NSKeyValueObservation` if we've successfully registered for notifications,
+    ///            or nil if `id` is nil or the attribute wasn't found.
+    
+    public func observeAttribute<Value>(withKey key: String?, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
+        
+        guard let attribute = attribute(forKey: key) else {
+            afLogError("Unrecognized key: \(String(describing: key))")
+            throw AferoAttributeCollectionError.unrecognizedKey
+        }
+        
+        return attribute.observe(keyPath, changeHandler: changeHandler)
+    }
+
 }
 
