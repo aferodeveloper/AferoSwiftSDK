@@ -104,7 +104,9 @@
                     "id": 301,
                     "dataType": "uint8",
                     "semanticType": "power",
-                    "operations": ["read","write"]
+                    "operations": ["read","write"],
+                           "defaultValue": "01",
+                           "value": "1"
                 },
                 {
                     "id": 302,
@@ -152,7 +154,10 @@
                     "id": 309,
                     "dataType": "UTF8s",
                     "semanticType": "power",
-                    "operations": ["read","write"]
+                    "operations": ["read","write"],
+                           "defaultValue": "7070",
+                           "value": "PP",
+                           "length": 2
                 }
             ]
         }

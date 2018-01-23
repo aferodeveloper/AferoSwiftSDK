@@ -1279,18 +1279,27 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             
         }
         
-        init(id: Int = 0, type: DataType, semanticType: String? = nil, defaultValue: String? = nil, operations: Operations = [.Read]) {
+        init(id: Int = 0, type: DataType, semanticType: String? = nil, defaultValue: String? = nil, value: String? = nil, length: Int? = nil, operations: Operations = [.Read]) {
             self.id = id
             self.dataType = type
             self.semanticType = semanticType
             self.defaultValue = defaultValue
             self.operations = operations
+            self.value = value
+            self._length = length
         }
         
         fileprivate(set) public var id: Int = 0
         fileprivate(set) public var dataType: DataType = .unknown
         fileprivate(set) public var semanticType: String?
         fileprivate(set) public var defaultValue: String?
+        fileprivate(set) public var value: String?
+        
+        fileprivate var _length: Int?
+        
+        var length: Int? {
+            return _length ?? dataType.size
+        }
         
         public struct Operations: OptionSet, CustomDebugStringConvertible, Hashable {
 
@@ -2308,29 +2317,39 @@ extension DeviceProfile.AttributeDescriptor.Operations: OptionSetJSONCoding {
 
 extension DeviceProfile.AttributeDescriptor: AferoJSONCoding {
 
-    public var CoderKeyId: String           { return "id" }
-    public var CoderKeyDataType: String     { return "dataType" }
-    public var CoderKeySemantictype: String { return "semanticType" }
-    public var CoderKeyOperations: String   { return "operations"  }
-    public var CoderKeyDefaultValue: String { return "defaultValue" }
+    private static var CoderKeyId: String           { return "id" }
+    private static var CoderKeyDataType: String     { return "dataType" }
+    private static var CoderKeySemantictype: String { return "semanticType" }
+    private static var CoderKeyOperations: String   { return "operations"  }
+    private static var CoderKeyDefaultValue: String { return "defaultValue" }
+    private static var CoderKeyValue: String        { return "value" }
+    private static var CoderKeyLength: String       { return "length" }
     
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: AferoJSONObject = [
-            CoderKeyId: id,
-            CoderKeyOperations: operations.JSONDict!
+            type(of: self).CoderKeyId: id,
+            type(of: self).CoderKeyOperations: operations.JSONDict!
         ]
         
         if let dataTypeString = dataType.stringValue {
-            ret[CoderKeyDataType] = dataTypeString
+            ret[type(of: self).CoderKeyDataType] = dataTypeString
         }
         
         if let semanticType = semanticType {
-            ret[CoderKeySemantictype] = semanticType
+            ret[type(of: self).CoderKeySemantictype] = semanticType
         }
         
         if let defaultValue = defaultValue {
-            ret[CoderKeyDefaultValue] = defaultValue
+            ret[type(of: self).CoderKeyDefaultValue] = defaultValue
+        }
+        
+        if let value = value {
+            ret[type(of: self).CoderKeyValue] = value
+        }
+        
+        if let length = _length {
+            ret[type(of: self).CoderKeyLength] = length
         }
         
         return ret
@@ -2340,25 +2359,31 @@ extension DeviceProfile.AttributeDescriptor: AferoJSONCoding {
         
         guard
             let jsonDict = json as? [String: Any],
-            let id = jsonDict[CoderKeyId] as? Int,
-            let operationsJSON = jsonDict[CoderKeyOperations] as? [String]
+            let id = jsonDict[type(of: self).CoderKeyId] as? Int,
+            let operationsJSON = jsonDict[type(of: self).CoderKeyOperations] as? [String]
             
             else {
                 DDLogInfo("Unable to instantiate AttributeDescriptor: \(String(reflecting: json))")
                 return nil
         }
         
-        let semanticType = jsonDict[CoderKeySemantictype] as? String
-        let dataType = DeviceProfile.AttributeDescriptor.DataType(type: jsonDict[CoderKeyDataType] as? String)
+        let semanticType = jsonDict[type(of: self).CoderKeySemantictype] as? String
+        let dataType = DeviceProfile.AttributeDescriptor.DataType(type: jsonDict[type(of: self).CoderKeyDataType] as? String)
         let operations: DeviceProfile.AttributeDescriptor.Operations = |<operationsJSON
-        let defaultValue = jsonDict[CoderKeyDefaultValue] as? String
+        let defaultValue = jsonDict[type(of: self).CoderKeyDefaultValue] as? String
+        let value = jsonDict[type(of: self).CoderKeyValue] as? String
+        let length = jsonDict[type(of: self).CoderKeyLength] as? Int
         
-        self.id = id
-        self.dataType = dataType
-        self.defaultValue = defaultValue
-        self.semanticType = semanticType
-        self.operations = operations
-        
+        self.init(
+            id: id,
+            type: dataType,
+            semanticType: semanticType,
+            defaultValue: defaultValue,
+            value: value,
+            length: length,
+            operations: operations
+        )
+
     }
 
 }

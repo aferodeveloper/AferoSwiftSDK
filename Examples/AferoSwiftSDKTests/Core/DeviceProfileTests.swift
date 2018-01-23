@@ -23,7 +23,7 @@ class PresentationSpec: QuickSpec {
             let profile = DeviceProfile(attributes: [
                 
                 // Values that can be modified
-                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, semanticType: "Floop", operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 50,    type: .boolean, semanticType: "Floop", defaultValue: "00", value: "false", operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 100,   type: .sInt32, semanticType: "Doop",  operations: [.Read]),
                 DeviceProfile.AttributeDescriptor(id: 20,    type: .q1516, semanticType: "Troop",   operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 70,    type: .q3132, semanticType: "Hadoop",   operations: [.Read]),
@@ -33,14 +33,65 @@ class PresentationSpec: QuickSpec {
                 DeviceProfile.AttributeDescriptor(id: 202,   type: .sInt8, semanticType: "Zoop",   operations: [.Read]),
                 
                 // OfflineSchedule attributes
-                DeviceProfile.AttributeDescriptor(id: 59001, type: .boolean,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 59002, type: .bytes,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 59004, type: .bytes,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 59007, type: .bytes,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 59036, type: .bytes,   operations: [.Read, .Write]),
-                DeviceProfile.AttributeDescriptor(id: 59037, type: .bytes,   operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59001, type: .boolean,   defaultValue: "01", value: "true", operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59002, type: .bytes,   defaultValue: "00", length: 255, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59004, type: .bytes,   length: 255, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59007, type: .bytes,   length: 255, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59036, type: .bytes,   length: 255, operations: [.Read, .Write]),
+                DeviceProfile.AttributeDescriptor(id: 59037, type: .bytes,   length: 255, operations: [.Read, .Write]),
                 
                 ])
+            
+            it("Should report defaultValues correctly.") {
+                expect(profile.attributeConfig(for: 50)?.descriptor.defaultValue) == "00"
+                expect(profile.attributeConfig(for: 100)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 20)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 70)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 90)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 101)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 201)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 202)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59001)?.descriptor.defaultValue) == "01"
+                expect(profile.attributeConfig(for: 59002)?.descriptor.defaultValue) == "00"
+                expect(profile.attributeConfig(for: 59004)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59007)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59036)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59037)?.descriptor.defaultValue).to(beNil())
+            }
+            
+            it("Should report values correctly.") {
+                expect(profile.attributeConfig(for: 50)?.descriptor.value) == "false"
+                expect(profile.attributeConfig(for: 100)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 20)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 70)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 90)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 101)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 201)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 202)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59001)?.descriptor.value) == "true"
+                expect(profile.attributeConfig(for: 59002)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59004)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59007)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59036)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59037)?.descriptor.value).to(beNil())
+            }
+            
+            it("should report length correctly.") {
+                expect(profile.attributeConfig(for: 50)?.descriptor.length) == 1
+                expect(profile.attributeConfig(for: 100)?.descriptor.length) == 4
+                expect(profile.attributeConfig(for: 20)?.descriptor.length) == 4
+                expect(profile.attributeConfig(for: 70)?.descriptor.length) == 8
+                expect(profile.attributeConfig(for: 90)?.descriptor.length) == 1
+                expect(profile.attributeConfig(for: 101)?.descriptor.length) == 8
+                expect(profile.attributeConfig(for: 201)?.descriptor.length) == 8
+                expect(profile.attributeConfig(for: 202)?.descriptor.length) == 1
+                expect(profile.attributeConfig(for: 59001)?.descriptor.length) == 1
+                expect(profile.attributeConfig(for: 59002)?.descriptor.length) == 255
+                expect(profile.attributeConfig(for: 59004)?.descriptor.length) == 255
+                expect(profile.attributeConfig(for: 59007)?.descriptor.length) == 255
+                expect(profile.attributeConfig(for: 59036)?.descriptor.length) == 255
+                expect(profile.attributeConfig(for: 59037)?.descriptor.length) == 255
+            }
 
             it("Should correctly show readable attributes") {
                 expect(profile.hasPresentableReadableAttributes).to(beFalse())
@@ -505,18 +556,21 @@ class DeviceProfileTests: XCTestCase {
         struct AttributeTest {
             var id: Int
             var dataType: DeviceProfile.AttributeDescriptor.DataType
+            var defaultValue: String?
+            var value: String?
+            var length: Int?
         }
         var attributeTests: [AttributeTest] = [
-                AttributeTest(id: 300, dataType: DeviceProfile.AttributeDescriptor.DataType.unknown),
-                AttributeTest(id: 301, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt8),
-                AttributeTest(id: 302, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt16),
-                AttributeTest(id: 303, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt32),
-                AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8),
-                AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16),
-                AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32),
-                AttributeTest(id: 307, dataType: DeviceProfile.AttributeDescriptor.DataType.float32),
-                AttributeTest(id: 308, dataType: DeviceProfile.AttributeDescriptor.DataType.float64),
-                AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S),
+            AttributeTest(id: 300, dataType: DeviceProfile.AttributeDescriptor.DataType.unknown, defaultValue: nil, value: nil, length: nil),
+                AttributeTest(id: 301, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt8, defaultValue: "01", value: "1", length: 1),
+                AttributeTest(id: 302, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt16, defaultValue: nil, value: nil, length: 2),
+                AttributeTest(id: 303, dataType: DeviceProfile.AttributeDescriptor.DataType.uInt32, defaultValue: nil, value: nil, length: 4),
+                AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8, defaultValue: nil, value: nil, length: 1),
+                AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16, defaultValue: nil, value: nil, length: 2),
+                AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32, defaultValue: nil, value: nil, length: 4),
+                AttributeTest(id: 307, dataType: DeviceProfile.AttributeDescriptor.DataType.float32, defaultValue: nil, value: nil, length: 4),
+                AttributeTest(id: 308, dataType: DeviceProfile.AttributeDescriptor.DataType.float64, defaultValue: nil, value: nil, length: 8),
+                AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S, defaultValue: "7070", value: "PP", length: 2),
             ]
         var testIndex: Int = 0
 
@@ -525,6 +579,9 @@ class DeviceProfileTests: XCTestCase {
             testIndex += 1
             XCTAssert(attribute300.id == attrTest.id, "attribute\(attribute300.id).id == \(attrTest.id)")
             XCTAssert(attribute300.dataType == attrTest.dataType, "attribute\(attribute300.id).dataType(\(attribute300.dataType.rawValue)) == \(attrTest.dataType.rawValue)")
+            XCTAssert(attribute300.defaultValue == attrTest.defaultValue, "attribute\(attribute300.id).defaultValue(\(String(describing: attribute300.defaultValue))) == \(String(describing: attrTest.defaultValue) )")
+            XCTAssert(attribute300.value == attrTest.value, "attribute\(attribute300.id).value(\(String(describing: attribute300.value))) == \(String(describing: attrTest.value))")
+            XCTAssert(attribute300.length == attrTest.length, "attribute\(attribute300.id).length(\(String(describing: attribute300.length) )) == \(String(describing: attrTest.length))")
         }
 
     }
