@@ -1297,7 +1297,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
         fileprivate var _length: Int?
         
-        var length: Int? {
+        public var length: Int? {
             return _length ?? dataType.size
         }
         
