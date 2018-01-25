@@ -165,9 +165,6 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         get { return self.currentState.profileId }
         
         set {
-            if newValue == self.currentState.profileId {
-                return
-            }
             currentState.profileId = newValue
             updateProfile()
         }
@@ -536,6 +533,7 @@ public class DeviceModel: BaseDeviceModel {
     fileprivate(set) public var writeState: DeviceWriteState = .reconciled {
         
         didSet {
+            
             switch(writeState) {
                 
             case .reconciled:
@@ -547,6 +545,7 @@ public class DeviceModel: BaseDeviceModel {
             default:
                 break
             }
+            
             eventSink.send(value: .writeStateChange(newState: writeState))
         }
         
