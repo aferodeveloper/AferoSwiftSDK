@@ -22,7 +22,7 @@ def base_pods
         pod 'CryptoSwift', '0.7.0', :inhibit_warnings => true
     end
 
-    pod 'CocoaLumberjack/Swift', '~> 3.2', :inhibit_warnings => true
+    pod 'CocoaLumberjack/Swift', '~> 3.4', :inhibit_warnings => true
 
     pod 'ReactiveSwift', '~> 1.1', :inhibit_warnings => true
     pod 'PromiseKit/CorePromise', '~> 4.3'
