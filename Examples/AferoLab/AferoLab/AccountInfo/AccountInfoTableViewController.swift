@@ -195,6 +195,8 @@ class AccountViewController: UITableViewController {
                 authConclave(accountId: accountId)
             }
             
+            softhubEnabled = UserDefaults.standard.enableSofthub
+            
         }
     }
     
@@ -262,6 +264,9 @@ class AccountViewController: UITableViewController {
     
     private var softhubEnabled: Bool = false {
         didSet {
+            
+            defer { configureSofthubSwitch() }
+            
             UserDefaults.standard.enableSofthub = softhubEnabled
             if softhubEnabled {
                 guard let accountId = accountId else {
@@ -485,9 +490,7 @@ class AccountViewController: UITableViewController {
             
             accountCell.accountNameLabel.text = user?.credentialId
             accountCell.networkStatusLabel.text = String(describing: networkStatus)
-            accountCell.softhubSwitch.isOn = softhubEnabled
-            accountCell.softhubSwitch.removeTarget(nil, action: nil, for: .valueChanged)
-            accountCell.softhubSwitch.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
+            configureSofthubSwitch()
             
         case .devices:
             guard let device = self.device(at: indexPath) else {
@@ -507,6 +510,18 @@ class AccountViewController: UITableViewController {
         
         cell.selectionStyle = .none
         
+    }
+    
+    
+    var softhubSwitch: UISwitch? {
+        let indexPath = IndexPath(row: 0, section: AccountInfoSection.accountInfo.rawValue)
+        return (tableView.cellForRow(at: indexPath) as? AccountInfoCell)?.softhubSwitch
+    }
+    
+    func configureSofthubSwitch() {
+        softhubSwitch?.isOn = softhubEnabled
+        softhubSwitch?.removeTarget(nil, action: nil, for: .valueChanged)
+        softhubSwitch?.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
     }
     
     @objc func softhubSwitchValueChanged(_ sender: Any) {
