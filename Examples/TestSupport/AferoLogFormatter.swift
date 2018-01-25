@@ -13,7 +13,7 @@ open class AferoADBLogFormatter: NSObject, DDLogFormatter {
     
     lazy fileprivate var dateFormatter: DateFormatter = {
         let ret = DateFormatter()
-        ret.dateFormat = "yyyy-MM-dd HH:mm:ss:SSSZ"
+        ret.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSZ"
         return ret
     }()
     

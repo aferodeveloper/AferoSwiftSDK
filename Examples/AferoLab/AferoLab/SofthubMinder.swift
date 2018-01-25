@@ -57,7 +57,7 @@ extension DeviceModelable {
     
 }
 
-class SofthubMinder: NSObject {
+@objcMembers class SofthubMinder: NSObject {
     
     static let sharedInstance = SofthubMinder()
     
