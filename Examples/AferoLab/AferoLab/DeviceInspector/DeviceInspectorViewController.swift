@@ -415,7 +415,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         startMuteTimer(with: duration)
     }
     
-    func handleDeviceProfileUpdate() {
+    func handleDeviceProfileUpdateEvent() {
         reloadAllSections()
     }
     
