@@ -202,7 +202,7 @@ class ConclaveClient: CustomDebugStringConvertible {
     fileprivate(set) var conclaveConnection: ConclaveConnection? = nil
     
     lazy fileprivate(set) var conclaveReadQueueScheduler: QueueScheduler = {
-        return QueueScheduler(qos: DispatchQoS.default, name: "io.afero.conclaveRead")
+        return QueueScheduler(qos: DispatchQoS.userInitiated, name: "io.afero.conclaveRead")
     }()
     
     /**
@@ -555,7 +555,7 @@ class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible
     }
     
     lazy fileprivate(set) var readQueueScheduler: QueueScheduler = {
-        return QueueScheduler(qos: DispatchQoS.default, name: "io.afero.conclaveClientScheduler")
+        return QueueScheduler(qos: DispatchQoS.userInitiated, name: "io.afero.conclaveClientScheduler")
     }()
 
     func setupPipes() {
@@ -864,7 +864,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     fileprivate var q: DispatchQueue
     
     init(stream: InputStream, compressed: Bool = false) {
-        q = DispatchQueue(label: "io.afero.JSONReader", attributes: [])
+        q = DispatchQueue(label: "io.afero.JSONReader", qos: .userInitiated, attributes: [])
         inputStream = stream
         if (compressed) {
             let decompressor = TDTZDecompressor(compressionFormat: .deflate)
@@ -1134,7 +1134,7 @@ class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
     */
     
     init(stream: OutputStream, compressed: Bool = false) {
-        q = DispatchQueue(label: "io.afero.JSONWriter", attributes: [])
+        q = DispatchQueue(label: "io.afero.JSONWriter", qos: .userInitiated, attributes: [])
         outputStream = stream
         if compressed {
             let compressor = TDTZCompressor(compressionFormat: .deflate)
