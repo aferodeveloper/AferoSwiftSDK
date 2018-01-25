@@ -314,12 +314,14 @@ class ConclaveClient: CustomDebugStringConvertible {
 
     func handleNext(_ next: ConclaveConnectionEvent) {
         
+        let t = mach_absolute_time()
+        
         asyncMain { [weak self] in self?.resetWatchdog() }
         
         switch(next) {
             
         case .stateChange(let connectionState):
-            DDLogInfo("Connection state now: \(connectionState)", tag: TAG)
+            DDLogInfo("Connection state now: \(connectionState) t:\(t)", tag: TAG)
             break
             
         case .transientError(let error):
@@ -328,7 +330,7 @@ class ConclaveClient: CustomDebugStringConvertible {
             
         case .message(let message):
             
-            DDLogVerbose("Got message: \(message)", tag: TAG)
+            DDLogDebug("TTT t:\(t) Got message: \(message)", tag: TAG)
             
             switch(message) {
                 
@@ -886,6 +888,10 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     
     func start() {
 
+        let t = mach_absolute_time()
+
+        DDLogInfo("TTT t:\(t) Starting Conclave", tag: TAG)
+        
         if finished {
             fatalError("Cannot start previously finished stream.")
         }
@@ -928,26 +934,31 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         switch(eventCode) {
             
         case Stream.Event.openCompleted:
-            DDLogDebug("Got EventOpenCompleted.", tag: TAG)
+            let t = mach_absolute_time()
+            DDLogDebug("TTT t:\(t) Conclave inputStream openCompleted", tag: TAG)
             self.connectionState = .connected
             
         case Stream.Event.hasBytesAvailable:
-            DDLogDebug("Got EventHasBytesAvailable.", tag: TAG)
+            let t = mach_absolute_time()
+            DDLogDebug("TTT t:\(t) Conclave inputStream hasBytesAvailable", tag: TAG)
             q.async {
                 self.handleHasBytesAvailable(stream as! InputStream)
             }
             
         case Stream.Event.endEncountered:
-            DDLogDebug("Got EventEndEncountered.", tag: TAG)
+            let t = mach_absolute_time()
+            DDLogDebug("TTT t:\(t) Conclave inputStream endEncountered", tag: TAG)
             end()
             
         case Stream.Event.errorOccurred:
-            DDLogError("Got EventErrorOccurred: \(String(describing: stream.streamError))", tag: TAG)
+            let t = mach_absolute_time()
+            DDLogDebug("TTT t:\(t) Conclave inputStream eventErrorOccurred: \(String(describing: stream.streamError))", tag: TAG)
             writeSink.send(error: stream.streamError! as NSError)
             end()
             
         case Stream.Event.hasSpaceAvailable:
-            DDLogVerbose("Got EventHasSpaceAvailable (ignoring)", tag: TAG)
+            let t = mach_absolute_time()
+            DDLogDebug("TTT t:\(t) Conclave inputStream hasSpaceAvailable (ignoring)", tag: TAG)
             
         default:
             break
@@ -962,6 +973,9 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     private func handleHasBytesAvailable(_ stream: InputStream) {
 
         let TAG = self.TAG
+
+        let t = mach_absolute_time()
+        DDLogDebug("TTT t:\(t) handleHasBytesAvailable", tag: TAG)
 
         // First exhaust available bytes so that we get a full compression frame
         
