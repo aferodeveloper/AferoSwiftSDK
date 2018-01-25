@@ -415,9 +415,6 @@ class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvert
             case .connected:
                 self?.state = .connected
                 self?.connectionAttempt = 0
-                // Patch for Trial on 7 Nov 2015, publish explicit list req.
-                self?.publishDeviceListRequest()
-                //            flush()
                 
             case .connecting:
                 self?.state = .connecting
