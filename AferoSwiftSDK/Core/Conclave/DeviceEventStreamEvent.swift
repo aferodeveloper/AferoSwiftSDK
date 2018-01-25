@@ -423,7 +423,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         /// If true, this peripheral's connection to the Afero service is direct,
         /// rather than through a hub (e.g., Wifi capable devices)
         
-        @available(*, deprecated, message: "Use isDirect instead.")
+        @available(*, deprecated, message: "Use status.isDirect instead.")
         public var isDirect: Bool? {
             return status.isDirect
         }
