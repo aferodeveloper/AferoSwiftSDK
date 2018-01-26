@@ -551,9 +551,9 @@ class DeviceProfileTests: XCTestCase {
         }
         var attributeTests: [AttributeTest] = [
             AttributeTest(id: 300, dataType: DeviceProfile.AttributeDescriptor.DataType.unknown, defaultValue: nil, value: nil, length: nil),
-            AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8),
-            AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16),
-            AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32),
+            AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8, defaultValue: nil, value: nil, length: 1),
+            AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16, defaultValue: nil, value: nil, length: 2),
+            AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32, defaultValue: nil, value: nil, length: 4),
             AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S, defaultValue: "7070", value: "PP", length: 2),
             ]
         var testIndex: Int = 0
