@@ -27,28 +27,6 @@ extension UserDefaults {
     
 }
 
-extension AferoSofthubCompleteReason: CustomDebugStringConvertible {
-    
-    public var debugDescription: String {
-        switch self {
-        case .stopCalled:
-            return "Stop called (\(rawValue))."
-            
-        case .missingSofthubSetupPath:
-            return "Missing softhub setup path (\(rawValue))."
-            
-        case .unhandledService:
-            return "Unhandled/unsupported Afero service (\(rawValue))."
-            
-        case .fileIOError:
-            return "FileIO error loading config values (\(rawValue))"
-            
-        case .setupFailed:
-            return "Setup/association failed (\(rawValue))"
-        }
-    }
-}
-
 extension DeviceModelable {
     
     var isLocalSofthub: Bool {
@@ -206,8 +184,8 @@ extension DeviceModelable {
             hardwareIdentifier: hardwareIdentifier,
             associationHandler: associationNeededHandler
         ) {
-            cr in
-            DDLogInfo("Softhub stopped with status \(cr.rawValue)")
+            completionReason in
+            DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
         }
         
     }
