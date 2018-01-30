@@ -113,7 +113,7 @@ import Foundation
 
 }
 
-@objcMembers public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSet {
+@objcMembers public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSetJSONCoding {
     
     override public var debugDescription: String {
         
@@ -184,6 +184,36 @@ import Foundation
         try container.encode(contentsOf: array)
     }
     
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        
+        var ret: [String] = []
+        
+        if contains(.Read) {
+            ret.append(PermissionNames.READ.rawValue)
+        }
+        if contains(.Write) {
+            ret.append(PermissionNames.WRITE.rawValue)
+        }
+        
+        return ret
+
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        guard let json = json as? [String] else { return nil }
+        var operations = AferoAttributeOperations()
+        if json.contains(PermissionNames.READ.rawValue) {
+            operations.formUnion(.Read)
+        }
+        
+        if json.contains(PermissionNames.WRITE.rawValue) {
+            operations.formUnion(.Write)
+        }
+        self.init(rawValue: operations.rawValue)
+    }
+    
     // MARK: NSCoding
 
     public convenience init?(coder aDecoder: NSCoder) {
@@ -222,7 +252,7 @@ import Foundation
 /// Descriptive metadata about an Afero attribute, including its identifier, type,
 /// "semanticType", default value, and operations.
 
-@objcMembers public class AferoAttributeDescriptor: NSObject, NSCopying, Codable {
+@objcMembers public class AferoAttributeDescriptor: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
         return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations))"
@@ -279,6 +309,59 @@ import Foundation
         return AferoAttributeDescriptor(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
     }
     
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case dataType
+        case semanticType
+        case key
+        case defaultValue
+        case operations
+    }
+    
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        
+        var ret: [CodingKeys: Any] = [
+            .id: id,
+            .dataType: dataType.stringValue!,
+            .operations: operations.JSONDict!
+        ]
+        
+        if let semanticType = semanticType {
+            ret[.semanticType] = semanticType
+        }
+        
+        if let key = key {
+            ret[.key] = key
+        }
+        
+        if let defaultValue = defaultValue {
+            ret[.defaultValue] = defaultValue
+        }
+        
+        return ret.stringKeyed
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let json = json as? [String: Any] else { return nil }
+        
+        guard
+            let id = json[CodingKeys.id.stringValue] as? Int,
+            let operations: AferoAttributeOperations = |<(json[CodingKeys.operations.stringValue] as? [String]) else {
+                return nil
+        }
+        
+        let dataType: AferoAttributeDataType = AferoAttributeDataType(name: json[CodingKeys.dataType.stringValue] as? String)
+        let semanticType = json[CodingKeys.semanticType.rawValue] as? String
+        let key = json[CodingKeys.key.rawValue] as? String
+        let defaultValue = json[CodingKeys.defaultValue.rawValue] as? String
+        
+        self.init(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
+    }
 }
 
 // MARK: - AferoAttributeValueState -
@@ -286,10 +369,10 @@ import Foundation
 /// Represents the current value state of an Afero attribute—its value, when it
 /// last changed, and any request id. It does not contain interpretation info.
 
-@objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable {
+@objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttributeValueState> value:\(value) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
+        return "<AferoAttributeValueState> value:\(value) data:\(String(describing: data)) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
     }
     
     /// The string value of this instance.
@@ -356,13 +439,65 @@ import Foundation
         return lhs.updatedTimestamp < rhs.updatedTimestamp
     }
     
+    // MARK: AferoJSONCoding
+    
+    enum CodingKeys: String, CodingKey {
+        case value
+        case data
+        case updatedTimestampMs = "updatedTimestamp"
+        case requestId = "reqId"
+        
+        var hashValue: Int { return rawValue.hashValue }
+    }
+    
+    public var JSONDict: AferoJSONCodedType? {
+        
+        var ret: [CodingKeys: Any] = [
+            .value: value,
+            .updatedTimestampMs: updatedTimestampMs,
+        ]
+        
+        if let data = data {
+            ret[.data] = data
+        }
+        
+        if let requestId = requestId {
+            ret[.requestId] = requestId
+        }
+        
+        return ret.reduce([String: Any]()) {
+            curr, next in
+            var ret = curr
+            ret[next.key.rawValue] = next.value
+            return ret
+        }
+        
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+
+        guard let jsonDict = json as? [String: Any] else {
+            return nil
+        }
+        
+        guard let value = jsonDict[CodingKeys.value.rawValue] as? String,
+            let updatedTimestampMs = jsonDict[CodingKeys.updatedTimestampMs.rawValue] as? NSNumber else {
+                return nil
+        }
+
+        let data = jsonDict[CodingKeys.data.rawValue] as? String
+        let requestId = jsonDict[CodingKeys.requestId.rawValue] as? Int
+        
+        self.init(value: value, data: data, updatedTimestampMs: updatedTimestampMs.int64Value, requestId: requestId)
+    }
+    
 }
 
 // MARK: - AferoAttribute -
 
 /// Represents an Afero attribute on an Afero peripheral device.
 
-@objcMembers public class AferoAttribute: NSObject, NSCopying, Codable {
+@objcMembers public class AferoAttribute: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
         return "<AferoAttribute> desc:\(String(reflecting: descriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
@@ -456,6 +591,47 @@ import Foundation
     
     dynamic public var displayValueState: AferoAttributeValueState? {
         return pendingValueState ?? currentValueState
+    }
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case descriptor
+        case currentValueState
+        case pendingValueState
+    }
+    
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        
+        var ret: [CodingKeys: Any] = [
+            .descriptor: descriptor.JSONDict!
+        ]
+        
+        if let currentValueState = currentValueState?.JSONDict {
+            ret[.currentValueState] = currentValueState
+        }
+        
+        if let pendingValueState = pendingValueState?.JSONDict {
+            ret[.pendingValueState] = pendingValueState
+        }
+        
+        return ret.stringKeyed
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let json = json as? [String: Any] else { return nil }
+        
+        guard let descriptor: AferoAttributeDescriptor = |<(json[CodingKeys.descriptor.stringValue] as? [String: Any]) else {
+            return nil
+        }
+        
+        let currentValueState: AferoAttributeValueState? = |<(json[CodingKeys.currentValueState.stringValue] as? [String: Any])
+        let pendingValueState: AferoAttributeValueState? = |<(json[CodingKeys.pendingValueState.stringValue] as? [String: Any])
+        
+        self.init(descriptor: descriptor, currentValueState: currentValueState, pendingValueState: pendingValueState)
     }
 
 }

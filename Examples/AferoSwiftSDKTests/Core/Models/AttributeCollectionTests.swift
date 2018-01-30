@@ -196,7 +196,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
         let h = AferoAttributeDescriptor(id: 888, type: .utf8S, semanticType: "semantic888", key: "key888", defaultValue: "stringystring", operations: [])
         let i = AferoAttributeDescriptor(id: 999, type: .bytes, semanticType: nil, key: nil, defaultValue: nil, operations: [.Read, .Write])
         
-        describe("coding") {
+        describe("Codable") {
             
             it("should roundtrip") {
                 do {
@@ -226,6 +226,21 @@ class AferoAttributeDescriptorSpec: QuickSpec {
 
             }
         }
+        
+        describe("AferoJSONCoding") {
+            it("should roundtrip") {
+                expect(a) == |<a.JSONDict
+                expect(b) == |<b.JSONDict
+                expect(c) == |<c.JSONDict
+                expect(d) == |<d.JSONDict
+                expect(e) == |<e.JSONDict
+                expect(f) == |<f.JSONDict
+                expect(g) == |<g.JSONDict
+                expect(h) == |<h.JSONDict
+                expect(i) == |<i.JSONDict
+            }
+        }
+        
         
         describe("copying and equating") {
             
@@ -481,6 +496,40 @@ class AferoAttributeValueStateSpec: QuickSpec {
             
         }
         
+        describe("Codable") {
+            
+            it("should roundtrip") {
+                
+                let encoder = JSONEncoder()
+                let decoder = JSONDecoder()
+                
+                let roundtrip: (AferoAttributeValueState) throws -> AferoAttributeValueState = {
+                    desc in
+                    let data = try encoder.encode(desc)
+                    return try decoder.decode(AferoAttributeValueState.self, from: data)
+                }
+                
+                do {
+                    expect(try roundtrip(a)) == a2
+                    expect(try roundtrip(b)) == b2
+                } catch {
+                    fail(error.localizedDescription)
+                }
+
+            }
+            
+        }
+        
+        describe("AferoJSONCoding") {
+            
+            it("should roundtrip") {
+                
+                expect(a2) == |<a.JSONDict
+                expect(b2) == |<b.JSONDict
+            }
+            
+        }
+        
     }
 }
 
@@ -597,7 +646,7 @@ class AferoAttributeSpec: QuickSpec {
             
         }
         
-        describe("coding") {
+        describe("Codable") {
             
             it("should roundtrip") {
                 
@@ -619,6 +668,15 @@ class AferoAttributeSpec: QuickSpec {
                     fail(error.localizedDescription)
                 }
 
+            }
+        }
+        
+        describe("AferoJSONCoding") {
+            it("should roundtrip") {
+                
+                expect(a) == |<ac.JSONDict
+                expect(a2) == |<ac2.JSONDict
+                expect(a3) == |<ac3.JSONDict
             }
         }
         
