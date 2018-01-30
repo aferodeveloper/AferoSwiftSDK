@@ -66,13 +66,6 @@ public func FromJSON<T: AferoJSONCoding>(_ json: AferoJSONCodedType?) -> T? {
         return T(json: json)
 }
 
-public func FromJSON<T: Decodable>(_ data: Data?) throws -> T? {
-    guard let data = data else { return nil }
-    let decoder = JSONDecoder()
-    let ret = try decoder.decode(T.self, from: data)
-    return ret
-}
-
 prefix operator |<
 
 public prefix func |< <T: AferoJSONCoding>(json: AferoJSONCodedType?) -> T? {
@@ -91,10 +84,6 @@ public prefix func |< <T: OptionSetJSONCoding>(json: [AferoJSONCodedType]?) -> T
     return FromJSON(json)
 }
 
-public prefix func |< <T: Decodable>(data: Data?) throws -> T? {
-    return try FromJSON(data)
-}
-
 public extension Dictionary where Key: ExpressibleByStringLiteral, Value: AferoJSONCoding {
     
     var JSONDict: AferoJSONCodedType {
@@ -107,6 +96,28 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: AferoJ
             return ret
         }
     }
+}
+
+public extension Dictionary where Key: CodingKey, Value == Any {
+    
+    /// Given a dict keyed by something conforming to `CodingKey`,
+    /// return a `[String: Any]` version.
+    
+    var stringKeyed: [String: Value] {
+        return reduce([String: Value]()) {
+            curr, next in
+            var ret = curr
+            let value: Value
+            if let subCodingKeyed = next.value as? [Key: Value] {
+                value = subCodingKeyed.stringKeyed
+            } else {
+                value = next.value
+            }
+            ret[next.key.stringValue] = value
+            return ret
+        }
+    }
+    
 }
 
 public extension Array where Element: AferoJSONCoding {
