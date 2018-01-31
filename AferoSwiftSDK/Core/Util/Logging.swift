@@ -9,11 +9,33 @@ import Foundation
 import CocoaLumberjack
 
 @objc protocol AferoLoggingTagged {
+    static var AfLogTag: String { get }
     var afLogTag: String { get }
 }
 
 extension AferoLoggingTagged {
     
+    static func AfLogDebug(_ msg: @autoclosure () -> String) {
+        DDLogDebug(msg, tag: AfLogTag)
+    }
+    
+    static func AfLogWarn(_ msg: @autoclosure () -> String) {
+        DDLogWarn(msg, tag: AfLogTag)
+    }
+    
+    static func AfLogInfo(_ msg: @autoclosure () -> String) {
+        DDLogInfo(msg, tag: AfLogTag)
+    }
+    
+    static func AfLogVerbose(_ msg: @autoclosure () -> String) {
+        DDLogVerbose(msg, tag: AfLogTag)
+    }
+    
+    static func AfLogError(_ msg: @autoclosure () -> String) {
+        DDLogVerbose(msg, tag: AfLogTag)
+    }
+    
+
     func afLogDebug(_ msg: @autoclosure () -> String) {
         DDLogDebug(msg, tag: afLogTag)
     }
@@ -37,5 +59,6 @@ extension AferoLoggingTagged {
 }
 
 @objc extension NSObject: AferoLoggingTagged {
-    var afLogTag: String { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }
+    static var AfLogTag: String { return "\(self)" }
+    var afLogTag: String { return "\(type(of: self).AfLogTag)@\(Unmanaged.passUnretained(self).toOpaque())" }
 }
