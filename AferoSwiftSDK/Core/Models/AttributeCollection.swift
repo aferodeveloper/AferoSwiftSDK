@@ -115,7 +115,7 @@ import Foundation
 
 @objcMembers public final class AferoAttributeOperations: NSObject, NSCopying, Codable, OptionSetJSONCoding {
     
-    override public var debugDescription: String {
+    override public var description: String {
         
         var result: [String] = []
         var shift = 0
@@ -130,12 +130,20 @@ import Foundation
         return result.joined(separator: ",")
     }
     
+    public override var debugDescription: String {
+        return "<\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())>: \(description) (\(rawValue))"
+    }
+    
     // MARK: OptionSetType
     
     public let rawValue: Int
     
     public required init(rawValue: Int) {
         self.rawValue = rawValue
+    }
+    
+    public override convenience init() {
+        self.init(rawValue: 0)
     }
     
     init(_ operation: AferoAttributeOperation) {
@@ -155,11 +163,11 @@ import Foundation
         var operations = AferoAttributeOperations()
         
         while !container.isAtEnd {
-            let name = try container.decode(String.self)
+            let name = try container.decode(String.self).lowercased()
             switch name {
-            case PermissionNames.READ.rawValue:
+            case PermissionNames.READ.rawValue.lowercased():
                 operations.formUnion(.Read)
-            case PermissionNames.WRITE.rawValue:
+            case PermissionNames.WRITE.rawValue.lowercased():
                 operations.formUnion(.Write)
             default:
                 break
@@ -173,11 +181,11 @@ import Foundation
         var array = [String]()
         
         if contains(.Read) {
-            array.append(PermissionNames.READ.rawValue)
+            array.append(PermissionNames.READ.rawValue.lowercased())
         }
         
         if contains(.Write) {
-            array.append(PermissionNames.WRITE.rawValue)
+            array.append(PermissionNames.WRITE.rawValue.lowercased())
         }
         
         var container = encoder.unkeyedContainer()
@@ -202,13 +210,15 @@ import Foundation
     }
     
     public required convenience init?(json: AferoJSONCodedType?) {
-        guard let json = json as? [String] else { return nil }
+        
+        guard let json = (json as? [String])?.map( { $0.lowercased() } ) else { return nil }
+        
         var operations = AferoAttributeOperations()
-        if json.contains(PermissionNames.READ.rawValue) {
+        if json.contains(PermissionNames.READ.rawValue.lowercased()) {
             operations.formUnion(.Read)
         }
         
-        if json.contains(PermissionNames.WRITE.rawValue) {
+        if json.contains(PermissionNames.WRITE.rawValue.lowercased()) {
             operations.formUnion(.Write)
         }
         self.init(rawValue: operations.rawValue)
@@ -255,7 +265,7 @@ import Foundation
 @objcMembers public class AferoAttributeDescriptor: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations))"
+        return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) value:\(String(describing: value)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations)) givenLength:\(String(describing: _length)) length:\(String(describing: length))"
     }
     
     /// The id for this attribute, unique to a profile.
@@ -272,18 +282,37 @@ import Foundation
     /// Afero peripheral.
     public let key: String?
     
-    /// The default value for this attribute, if any.
+    /// The hex representation default value for this attribute, if any.
     public let defaultValue: String?
+    
+    /// The string representation of the default value for this attribute, if any.
+    public let value: String?
+    
+    /// The max length (in bytes) of this attribute as reported explicitly by the
+    /// profile, if any.
+    private let _length: Int?
+    
+    /// The max length (in bytes) of this attribute. If explicitly provided by the profile,
+    /// then it that value will be returned. Otherwise, the size of the `dataType`,
+    /// if any, is returned.
+    /// - note: There is no default `size` returned for `.rawBytes` or `.utf8S` types,
+    ///         is `length` for these types must be provided by the profile.
+    
+    public var length: Int? {
+        return _length ?? dataType.size
+    }
     
     /// The valid operations (readable, writable) for this attribute.
     public let operations: AferoAttributeOperations
 
-    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, key: String? = nil, defaultValue: String? = nil, operations: AferoAttributeOperations = []) {
+    init(id: Int = 0, type: AferoAttributeDataType, semanticType: String? = nil, key: String? = nil, defaultValue: String? = nil, value: String? = nil, length: Int? = nil, operations: AferoAttributeOperations = []) {
         self.id = id
         self.dataType = type
         self.semanticType = semanticType
         self.key = key
         self.defaultValue = defaultValue
+        self.value = value
+        self._length = length
         self.operations = operations
     }
     
@@ -297,6 +326,8 @@ import Foundation
             && other.key == key
             && other.defaultValue == defaultValue
             && other.operations == operations
+            && other.value == value
+            && other._length == _length
     }
     
     public override var hashValue: Int {
@@ -318,6 +349,8 @@ import Foundation
         case key
         case defaultValue
         case operations
+        case value
+        case _length = "length"
     }
     
     // MARK: AferoJSONCoding
@@ -342,6 +375,10 @@ import Foundation
             ret[.defaultValue] = defaultValue
         }
         
+        if let length = _length {
+            ret[._length] = length
+        }
+        
         return ret.stringKeyed
     }
     
@@ -359,9 +396,37 @@ import Foundation
         let semanticType = json[CodingKeys.semanticType.rawValue] as? String
         let key = json[CodingKeys.key.rawValue] as? String
         let defaultValue = json[CodingKeys.defaultValue.rawValue] as? String
-        
-        self.init(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
+        let value = json[CodingKeys.value.rawValue] as? String
+        let length = json[CodingKeys._length.rawValue] as? Int
+
+        self.init(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, value: value, length: length, operations: operations)
     }
+}
+
+extension AferoAttributeDescriptor {
+    
+    func attributeValue(for string: String?) -> AttributeValue? {
+        return type(of: self).valueForStringLiteral(string, type: dataType)
+    }
+    
+    @available(*, deprecated, message: "Use attributeValue(for:) instead.")
+    func valueForStringLiteral(_ string: String?) -> AttributeValue? {
+        return attributeValue(for: string)
+    }
+    
+    static func valueForStringLiteral(_ stringLiteral: String?, type: AferoAttributeDataType) -> AttributeValue? {
+        
+        AfLogVerbose(String(format: "dataType: %@ will return value for '%@'", type.debugDescription, stringLiteral ?? "<none>"))
+        
+        
+        guard let stringLiteral = stringLiteral else { return nil }
+        return AttributeValue(type: type, value: stringLiteral)
+    }
+}
+
+public extension AferoAttributeDescriptor {
+    
+    public var isWritable: Bool { return operations.contains(.Write) }
 }
 
 // MARK: - AferoAttributeValueState -
@@ -372,11 +437,12 @@ import Foundation
 @objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttributeValueState> value:\(value) data:\(String(describing: data)) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
+        return "<AferoAttributeValueState> value:\(stringValue) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
+
     }
     
     /// The string value of this instance.
-    let value: String
+    let stringValue: String
     
     /// The encoded data value of htis instance (if provided).
     let data: String?
@@ -393,7 +459,7 @@ import Foundation
     let requestId: Int?
     
     init(value: String, data: String?, updatedTimestampMs: Int64, requestId: Int?) {
-        self.value = value
+        self.stringValue = value
         self.data = data
         self.updatedTimestampMs = updatedTimestampMs
         self.requestId = requestId
@@ -417,17 +483,17 @@ import Foundation
     
     public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? AferoAttributeValueState else { return false }
-        return other.value == value && other.data == data && other.updatedTimestampMs == updatedTimestampMs && other.requestId == requestId
+        return other.stringValue == stringValue && other.data == data && other.updatedTimestampMs == updatedTimestampMs && other.requestId == requestId
     }
     
     public override var hashValue: Int {
-        return value.hashValue
+        return stringValue.hashValue
     }
     
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
-        return AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+        return AferoAttributeValueState(value: stringValue, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
     }
     
     // MARK: Comparable
@@ -442,7 +508,7 @@ import Foundation
     // MARK: AferoJSONCoding
     
     enum CodingKeys: String, CodingKey {
-        case value
+        case stringValue = "value"
         case data
         case updatedTimestampMs = "updatedTimestamp"
         case requestId = "reqId"
@@ -453,7 +519,7 @@ import Foundation
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [CodingKeys: Any] = [
-            .value: value,
+            .stringValue: stringValue,
             .updatedTimestampMs: updatedTimestampMs,
         ]
         
@@ -480,7 +546,7 @@ import Foundation
             return nil
         }
         
-        guard let value = jsonDict[CodingKeys.value.rawValue] as? String,
+        guard let value = jsonDict[CodingKeys.stringValue.rawValue] as? String,
             let updatedTimestampMs = jsonDict[CodingKeys.updatedTimestampMs.rawValue] as? NSNumber else {
                 return nil
         }
@@ -697,11 +763,6 @@ import Foundation
     }
 
     // MARK: Model
-    
-    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
-        return false
-    }
-    
     
     /// Primary storage for attributes, keyed by id.
     private var attributeRegistry: [Int: AferoAttribute] = [:]

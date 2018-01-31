@@ -462,12 +462,12 @@ class AferoAttributeValueStateSpec: QuickSpec {
         describe("initializing") {
             
             it("should initialize as expected.") {
-                expect(a.value) == "1"
+                expect(a.stringValue) == "1"
                 expect(a.data) == "01"
                 expect(a.updatedTimestampMs) == 0
                 expect(a.updatedTimestamp) == Date.dateWithMillisSince1970(0)
                 
-                expect(b.value) == "2"
+                expect(b.stringValue) == "2"
                 expect(b.data) == "02"
                 expect(b.updatedTimestampMs) == 1000
                 expect(b.updatedTimestamp) == Date.dateWithMillisSince1970(1000)
@@ -1009,7 +1009,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         }
                         
                         try c.setPending(value: "6", forAttributeWithId: b3.descriptor.id)
-                        expect(newPendingValueState?.value).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
+                        expect(newPendingValueState?.stringValue).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
                         expect(newAttribute).toEventually(equal(b3), timeout: 1.0, pollInterval: 0.1)
                     } catch {
                         fail(error.localizedDescription)
