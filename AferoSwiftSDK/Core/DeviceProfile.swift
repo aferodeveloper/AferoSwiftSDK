@@ -196,38 +196,20 @@ public typealias RangeOptionsUnitLabelPresentable = String
 public protocol RangeOptionsPresentable: CustomDebugStringConvertible {
 
     /// The minimum value to present.
-    var min: AttributeValue { get }
+    var min: String { get }
     
     /// The maximum value to present
-    var max: AttributeValue { get }
+    var max: String { get }
     
     /// The step by which ticks, etc should be separated
-    var step: AttributeValue { get }
+    var step: String { get }
 
     /// Struct that can handle subscripting over the range options using the given type.
-    func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor
+    func subscriptor(_ dataType: AferoAttributeDataType) -> RangeOptionsSubscriptor
     
     /// The unit lablel, if any, to present
     var unitLabel: RangeOptionsUnitLabelPresentable? { get }
 }
-
-// Holding on these for now. Because the RangeOptions Value type is loose,
-// we can't enforce conformance to Strideable without bubbling giving up
-// freedom.
-
-/// Convenience method for striding the range represented by RangeOptions
-//public func stride
-//    <T: RangeOptionsPresentable, V: Strideable where T.Value == V>
-//    (rangeOptions: T) -> StrideTo<V> {
-//    return stride(from: rangeOptions.min, to: rangeOptions.max, by: rangeOptions.step)
-//}
-
-/// Convenience method for striding the range represented by RangeOptions
-//public func stride
-//    <T: RangeOptionsPresentable, V: Strideable where T.Value == V>
-//    (rangeOptions: T) -> StrideThrough<V> {
-//        return stride(from: rangeOptions.min, through: rangeOptions.max, by: rangeOptions.step)
-//}
 
 public typealias ControlTypePresentable = String
 public typealias AttributeIdPresentable = Int
@@ -473,10 +455,10 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
     }
     
-    fileprivate var attributeOperationMap: [AttributeDescriptor.Operations : Set<AttributeDescriptor>] = [:]
+    fileprivate var attributeOperationMap: [AferoAttributeOperations: Set<AttributeDescriptor>] = [:]
     
     /// All attributes matching the given operation type
-    public func attributesForOperation(_ operation: AttributeDescriptor.Operations) -> Set<AttributeDescriptor> {
+    public func attributesForOperation(_ operation: AferoAttributeOperations) -> Set<AttributeDescriptor> {
         
         guard let ret = attributeOperationMap[operation] else {
             let attrs = Set(attributes.values.filter {
@@ -684,9 +666,9 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         return ret
     }
 
-    fileprivate var groupIndicesForOperationCache: [AttributeDescriptor.Operations: [Int]] = [:]
+    fileprivate var groupIndicesForOperationCache: [AferoAttributeOperations: [Int]] = [:]
 
-    public func groupIndicesForOperation(_ operations: AttributeDescriptor.Operations) -> [Int] {
+    public func groupIndicesForOperation(_ operations: AferoAttributeOperations) -> [Int] {
         
         if let ret = groupIndicesForOperationCache[operations] { return ret }
         
@@ -708,12 +690,12 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
     }
 
-    fileprivate var groupsForOperationCache: [AttributeDescriptor.Operations: [Presentation.Group]] = [:]
+    fileprivate var groupsForOperationCache: [AferoAttributeOperations: [Presentation.Group]] = [:]
     
     /// Return a list of groups which have controls which reference at least one attribute which
     /// matches the given operation.
     
-    public func groupsForOperation(_ operations: AttributeDescriptor.Operations) -> [Presentation.Group] {
+    public func groupsForOperation(_ operations: AferoAttributeOperations) -> [Presentation.Group] {
         
         if let ret = groupsForOperationCache[operations] { return ret }
 
@@ -926,12 +908,12 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                     return "<RangeOptions> min: \(min) max: \(max) displayStep: \(step) unitLabel: \(String(reflecting: unitLabel))"
                 }
                 
-                public var min: AttributeValue
-                public var max: AttributeValue
-                public var step: AttributeValue
+                public var min: String
+                public var max: String
+                public var step: String
                 public var unitLabel: RangeOptionsUnitLabelPresentable?
                 
-                public init(min: AttributeValue, max: AttributeValue, step: AttributeValue, unitLabel: String?) {
+                public init(min: String, max: String, step: String, unitLabel: String?) {
                     self.min = min
                     self.max = max
                     self.step = step
@@ -1142,160 +1124,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
     // MARK: - DeviceProfile.AttributeDescriptor
     
-    public struct AttributeDescriptor: CustomDebugStringConvertible, Equatable {
-        
-        public var debugDescription: String {
-            return "<AttributeDescriptor> id: \(id) dataType: \(dataType) semanticType: \(String(reflecting: semanticType)) operations: \(operations)"
-        }
-        
-        public typealias DataType = AferoAttributeDataType
-        
-        init(id: Int = 0, type: DataType, semanticType: String? = nil, defaultValue: String? = nil, value: String? = nil, length: Int? = nil, operations: Operations = [.Read]) {
-            self.id = id
-            self.dataType = type
-            self.semanticType = semanticType
-            self.defaultValue = defaultValue
-            self.operations = operations
-            self.value = value
-            self._length = length
-        }
-        
-        fileprivate(set) public var id: Int = 0
-        fileprivate(set) public var dataType: DataType = .unknown
-        fileprivate(set) public var semanticType: String?
-        fileprivate(set) public var defaultValue: String?
-        fileprivate(set) public var value: String?
-        
-        fileprivate var _length: Int?
-        
-        public var length: Int? {
-            return _length ?? dataType.size
-        }
-        
-        public struct Operations: OptionSet, CustomDebugStringConvertible, Hashable {
-
-            public var debugDescription: String {
-            
-                var result: [String] = []
-                var shift = 0
-                
-                while let currentOperation = Operation(rawValue: 1 << shift) {
-                    shift += 1
-                    if self.contains(Operations(currentOperation)) {
-                        result.append(currentOperation.debugDescription)
-                    }
-                }
-                
-                return result.joined(separator: ",")
-            }
-            
-            public var hashValue: Int {
-                return rawValue
-            }
-            
-            fileprivate enum Operation: Int, CustomDebugStringConvertible {
-                case read = 1
-                case write = 2
-
-                var debugDescription: String {
-                    var shift = 0
-                    while (rawValue >> shift != 1) { shift += 1 }
-                    return ["Read", "Write"][shift]
-                }
-                
-            }
-            
-            // MARK: OptionSetType
-            
-            public let rawValue: Int
-
-            public init(rawValue: Int) {
-                self.rawValue = rawValue
-            }
-            
-            fileprivate init(_ operation: Operation) {
-                self.rawValue = operation.rawValue
-            }
-            
-            public static let Read = Operations(Operation.read)
-            public static let Write = Operations(Operation.write)
-            
-        }
-        
-        fileprivate(set) public var operations: Operations = Operations(rawValue: 0)
-        
-        public var isWritable: Bool {
-            return operations.contains(.Write)
-        }
-        
-        public func valueForStringLiteral(_ stringLiteral: String?) -> AttributeValue? {
-            return type(of: self).valueForStringLiteral(stringLiteral, type: dataType)
-        }
-
-        public static func valueForStringLiteral(_ stringLiteral: String?, type: DataType) -> AttributeValue? {
-            DDLogVerbose(String(format: "dataType: %@ will return value for '%@'", type.debugDescription, stringLiteral ?? "<none>"), tag: "AttributeDescriptor")
-            guard let stringLiteral = stringLiteral else { return nil }
-            return AttributeValue(type: type, value: stringLiteral)
-        }
-
-        public func cast(_ attributeValue: AttributeValue) -> AttributeValue? {
-            switch(dataType) {
-
-            case .boolean:
-                return AttributeValue(attributeValue.boolValue)
-
-            case .sInt8:
-                if let v = attributeValue.intValue {
-                    return AttributeValue(Int8(v))
-                }
-                return nil
-                
-            case .sInt16:
-                if let v = attributeValue.intValue {
-                    return AttributeValue(Int16(v))
-                }
-                return nil
-                
-            case .sInt32:
-                if let v = attributeValue.intValue {
-                    return AttributeValue(Int32(v))
-                }
-                return nil
-                
-            case .sInt64:
-                if let v = attributeValue.intValue {
-                    return AttributeValue(Int64(v))
-                }
-                return nil
-                
-            case .q1516:
-                if let v = attributeValue.doubleValue {
-                    return AttributeValue.q1516(v)
-                }
-                return nil
-                
-            case .q3132:
-                if let v = attributeValue.doubleValue {
-                    return AttributeValue.q3132(v)
-                }
-                return nil
-                
-            case .utf8S:
-                if let v = attributeValue.stringValue {
-                    return AttributeValue(v)
-                }
-                return nil
-                
-            case .bytes:
-                return AttributeValue(attributeValue.byteArray)
-            
-            default:
-                DDLogError("ERROR: Attribute descriptor cast: fell out")
-            }
-            
-            return nil
-        }
-    }
+    public typealias AttributeDescriptor = AferoAttributeDescriptor
 
     // MARK: - DeviceProfile.Service
     
@@ -1371,55 +1200,7 @@ extension Int64 {
     
 }
 
-extension UInt8 {
-    
-    public static var maxValue: AttributeValue? {
-        return AttributeValue(self.max)
-    }
-    
-    public static var minValue: AttributeValue? {
-        return AttributeValue(self.min)
-    }
-    
-}
-
-extension UInt16 {
-    
-    public static var maxValue: AttributeValue? {
-        return AttributeValue(self.max)
-    }
-    
-    public static var minValue: AttributeValue? {
-        return AttributeValue(self.min)
-    }
-    
-}
-
-public extension UInt32 {
-    
-    static var maxValue: AttributeValue? {
-        return AttributeValue(self.max)
-    }
-    
-    static var minValue: AttributeValue? {
-        return AttributeValue(self.min)
-    }
-    
-}
-
-public extension UInt64 {
-    
-    static var maxValue: AttributeValue? {
-        return AttributeValue(self.max)
-    }
-    
-    static var minValue: AttributeValue? {
-        return AttributeValue(self.min)
-    }
-    
-}
-
-public extension DeviceProfile.AttributeDescriptor.DataType {
+public extension AferoAttributeDataType {
     
     var maxValue: AttributeValue? {
         switch self {
@@ -1819,9 +1600,9 @@ extension DeviceProfile.Presentation.AttributeOption.RangeOptions: AferoJSONCodi
     
     public var JSONDict: AferoJSONCodedType? {
         return [
-            type(of: self).CoderKeyMin: min.JSONValue ?? 0,
-            type(of: self).CoderKeyMax: max.JSONValue ?? 0,
-            type(of: self).CoderKeyStep: step.JSONValue ?? 0,
+            type(of: self).CoderKeyMin: min,
+            type(of: self).CoderKeyMax: max,
+            type(of: self).CoderKeyStep: step,
             type(of: self).CoderKeyUnitLabel: unitLabel ?? "",
         ]
     }
@@ -1832,9 +1613,9 @@ extension DeviceProfile.Presentation.AttributeOption.RangeOptions: AferoJSONCodi
             
             if
                 
-                let min = AttributeValue(json[type(of: self).CoderKeyMin] as? String),
-                let max = AttributeValue(json[type(of: self).CoderKeyMax] as? String),
-                let step = AttributeValue(json[type(of: self).CoderKeyStep] as? String) {
+                let min = json[type(of: self).CoderKeyMin] as? String,
+                let max = json[type(of: self).CoderKeyMax] as? String,
+                let step = json[type(of: self).CoderKeyStep] as? String {
                     self.init(min: min, max: max, step: step, unitLabel: (json["unitLabel"] as? String))
                 
             } else if
@@ -1844,7 +1625,7 @@ extension DeviceProfile.Presentation.AttributeOption.RangeOptions: AferoJSONCodi
                 let min = json[type(of: self).CoderKeyMinLegacy] as? NSNumber,
                 let max = json[type(of: self).CoderKeyMaxLegacy] as? NSNumber,
                 let step = json[type(of: self).CoderKeyStepLegacy] as? NSNumber {
-                    self.init(min: .signedInt64(min.int64Value), max: .signedInt64(max.int64Value), step: .signedInt64(step.int64Value), unitLabel: (json["unitLabel"] as? String))
+                    self.init(min: min.stringValue, max: max.stringValue, step: step.stringValue, unitLabel: (json["unitLabel"] as? String))
                 
             } else {
                 DDLogInfo("ERROR: Unable to decode DeviceProfile.Presentation.Control.RangeOptions: \(json)")
@@ -2065,108 +1846,6 @@ extension DeviceProfile.Presentation.LayerImage: AferoJSONCoding {
     }
 }
 
-extension DeviceProfile.AttributeDescriptor.Operations: OptionSetJSONCoding {
-    
-    public var JSONDict: AferoJSONCodedType? {
-        var ret: [String] = []
-        if self.contains(.Read) { ret.append("READ") }
-        if self.contains(.Write) { ret.append("WRITE") }
-        return ret
-    }
-
-    public init?(json: AferoJSONCodedType?) {
-
-        guard let optionsArr = json as? [String] else {
-            DDLogInfo("Unable to decode AttributeDescriptor.Operation: \(String(reflecting: json))")
-            return nil
-        }
-        
-        var operation = DeviceProfile.AttributeDescriptor.Operations()
-        _ = optionsArr.map {
-            switch $0 {
-            case "READ": operation.formUnion(DeviceProfile.AttributeDescriptor.Operations.Read)
-            case "WRITE": operation.formUnion(DeviceProfile.AttributeDescriptor.Operations.Write)
-            default: break
-            }
-        }
-        
-        self.init(rawValue: operation.rawValue)
-    }
-}
-
-extension DeviceProfile.AttributeDescriptor: AferoJSONCoding {
-
-    private static var CoderKeyId: String           { return "id" }
-    private static var CoderKeyDataType: String     { return "dataType" }
-    private static var CoderKeySemantictype: String { return "semanticType" }
-    private static var CoderKeyOperations: String   { return "operations"  }
-    private static var CoderKeyDefaultValue: String { return "defaultValue" }
-    private static var CoderKeyValue: String        { return "value" }
-    private static var CoderKeyLength: String       { return "length" }
-    
-    public var JSONDict: AferoJSONCodedType? {
-        
-        var ret: AferoJSONObject = [
-            type(of: self).CoderKeyId: id,
-            type(of: self).CoderKeyOperations: operations.JSONDict!
-        ]
-        
-        if let dataTypeString = dataType.stringValue {
-            ret[type(of: self).CoderKeyDataType] = dataTypeString
-        }
-        
-        if let semanticType = semanticType {
-            ret[type(of: self).CoderKeySemantictype] = semanticType
-        }
-        
-        if let defaultValue = defaultValue {
-            ret[type(of: self).CoderKeyDefaultValue] = defaultValue
-        }
-        
-        if let value = value {
-            ret[type(of: self).CoderKeyValue] = value
-        }
-        
-        if let length = _length {
-            ret[type(of: self).CoderKeyLength] = length
-        }
-        
-        return ret
-    }
-    
-    public init?(json: AferoJSONCodedType?) {
-        
-        guard
-            let jsonDict = json as? [String: Any],
-            let id = jsonDict[type(of: self).CoderKeyId] as? Int,
-            let operationsJSON = jsonDict[type(of: self).CoderKeyOperations] as? [String]
-            
-            else {
-                DDLogInfo("Unable to instantiate AttributeDescriptor: \(String(reflecting: json))")
-                return nil
-        }
-        
-        let semanticType = jsonDict[type(of: self).CoderKeySemantictype] as? String
-        let dataType = DeviceProfile.AttributeDescriptor.DataType(name: jsonDict[type(of: self).CoderKeyDataType] as? String)
-        let operations: DeviceProfile.AttributeDescriptor.Operations = |<operationsJSON
-        let defaultValue = jsonDict[type(of: self).CoderKeyDefaultValue] as? String
-        let value = jsonDict[type(of: self).CoderKeyValue] as? String
-        let length = jsonDict[type(of: self).CoderKeyLength] as? Int
-        
-        self.init(
-            id: id,
-            type: dataType,
-            semanticType: semanticType,
-            defaultValue: defaultValue,
-            value: value,
-            length: length,
-            operations: operations
-        )
-
-    }
-
-}
-
 extension DeviceProfile.Service: AferoJSONCoding {
 
     public var CoderKeyId: String          { return "id" }
@@ -2217,14 +1896,18 @@ extension DeviceProfile.Presentation.LayerImage {
 
 extension RangeOptionsPresentable {
 
+    var maxValue: AttributeValue? { return AttributeValue(max) }
+    var minValue: AttributeValue? { return AttributeValue(min) }
+    var stepValue: AttributeValue? { return AttributeValue(step) }
+
     /// Number of possible steps in this instance
     
     public var count: NSDecimalNumber {
         
         guard let
-            dmax = max.number,
-            let dmin = min.number,
-            let dstep = step.number else {
+            dmax = maxValue?.number,
+            let dmin = minValue?.number,
+            let dstep = stepValue?.number else {
                 return 0
         }
         
@@ -2238,7 +1921,7 @@ extension RangeOptionsPresentable {
     
     func clamp(_ value: NSDecimalNumber) -> NSDecimalNumber? {
         
-        guard let min = min.number, let  max = max.number else { return nil }
+        guard let min = minValue?.number, let  max = maxValue?.number else { return nil }
         
         let ret = value.clamp(min, max: max)
         DDLogVerbose("[clamp] value: \(value) min: \(min) max: \(max) ret: \(ret)", tag: "RangeOptionsPresentable")
@@ -2260,9 +1943,9 @@ extension RangeOptionsPresentable {
 
         guard
             let prop = prop,
-            let dmin = min.number,
-            let dmax = max.number,
-            let dstep = step.number else { return nil }
+            let dmin = minValue?.number,
+            let dmax = maxValue?.number,
+            let dstep = stepValue?.number else { return nil }
         
         let magnitude = dmax - dmin
         if magnitude == 0 { return 0.0 }
@@ -2289,8 +1972,8 @@ extension RangeOptionsPresentable {
 
         guard let
             value = value,
-            let dmin = min.number,
-            let dmax = max.number else { return nil }
+            let dmin = minValue?.number,
+            let dmax = maxValue?.number else { return nil }
         
         let magnitude = dmax - dmin
         if magnitude == 0 { return 0.0 }
@@ -2314,8 +1997,8 @@ extension RangeOptionsPresentable {
     subscript(idx idx: NSDecimalNumber) -> NSDecimalNumber? {
         
         guard let
-            dmin = min.number,
-            let dstep = step.number else { return nil }
+            dmin = minValue?.number,
+            let dstep = stepValue?.number else { return nil }
         
         return clamp(dmin + (dstep * idx))
     }
@@ -2333,9 +2016,9 @@ extension RangeOptionsPresentable {
         if count == NSDecimalNumber.zero { return nil }
         
         guard let
-            dmin = min.number,
-            let dmax = max.number,
-            let dstep = step.number,
+            dmin = minValue?.number,
+            let dmax = maxValue?.number,
+            let dstep = stepValue?.number,
             let idx = indexOf(prop: proportion) else {
                 return nil
         }
@@ -2452,9 +2135,9 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
     public typealias Presentable = DeviceProfile.Presentation.AttributeOption.RangeOptions
     
     fileprivate(set) public var rangeOptions: Presentable
-    fileprivate(set) public var dataType: DeviceProfile.AttributeDescriptor.DataType
+    fileprivate(set) public var dataType: AferoAttributeDataType
     
-    init(rangeOptions: Presentable, dataType: DeviceProfile.AttributeDescriptor.DataType) {
+    init(rangeOptions: Presentable, dataType: AferoAttributeDataType) {
         self.rangeOptions = rangeOptions
         self.dataType = dataType
     }
@@ -2517,12 +2200,12 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
 
 public extension DeviceProfile.Presentation.AttributeOption.RangeOptions {
     
-    func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor {
+    func subscriptor(_ dataType: AferoAttributeDataType) -> RangeOptionsSubscriptor {
         return RangeOptionsSubscriptor(rangeOptions: self, dataType: dataType)
     }
     
     var range: ClosedRange<AttributeValue> {
-        return min...max
+        return minValue!...maxValue!
     }
 
 }
@@ -2534,7 +2217,7 @@ extension AttributeValue {
     
     public init?(option: ValueOptionPresentable, descriptor: DeviceProfile.AttributeDescriptor) {
         let value = option.match
-        if let castValue = descriptor.valueForStringLiteral(value) {
+        if let castValue = descriptor.attributeValue(for: value) {
             self = castValue
             return
         }
@@ -2659,8 +2342,8 @@ public struct ValueOptionsSubscriptor: OptionsSubscriptable {
             return nil
         }
         
-        let castValue = descriptor.cast(v)
-        
+        let castValue = descriptor.attributeValue(for: v.stringValue)
+
         guard let idx = indexOf(castValue) else {
             DDLogWarn("proportionOf \(v) value did not match a known index.", tag: tag)
             return nil

@@ -24,7 +24,7 @@ public protocol OfflineScheduleStorage: class {
     var readableAttributes: Set<DeviceProfile.AttributeDescriptor> { get }
     var readableAttributeIds: Set<Int> { get }
     func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == Int
-    var types: [Int: DeviceProfile.AttributeDescriptor.DataType] { get }
+    var types: [Int: AferoAttributeDataType] { get }
     
     var offlineScheduleFlags: OfflineSchedule.Flags { get }
     var timeZone: TimeZone? { get }
@@ -38,7 +38,7 @@ extension DeviceModelable {
         return !writableAttributeIds.intersection(OfflineSchedule.EventAttributeIds).isEmpty
     }
     
-    public var types: [Int: DeviceProfile.AttributeDescriptor.DataType] {
+    public var types: [Int: AferoAttributeDataType] {
         return profile?.attributes.reduce([:]) {
             curr, next in
             var ret = curr
@@ -632,7 +632,7 @@ open class OfflineSchedule: NSObject {
     }
     
     /// All of the writable dataTypes for this deviceModel, as an `[id: type]`
-    lazy fileprivate(set) var dataTypes: [Int: DeviceProfile.AttributeDescriptor.DataType]! = {
+    lazy fileprivate(set) var dataTypes: [Int: AferoAttributeDataType]! = {
 
         guard let deviceModel = self.storage else { return [:] }
         
@@ -1528,7 +1528,7 @@ private extension AttributeInstance {
 
 extension AttributeValue {
     
-    var dataType: DeviceProfile.AttributeDescriptor.DataType {
+    var dataType: AferoAttributeDataType {
         switch self {
         case .boolean: return .boolean
         case .q1516: return .q1516
@@ -1546,20 +1546,20 @@ extension AttributeValue {
 
 public protocol OfflineScheduleEventSerializable {
     
-    var serialized: (bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) { get }
+    var serialized: (bytes: [UInt8], types: [Int: AferoAttributeDataType]) { get }
 
     var timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification { get }
     var attributes: [Int: AttributeValue] { get }
     
-    static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> (event: Self?, consumed: Int)
+    static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: AferoAttributeDataType]) throws -> (event: Self?, consumed: Int)
 
-    static func FromBytes(_ bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> (event: Self?, consumed: Int)
+    static func FromBytes(_ bytes: [UInt8], types: [Int: AferoAttributeDataType]) throws -> (event: Self?, consumed: Int)
     
 }
 
 public extension OfflineScheduleEventSerializable {
     
-    static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> (event: Self?, consumed: Int) {
+    public static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: AferoAttributeDataType]) throws -> (event: Self?, consumed: Int) {
         return try FromBytes(Array(slice), types: types)
     }
 
@@ -1567,7 +1567,7 @@ public extension OfflineScheduleEventSerializable {
 
 public extension Array where Element: OfflineScheduleEventSerializable {
     
-    var serialized: (bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) {
+    public var serialized: (bytes: [UInt8], types: [Int: AferoAttributeDataType]) {
         return reduce((bytes: [], types: [:])) {
             curr, next in
             var ret = curr
@@ -1581,9 +1581,9 @@ public extension Array where Element: OfflineScheduleEventSerializable {
 
 extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
     
-    public var serialized: (bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) {
+    public var serialized: (bytes: [UInt8], types: [Int: AferoAttributeDataType]) {
         
-        var types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [:]
+        var types: [Int: AferoAttributeDataType] = [:]
         
         let bytes: [UInt8] = attributes.keys.sorted().reduce(timeSpecification.bytes) {
             curr, next in
@@ -1619,7 +1619,7 @@ extension OfflineSchedule.ScheduleEvent: OfflineScheduleEventSerializable {
     ///     - The AttributeId is not contained in the `types` map
     ///     - The type mapped to the given `AttributeId` is not of fixed size.
     
-    public static func FromBytes(_ bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> ScheduleEventFromBytes {
+    public static func FromBytes(_ bytes: [UInt8], types: [Int: AferoAttributeDataType]) throws -> ScheduleEventFromBytes {
         
         let TAG = "ScheduleEvent"
         
