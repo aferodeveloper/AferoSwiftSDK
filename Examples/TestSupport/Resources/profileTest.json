@@ -18,54 +18,21 @@
             "attributes": [
                 {
                     "id": 100,
-                    "dataType": "uint8",
+                    "dataType": "sint8",
                     "semanticType": "batteryLevel",
-                    "operations": ["read"],
-                    "uiHint": {
-                        "uiControl": {
-                            "type": "batteryLevel"
-                        },
-                        "flags": ["gaugeSummary"]
-                    },
-                    "description": {
-                        "label": {
-                            "base": "Battery Level"
-                        }
-                    }
+                    "operations": ["read"]
                 },
                {
-               "id": 1010,
-               "dataType": "utf8s",
-               "semanticType": "batteryLevel",
-               "operations": ["read"],
-               "uiHint": {
-               "uiControl": {
-               "type": "batteryLevel"
-               },
-               "flags": ["gaugeSummary"]
-               },
-               "description": {
-               "label": {
-               "base": "Battery Level"
-               }
-               }
+                   "id": 1010,
+                   "dataType": "utf8s",
+                   "semanticType": "batteryLevel",
+                   "operations": ["read"]
                },
                {
-               "id": 2000,
-               "dataType": "utf8s",
-               "semanticType": "batteryLevel",
-               "operations": ["read"],
-               "uiHint": {
-               "uiControl": {
-               "type": "batteryLevel"
-               },
-               "flags": ["gaugeSummary"]
-               },
-               "description": {
-               "label": {
-               "base": "Battery Level"
-               }
-               }
+                   "id": 2000,
+                   "dataType": "utf8s",
+                   "semanticType": "batteryLevel",
+                   "operations": ["read"]
                }
             ]
         },
@@ -74,21 +41,10 @@
             "attributes": [
                 {
                     "id": 200,
-                    "dataType": "uint8",
+                    "dataType": "sint8",
                     "semanticType": "power",
                     "operations": ["read","write"],
-                    "uiHint": {
-                        "uiControl": {
-                            "type": "powerButton"
-                        },
-                        "flags": ["primaryOperation"]
-                    },
-                    "description": {
-                        "label": {
-                            "base": "Power"
-                        }
-                    }
-                },
+                }
             ]
         },
         {
@@ -123,9 +79,9 @@
                     "dataType": "UTF8s",
                     "semanticType": "power",
                     "operations": ["read","write"],
-                           "defaultValue": "7070",
-                           "value": "PP",
-                           "length": 2
+                    "defaultValue": "7070",
+                    "value": "PP",
+                    "length": 2
                 }
             ]
         }
