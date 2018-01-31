@@ -505,69 +505,100 @@ class PresentationSpec: QuickSpec {
     }
 }
 
-class DeviceProfileTests: XCTestCase {
-
-    var profile: DeviceProfile?
+class DeviceProfileSpec: QuickSpec {
     
-    override func setUp() {
-        super.setUp()
-        profile = try! fixture(named: "profileTest")
-    }
+    override func spec() {
+        let profile: DeviceProfile = try! fixture(named: "profileTest")!
+        
+        describe("instantiation") {
+            
+            it("should have the expected id") {
+                expect(profile.id) == "10d18297-ba51-438f-b387-45a1e88e2242"
+            }
+            
+            it("should have the expected number of services") {
+                expect(profile.services.count) == 3
+            }
+            
+            describe("services") {
+                
+                describe("300") {
+                    
+                    let services: DeviceProfile.Service! = profile.services.first { $0.id == 300 }
+                    
+                    it("should be present") {
+                        expect(services).toNot(beNil())
+                    }
+                    
+                    it("should have the expected number of attributes") {
+                        expect(services.attributes.count) == 5
+                    }
+                }
+                
+                describe("200") {
+                    
+                    let service: DeviceProfile.Service! = profile.services.first { $0.id == 200 }
+                    
+                    it("should be present") {
+                        expect(service).toNot(beNil())
+                    }
+                    
+                    it("should have the expected number of attributes") {
+                        expect(service.attributes.count) == 1
+                    }
+                    
+                }
+                
+                describe("100") {
+                    
+                    let service: DeviceProfile.Service! = profile.services.first { $0.id == 200 }
+                    
+                    it("should be present") {
+                        expect(service).toNot(beNil())
+                    }
+                    
+                    it("should have the expected number of attributes") {
+                        expect(service.attributes.count) == 1
+                    }
+                    
+                }
 
-    override func tearDown() {
-        self.profile = nil
-        super.tearDown()
-    }
+            }
+            
+            describe("attributes") {
+                
+                let a100_100 = AferoAttributeDescriptor(id: 100, type: .sInt8, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
 
-    func testProfile() {
-        XCTAssert(self.profile != nil, "profile != nil")
-        let profile = self.profile!
+                let a100_1010 = AferoAttributeDescriptor(id: 1010, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
+                
+                let a100_2000 = AferoAttributeDescriptor(id: 2000, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
 
-        XCTAssert(profile.id == "10d18297-ba51-438f-b387-45a1e88e2242", "profile.id == '10d18297-ba51-438f-b387-45a1e88e2242'")
+                let a200_200 = AferoAttributeDescriptor(id: 200, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                
+                let a300_300 = AferoAttributeDescriptor(id: 300, type: .unknown, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-        // services
-        XCTAssert(profile.services.count == 3, "profile.services.count == 3")
+                let a300_304 = AferoAttributeDescriptor(id: 304, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-        let service100: DeviceProfile.Service = profile.services[0]
-        XCTAssert(service100.attributes.count == 3, "service100.attributes.count == 3")
-        XCTAssert(service100.id == 100, "service100.id == 100")
+                let a300_305 = AferoAttributeDescriptor(id: 305, type: .sInt16, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-        let service200: DeviceProfile.Service = profile.services[1]
-        XCTAssert(service200.attributes.count == 1, "service200.attributes.count == 1")
-        XCTAssert(service200.id == 200, "service200.id == 200")
+                let a300_306 = AferoAttributeDescriptor(id: 306, type: .sInt32, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-        let service300: DeviceProfile.Service = profile.services[2]
-        XCTAssert(service300.attributes.count == 5, "service300.attributes.count == 5")
-        XCTAssert(service300.id == 300, "service300.id == 300")
+                let a300_309 = AferoAttributeDescriptor(id: 309, type: .utf8S, semanticType: "power", key: nil, defaultValue: "7070", value: "PP", length: 2, operations: [.Read, .Write])
 
-
-        // test the dataTypes for all attributes in service300
-        struct AttributeTest {
-            var id: Int
-            var dataType: DeviceProfile.AttributeDescriptor.DataType
-            var defaultValue: String?
-            var value: String?
-            var length: Int?
+                it("should have the expected attributes") {
+                    expect(profile.attributeConfig(for: 100)?.descriptor) == a100_100
+                    expect(profile.attributeConfig(for: 1010)?.descriptor) == a100_1010
+                    expect(profile.attributeConfig(for: 2000)?.descriptor) == a100_2000
+                    expect(profile.attributeConfig(for: 200)?.descriptor) == a200_200
+                    expect(profile.attributeConfig(for: 300)?.descriptor) == a300_300
+                    expect(profile.attributeConfig(for: 304)?.descriptor) == a300_304
+                    expect(profile.attributeConfig(for: 305)?.descriptor) == a300_305
+                    expect(profile.attributeConfig(for: 306)?.descriptor) == a300_306
+                    expect(profile.attributeConfig(for: 309)?.descriptor) == a300_309
+                    expect(profile.attributeConfig(for: 100)?.descriptor) == a100_100
+                }
+            }
         }
-        var attributeTests: [AttributeTest] = [
-            AttributeTest(id: 300, dataType: DeviceProfile.AttributeDescriptor.DataType.unknown, defaultValue: nil, value: nil, length: nil),
-            AttributeTest(id: 304, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt8, defaultValue: nil, value: nil, length: 1),
-            AttributeTest(id: 305, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt16, defaultValue: nil, value: nil, length: 2),
-            AttributeTest(id: 306, dataType: DeviceProfile.AttributeDescriptor.DataType.sInt32, defaultValue: nil, value: nil, length: 4),
-            AttributeTest(id: 309, dataType: DeviceProfile.AttributeDescriptor.DataType.utf8S, defaultValue: "7070", value: "PP", length: 2),
-            ]
-        var testIndex: Int = 0
-
-        for attribute300 in service300.attributes {
-            let attrTest = attributeTests[testIndex]
-            testIndex += 1
-            XCTAssert(attribute300.id == attrTest.id, "attribute\(attribute300.id).id == \(attrTest.id)")
-            XCTAssert(attribute300.dataType == attrTest.dataType, "attribute\(attribute300.id).dataType(\(attribute300.dataType.rawValue)) == \(attrTest.dataType.rawValue)")
-            XCTAssert(attribute300.defaultValue == attrTest.defaultValue, "attribute\(attribute300.id).defaultValue(\(String(describing: attribute300.defaultValue))) == \(String(describing: attrTest.defaultValue) )")
-            XCTAssert(attribute300.value == attrTest.value, "attribute\(attribute300.id).value(\(String(describing: attribute300.value))) == \(String(describing: attrTest.value))")
-            XCTAssert(attribute300.length == attrTest.length, "attribute\(attribute300.id).length(\(String(describing: attribute300.length) )) == \(String(describing: attrTest.length))")
-        }
-
+        
     }
 }
-
