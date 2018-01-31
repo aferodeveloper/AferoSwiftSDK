@@ -230,11 +230,11 @@ public extension AttributeValue {
     
     // NOTE: This is a workaround for rdar #25465729 (http://stackoverflow.com/questions/36322336/positive-nsdecimalnumber-returns-unexpected-64-bit-integer-values)
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Decimal) {
+    public init?(type: AferoAttributeDataType, value: Decimal) {
         self.init(value as Decimal)
     }
 
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: NSDecimalNumber) {
+    public init?(type: AferoAttributeDataType, value: NSDecimalNumber) {
 
         switch type {
             
@@ -278,7 +278,7 @@ public extension AttributeValue {
         }
     }
 
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int) {
+    public init?(type: AferoAttributeDataType, value: Int) {
         switch type {
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
@@ -292,7 +292,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int64) {
+    public init?(type: AferoAttributeDataType, value: Int64) {
         switch type {
         case .sInt64: self = .signedInt64(value)
         case .sInt32: self = .signedInt32(Int32(value))
@@ -306,7 +306,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Float) {
+    public init?(type: AferoAttributeDataType, value: Float) {
         switch type {
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
@@ -322,7 +322,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Double) {
+    public init?(type: AferoAttributeDataType, value: Double) {
         switch type {
         case .sInt64: self = .signedInt64(Int64(value))
         case .sInt32: self = .signedInt32(Int32(value))
@@ -336,7 +336,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Bool) {
+    public init?(type: AferoAttributeDataType, value: Bool) {
         
         let intValue = value ? 0 : 1
         
@@ -353,11 +353,11 @@ public extension AttributeValue {
         }
     }
 
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, slice: ArraySlice<UInt8>) {
+    public init?(type: AferoAttributeDataType, slice: ArraySlice<UInt8>) {
         self.init(type: type, bytes: Array(slice))
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, bytes: [UInt8]) {
+    public init?(type: AferoAttributeDataType, bytes: [UInt8]) {
         
         switch type {
             
@@ -400,7 +400,7 @@ public extension AttributeValue {
         }
     }
 
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: String) {
+    public init?(type: AferoAttributeDataType, value: String) {
         switch type {
 
         case .q1516:

@@ -384,7 +384,7 @@ class OfflineScheduleSpec: QuickSpec {
             
             it("should decode properly") {
                 
-                let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                let types: [Int: AferoAttributeDataType] = [
                     0x19: .boolean
                 ]
                 
@@ -592,7 +592,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x01, // attribute: value.bytes (true)
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     
@@ -621,7 +621,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x01, // attribute: value.bytes (true)
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .utf8S
                     ]
                     
@@ -646,7 +646,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x01, // attribute: value.bytes (true)
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .bytes
                     ]
                     
@@ -671,7 +671,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x01, // attribute: value.bytes (true)
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x1A: .boolean
                     ]
                     
@@ -696,7 +696,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x01, // attribute: value.bytes (true)
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x1A: .boolean
                     ]
                     
@@ -719,7 +719,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x00, // attribute: id[1]
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     
@@ -745,7 +745,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x19, // attribute: id[0]
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     
@@ -770,7 +770,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x14, // schedule: minute
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     
@@ -794,7 +794,7 @@ class OfflineScheduleSpec: QuickSpec {
                         0x17, // schedule: hour
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     
@@ -815,7 +815,7 @@ class OfflineScheduleSpec: QuickSpec {
                     let encoded: [UInt8] = [
                     ]
                     
-                    let types: [Int: DeviceProfile.AttributeDescriptor.DataType] = [
+                    let types: [Int: AferoAttributeDataType] = [
                         0x19: .sInt32
                     ]
                     

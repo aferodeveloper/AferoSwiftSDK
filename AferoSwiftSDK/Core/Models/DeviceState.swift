@@ -820,11 +820,11 @@ public extension DeviceModelable {
         return profile?.hasPresentableWritableAttributes ?? false
     }
     
-    public func groupIndicesForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [Int] {
+    public func groupIndicesForOperation(_ operations: AferoAttributeOperations) -> [Int] {
         return profile?.groupIndicesForOperation(operations) ?? []
     }
     
-    public func groupsForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [DeviceProfile.Presentation.Group] {
+    public func groupsForOperation(_ operations: AferoAttributeOperations) -> [DeviceProfile.Presentation.Group] {
         return profile?.groupsForOperation(operations) ?? []
     }
     
@@ -1325,7 +1325,7 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    var primaryOperationAttributeDescriptor: DeviceProfile.AttributeDescriptor? {
+    var primaryOperationAttributeDescriptor: AferoAttributeDescriptor? {
         return profile?.primaryOperationAttribute
     }
     
@@ -1353,19 +1353,22 @@ public extension DeviceModelable {
             return
         }
         
-        if let rangeOptions = primaryOperationAttributeOptions.rangeOptions {
-            
-            var newValue = rangeOptions.min
-            
+        if
+            let rangeOptions = primaryOperationAttributeOptions.rangeOptions,
+            let minValue = rangeOptions.minValue,
+            let maxValue = rangeOptions.maxValue {
+
+            var newValue = minValue
+
             if primaryOperationValue == newValue {
-                newValue = rangeOptions.max
+                newValue = maxValue
             }
-            
+
             write(primaryOperationAttributeDescriptor.id, attributeValue: newValue, completion: {
                 results, maybeError in
                 onDone(results, maybeError)
             })
-            
+
             return
             
         }
