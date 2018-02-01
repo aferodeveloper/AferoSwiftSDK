@@ -25,7 +25,47 @@ public extension DeviceCollection {
     ///                             on this device (rather than it being inferred by location).
     ///                             If false, timeZone is the default timeZone of the phone.
     ///
+    /// ## Error Interpretation
+    ///
+    /// If an error is thrown, the error status can be accessed in two ways:
+    ///
+    /// ### Via Integer status code:
+    ///
+    /// ```swift
+    /// ...
+    /// .catch {
+    ///     error in
+    ///     print("The error code is \(error.httpStatusCode)")
+    /// }
+    /// ```
+    ///
+    /// ### Via HTTPStatusCode enumeration values
+    ///
+    /// ```swift
+    /// ...
+    /// .catch {
+    ///     error in
+    ///     print("The error code is \(String(reflecting: error.httpStatusCodeValue))")
+    /// }
+    /// ```
+    ///
+    /// Assuming the client can reach the Client API, there are three possible errors that can occur related
+    /// to adding a device:
+    ///
+    /// 1. `httpStatusCode == 403` (`httpStatusCodeValue == .forbidden`): The device being associated
+    ///                    is associated with a different account. For devices on which
+    ///                    **ownership transfer** is enabled, the associate request can
+    ///                    be retried as described in **Ownership Transfer** below.
+    ///
+    /// 2. `httpStatusCode == 409` (`httpStatusCodeValue == .conflict`):
+    ///                    The device is already associated with the account against
+    ///                    which the attempt is being made.
+    ///
+    /// 3. `httpStatusCode == 400` (`httpStatusCodeValue == .badRequest`):
+    ///                    Some other error has occurred. Examine the error's `userInfo` for details.
+    ///
     /// ## Ownership Transfer
+    ///
     /// Some devices are provisioned to have their ownership transfer automatically. If upon an associate attempt
     /// with `isOwnershipTransferVerified == false` is made upon a device that's assocaiated with another account,
     /// and an error is returned with an attached URLResponse with header `transfer-verification-enabled: true`,
