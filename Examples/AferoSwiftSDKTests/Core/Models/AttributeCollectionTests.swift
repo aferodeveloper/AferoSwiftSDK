@@ -487,13 +487,6 @@ class AferoAttributeValueStateSpec: QuickSpec {
                 expect(b2) != a
             }
             
-            it("should compare as expected") {
-                expect(a) < b
-                expect(b2) > a
-                expect(b).toNot(beLessThan(b2))
-                expect(a).toNot(beLessThan(a2))
-            }
-            
         }
         
         describe("Codable") {

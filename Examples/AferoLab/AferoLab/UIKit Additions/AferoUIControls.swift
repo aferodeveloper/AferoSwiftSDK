@@ -1096,8 +1096,8 @@ class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEvent
         
         if
             let rangeOptions = attribute.config.presentation?.rangeOptions,
-            let maybeMin = rangeOptions.min.floatValue,
-            let maybeMax = rangeOptions.max.floatValue {
+            let maybeMin = rangeOptions.minValue?.floatValue,
+            let maybeMax = rangeOptions.maxValue?.floatValue {
             min = maybeMin
             max = maybeMax
         }

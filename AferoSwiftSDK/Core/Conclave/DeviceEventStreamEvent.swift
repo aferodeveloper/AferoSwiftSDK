@@ -453,8 +453,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
 
             self.attributes = attributes.reduce([:]) {
                 curr, next in
+                guard let id = next.attributeId else { return curr }
                 var ret = curr
-                ret[next.id] = next
+                ret[id] = next
                 return ret
             }
             
@@ -593,8 +594,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         @discardableResult
         public mutating func setAttribute(_ attribute: Attribute) -> Attribute? {
-            let ret = self.attribute(for: attribute.id)
-            attributes[attribute.id] = attribute
+            guard let id = attribute.attributeId else { return nil }
+            let ret = self.attribute(for: id)
+            attributes[id] = attribute
             return ret
         }
         
@@ -941,84 +943,8 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         /// Represents an Attribute id/value in a Peripheral.
         
-        public struct Attribute: Hashable, AferoJSONCoding, CustomDebugStringConvertible {
-            
-            /// Attribute Id
-            public var id: Int
-            
-            /// The byte-array value of the attribute, as a hex-encoded string
-            public var data: String?
-            
-            /// The stringly value of the attribute.
-            public var value: String?
-            
-            public init(id: Int, data: String?, value: String?) {
-                self.id = id
-                self.data = data
-                self.value = value
-            }
-            
-            // MARK: <CustomDebugStringConvertible>
-            
-            public var debugDescription: String {
-                return "<Attribute> id: \(id) data: \(data ?? "<nil>") value: \(value ?? "<nil>")"
-            }
-            
-            // MARK: <Hashable>
-            
-            public func hash(into h: inout Hasher) {
-                h.combine(id)
-            }
-            
-            public static func ==(lhs: Attribute, rhs: Attribute) -> Bool {
-                return lhs.id == rhs.id && lhs.data == rhs.data && lhs.value == rhs.value
-            }
-            
-            // MARK: <AferoJSONCoding>
-            
-            static let CoderKeyId = "id"
-            static let CoderKeyData = "data"
-            static let CoderKeyValue = "value"
-            
-            public var JSONDict: AferoJSONCodedType? {
-                
-                var ret: [String: Any] = [
-                    type(of: self).CoderKeyId: id,
-                ]
-
-                if let data = data {
-                    ret[type(of: self).CoderKeyData] = data
-                }
-                
-                if let value = value {
-                    ret[type(of: self).CoderKeyValue] = value
-                }
-                
-                return ret
-            }
-            
-            public init?(json: AferoJSONCodedType?) {
-                
-                let tag = "DeviceStreamEvent.Peripheral.Attribute"
-                
-                guard let jsonDict = json as? [String: Any] else {
-                    DDLogWarn("\(String(reflecting: json)) not a dict", tag: tag)
-                    return nil
-                }
-                
-                guard let id = jsonDict[type(of: self).CoderKeyId] as? Int else {
-                        DDLogWarn("\(jsonDict) doesn't represent a valid Attribute", tag: tag)
-                        return nil
-                }
-                
-                self.init(
-                    id: id,
-                    data: jsonDict[type(of: self).CoderKeyData] as? String,
-                    value: jsonDict[type(of: self).CoderKeyValue] as? String
-                )
-            }
-            
-        }
+        public typealias Attribute = AferoAttributeValueState
+        
         
         // MARK: - DeviceStreamEvent.Peripheral.LocationState
 
