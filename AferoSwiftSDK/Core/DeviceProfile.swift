@@ -1923,9 +1923,9 @@ extension DeviceProfile.Presentation.LayerImage {
 
 extension RangeOptionsPresentable {
 
-    var maxValue: AttributeValue? { return AttributeValue(max) }
-    var minValue: AttributeValue? { return AttributeValue(min) }
-    var stepValue: AttributeValue? { return AttributeValue(step) }
+    public var maxValue: AttributeValue? { return AttributeValue(max) }
+    public var minValue: AttributeValue? { return AttributeValue(min) }
+    public var stepValue: AttributeValue? { return AttributeValue(step) }
 
     /// Number of possible steps in this instance
     

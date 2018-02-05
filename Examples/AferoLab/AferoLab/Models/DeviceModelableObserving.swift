@@ -441,7 +441,7 @@ extension AttributeEventObserving {
             return nil
         }
         
-        guard let value = attribute.config.descriptor.valueForStringLiteral(stringValue) else {
+        guard let value = attribute.config.descriptor.attributeValue(for: stringValue) else {
             return nil
         }
         

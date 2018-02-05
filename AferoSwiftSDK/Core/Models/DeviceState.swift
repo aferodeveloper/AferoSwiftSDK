@@ -1114,14 +1114,17 @@ public extension DeviceModelable {
     }
     
     func update<S: Sequence> (with attributes: S)
-        where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
-        update(with: attributes.flatMap {
-            v in return (v.id, v.value)
-        })
+        where S.Element == DeviceStreamEvent.Peripheral.Attribute {
+            let s: [(Int, String?)] = attributes.flatMap {
+                v -> (Int, String?)? in
+                guard let id = v.attributeId else { return nil }
+                return (id, v.value)
+            }
+        update(with: s)
     }
     
     func update<S: Sequence> (with attributes: S)
-        where S.Iterator.Element == (Int, String?) {
+        where S.Element == (Int, String?) {
             update(attributes.reduce([Int: String]()) {
                 curr, next in
                 var ret = curr

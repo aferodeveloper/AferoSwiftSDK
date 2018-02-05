@@ -405,12 +405,12 @@ import Foundation
 
 extension AferoAttributeDescriptor {
     
-    func attributeValue(for string: String?) -> AttributeValue? {
+    public func attributeValue(for string: String?) -> AttributeValue? {
         return type(of: self).valueForStringLiteral(string, type: dataType)
     }
     
     @available(*, deprecated, message: "Use attributeValue(for:) instead.")
-    func valueForStringLiteral(_ string: String?) -> AttributeValue? {
+    public func valueForStringLiteral(_ string: String?) -> AttributeValue? {
         return attributeValue(for: string)
     }
     
@@ -434,15 +434,25 @@ public extension AferoAttributeDescriptor {
 /// Represents the current value state of an Afero attribute—its value, when it
 /// last changed, and any request id. It does not contain interpretation info.
 
-@objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Comparable, Codable, AferoJSONCoding {
+@objcMembers public class AferoAttributeValueState: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttributeValueState> value:\(stringValue) data:\(data) updatedTimestampMs:\(updatedTimestampMs) requestid:\(String(describing: requestId))"
+        return "<AferoAttributeValueState> attributeId:\(String(describing: attributeId)) value:\(stringValue) data:\(String(describing: data)) updatedTimestampMs:\(String(describing: updatedTimestampMs)) requestid:\(String(describing: requestId))"
 
     }
     
+    /// The id of the attribute this state represents.
+    let attributeId: Int?
+    
+    /// Alias for `attributeId`.
+    @available(*, deprecated, message: "Use attributeid instead.")
+    var id: Int? { return attributeId }
+    
     /// The string value of this instance.
     let stringValue: String
+    
+    @available(*, deprecated, message: "Use stringValue instead.")
+    var value: String { return stringValue }
     
     /// The encoded data value of htis instance (if provided).
     let data: String?
@@ -453,20 +463,27 @@ public extension AferoAttributeDescriptor {
     ///            the value was actually changed due to user action, rule execution,
     ///            or MCU activity.
     
-    let updatedTimestampMs: Int64
+    let updatedTimestampMs: NSNumber?
     
     /// Any associated request id, returned from the Afero cloud when setting an attribute.
     let requestId: Int?
     
-    init(value: String, data: String?, updatedTimestampMs: Int64, requestId: Int?) {
+    init(attributeId: Int? = nil, value: String, data: String? = nil, updatedTimestampMs: NSNumber? = nil, requestId: Int? = nil) {
+        self.attributeId = attributeId
         self.stringValue = value
         self.data = data
         self.updatedTimestampMs = updatedTimestampMs
         self.requestId = requestId
     }
     
-    convenience init(value: String, data: String?, updatedTimestamp: Date, requestId: Int?) {
-        self.init(value: value, data: data, updatedTimestampMs: Int64(updatedTimestamp.millisSince1970), requestId: requestId)
+    convenience init(attributeId: Int? = nil, value: String, data: String? = nil, updatedTimestamp: Date, requestId: Int? = nil) {
+        self.init(
+            attributeId: attributeId,
+            value: value,
+            data: data,
+            updatedTimestampMs: updatedTimestamp.millisSince1970,
+            requestId: requestId
+        )
     }
     
     /// When this attribute was last updated.
@@ -475,15 +492,20 @@ public extension AferoAttributeDescriptor {
     ///            the value was actually changed due to user action, rule execution,
     ///            or MCU activity.
     
-    lazy private(set) public var updatedTimestamp: Date = {
-        return Date.dateWithMillisSince1970(NSNumber(value: self.updatedTimestampMs))
-    }()
+    public var updatedTimestamp: Date? {
+        guard let ts = updatedTimestampMs else { return nil }
+        return Date.dateWithMillisSince1970(ts)
+    }
     
     // MARK: NSObjectProtocol
     
     public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? AferoAttributeValueState else { return false }
-        return other.stringValue == stringValue && other.data == data && other.updatedTimestampMs == updatedTimestampMs && other.requestId == requestId
+        return other.attributeId == attributeId
+            && other.stringValue == stringValue
+            && other.data == data
+            && other.updatedTimestampMs == updatedTimestampMs
+            && other.requestId == requestId
     }
     
     public override var hashValue: Int {
@@ -493,21 +515,19 @@ public extension AferoAttributeDescriptor {
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
-        return AferoAttributeValueState(value: stringValue, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+        return AferoAttributeValueState(
+            attributeId: attributeId,
+            value: stringValue,
+            data: data,
+            updatedTimestampMs: updatedTimestampMs,
+            requestId: requestId
+        )
     }
     
-    // MARK: Comparable
-    
-    /// Compares by updatedTimestamp only. For comparing by value, etc,
-    /// convert the `value` to a meaningful type first.
-    
-    public static func <(lhs: AferoAttributeValueState, rhs: AferoAttributeValueState) -> Bool {
-        return lhs.updatedTimestamp < rhs.updatedTimestamp
-    }
-    
-    // MARK: AferoJSONCoding
+    // MARK: Codable
     
     enum CodingKeys: String, CodingKey {
+        case attributeId = "id"
         case stringValue = "value"
         case data
         case updatedTimestampMs = "updatedTimestamp"
@@ -516,12 +536,48 @@ public extension AferoAttributeDescriptor {
         var hashValue: Int { return rawValue.hashValue }
     }
     
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(stringValue, forKey: .stringValue)
+        try container.encodeIfPresent(attributeId, forKey: .attributeId)
+        try container.encodeIfPresent(data, forKey: .data)
+        try container.encodeIfPresent(requestId, forKey: .requestId)
+        try container.encodeIfPresent(updatedTimestampMs?.int64Value, forKey: .updatedTimestampMs)
+        
+    }
+    
+    public required convenience init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let stringValue = try container.decode(String.self, forKey: .stringValue)
+        let attributeId = try container.decodeIfPresent(Int.self, forKey: .attributeId)
+        let data = try container.decodeIfPresent(String.self, forKey: .data)
+        let requestId = try container.decodeIfPresent(Int.self, forKey: .requestId)
+        
+        var updatedTimestampMs: NSNumber?
+        if let maybeUpdatedTimestampMs = try container.decodeIfPresent(Int64.self, forKey: .updatedTimestampMs) {
+            updatedTimestampMs = NSNumber(value: maybeUpdatedTimestampMs)
+        }
+        
+        self.init(attributeId: attributeId, value: stringValue, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+    }
+    
+    // MARK: AferoJSONCoding
+    
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [CodingKeys: Any] = [
             .stringValue: stringValue,
-            .updatedTimestampMs: updatedTimestampMs,
         ]
+        
+        if let updatedTimestampMs = updatedTimestampMs {
+            ret[.updatedTimestampMs] = updatedTimestampMs
+        }
+        
+        if let attributeId = attributeId {
+            ret[.attributeId] = attributeId
+        }
         
         if let data = data {
             ret[.data] = data
@@ -546,15 +602,16 @@ public extension AferoAttributeDescriptor {
             return nil
         }
         
-        guard let value = jsonDict[CodingKeys.stringValue.rawValue] as? String,
-            let updatedTimestampMs = jsonDict[CodingKeys.updatedTimestampMs.rawValue] as? NSNumber else {
-                return nil
+        guard let value = jsonDict[CodingKeys.stringValue.rawValue] as? String else {
+            return nil
         }
 
         let data = jsonDict[CodingKeys.data.rawValue] as? String
         let requestId = jsonDict[CodingKeys.requestId.rawValue] as? Int
+        let attributeId = jsonDict[CodingKeys.attributeId.rawValue] as? Int
+        let updatedTimestampMs = jsonDict[CodingKeys.updatedTimestampMs.rawValue] as? NSNumber
         
-        self.init(value: value, data: data, updatedTimestampMs: updatedTimestampMs.int64Value, requestId: requestId)
+        self.init(attributeId: attributeId, value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
     }
     
 }
@@ -769,6 +826,12 @@ public extension AferoAttributeDescriptor {
     
     /// An index of keys to attribute ids.
     private var attributeKeyMap: [String: Int] = [:]
+
+    // MARK: KVO
+    
+    override public class func automaticallyNotifiesObservers(forKey key: String) -> Bool {
+        return false
+    }
     
     private func emitWillChangeNotifications() {
         willChangeValue(for: \.attributes)
@@ -962,6 +1025,19 @@ public extension AferoAttributeDescriptor {
         return attribute(forId: attributeKeyMap[key])
     }
     
+}
+
+// MARK: Profile Handling
+
+extension AferoAttributeCollection {
+    
+    func reloadAttributes(with profile: DeviceProfile) throws {
+        unregisterAllAttributes()
+        let attributes = profile.attributes.values.map {
+            return AferoAttribute(descriptor: $0)
+        }
+        try register(attributes: attributes)
+    }
 }
 
 // MARK: - Attribute Collection KVO Proxies -
