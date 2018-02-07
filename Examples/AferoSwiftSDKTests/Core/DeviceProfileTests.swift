@@ -567,23 +567,23 @@ class DeviceProfileSpec: QuickSpec {
             
             describe("attributes") {
                 
-                let a100_100 = AferoAttributeDescriptor(id: 100, type: .sInt8, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
+                let a100_100 = AferoAttributeDataDescriptor(id: 100, type: .sInt8, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
 
-                let a100_1010 = AferoAttributeDescriptor(id: 1010, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
+                let a100_1010 = AferoAttributeDataDescriptor(id: 1010, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
                 
-                let a100_2000 = AferoAttributeDescriptor(id: 2000, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
+                let a100_2000 = AferoAttributeDataDescriptor(id: 2000, type: .utf8S, semanticType: "batteryLevel", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read])
 
-                let a200_200 = AferoAttributeDescriptor(id: 200, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                let a200_200 = AferoAttributeDataDescriptor(id: 200, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
                 
-                let a300_300 = AferoAttributeDescriptor(id: 300, type: .unknown, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                let a300_300 = AferoAttributeDataDescriptor(id: 300, type: .unknown, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-                let a300_304 = AferoAttributeDescriptor(id: 304, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                let a300_304 = AferoAttributeDataDescriptor(id: 304, type: .sInt8, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-                let a300_305 = AferoAttributeDescriptor(id: 305, type: .sInt16, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                let a300_305 = AferoAttributeDataDescriptor(id: 305, type: .sInt16, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-                let a300_306 = AferoAttributeDescriptor(id: 306, type: .sInt32, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
+                let a300_306 = AferoAttributeDataDescriptor(id: 306, type: .sInt32, semanticType: "power", key: nil, defaultValue: nil, value: nil, length: nil, operations: [.Read, .Write])
 
-                let a300_309 = AferoAttributeDescriptor(id: 309, type: .utf8S, semanticType: "power", key: nil, defaultValue: "7070", value: "PP", length: 2, operations: [.Read, .Write])
+                let a300_309 = AferoAttributeDataDescriptor(id: 309, type: .utf8S, semanticType: "power", key: nil, defaultValue: "7070", value: "PP", length: 2, operations: [.Read, .Write])
 
                 it("should have the expected attributes") {
                     expect(profile.attributeConfig(for: 100)?.descriptor) == a100_100

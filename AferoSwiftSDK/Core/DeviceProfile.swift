@@ -165,7 +165,7 @@ public protocol AttributeOptionPresentable {
 }
 
 public extension AttributeOptionPresentable {
-    public var isLocallySchedulable: Bool { return flags.contains(.LocalSchedulable) }
+    public var isLocallySchedulable: Bool { return flags.contains(.LocallySchedulable) }
     public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
 }
 
@@ -804,126 +804,10 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             )
         }
 
-        public struct Flags: OptionSet {
-            
-            // Yes, this is what a bitfield looks like in Swift :(
-            
-            public typealias RawValue = UInt
-            
-            fileprivate var value: RawValue = 0
-            
-            // MARK: NilLiteralConvertible
-            
-            public init(nilLiteral: Void) {
-                self.value = 0
-            }
-            
-            // MARK: RawLiteralConvertible
-            
-            public init(rawValue: RawValue) {
-                self.value = rawValue
-            }
-            
-            static func fromRaw(_ raw: UInt) -> Flags {
-                return self.init(rawValue: raw)
-            }
-            
-            public var rawValue: RawValue { return self.value }
-            
-            
-            // MARK: BooleanType
-            
-            public var boolValue: Bool {
-                return value != 0
-            }
-            
-            // MARK: BitwiseOperationsType
-            
-            public static var allZeros: Flags {
-                return self.init(rawValue: 0)
-            }
-            
-            // MARK: Actual values
-            
-            public static func fromMask(_ raw: UInt) -> Flags {
-                return self.init(rawValue: raw)
-            }
-            
-            public init(bitIndex: RawValue) {
-                self.init(rawValue: 0x01 << bitIndex)
-            }
-            
-            /// The associated attribute is considered a "primary operation" of the device,
-            /// meaning that its state can be reflected, and interacted with, in the gauge.
-            public static var PrimaryOperation: Flags { return self.init(bitIndex: 0) }
-            
-            /// The associated attribute can be included in local/offline schedules.
-            public static var LocalSchedulable: Flags { return self.init(bitIndex: 1) }
-            
-        }
+        public typealias Flags = AferoAttributeOptionFlags
         
-        public struct AttributeOption: AttributeOptionPresentable, CustomDebugStringConvertible {
-            
-            public var debugDescription: String {
-                return "<AttributeOptions> flags: \(flags) label: \(String(reflecting: label)) rangeOptions: \(String(reflecting: rangeOptions)) valueOptions: \(valueOptions)"
-            }
-            
-            public var flags: Flags = []
-            public var label: LabelPresentable? = nil
-            
-            public var rangeOptions: RangeOptions? = nil
-            public var rangeOptionsPresentable: RangeOptionsPresentable? { return rangeOptions }
-            
-            public var valueOptionsMap: ValueOptionsMap
-            public var valueOptions: [ValueOption] = []
-            public var valueOptionsPresentable: [ValueOptionPresentable] { return self.valueOptions.map { $0 as ValueOptionPresentable } }
-            
-            init(label: String? = nil, rangeOptions: RangeOptions? = nil, valueOptions: [ValueOption] = [], flags: Flags = []) {
-                self.label = label
-                self.rangeOptions = rangeOptions
-                self.valueOptions = valueOptions
-                self.valueOptionsMap = valueOptions.valueOptionsMap
-                self.flags = flags
-            }
-            
-            public struct ValueOption: ValueOptionPresentable, Equatable, CustomDebugStringConvertible {
-                
-                public var debugDescription: String {
-                    return "<ValueOption> match: \(match) apply: \(apply)"
-                }
-                
-                public var match: ValueOptionMatchPresentable
-                public var apply: ValueOptionApplyPresentable
-                
-                public init(match: ValueOptionMatchPresentable, apply: ValueOptionApplyPresentable) {
-                    self.match = match
-                    self.apply = apply
-                }
-                
-            }
-            
-            public struct RangeOptions: RangeOptionsPresentable, Equatable {
-                
-                public var debugDescription: String {
-                    return "<RangeOptions> min: \(min) max: \(max) displayStep: \(step) unitLabel: \(String(reflecting: unitLabel))"
-                }
-                
-                public var min: String
-                public var max: String
-                public var step: String
-                public var unitLabel: RangeOptionsUnitLabelPresentable?
-                
-                public init(min: String, max: String, step: String, unitLabel: String?) {
-                    self.min = min
-                    self.max = max
-                    self.step = step
-                    self.unitLabel = unitLabel
-                }
-                
-            }
-
-
-        }
+        
+        public typealias AttributeOption = AferoAttributePresentationDescriptor
         
         public struct Control: ControlPresentable, Equatable {
             
@@ -1124,7 +1008,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
     // MARK: - DeviceProfile.AttributeDescriptor
     
-    public typealias AttributeDescriptor = AferoAttributeDescriptor
+    public typealias AttributeDescriptor = AferoAttributeDataDescriptor
 
     // MARK: - DeviceProfile.Service
     
@@ -1267,14 +1151,6 @@ public func ==(lhs: DeviceProfile.Presentation.Control, rhs: DeviceProfile.Prese
     }
     
     return ret && lam == ram
-}
-
-public func ==(lhs: DeviceProfile.Presentation.AttributeOption.ValueOption, rhs: DeviceProfile.Presentation.AttributeOption.ValueOption) -> Bool {
-    return lhs.match == rhs.match
-}
-
-public func ==(lhs: DeviceProfile.Presentation.AttributeOption.RangeOptions, rhs: DeviceProfile.Presentation.AttributeOption.RangeOptions) -> Bool {
-    return lhs.min == rhs.min && lhs.max == rhs.max && lhs.step == rhs.step && lhs.unitLabel == rhs.unitLabel
 }
 
 // MARK: Group Extensions and Operators
@@ -1428,48 +1304,6 @@ public func ==(lhs: DeviceProfile, rhs: DeviceProfile) -> Bool {
 
 // MARK: - AferoJSONCoding Extensions
 
-
-extension DeviceProfile.Presentation.Flags: AferoJSONCoding {
-    
-    static var CoderValuePrimaryOperation: String { return "primaryOperation" }
-    static var CoderValueLocalSchedulable: String { return "localSchedulable" }
-    
-    public var JSONDict: AferoJSONCodedType? {
-        
-        var ret: [String] = []
-        
-        if self.contains(.PrimaryOperation) {
-            ret.append(type(of: self).CoderValuePrimaryOperation)
-        }
-        
-        if self.contains(.LocalSchedulable) {
-            ret.append(type(of: self).CoderValueLocalSchedulable)
-        }
-        
-        return ret
-    }
-    
-    public init?(json: AferoJSONCodedType?) {
-
-        var rawValue: RawValue = 0
-        
-        if let json = json as? [String] {
-            for flag in json {
-                switch(flag) {
-                case type(of: self).CoderValuePrimaryOperation:
-                    rawValue |= DeviceProfile.Presentation.Flags.PrimaryOperation.rawValue
-                case type(of: self).CoderValueLocalSchedulable:
-                    rawValue |= DeviceProfile.Presentation.Flags.LocalSchedulable.rawValue
-                default:
-                    break
-                }
-            }
-        }
-        
-        self.init(rawValue: rawValue)
-    }
-}
-
 extension DeviceProfile: AferoJSONCoding { }
 
 extension DeviceProfile.Presentation: AferoJSONCoding {
@@ -1538,124 +1372,6 @@ extension DeviceProfile.Presentation: AferoJSONCoding {
                 
             } else {
                 DDLogError("ERROR: Unable to decode DeviceProfile.Presentation: \(json)")
-                return nil
-            }
-        } else {
-            return nil
-        }
-    }
-}
-
-extension DeviceProfile.Presentation.AttributeOption: AferoJSONCoding {
-    
-    static let CoderKeyLabel = "label"
-    static let CoderKeyFlags = "flags"
-    static let CoderKeyValueOptions = "valueOptions"
-    static let CoderKeyRangeOptions = "rangeOptions"
-    
-    public var JSONDict: AferoJSONCodedType? {
-        
-        var ret: AferoJSONObject = [
-            type(of: self).CoderKeyFlags: flags.JSONDict!,
-            type(of: self).CoderKeyValueOptions: valueOptions.map { $0.JSONDict! },
-        ]
-        
-        if let rangeOptions = rangeOptions {
-            ret[type(of: self).CoderKeyRangeOptions] = rangeOptions.JSONDict!
-        }
-        
-        if let label = label {
-            ret[type(of: self).CoderKeyLabel] = label
-        }
-        
-        return ret
-    }
-    
-    public init?(json: AferoJSONCodedType?) {
-        
-        guard let json = json as? AferoJSONObject else { return nil }
-        
-        self.flags = |<(json[type(of: self).CoderKeyFlags]) ?? []
-        self.label = json[type(of: self).CoderKeyLabel] as? String
-        self.valueOptions = |<(json[type(of: self).CoderKeyValueOptions] as? [AnyObject]) ?? []
-        self.valueOptionsMap = valueOptions.valueOptionsMap
-        self.rangeOptions = |<(json[type(of: self).CoderKeyRangeOptions] as? [String: Any])
-        
-    }
-}
-
-extension DeviceProfile.Presentation.AttributeOption.ValueOption: AferoJSONCoding {
-    
-    static let CoderKeyMatch = "match"
-    static let CoderKeyApply = "apply"
-    
-    public var JSONDict: AferoJSONCodedType? {
-        return [
-            type(of: self).CoderKeyMatch: match,
-            type(of: self).CoderKeyApply: apply,
-        ]
-    }
-    
-    public init?(json: AferoJSONCodedType?) {
-        if let json = json as? AferoJSONObject {
-            if let
-                match = json[type(of: self).CoderKeyMatch] as? ValueOptionMatchPresentable,
-                let apply = json[type(of: self).CoderKeyApply] as? ValueOptionApplyPresentable {
-                    self.init(match: match, apply: apply)
-            } else {
-                DDLogInfo("ERROR: Unable to decode DeviceProfile.Presentation.Control.ValueOption: \(json)")
-                return nil
-            }
-        } else {
-            return nil
-        }
-    }
-    
-}
-
-extension DeviceProfile.Presentation.AttributeOption.RangeOptions: AferoJSONCoding {
-
-    static let CoderKeyMinLegacy = "min"
-    static let CoderKeyMin = "minValue"
-    
-    static let CoderKeyMaxLegacy = "max"
-    static let CoderKeyMax = "maxValue"
-    
-    static let CoderKeyStepLegacy = "step"
-    static let CoderKeyStep = "stepValue"
-    static let CoderKeyUnitLabel = "unitLabel"
-    
-    public var JSONDict: AferoJSONCodedType? {
-        return [
-            type(of: self).CoderKeyMin: min,
-            type(of: self).CoderKeyMax: max,
-            type(of: self).CoderKeyStep: step,
-            type(of: self).CoderKeyUnitLabel: unitLabel ?? "",
-        ]
-    }
-    
-    public init?(json: AferoJSONCodedType?) {
-        
-        if let json = json as? AferoJSONObject {
-            
-            if
-                
-                let min = json[type(of: self).CoderKeyMin] as? String,
-                let max = json[type(of: self).CoderKeyMax] as? String,
-                let step = json[type(of: self).CoderKeyStep] as? String {
-                    self.init(min: min, max: max, step: step, unitLabel: (json["unitLabel"] as? String))
-                
-            } else if
-
-                // Legacy support
-                
-                let min = json[type(of: self).CoderKeyMinLegacy] as? NSNumber,
-                let max = json[type(of: self).CoderKeyMaxLegacy] as? NSNumber,
-                let step = json[type(of: self).CoderKeyStepLegacy] as? NSNumber {
-                    self.init(min: min.stringValue, max: max.stringValue, step: step.stringValue, unitLabel: (json["unitLabel"] as? String))
-                
-            } else {
-                DDLogInfo("ERROR: Unable to decode DeviceProfile.Presentation.Control.RangeOptions: \(json)")
                 return nil
             }
         } else {
@@ -2159,7 +1875,7 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
         return (0..<count).flatMap { self[$0] }
     }
     
-    public typealias Presentable = DeviceProfile.Presentation.AttributeOption.RangeOptions
+    public typealias Presentable = AferoAttributePresentationRangeOptions
     
     fileprivate(set) public var rangeOptions: Presentable
     fileprivate(set) public var dataType: AferoAttributeDataType
@@ -2225,7 +1941,7 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
     
 }
 
-public extension DeviceProfile.Presentation.AttributeOption.RangeOptions {
+public extension AferoAttributePresentationRangeOptions {
     
     public func subscriptor(_ dataType: AferoAttributeDataType) -> RangeOptionsSubscriptor {
         return RangeOptionsSubscriptor(rangeOptions: self, dataType: dataType)
@@ -2261,7 +1977,7 @@ public struct ValueOptionsSubscriptor: OptionsSubscriptable {
         return "<ValueOptionsSubscriptor> type: \(descriptor) \(valueOptions.debugDescription)"
     }
     
-    public typealias Presentable = DeviceProfile.Presentation.AttributeOption.ValueOption
+    public typealias Presentable = AferoAttributePresentationValueOption
     
     let descriptor: DeviceProfile.AttributeDescriptor
     let valueOptions: [Presentable]

@@ -262,7 +262,7 @@ import Foundation
 /// Descriptive metadata about an Afero attribute, including its identifier, type,
 /// "semanticType", default value, and operations.
 
-@objcMembers public class AferoAttributeDescriptor: NSObject, NSCopying, Codable, AferoJSONCoding {
+@objcMembers public class AferoAttributeDataDescriptor: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
         return "<AferoAttributeDescriptor> id:\(id) dataType:\(dataType) semanticType:\(String(describing: semanticType)) key:\(String(describing: key)) value:\(String(describing: value)) defaultValue:\(String(describing: defaultValue)) operations:\(String(describing: operations)) givenLength:\(String(describing: _length)) length:\(String(describing: length))"
@@ -319,7 +319,7 @@ import Foundation
     // MARK: NSObjectProtocol
     
     public override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? AferoAttributeDescriptor else { return false }
+        guard let other = object as? AferoAttributeDataDescriptor else { return false }
         return other.id == id
             && other.dataType == dataType
             && other.semanticType == semanticType
@@ -337,7 +337,7 @@ import Foundation
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
-        return AferoAttributeDescriptor(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
+        return AferoAttributeDataDescriptor(id: id, type: dataType, semanticType: semanticType, key: key, defaultValue: defaultValue, operations: operations)
     }
     
     // MARK: Codable
@@ -403,7 +403,7 @@ import Foundation
     }
 }
 
-extension AferoAttributeDescriptor {
+extension AferoAttributeDataDescriptor {
     
     public func attributeValue(for string: String?) -> AttributeValue? {
         return type(of: self).valueForStringLiteral(string, type: dataType)
@@ -424,9 +424,402 @@ extension AferoAttributeDescriptor {
     }
 }
 
-public extension AferoAttributeDescriptor {
+public extension AferoAttributeDataDescriptor {
     
     public var isWritable: Bool { return operations.contains(.Write) }
+}
+
+@objcMembers public final class AferoAttributeOptionFlags: NSObject, OptionSet, Codable, AferoJSONCoding {
+    
+    // Yes, this is what a bitfield looks like in Swift :(
+    
+    public typealias RawValue = UInt
+    
+    fileprivate var value: RawValue = 0
+    
+    // MARK: NilLiteralConvertible
+    
+    public init(nilLiteral: Void) {
+        self.value = 0
+    }
+    
+    // MARK: RawLiteralConvertible
+    
+    public init(rawValue: RawValue) {
+        self.value = rawValue
+    }
+    
+    static func fromRaw(_ raw: UInt) -> AferoAttributeOptionFlags {
+        return self.init(rawValue: raw)
+    }
+    
+    public var rawValue: RawValue { return self.value }
+    
+    
+    // MARK: BooleanType
+    
+    public var boolValue: Bool {
+        return value != 0
+    }
+    
+    // MARK: BitwiseOperationsType
+    
+    public static var allZeros: AferoAttributeOptionFlags {
+        return self.init(rawValue: 0)
+    }
+    
+    // MARK: Actual values
+    
+    public static func fromMask(_ raw: UInt) -> AferoAttributeOptionFlags {
+        return self.init(rawValue: raw)
+    }
+    
+    public convenience init(bitIndex: RawValue) {
+        self.init(rawValue: 0x01 << bitIndex)
+    }
+    
+    /// The associated attribute is considered a "primary operation" of the device,
+    /// meaning that its state can be reflected, and interacted with, in the gauge.
+    public static var PrimaryOperation: AferoAttributeOptionFlags { return self.init(bitIndex: 0) }
+    
+    /// The associated attribute can be included in local/offline schedules.
+    public static var LocallySchedulable: AferoAttributeOptionFlags { return self.init(bitIndex: 1) }
+    
+    
+    // MARK: NSObjectProto
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributeOptionFlags else { return false }
+        return other.rawValue == rawValue
+    }
+    
+    // Note that this is intentionally (a) named `CodingValues` so as not to
+    // conflict with existing Codable-related conventions, and (b) conforms to
+    // `CodingKey` just to be a good citizen. But to be clear, `Codable` will
+    // NOT recognize this enum automatically.
+    
+    enum CodingValues: String, CodingKey {
+        
+        case primaryOperation
+        case locallySchedulable = "localSchedulable"
+        
+        var flagValue: AferoAttributeOptionFlags {
+            switch self {
+            case .primaryOperation: return .PrimaryOperation
+            case .locallySchedulable: return .LocallySchedulable
+            }
+        }
+        
+    }
+    
+    private var arrayRepr: [String] {
+        var encoded: [CodingValues] = []
+        if contains(type(of: self).PrimaryOperation) {
+            encoded.append(.primaryOperation)
+        }
+        
+        if contains(type(of: self).LocallySchedulable) {
+            encoded.append(.locallySchedulable)
+        }
+        return encoded.map { $0.stringValue }
+    }
+    
+    private convenience init(stringArrayRepr: [String]) throws {
+        self.init(try stringArrayRepr.map {
+            guard let v = CodingValues(stringValue: $0) else { throw "Unknown flag name: \($0)" }
+            return v.flagValue
+        })
+    }
+    
+    // MARK: Codable
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        try container.encode(arrayRepr)
+    }
+    
+    public convenience init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        let arrayRepr = try container.decode([String].self)
+        try self.init(stringArrayRepr: arrayRepr)
+    }
+    
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        return arrayRepr
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let arrayRepr = json as? [String] else {
+            type(of: self).AfLogError("Cannot coerce JSON to [String]: \(String(describing: json))")
+            return nil
+        }
+        
+        do {
+            try self.init(stringArrayRepr: arrayRepr)
+        } catch {
+            assert(false, String(reflecting: error))
+            type(of: self).AfLogError(String(reflecting: error))
+            return nil
+        }
+        
+    }
+
+}
+
+/// Describes a distinct value that is valid for an attribute, along with presentation properties
+/// associated with that value.
+
+@objcMembers public final class AferoAttributePresentationValueOption: NSObject, NSCopying, Codable, AferoJSONCoding, ValueOptionPresentable {
+    
+    override public var description: String {
+        return "{ match:\(match), apply:\(apply) }"
+    }
+    
+    public override var debugDescription: String {
+        return "\(type(of: self)): \(description)"
+    }
+    
+    /// A value to match against an existing attribute string value. If the attribute's `stringValue` is equal to `match`,
+    /// then this `AferoAttributePresentationValueOption` *matches*, and the values in the `apply` property can be applied.
+    public let match: String
+    
+    /// A `[String: Any]`, indicating presentation keys and values that are valid for given attribute.
+    public let apply: [String: Any]
+    
+    public init(match: ValueOptionMatchPresentable, apply: ValueOptionApplyPresentable) {
+        self.match = match
+        self.apply = apply
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        let ret = AferoAttributePresentationValueOption(match: match, apply: apply)
+        return ret
+    }
+    
+    // MARK: NSObjectProtocol / Comparable
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributePresentationValueOption else { return false }
+        return other.match == match
+    }
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case match
+        case apply
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(match, forKey: .match)
+        try container.encode(apply, forKey: .apply)
+    }
+    
+    public convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let match = try container.decode(String.self, forKey: .match)
+        let apply = try container.decode([String: Any].self, forKey: .apply)
+        self.init(match: match, apply: apply)
+    }
+
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        return [
+            CodingKeys.match: match,
+            CodingKeys.apply: apply,
+        ].stringKeyed
+    }
+    
+    public convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let jsonDict = json as? [String: Any] else {
+            return nil
+        }
+        
+        guard
+            let match = jsonDict[CodingKeys.match.stringValue] as? ValueOptionMatchPresentable,
+            let apply = jsonDict[CodingKeys.apply.stringValue] as? ValueOptionApplyPresentable else {
+                type(of: self).AfLogError("Unable to decode DeviceProfile.Presentation.Control.ValueOption: \(String(reflecting: json))")
+                return nil
+        }
+        
+        self.init(match: match, apply: apply)
+    }
+
+}
+
+@objcMembers public final class AferoAttributePresentationRangeOptions: NSObject, NSCopying, Codable, AferoJSONCoding, RangeOptionsPresentable {
+    
+    public override var debugDescription: String {
+        return "\(type(of: self)): \(description)"
+    }
+    
+    public override var description: String {
+        return "{ min:\(min), max:\(max), step:\(step) }, unitLabel:\(String(describing: unitLabel))"
+    }
+    
+    public let min: String
+    public let max: String
+    public let step: String
+    public let unitLabel: String?
+    
+    public init(min: String, max: String, step: String, unitLabel: String?) {
+        self.min = min
+        self.max = max
+        self.step = step
+        self.unitLabel = unitLabel
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttributePresentationRangeOptions(min: min, max: max, step: step, unitLabel: unitLabel)
+    }
+    
+    // MARK: NSObjectProtocol
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributePresentationRangeOptions else { return false }
+        return other.min == min && other.max == max && other.step == step && other.unitLabel == unitLabel
+    }
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case min
+        case max
+        case step
+        case unitLabel
+    }
+    
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        var ret: [CodingKeys: Any] = [
+            CodingKeys.min: min,
+            CodingKeys.max: max,
+            CodingKeys.step: step,
+        ]
+        
+        if let unitLabel = unitLabel {
+            ret[.unitLabel] = unitLabel
+        }
+        
+        return ret.stringKeyed
+    }
+    
+    public convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let jsonDict = json as? [String: Any] else { return nil }
+        
+        guard
+            let min = jsonDict[CodingKeys.min.stringValue] as? String,
+            let max = jsonDict[CodingKeys.max.stringValue] as? String,
+            let step = jsonDict[CodingKeys.step.stringValue] as? String else {
+                type(of: self).AfLogError("Unable to decode DeviceProfile.Presentation.Control.RangeOptions: \(String(reflecting: jsonDict))")
+                return nil
+        }
+        
+        let unitLabel = jsonDict[CodingKeys.unitLabel.stringValue] as? String
+        
+        self.init(min: min, max: max, step: step, unitLabel: unitLabel)
+    }
+    
+}
+
+@objcMembers public class AferoAttributePresentationDescriptor: NSObject, NSCopying, Codable, AferoJSONCoding {
+    
+    public override var debugDescription: String {
+        return "\(type(of: self)): \(description)"
+    }
+    
+
+    public override var description: String {
+        return "{ flags:\(flags), label:\(String(reflecting: label)), rangeOptions:\(String(reflecting: rangeOptions)), valueOptions: \(valueOptions) }"
+    }
+
+    public let flags: AferoAttributeOptionFlags
+    public let label: String?
+    public let rangeOptions: AferoAttributePresentationRangeOptions?
+    public let valueOptions: [AferoAttributePresentationValueOption]
+    
+    private (set) public lazy var valueOptionsMap: [String: [String: Any]] = {
+        return self.valueOptions.valueOptionsMap
+    }()
+    
+    init(label: String? = nil, rangeOptions: AferoAttributePresentationRangeOptions? = nil, valueOptions: [AferoAttributePresentationValueOption] = [], flags: AferoAttributeOptionFlags = []) {
+        self.label = label
+        self.rangeOptions = rangeOptions
+        self.valueOptions = valueOptions
+        self.flags = flags
+    }
+    
+    // MARK: NSObjectProtocol
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? AferoAttributePresentationDescriptor else { return false }
+        return other.label == label
+            && other.rangeOptions == rangeOptions
+            && other.valueOptions == valueOptions
+            && other.flags == flags
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        return AferoAttributePresentationDescriptor(label: label, rangeOptions: rangeOptions, valueOptions: valueOptions, flags: flags)
+    }
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case flags
+        case label
+        case rangeOptions
+        case valueOptions
+    }
+    
+    // MARK: AferoJSONCoding
+    
+    public var JSONDict: AferoJSONCodedType? {
+        
+        var ret: [CodingKeys: Any] = [
+            .flags: flags.JSONDict!,
+            .valueOptions: valueOptions.map { $0.JSONDict! },
+            ]
+        
+        if let rangeOptions = rangeOptions {
+            ret[.rangeOptions] = rangeOptions.JSONDict!
+        }
+        
+        if let label = label {
+            ret[.label] = label
+        }
+        
+        return ret.stringKeyed
+    }
+    
+    public required convenience init?(json: AferoJSONCodedType?) {
+        
+        guard let jsonDict = json as? [String: Any] else { return nil }
+        
+        let flags: AferoAttributeOptionFlags = |<(jsonDict[CodingKeys.flags.stringValue]) ?? []
+        let label: String? = jsonDict[CodingKeys.label.stringValue] as? String
+        let valueOptions: [AferoAttributePresentationValueOption] = |<(jsonDict[CodingKeys.valueOptions.stringValue] as? [AnyObject]) ?? []
+        let rangeOptions: AferoAttributePresentationRangeOptions? = |<jsonDict[CodingKeys.rangeOptions.stringValue]
+        
+        self.init(label: label, rangeOptions: rangeOptions, valueOptions: valueOptions, flags: flags)
+    }
+    
+    public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
+    
 }
 
 // MARK: - AferoAttributeValueState -
@@ -627,7 +1020,7 @@ public extension AferoAttributeDescriptor {
     }
     
     /// Metadata describing this attribute's content
-    dynamic internal(set) public var descriptor: AferoAttributeDescriptor
+    dynamic internal(set) public var descriptor: AferoAttributeDataDescriptor
     
     /// The current value state reported by the Afero peripheral device to the Afero cloud.
     dynamic internal(set) public var currentValueState: AferoAttributeValueState? {
@@ -664,7 +1057,7 @@ public extension AferoAttributeDescriptor {
 
     }
     
-    init(descriptor: AferoAttributeDescriptor, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
+    init(descriptor: AferoAttributeDataDescriptor, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
         self.descriptor = descriptor
         self.currentValueState = currentValueState
         self.pendingValueState = pendingValueState
@@ -683,7 +1076,7 @@ public extension AferoAttributeDescriptor {
     
     public func copy(with zone: NSZone? = nil) -> Any {
         return AferoAttribute(
-            descriptor: descriptor.copy() as! AferoAttributeDescriptor,
+            descriptor: descriptor.copy() as! AferoAttributeDataDescriptor,
             currentValueState: currentValueState?.copy() as? AferoAttributeValueState,
             pendingValueState: pendingValueState?.copy() as? AferoAttributeValueState
         )
@@ -747,7 +1140,7 @@ public extension AferoAttributeDescriptor {
         
         guard let json = json as? [String: Any] else { return nil }
         
-        guard let descriptor: AferoAttributeDescriptor = |<(json[CodingKeys.descriptor.stringValue] as? [String: Any]) else {
+        guard let descriptor: AferoAttributeDataDescriptor = |<(json[CodingKeys.descriptor.stringValue] as? [String: Any]) else {
             return nil
         }
         
@@ -812,7 +1205,7 @@ public extension AferoAttributeDescriptor {
         try! self.init(attributes: [])
     }
     
-    convenience init(descriptors: [AferoAttributeDescriptor]) throws {
+    convenience init(descriptors: [AferoAttributeDataDescriptor]) throws {
         let attributes = descriptors.map {
             return AferoAttribute(descriptor: $0)
         }
@@ -1037,6 +1430,22 @@ extension AferoAttributeCollection {
             return AferoAttribute(descriptor: $0)
         }
         try register(attributes: attributes)
+    }
+    
+    /// Using the given profile, reload all attributes in this collection.
+    /// This results in all attributes being unregistered, and new attributes being registered,
+    /// if the new profile is the same as the old one.
+    /// If the new profile is `nil`, all attributes are removed.
+    
+    func configure(with profile: DeviceProfile?) {
+        
+        let configs = profile?.attributeConfigs()
+        
+        guard let profile = profile else {
+            unregisterAllAttributes()
+            return
+        }
+        
     }
 }
 

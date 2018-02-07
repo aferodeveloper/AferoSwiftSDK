@@ -186,15 +186,15 @@ class AferoAttributeDescriptorSpec: QuickSpec {
     
     override func spec() {
 
-        let a = AferoAttributeDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
-        let b = AferoAttributeDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
-        let c = AferoAttributeDescriptor(id: 333, type: .sInt16, semanticType: "semantic333", key: "key333", defaultValue: "3", operations: [.Write])
-        let d = AferoAttributeDescriptor(id: 444, type: .sInt32, semanticType: "semantic444", key: "key444", defaultValue: "4", operations: [])
-        let e = AferoAttributeDescriptor(id: 555, type: .sInt64, semanticType: "semantic555", key: "key555", defaultValue: "5", operations: [.Read, .Write])
-        let f = AferoAttributeDescriptor(id: 666, type: .q1516, semanticType: "semantic666", key: "key666", defaultValue: "6.6", operations: [.Write])
-        let g = AferoAttributeDescriptor(id: 777, type: .q3132, semanticType: "semantic777", key: "key777", defaultValue: "7.7", operations: [.Read])
-        let h = AferoAttributeDescriptor(id: 888, type: .utf8S, semanticType: "semantic888", key: "key888", defaultValue: "stringystring", operations: [])
-        let i = AferoAttributeDescriptor(id: 999, type: .bytes, semanticType: nil, key: nil, defaultValue: nil, operations: [.Read, .Write])
+        let a = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+        let b = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+        let c = AferoAttributeDataDescriptor(id: 333, type: .sInt16, semanticType: "semantic333", key: "key333", defaultValue: "3", operations: [.Write])
+        let d = AferoAttributeDataDescriptor(id: 444, type: .sInt32, semanticType: "semantic444", key: "key444", defaultValue: "4", operations: [])
+        let e = AferoAttributeDataDescriptor(id: 555, type: .sInt64, semanticType: "semantic555", key: "key555", defaultValue: "5", operations: [.Read, .Write])
+        let f = AferoAttributeDataDescriptor(id: 666, type: .q1516, semanticType: "semantic666", key: "key666", defaultValue: "6.6", operations: [.Write])
+        let g = AferoAttributeDataDescriptor(id: 777, type: .q3132, semanticType: "semantic777", key: "key777", defaultValue: "7.7", operations: [.Read])
+        let h = AferoAttributeDataDescriptor(id: 888, type: .utf8S, semanticType: "semantic888", key: "key888", defaultValue: "stringystring", operations: [])
+        let i = AferoAttributeDataDescriptor(id: 999, type: .bytes, semanticType: nil, key: nil, defaultValue: nil, operations: [.Read, .Write])
         
         describe("Codable") {
             
@@ -204,10 +204,10 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                     let encoder = JSONEncoder()
                     let decoder = JSONDecoder()
                     
-                    let roundtrip: (AferoAttributeDescriptor) throws -> AferoAttributeDescriptor = {
+                    let roundtrip: (AferoAttributeDataDescriptor) throws -> AferoAttributeDataDescriptor = {
                         desc in
                         let data = try encoder.encode(desc)
-                        return try decoder.decode(AferoAttributeDescriptor.self, from: data)
+                        return try decoder.decode(AferoAttributeDataDescriptor.self, from: data)
                     }
                     
                     expect(try roundtrip(a)) == a
@@ -246,7 +246,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
             
             it("should equate as expected") {
 
-                let a2 = a.copy() as! AferoAttributeDescriptor
+                let a2 = a.copy() as! AferoAttributeDataDescriptor
                 
                 expect(a) == a2
                 expect(a).toNot(beIdenticalTo(a2))
@@ -259,7 +259,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(a) != h
                 expect(a) != i
 
-                let b2 = b.copy() as! AferoAttributeDescriptor
+                let b2 = b.copy() as! AferoAttributeDataDescriptor
                 
                 expect(b) == b2
                 expect(b).toNot(beIdenticalTo(b2))
@@ -273,7 +273,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(b) != h
                 expect(b) != i
 
-                let c2 = c.copy() as! AferoAttributeDescriptor
+                let c2 = c.copy() as! AferoAttributeDataDescriptor
                 
                 expect(c) == c2
                 expect(c).toNot(beIdenticalTo(c2))
@@ -287,7 +287,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(c) != h
                 expect(c) != i
 
-                let d2 = d.copy() as! AferoAttributeDescriptor
+                let d2 = d.copy() as! AferoAttributeDataDescriptor
                 
                 expect(d) == d2
                 expect(d).toNot(beIdenticalTo(d2))
@@ -301,7 +301,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(d) != h
                 expect(d) != i
 
-                let e2 = e.copy() as! AferoAttributeDescriptor
+                let e2 = e.copy() as! AferoAttributeDataDescriptor
                 
                 expect(e) == e2
                 expect(e).toNot(beIdenticalTo(e2))
@@ -315,7 +315,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(e) != h
                 expect(e) != i
 
-                let f2 = f.copy() as! AferoAttributeDescriptor
+                let f2 = f.copy() as! AferoAttributeDataDescriptor
                 
                 expect(f) == f2
                 expect(f).toNot(beIdenticalTo(f2))
@@ -329,7 +329,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(f) != h
                 expect(f) != i
 
-                let g2 = g.copy() as! AferoAttributeDescriptor
+                let g2 = g.copy() as! AferoAttributeDataDescriptor
                 
                 expect(g) == g2
                 expect(g).toNot(beIdenticalTo(g2))
@@ -343,7 +343,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(g) != h
                 expect(g) != i
 
-                let h2 = h.copy() as! AferoAttributeDescriptor
+                let h2 = h.copy() as! AferoAttributeDataDescriptor
                 
                 expect(h) == h2
                 expect(h).toNot(beIdenticalTo(h2))
@@ -357,7 +357,7 @@ class AferoAttributeDescriptorSpec: QuickSpec {
                 expect(h) != g
                 expect(h) != i
 
-                let i2 = i.copy() as! AferoAttributeDescriptor
+                let i2 = i.copy() as! AferoAttributeDataDescriptor
                 
                 expect(i) == i2
                 expect(i).toNot(beIdenticalTo(i2))
@@ -530,7 +530,7 @@ class AferoAttributeSpec: QuickSpec {
     
     override func spec() {
 
-        let adesc = AferoAttributeDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+        let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
         let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
         let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
         
@@ -543,7 +543,7 @@ class AferoAttributeSpec: QuickSpec {
         let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
         let ac3 = a3.copy() as! AferoAttribute
 
-        let bdesc = AferoAttributeDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+        let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
         let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
         let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
         let b = AferoAttribute(descriptor: bdesc)
@@ -692,8 +692,8 @@ class AferoAttributeSpec: QuickSpec {
             
             it("should report descriptor changes") {
                 
-                let newDesc = AferoAttributeDescriptor(id: 23, type: .bytes, semanticType: "foo", key: "moo", defaultValue: "42", operations: [.Write])
-                var chgDesc: AferoAttributeDescriptor? = nil
+                let newDesc = AferoAttributeDataDescriptor(id: 23, type: .bytes, semanticType: "foo", key: "moo", defaultValue: "42", operations: [.Write])
+                var chgDesc: AferoAttributeDataDescriptor? = nil
                 let la = a.copy() as! AferoAttribute
                 
                 let obs = la.observe(\.descriptor) {
@@ -782,14 +782,14 @@ class AferoAttributeCollectionSpec: QuickSpec {
 
     override func spec() {
         
-        let adesc = AferoAttributeDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+        let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
         let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
         let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
 //        let a = AferoAttribute(descriptor: adesc)
 //        let a2 = AferoAttribute(descriptor: adesc, currentValueState: astate)
         let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
         
-        let bdesc = AferoAttributeDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+        let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
         let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
         let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
 //        let b = AferoAttribute(descriptor: bdesc)
