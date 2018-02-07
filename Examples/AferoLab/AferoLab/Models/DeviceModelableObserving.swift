@@ -257,10 +257,10 @@ protocol AttributeEventObserving: Tagged {
     
     var attributeLabelDisplayValue: String? { get }
     
-    var attributeRangeOptions: DeviceProfile.Presentation.AttributeOption.RangeOptions? { get }
+    var attributeRangeOptions: AferoAttributePresentationRangeOptions? { get }
     var attributeRangeSubscriptor: RangeOptionsSubscriptor? { get }
     
-    typealias ValueOption = DeviceProfile.Presentation.AttributeOption.ValueOption
+    typealias ValueOption = AferoAttributePresentationValueOption
 
     var attributeValueOptions: [ValueOption]? { get }
     var attributeValueOptionsMap: ValueOptionsMap? { get }
@@ -422,7 +422,7 @@ extension AttributeEventObserving {
 
 extension AttributeEventObserving {
     
-    typealias ValueOption = DeviceProfile.Presentation.AttributeOption.ValueOption
+    typealias ValueOption = AferoAttributePresentationValueOption
     var attributeValueOptions: [ValueOption]? {
         return attribute?.config.presentation?.valueOptions
     }
@@ -481,7 +481,7 @@ extension AttributeEventObserving {
 
 extension AttributeEventObserving {
     
-    var attributeRangeOptions: DeviceProfile.Presentation.AttributeOption.RangeOptions? {
+    var attributeRangeOptions: AferoAttributePresentationRangeOptions? {
         return attribute?.config.presentation?.rangeOptions
     }
     

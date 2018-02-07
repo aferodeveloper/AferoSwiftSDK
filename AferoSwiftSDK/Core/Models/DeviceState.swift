@@ -1325,7 +1325,7 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    var primaryOperationAttributeDescriptor: AferoAttributeDescriptor? {
+    var primaryOperationAttributeDescriptor: AferoAttributeDataDescriptor? {
         return profile?.primaryOperationAttribute
     }
     
