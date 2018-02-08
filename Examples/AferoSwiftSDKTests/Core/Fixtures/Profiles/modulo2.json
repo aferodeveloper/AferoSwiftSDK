@@ -1,0 +1,548 @@
+{
+    "module": "ASR-2",
+    "schemaVersion": 2,
+    "deviceTypeId": "611fc017-dafb-4175-8bb2-9f27c3351986",
+    "presentation":
+    {
+        "label": "Modulo 2",
+        "attributeOptions":
+        {
+            "1030":
+            {
+                "label": "Button",
+                "flags":
+                [
+
+                ],
+                "valueOptions":
+                [
+                    {
+                        "match": "0",
+                        "apply":
+                        {
+                            "state": "standby",
+                            "label": "Toggled On"
+                        }
+                    },
+                    {
+                        "match": "1",
+                        "apply":
+                        {
+                            "state": "standby",
+                            "label": "Toggled Off"
+                        }
+                    }
+                ]
+            },
+            "1024":
+            {
+                "label": "LED",
+                "flags":
+                [
+                    "primaryOperation"
+                ],
+                "valueOptions":
+                [
+                    {
+                        "match": "0",
+                        "apply":
+                        {
+                            "state": "running",
+                            "label": "On"
+                        }
+                    },
+                    {
+                        "match": "1",
+                        "apply":
+                        {
+                            "state": "standby",
+                            "label": "Off"
+                        }
+                    }
+                ]
+            }
+        },        "gauge":
+        {
+            "foreground":
+            {
+                "images":
+                [
+                    {
+                        "uri": "https://cdn.afero.io/media-library/device_icon_modulo2.png",
+                        "imageSize": "1x"
+                    }
+                ]
+            },            "displayRules":
+            [
+
+            ],
+            "background":
+            {
+                "images":
+                [
+
+                ]
+            }
+        },        "groups":
+        [
+            {
+                "label": "LED",
+                "gauge":
+                {
+                    "displayRules":
+                    [
+
+                    ],
+                    "label": "",
+                    "foreground":
+                    {
+                        "images":
+                        [
+                            {
+                                "uri": "https://cdn.afero.io/media-library/device_control_icon_modulo_led.png",
+                                "imageSize": "1x"
+                            }
+                        ]
+                    },
+                    "background":
+                    {
+                        "images":
+                        [
+
+                        ]
+                    }
+                },
+                "groups":
+                [
+
+                ],
+                "controls":
+                [
+                    1
+                ]
+            },
+            {
+                "label": "Button",
+                "gauge":
+                {
+                    "displayRules":
+                    [
+
+                    ],
+                    "label": "",
+                    "foreground":
+                    {
+                        "images":
+                        [
+                            {
+                                "uri": "https://cdn.afero.io/media-library/device_control_icon_modulo_button.png",
+                                "imageSize": "1x"
+                            }
+                        ]
+                    },
+                    "background":
+                    {
+                        "images":
+                        [
+
+                        ]
+                    }
+                },
+                "groups":
+                [
+
+                ],
+                "controls":
+                [
+                    2
+                ]
+            }
+        ],
+        "controls":
+        [
+            {
+                "attributeMap":
+                {
+                    "value": 1024
+                },                "id": 1,
+                "controlType": "menuControl",
+                "displayRules":
+                [
+                    {
+                        "match": "*",
+                        "apply":
+                        {
+                            "enabled": true,
+                            "viewStyle": "PLAIN"
+                        }
+                    }
+                ]
+            },
+            {
+                "attributeMap":
+                {
+                    "value": 1030
+                },                "id": 2,
+                "controlType": "menuControl",
+                "displayRules":
+                [
+                    {
+                        "match": "*",
+                        "apply":
+                        {
+                            "enabled": true,
+                            "viewStyle": "PLAIN"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "deviceType": "Modulo 2",
+    "partnerId": "159c843b-ab2a-415e-8033-3035a15b7c7e",
+    "services":
+    [
+        {
+            "id": 1,
+            "attributes":
+            [
+                {
+                    "length": 2,
+                    "defaultValue": "0100",
+                    "dataType": "SINT16",
+                    "id": 1024,
+                    "value": "1",
+                    "semanticType": "LED",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE"
+                    ]
+                },
+                {
+                    "length": 8,
+                    "defaultValue": "0000000000000000",
+                    "dataType": "SINT64",
+                    "id": 1025,
+                    "value": "0",
+                    "semanticType": "GPIO 0 Configuration",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                },
+                {
+                    "id": 1030,
+                    "semanticType": "Button",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT16",
+                    "length": 2
+                },
+                {
+                    "length": 8,
+                    "defaultValue": "4500000000000000",
+                    "dataType": "SINT64",
+                    "id": 1031,
+                    "value": "69",
+                    "semanticType": "GPIO 3 Configuration",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                },
+                {
+                    "id": 2001,
+                    "semanticType": "Bootloader Version",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT64",
+                    "length": 8
+                },                {
+                    "id": 2003,
+                    "semanticType": "Application Version",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT64",
+                    "length": 8
+                },
+                {
+                    "id": 2004,
+                    "semanticType": "Profile Version",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT64",
+                    "length": 8
+                },
+                {
+                    "id": 2006,
+                    "semanticType": "WiFi Version",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT64",
+                    "length": 8
+                },
+                {
+                    "length": 2,
+                    "defaultValue": "0000",
+                    "dataType": "SINT16",
+                    "id": 59001,
+                    "value": "0",
+                    "semanticType": "Offline Schedules Enabled",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "STORE_IN_FLASH"
+                    ]
+                },
+                {
+                    "id": 60002,
+                    "semanticType": "Conclave Access",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "PASS_THROUGH",
+                        "MCU"
+                    ],
+                    "dataType": "BYTES",
+                    "length": 255
+                },
+                {
+                    "id": 65001,
+                    "semanticType": "UTC Offset",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE"
+                    ],
+                    "dataType": "BYTES",
+                    "length": 8
+                },
+                {
+                    "length": 4,
+                    "defaultValue": "803A0900",
+                    "dataType": "SINT32",
+                    "id": 65002,
+                    "value": "604800",
+                    "semanticType": "Maximum Re-link Interval",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "MCU"
+                    ]
+                },
+                {
+                    "id": 65003,
+                    "semanticType": "Attributes CRC32",
+                    "operations":
+                    [
+                        "WRITE",
+                        "MCU"
+                    ],
+                    "dataType": "SINT32",
+                    "length": 4
+                },
+                {
+                    "length": 33,
+                    "defaultValue": "20",
+                    "dataType": "UTF8S",
+                    "id": 65004,
+                    "value": " ",
+                    "semanticType": "Connected SSID",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                },
+                {
+                    "length": 1,
+                    "defaultValue": "00",
+                    "dataType": "SINT8",
+                    "id": 65005,
+                    "value": "0",
+                    "semanticType": "WiFi Bars",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                },
+                {
+                    "length": 1,
+                    "defaultValue": "00",
+                    "dataType": "SINT8",
+                    "id": 65006,
+                    "value": "0",
+                    "semanticType": "WiFi Steady State",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                },
+                {
+                    "length": 1,
+                    "defaultValue": "00",
+                    "dataType": "SINT8",
+                    "id": 65007,
+                    "value": "0",
+                    "semanticType": "WiFi Setup State",
+                    "operations":
+                    [
+                        "READ",
+                        "MCU"
+                    ]
+                },
+                {
+                    "id": 65009,
+                    "semanticType": "WiFi SSID List",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "PASS_THROUGH",
+                        "MCU"
+                    ],
+                    "dataType": "BYTES",
+                    "length": 2048
+                },
+                {
+                    "id": 65010,
+                    "semanticType": "WiFi Credentials",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "PASS_THROUGH",
+                        "MCU"
+                    ],
+                    "dataType": "BYTES",
+                    "length": 255
+                },
+                {
+                    "id": 65012,
+                    "semanticType": "Command",
+                    "operations":
+                    [
+                        "WRITE"
+                    ],
+                    "dataType": "SINT32",
+                    "length": 4
+                },
+                {
+                    "id": 65013,
+                    "semanticType": "ASR State",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT8",
+                    "length": 1
+                },
+                {
+                    "id": 65014,
+                    "semanticType": "Low Power Warn",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "SINT8",
+                    "length": 1
+                },
+                {
+                    "id": 65015,
+                    "semanticType": "Linked Timestamp",
+                    "operations":
+                    [
+                        "WRITE"
+                    ],
+                    "dataType": "SINT32",
+                    "length": 4
+                },
+                {
+                    "length": 1,
+                    "defaultValue": "05",
+                    "dataType": "SINT8",
+                    "id": 65016,
+                    "value": "5",
+                    "semanticType": "Advertising Secret Duration",
+                    "operations":
+                    [
+                        "READ",
+                        "WRITE",
+                        "MCU"
+                    ]
+                },
+                {
+                    "id": 65017,
+                    "semanticType": "Advertising Secret",
+                    "operations":
+                    [
+                        "READ",
+                        "MCU"
+                    ],
+                    "dataType": "BYTES",
+                    "length": 32
+                },
+                {
+                    "id": 65018,
+                    "semanticType": "Attribute ACK",
+                    "operations":
+                    [
+                        "WRITE",
+                        "MCU"
+                    ],
+                    "dataType": "SINT16",
+                    "length": 2
+                },
+                {
+                    "id": 65019,
+                    "semanticType": "Reboot Reason",
+                    "operations":
+                    [
+                        "READ"
+                    ],
+                    "dataType": "UTF8S",
+                    "length": 100
+                },
+                {
+                    "length": 12,
+                    "defaultValue": "FA000000180018000C00A00F",
+                    "dataType": "BYTES",
+                    "id": 65020,
+                    "value": "FA000000180018000C00A00F",
+                    "semanticType": "BLE Comms",
+                    "operations":
+                    [
+                        "READ",
+                        "MCU"
+                    ]
+                },
+                {
+                    "length": 1,
+                    "defaultValue": "00",
+                    "dataType": "SINT8",
+                    "id": 65021,
+                    "value": "0",
+                    "semanticType": "MCU Interface",
+                    "operations":
+                    [
+                        "READ"
+                    ]
+                }
+            ]
+        }
+    ],
+    "profileId": "2eb09559-2135-45b8-9843-5b9acb2b3438"
+}
