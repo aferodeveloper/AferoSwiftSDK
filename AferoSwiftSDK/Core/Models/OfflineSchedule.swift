@@ -579,7 +579,7 @@ open class OfflineSchedule: NSObject {
             [weak self] event in switch event {
             case let .update(_, _, attribute):
                 DDLogDebug("Got attributeUpdate: \(String(reflecting: attribute))", tag: TAG)
-                self?.storageUpdated(attribute.config.descriptor.id, attributeValue: attribute.value)
+                self?.storageUpdated(attribute.config.dataDescriptor.id, attributeValue: attribute.value)
             }
         }
     }

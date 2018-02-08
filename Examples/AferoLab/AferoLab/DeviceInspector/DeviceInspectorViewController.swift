@@ -586,7 +586,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
             inspector.deviceModelable = deviceModelable
-            inspector.attributeId = attribute.config.descriptor.id
+            inspector.attributeId = attribute.config.dataDescriptor.id
             
         case .showTagEditor:
             
@@ -721,7 +721,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             
             var updatedAccumulated = accumulated
             updatedAccumulated[section] = attributes
-                .sorted { $0.descriptor.id < $1.descriptor.id }
+                .sorted { $0.dataDescriptor.id < $1.dataDescriptor.id }
             return updatedAccumulated
         }
 
@@ -742,7 +742,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             var updatedAccumulated = accumulated
             nextPair.value.forEach {
                 config in
-                updatedAccumulated[config.descriptor.id] = nextPair.key
+                updatedAccumulated[config.dataDescriptor.id] = nextPair.key
             }
             return updatedAccumulated
         }
@@ -790,7 +790,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         if indexPath == IndexPath.tagCellIndexPath { return nil }
         
-        guard let attributeId = config(for: indexPath)?.descriptor.id else {
+        guard let attributeId = config(for: indexPath)?.dataDescriptor.id else {
             let msg = "No attributeId for \(String(describing: indexPath))"
             assert(false, msg)
             DDLogError(msg, tag: TAG)
@@ -830,10 +830,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         let maybeRow: Int?
         
         #if !compiler(>=5)
-        maybeRow = sectionAttributeConfigMap[section]?.index(where: { $0.descriptor.id == attributeId })
+        maybeRow = sectionAttributeConfigMap[section]?.index(where: { $0.dataDescriptor.id == attributeId })
         #endif
         #if compiler(>=5)
-        maybeRow = sectionAttributeConfigMap[section]?.firstIndex(where: { $0.descriptor.id == attributeId })
+        maybeRow = sectionAttributeConfigMap[section]?.firstIndex(where: { $0.dataDescriptor.id == attributeId })
         #endif
         
         guard let row = maybeRow else {
@@ -1013,11 +1013,11 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             }
             
             cell.attribute = nil
-            cell.attributeNameLabel?.text = config.descriptor.semanticType
-            cell.attributeIdLabel?.text = "\(config.descriptor.id)"
+            cell.attributeNameLabel?.text = config.dataDescriptor.semanticType
+            cell.attributeIdLabel?.text = "\(config.dataDescriptor.id)"
             cell.attributeByteValueLabel?.text = "-"
             cell.attributeStringValueLabel?.text = "-"
-            cell.attributeTypeLabel?.text = config.descriptor.dataType.stringValue
+            cell.attributeTypeLabel?.text = config.dataDescriptor.dataType.stringValue
             
             return
         }
@@ -1088,7 +1088,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             // 4. Else if we're a string or raw bytes, use a textView
             
             if
-                let valueOptions = attribute.config.presentation?.valueOptions,
+                let valueOptions = attribute.config.presentationDescriptor?.valueOptions,
                 !valueOptions.isEmpty {
                
                 // we have ValueOptions
@@ -1099,7 +1099,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                     segueIdentifier = .showPickerAttributeInspector
                 }
                 
-            } else if let rangeOptions = attribute.config.presentation?.rangeOptions {
+            } else if let rangeOptions = attribute.config.presentationDescriptor?.rangeOptions {
                 
                 // we have RangeOptions
                 
@@ -1110,7 +1110,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                 } else {
                     // Use a slider or progress view
 
-                    if attribute.config.descriptor.isWritable {
+                    if attribute.config.dataDescriptor.isWritable {
                         // use a slider
                         segueIdentifier = .showSliderAttributeInspector
                     } else {
@@ -1120,7 +1120,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
                  
                 }
             } else {
-                switch attribute.config.descriptor.dataType {
+                switch attribute.config.dataDescriptor.dataType {
                 case .boolean:
                     // use a switch
                     segueIdentifier = .showSwitchAttributeInspector

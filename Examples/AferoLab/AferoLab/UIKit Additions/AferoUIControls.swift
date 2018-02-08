@@ -357,7 +357,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
         if let _ = attributeValue(forStringValue: replacementText) {
             textView.textColor = standardTextColor
         } else {
-            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.descriptor.dataType)", tag: TAG)
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.dataDescriptor.dataType)", tag: TAG)
             textView.textColor = invalidValueTextColor
         }
         
@@ -487,7 +487,7 @@ extension AferoAttributeTextProducing where Self: AttributeEventObserving {
         if let _ = attributeValue(forStringValue: replacementText) {
             textField.textColor = standardTextColor
         } else {
-            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.descriptor.dataType)", tag: TAG)
+            DDLogDebug("'\(replacementText)' is not a valid value for \(attribute.config.dataDescriptor.dataType)", tag: TAG)
             textField.textColor = invalidValueTextColor
         }
         
@@ -1095,7 +1095,7 @@ class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEvent
         var max = floatValue > 0.0 ? floatValue : 0.0
         
         if
-            let rangeOptions = attribute.config.presentation?.rangeOptions,
+            let rangeOptions = attribute.config.presentationDescriptor?.rangeOptions,
             let maybeMin = rangeOptions.minValue?.floatValue,
             let maybeMax = rangeOptions.maxValue?.floatValue {
             min = maybeMin
@@ -1144,7 +1144,7 @@ class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, Attrib
             return
         }
         
-        guard let index = attribute.config.presentation?.valueOptions.firstIndex(where: {
+        guard let index = attribute.config.presentationDescriptor?.valueOptions.firstIndex(where: {
             valueOption in return valueOption.match == attribute.value.stringValue
         }) else {
             DDLogError("Unrecognized value for picker (== \(String(describing: attribute)); bailing.", tag: TAG)

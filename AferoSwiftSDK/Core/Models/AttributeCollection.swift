@@ -1012,15 +1012,21 @@ public extension AferoAttributeDataDescriptor {
 // MARK: - AferoAttribute -
 
 /// Represents an Afero attribute on an Afero peripheral device.
+///
+/// - note: This class has no 1:1 implementation on the Afero cloud; it's constructed for the SDK's
+///         purposes only.
 
 @objcMembers public class AferoAttribute: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttribute> desc:\(String(reflecting: descriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
+        return "<AferoAttribute> dataDesc:\(String(reflecting: dataDescriptor)) presentationDesc:\(String(reflecting: presentationDescriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
     }
     
-    /// Metadata describing this attribute's content
-    dynamic internal(set) public var descriptor: AferoAttributeDataDescriptor
+    /// Metadata describing the native, dimensionless storage of this attribute (its primitive type).
+    dynamic internal(set) public var dataDescriptor: AferoAttributeDataDescriptor
+    
+    /// Metadata describing how this attribute should be presented.
+    dynamic internal(set) public var presentationDescriptor: AferoAttributePresentationDescriptor?
     
     /// The current value state reported by the Afero peripheral device to the Afero cloud.
     dynamic internal(set) public var currentValueState: AferoAttributeValueState? {
@@ -1040,6 +1046,7 @@ public extension AferoAttributeDataDescriptor {
     /// The pending value state, resulting from a successful write from the local client
     /// to the Afero cloud, prior to the associated Afero peripheral device applying
     /// and reporting the successful application of a new value.
+    
     dynamic internal(set) public var pendingValueState: AferoAttributeValueState? {
         willSet {
             guard newValue != pendingValueState else { return }
@@ -1057,26 +1064,38 @@ public extension AferoAttributeDataDescriptor {
 
     }
     
-    init(descriptor: AferoAttributeDataDescriptor, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
-        self.descriptor = descriptor
+    /// Initialize an `AferoAttribute` with descriptors for data and presentation, current, and pending value state.
+    /// - parameter dataDescriptpr: The structure describing the logical type of data being stored,
+    /// - parameter presentationDescriptor: The structure that supports, describes
+    ///             how this attribute should be interpreted for presentation in a user interface
+    ///             or consumption by analytics.
+    /// - parameter currentValueState: The current value state reported by the Afero peripheral device to the Afero cloud.
+    /// - parameter pendingValueState: The pending value state, resulting from a successful write from the local client
+    ///             to the Afero cloud, prior to the associated Afero peripheral device applying
+    ///             and reporting the successful application of a new value.
+    
+    init(dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor? = nil, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
+        self.presentationDescriptor = presentationDescriptor
+        self.dataDescriptor = dataDescriptor
         self.currentValueState = currentValueState
         self.pendingValueState = pendingValueState
     }
     
     // MARK: NSObjectProtocol
     
-    public override var hashValue: Int { return descriptor.hashValue }
+    public override var hashValue: Int { return dataDescriptor.hashValue }
     
     public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? AferoAttribute else { return false }
-        return other.descriptor == descriptor && other.currentValueState == currentValueState && other.pendingValueState == pendingValueState
+        return other.dataDescriptor == dataDescriptor && other.currentValueState == currentValueState && other.pendingValueState == pendingValueState
     }
     
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
         return AferoAttribute(
-            descriptor: descriptor.copy() as! AferoAttributeDataDescriptor,
+            dataDescriptor: dataDescriptor.copy() as! AferoAttributeDataDescriptor,
+            presentationDescriptor: presentationDescriptor?.copy() as? AferoAttributePresentationDescriptor,
             currentValueState: currentValueState?.copy() as? AferoAttributeValueState,
             pendingValueState: pendingValueState?.copy() as? AferoAttributeValueState
         )
@@ -1101,9 +1120,17 @@ public extension AferoAttributeDataDescriptor {
     
     // MARK: Computed convenience properties
     
+    /// If true, a successful call has been made to the Afero cloud to set this attribute's value
+    /// on the device with which it's associated, however the client has not yet received
+    /// an update from the cloud confirming that the associated device has applied and confirmed
+    /// the change.
+    
     dynamic public var hasPendingValueState: Bool {
         return pendingValueState != nil
     }
+    
+    /// Shortcut for getting the state that should be displayed in a UI;
+    /// `pendingValueState` if it's non-nil, otherwise `currentValueState`.
     
     dynamic public var displayValueState: AferoAttributeValueState? {
         return pendingValueState ?? currentValueState
@@ -1112,7 +1139,8 @@ public extension AferoAttributeDataDescriptor {
     // MARK: Codable
     
     enum CodingKeys: String, CodingKey {
-        case descriptor
+        case dataDescriptor
+        case presentationDescriptor
         case currentValueState
         case pendingValueState
     }
@@ -1122,8 +1150,12 @@ public extension AferoAttributeDataDescriptor {
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [CodingKeys: Any] = [
-            .descriptor: descriptor.JSONDict!
+            .dataDescriptor: dataDescriptor.JSONDict!
         ]
+        
+        if let presentationDescriptor = presentationDescriptor {
+            ret[.presentationDescriptor] = presentationDescriptor
+        }
         
         if let currentValueState = currentValueState?.JSONDict {
             ret[.currentValueState] = currentValueState
@@ -1140,14 +1172,21 @@ public extension AferoAttributeDataDescriptor {
         
         guard let json = json as? [String: Any] else { return nil }
         
-        guard let descriptor: AferoAttributeDataDescriptor = |<(json[CodingKeys.descriptor.stringValue] as? [String: Any]) else {
+        guard let dataDescriptor: AferoAttributeDataDescriptor = |<(json[CodingKeys.dataDescriptor.stringValue] as? [String: Any]) else {
             return nil
         }
-        
+
+        let presentationDescriptor: AferoAttributePresentationDescriptor? = |<(json[CodingKeys.presentationDescriptor.stringValue] as? [String: Any])
         let currentValueState: AferoAttributeValueState? = |<(json[CodingKeys.currentValueState.stringValue] as? [String: Any])
         let pendingValueState: AferoAttributeValueState? = |<(json[CodingKeys.pendingValueState.stringValue] as? [String: Any])
         
-        self.init(descriptor: descriptor, currentValueState: currentValueState, pendingValueState: pendingValueState)
+        self.init(
+            dataDescriptor: dataDescriptor,
+            presentationDescriptor: presentationDescriptor,
+            currentValueState: currentValueState,
+            pendingValueState: pendingValueState
+        )
+        
     }
 
 }
@@ -1186,6 +1225,14 @@ public extension AferoAttributeDataDescriptor {
 // MARK: - AferoAttributeCollection -
 
 /// A collection of Afero attributes.
+///
+/// # Key-Value Observability
+///
+/// AferoAttributeCollection is key-value-observable for `attributes`, `attributeKeys`,
+/// and `attributeIds`. Observers of individual `AferoAttributes` coming from a
+/// collection should observe one of these to ensure that they're able to
+/// stop observing `AferoAttribute` instances when they're removed from a collection
+/// (e.g. due to a profile reload).
 
 @objcMembers public class AferoAttributeCollection: NSObject, Codable {
 
@@ -1206,10 +1253,7 @@ public extension AferoAttributeDataDescriptor {
     }
     
     convenience init(descriptors: [AferoAttributeDataDescriptor]) throws {
-        let attributes = descriptors.map {
-            return AferoAttribute(descriptor: $0)
-        }
-        try self.init(attributes: attributes)
+        try self.init(attributeConfigs: descriptors.map { return ($0, nil) })
     }
 
     // MARK: Model
@@ -1226,13 +1270,13 @@ public extension AferoAttributeDataDescriptor {
         return false
     }
     
-    private func emitWillChangeNotifications() {
+    fileprivate func emitWillChangeNotifications() {
         willChangeValue(for: \.attributes)
         willChangeValue(for: \.attributeKeys)
         willChangeValue(for: \.attributeIds)
     }
     
-    private func emitDidChangeNotifications() {
+    fileprivate func emitDidChangeNotifications() {
         didChangeValue(for: \.attributes)
         didChangeValue(for: \.attributeKeys)
         didChangeValue(for: \.attributeIds)
@@ -1246,7 +1290,7 @@ public extension AferoAttributeDataDescriptor {
     /// - warning: This is **not** atomic. If error is thrown, the collection will
     ///            **not** be reverted to its previous state.
     
-    func register<T: Sequence>(attributes: T) throws where T.Element == AferoAttribute {
+    func register<T: Collection>(attributes: T) throws where T.Element == AferoAttribute {
         emitWillChangeNotifications()
         defer { emitDidChangeNotifications() }
         try attributes.forEach { try register(attribute: $0, notifyObservers: false) }
@@ -1265,12 +1309,12 @@ public extension AferoAttributeDataDescriptor {
         
         var key: String?
         
-        guard attributeRegistry[attribute.descriptor.id] == nil else {
-            afLogError("Duplicate attribute id: \(attribute.descriptor.id) (attribute ids must be unique)")
+        guard attributeRegistry[attribute.dataDescriptor.id] == nil else {
+            afLogError("Duplicate attribute id: \(attribute.dataDescriptor.id) (attribute ids must be unique)")
             throw AferoAttributeCollectionError.duplicateAttributeId
         }
         
-        if let maybeKey = attribute.descriptor.key {
+        if let maybeKey = attribute.dataDescriptor.key {
             guard attributeKeyMap[maybeKey] == nil else {
                 afLogError("Duplicate attribute key: \(maybeKey) (attribute keys must be unique)")
                 throw AferoAttributeCollectionError.duplicateKey
@@ -1280,9 +1324,9 @@ public extension AferoAttributeDataDescriptor {
         
         if notifyObservers { emitWillChangeNotifications() }
         defer { if notifyObservers { emitDidChangeNotifications() } }
-        attributeRegistry[attribute.descriptor.id] = attribute
+        attributeRegistry[attribute.dataDescriptor.id] = attribute
         if let key = key {
-            attributeKeyMap[key] = attribute.descriptor.id
+            attributeKeyMap[key] = attribute.dataDescriptor.id
         }
         
     }
@@ -1301,7 +1345,7 @@ public extension AferoAttributeDataDescriptor {
         guard let attribute = attributeRegistry[id] else { return nil }
         if notifyObservers { emitWillChangeNotifications() }
         defer { if notifyObservers { emitDidChangeNotifications() }}
-        if let key = attribute.descriptor.key {
+        if let key = attribute.dataDescriptor.key {
             attributeKeyMap.removeValue(forKey: key)
         }
         return attributeRegistry.removeValue(forKey: id)
@@ -1424,29 +1468,50 @@ public extension AferoAttributeDataDescriptor {
 
 extension AferoAttributeCollection {
     
-    func reloadAttributes(with profile: DeviceProfile) throws {
-        unregisterAllAttributes()
-        let attributes = profile.attributes.values.map {
-            return AferoAttribute(descriptor: $0)
+    /// Initialize with a collection of `DeviceProfile.AttributeConfig` types.
+    convenience init<T: Collection>(attributeConfigs: T) throws
+        where T.Element == DeviceProfile.AttributeConfig {
+        let attributes = attributeConfigs.map {
+            return AferoAttribute(dataDescriptor: $0.0, presentationDescriptor: $0.1)
         }
-        try register(attributes: attributes)
+        try self.init(attributes: attributes)
     }
     
+    /// Register the given attribues, and send appropriate change notifications.
+    /// - parameter attributes: The attributes to register.
+    /// - throws: An `AferoAttributeCollectionError` if something goes wrong.
+    /// - warning: This is **not** atomic. If error is thrown, the collection will
+    ///            **not** be reverted to its previous state.
+    
+    func register<T: Collection>(attributeConfigs: T) throws where T.Element == DeviceProfile.AttributeConfig {
+        emitWillChangeNotifications()
+        defer { emitDidChangeNotifications() }
+        try attributeConfigs.forEach {
+            try register(
+                attribute: AferoAttribute(
+                    dataDescriptor: $0.dataDescriptor,
+                    presentationDescriptor: $0.presentationDescriptor
+                ),
+                notifyObservers: false)
+        }
+    }
+    
+    /// Initialize with attributes from the given profile.
+    convenience init(profile: DeviceProfile) throws {
+        try self.init(attributeConfigs: profile.attributeConfigs())
+    }
+
     /// Using the given profile, reload all attributes in this collection.
     /// This results in all attributes being unregistered, and new attributes being registered,
     /// if the new profile is the same as the old one.
     /// If the new profile is `nil`, all attributes are removed.
     
-    func configure(with profile: DeviceProfile?) {
-        
-        let configs = profile?.attributeConfigs()
-        
-        guard let profile = profile else {
-            unregisterAllAttributes()
-            return
-        }
-        
+    func configure(with profile: DeviceProfile?) throws {
+        unregisterAllAttributes()
+        guard let configs = profile?.attributeConfigs() else { return }
+        try register(attributeConfigs: configs)
     }
+    
 }
 
 // MARK: - Attribute Collection KVO Proxies -
