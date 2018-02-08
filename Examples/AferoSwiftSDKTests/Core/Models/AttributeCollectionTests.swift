@@ -1419,6 +1419,126 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
             }
             
+            describe("when configuring with a profile") {
+                
+                let modulo: DeviceProfile = (try! self.fixture(named: "modulo"))!
+                let modulo2: DeviceProfile = (try! self.fixture(named: "modulo2"))!
+
+                let bento: DeviceProfile = (try! self.fixture(named: "bento"))!
+
+                it("Should configure with expected attributes") {
+                    
+                    
+                    do {
+                        
+                        let acModulo = try! AferoAttributeCollection(profile: modulo)
+                        let acModulo2 = try! AferoAttributeCollection(profile: modulo2)
+                        let acBento = try! AferoAttributeCollection(profile: bento)
+
+                        expect(acModulo.attributes.count) == modulo.attributes.count
+                        modulo.attributeConfigs().forEach {
+                            config in
+                            expect(acModulo.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+
+                        
+                        expect(acModulo2.attributes.count) == modulo2.attributes.count
+                        modulo2.attributeConfigs().forEach {
+                            config in
+                            expect(acModulo2.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acModulo2.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acModulo2.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+
+                        expect(acBento.attributes.count) == bento.attributes.count
+                        bento.attributeConfigs().forEach {
+                            config in
+                            expect(acBento.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acBento.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acBento.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+                
+                it("Should reconfigure with a nil") {
+                    
+                    do {
+                        
+                        let acModulo = try! AferoAttributeCollection(profile: modulo)
+                        
+                        expect(acModulo.attributes.count) == modulo.attributes.count
+                        modulo.attributeConfigs().forEach {
+                            config in
+                            expect(acModulo.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+                        
+                        try acModulo.configure(with: nil)
+                        expect(acModulo.attributes.count) == 0
+                        
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+                
+                it("Should reconfigure with a new profile") {
+                    
+                    do {
+                        
+                        let acModulo = try! AferoAttributeCollection(profile: modulo)
+
+                        expect(acModulo.attributes.count) == modulo.attributes.count
+                        modulo.attributeConfigs().forEach {
+                            config in
+                            expect(acModulo.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+                        
+                        try acModulo.configure(with: bento)
+                        
+                        expect(acModulo.attributes.count) == bento.attributes.count
+                        bento.attributeConfigs().forEach {
+                            config in
+                            expect(acModulo.attribute(forId: config.dataDescriptor.id)?.dataDescriptor) == config.dataDescriptor
+                            if config.presentationDescriptor == nil {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor).to(beNil())
+                            } else {
+                                expect(acModulo.attribute(forId: config.dataDescriptor.id)?.presentationDescriptor) == config.presentationDescriptor
+                            }
+                        }
+
+                    } catch {
+                        fail(error.localizedDescription)
+                    }
+                    
+                }
+                
+            }
+            
         }
     }
 }

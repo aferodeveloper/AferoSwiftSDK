@@ -1,0 +1,223 @@
+{
+        "schemaVersion": 2,
+        "deviceTypeId": "01396150-04ff-4873-8fe5-ac1210e36505",
+        "presentation":
+        {
+            "label": "bento",
+            "attributeOptions":
+            {
+
+            },
+            "gauge":
+            {
+                "foreground":
+                {
+                    "images":
+                    [
+                        {
+                            "uri": "https://cdn.dev.afero.io/media-library/device_icon_hub@2x.png",
+                            "imageSize": "2x"
+                        }
+                    ]
+                },                "displayRules":
+                [
+
+                ],
+                "background":
+                {
+                    "images":
+                    [
+
+                    ]
+                }
+            },            "groups":
+            [
+
+            ],
+            "controls":
+            [
+
+            ]
+        },
+        "deviceType": "Bento",
+        "partnerId": "3da8249e-57c6-42d4-8b07-91377f617db7",
+        "services":
+        [
+            {
+                "id": 1,
+                "attributes":
+                [
+                    {
+                        "id": 2001,
+                        "semanticType": "Bootloader Version (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2002,
+                        "semanticType": "Soft Device Version (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2003,
+                        "semanticType": "Application Version (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2004,
+                        "semanticType": "Device Profile Version (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2005,
+                        "semanticType": "Hub Software Version (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },                    {
+                        "defaultValue": "01",
+                        "id": 60000,
+                        "semanticType": "Security Enabled (do not modify)",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "BOOLEAN",
+                        "length": 1
+                    },                    {
+                        "defaultValue": "01",
+                        "id": 60001,
+                        "semanticType": "Conclave Access for Bento",
+                        "operations":
+                        [
+                            "READ",
+                            "WRITE"
+                        ],
+                        "dataType": "BOOLEAN",
+                        "length": 1
+                    },
+                    {
+                        "defaultValue": "FA000000130013000000A00F",
+                        "id": 65020,
+                        "semanticType": "BLE Comms",
+                        "operations":
+                        [
+                            "READ",
+                            "WRITE"
+                        ],
+                        "dataType": "BYTES",
+                        "length": 12
+                    },
+                    {
+                        "defaultValue": "00",
+                        "id": 65021,
+                        "semanticType": "SPI Enabled",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "BOOLEAN",
+                        "length": 1
+                    },
+                    {
+                        "id": 65010,
+                        "semanticType": "Wifi Credentials",
+                        "operations":
+                        [
+                            "READ",
+                            "WRITE"
+                        ],
+                        "dataType": "BYTES",
+                        "length": 100
+                    },
+                    {
+                        "id": 65009,
+                        "semanticType": "Wifi SSID list",
+                        "operations":
+                        [
+                            "READ",
+                            "WRITE"
+                        ],
+                        "dataType": "BYTES",
+                        "length": 2048
+                    },
+                    {
+                        "id": 65008,
+                        "semanticType": "Network Type",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT8",
+                        "length": 1
+                    },
+                    {
+                        "defaultValue": "00",
+                        "id": 65007,
+                        "semanticType": "Wi-Fi Setup State",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT8",
+                        "length": 1
+                    },
+                    {
+                        "defaultValue": "00",
+                        "id": 65006,
+                        "semanticType": "Wi-Fi Steady State",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT8",
+                        "length": 1
+                    },
+                    {
+                        "id": 65005,
+                        "semanticType": "Wi-Fi Bars",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT8",
+                        "length": 1
+                    },
+                    {
+                        "defaultValue": "",
+                        "id": 65004,
+                        "semanticType": "Connected SSID",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "UTF8S",
+                        "length": 33
+                    }
+                ]
+            }
+        ],
+        "profileId": "161f7c15-9809-47e7-9c31-f48dbc1d0894"
+    }

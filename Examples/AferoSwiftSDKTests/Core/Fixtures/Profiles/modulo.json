@@ -1,0 +1,321 @@
+
+    {
+        "schemaVersion": 2,
+        "deviceTypeId": "024ed275-0cec-4094-a6fe-b7d66b1c9aa8",
+        "presentation":
+        {
+            "label": "Modulo",
+            "attributeOptions":
+            {
+                "1030":
+                {
+                    "label": "Button",
+                    "flags":
+                    [
+
+                    ],
+                    "valueOptions":
+                    [
+                        {
+                            "match": "00",
+                            "apply":
+                            {
+                                "label": "Toggled On"
+                            }
+                        },
+                        {
+                            "match": "01",
+                            "apply":
+                            {
+                                "label": "Toggled Off"
+                            }
+                        }
+                    ]
+                },
+                "1024":
+                {
+                    "label": "LED",
+                    "flags":
+                    [
+                        "primaryOperation"
+                    ],
+                    "valueOptions":
+                    [
+                        {
+                            "match": "00",
+                            "apply":
+                            {
+                                "label": "On"
+                            }
+                        },
+                        {
+                            "match": "01",
+                            "apply":
+                            {
+                                "label": "Off"
+                            }
+                        }
+                    ]
+                }
+            },            "gauge":
+            {
+                "foreground":
+                {
+                    "images":
+                    [
+                        {
+                            "uri": "https://cdn.dev.afero.io/media-library/device_icon_modulo@2x.png",
+                            "imageSize": "2x"
+                        }
+                    ]
+                },                "displayRules":
+                [
+
+                ],
+                "background":
+                {
+                    "images":
+                    [
+
+                    ]
+                }
+            },            "groups":
+            [
+                {
+                    "label": "LED",
+                    "gauge":
+                    {
+                        "displayRules":
+                        [
+
+                        ],
+                        "label": "",
+                        "foreground":
+                        {
+                            "images":
+                            [
+                                {
+                                    "uri": "https://cdn.dev.afero.io/media-library/device_control_icon_light@2x.png",
+                                    "imageSize": "2x"
+                                }
+                            ]
+                        },
+                        "background":
+                        {
+                            "images":
+                            [
+
+                            ]
+                        }
+                    },
+                    "groups":
+                    [
+
+                    ],
+                    "controls":
+                    [
+                        1
+                    ]
+                },
+                {
+                    "label": "Button",
+                    "gauge":
+                    {
+                        "displayRules":
+                        [
+
+                        ],
+                        "label": "",
+                        "foreground":
+                        {
+                            "images":
+                            [
+                                {
+                                    "uri": "https://cdn.dev.afero.io/media-library/device_control_icon_hex@2x.png",
+                                    "imageSize": "2x"
+                                }
+                            ]
+                        },
+                        "background":
+                        {
+                            "images":
+                            [
+
+                            ]
+                        }
+                    },
+                    "groups":
+                    [
+
+                    ],
+                    "controls":
+                    [
+                        2
+                    ]
+                }
+            ],
+            "controls":
+            [
+                {
+                    "attributeMap":
+                    {
+                        "value": 1024
+                    },                    "id": 1,
+                    "controlType": "menuControl",
+                    "displayRules":
+                    [
+
+                    ]
+                },
+                {
+                    "attributeMap":
+                    {
+                        "value": 1030
+                    },                    "id": 2,
+                    "controlType": "menuControl",
+                    "displayRules":
+                    [
+
+                    ]
+                }
+            ]
+        },
+        "deviceType": "Modulo",
+        "partnerId": "3da8249e-57c6-42d4-8b07-91377f617db7",
+        "services":
+        [
+            {
+                "id": 1,
+                "attributes":
+                [
+                    {
+                        "defaultValue": "0100",
+                        "id": 1024,
+                        "semanticType": "LED",
+                        "operations":
+                        [
+                            "READ",
+                            "WRITE"
+                        ],
+                        "dataType": "SINT16",
+                        "length": 2
+                    },
+                    {
+                        "defaultValue": "0000000000000000",
+                        "id": 1025,
+                        "semanticType": "GPIO 0 Configuration",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 1030,
+                        "semanticType": "Button",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT16",
+                        "length": 2
+                    },
+                    {
+                        "defaultValue": "4500000000000000",
+                        "id": 1031,
+                        "semanticType": "GPIO 3 Configuration",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2001,
+                        "semanticType": "Bootloader Version",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },                    {
+                        "id": 2002,
+                        "semanticType": "Soft Device Version",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2003,
+                        "semanticType": "Application Version",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "id": 2004,
+                        "semanticType": "Device Profile Version",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "SINT64",
+                        "length": 8
+                    },
+                    {
+                        "defaultValue": "01",
+                        "id": 60000,
+                        "semanticType": "Security Enabled",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "BOOLEAN",
+                        "length": 1
+                    },
+                    {
+                        "id": 65019,
+                        "semanticType": "Reboot Reason",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "UTF8S",
+                        "length": 64
+                    },
+                    {
+                        "defaultValue": "FA000000180018000C00A00F",
+                        "id": 65020,
+                        "semanticType": "BLE Comms",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "BYTES",
+                        "length": 12
+                    },
+                    {
+                        "defaultValue": "00",
+                        "id": 65021,
+                        "semanticType": "SPI Enabled",
+                        "operations":
+                        [
+                            "READ"
+                        ],
+                        "dataType": "BOOLEAN",
+                        "length": 1
+                    }
+                ]
+            }
+        ],
+        "profileId": "d8f25a3f-9357-40f7-9f07-9077d55a3d6e"
+    }
