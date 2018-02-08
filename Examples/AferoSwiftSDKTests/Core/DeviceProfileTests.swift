@@ -43,54 +43,54 @@ class PresentationSpec: QuickSpec {
                 ])
             
             it("Should report defaultValues correctly.") {
-                expect(profile.attributeConfig(for: 50)?.descriptor.defaultValue) == "00"
-                expect(profile.attributeConfig(for: 100)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 20)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 70)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 90)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 101)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 201)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 202)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 59001)?.descriptor.defaultValue) == "01"
-                expect(profile.attributeConfig(for: 59002)?.descriptor.defaultValue) == "00"
-                expect(profile.attributeConfig(for: 59004)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 59007)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 59036)?.descriptor.defaultValue).to(beNil())
-                expect(profile.attributeConfig(for: 59037)?.descriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 50)?.dataDescriptor.defaultValue) == "00"
+                expect(profile.attributeConfig(for: 100)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 20)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 70)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 90)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 101)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 201)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 202)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59001)?.dataDescriptor.defaultValue) == "01"
+                expect(profile.attributeConfig(for: 59002)?.dataDescriptor.defaultValue) == "00"
+                expect(profile.attributeConfig(for: 59004)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59007)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59036)?.dataDescriptor.defaultValue).to(beNil())
+                expect(profile.attributeConfig(for: 59037)?.dataDescriptor.defaultValue).to(beNil())
             }
             
             it("Should report values correctly.") {
-                expect(profile.attributeConfig(for: 50)?.descriptor.value) == "false"
-                expect(profile.attributeConfig(for: 100)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 20)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 70)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 90)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 101)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 201)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 202)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 59001)?.descriptor.value) == "true"
-                expect(profile.attributeConfig(for: 59002)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 59004)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 59007)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 59036)?.descriptor.value).to(beNil())
-                expect(profile.attributeConfig(for: 59037)?.descriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 50)?.dataDescriptor.value) == "false"
+                expect(profile.attributeConfig(for: 100)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 20)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 70)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 90)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 101)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 201)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 202)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59001)?.dataDescriptor.value) == "true"
+                expect(profile.attributeConfig(for: 59002)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59004)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59007)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59036)?.dataDescriptor.value).to(beNil())
+                expect(profile.attributeConfig(for: 59037)?.dataDescriptor.value).to(beNil())
             }
             
             it("should report length correctly.") {
-                expect(profile.attributeConfig(for: 50)?.descriptor.length) == 1
-                expect(profile.attributeConfig(for: 100)?.descriptor.length) == 4
-                expect(profile.attributeConfig(for: 20)?.descriptor.length) == 4
-                expect(profile.attributeConfig(for: 70)?.descriptor.length) == 8
-                expect(profile.attributeConfig(for: 90)?.descriptor.length) == 1
-                expect(profile.attributeConfig(for: 101)?.descriptor.length) == 8
-                expect(profile.attributeConfig(for: 201)?.descriptor.length) == 8
-                expect(profile.attributeConfig(for: 202)?.descriptor.length) == 1
-                expect(profile.attributeConfig(for: 59001)?.descriptor.length) == 1
-                expect(profile.attributeConfig(for: 59002)?.descriptor.length) == 255
-                expect(profile.attributeConfig(for: 59004)?.descriptor.length) == 255
-                expect(profile.attributeConfig(for: 59007)?.descriptor.length) == 255
-                expect(profile.attributeConfig(for: 59036)?.descriptor.length) == 255
-                expect(profile.attributeConfig(for: 59037)?.descriptor.length) == 255
+                expect(profile.attributeConfig(for: 50)?.dataDescriptor.length) == 1
+                expect(profile.attributeConfig(for: 100)?.dataDescriptor.length) == 4
+                expect(profile.attributeConfig(for: 20)?.dataDescriptor.length) == 4
+                expect(profile.attributeConfig(for: 70)?.dataDescriptor.length) == 8
+                expect(profile.attributeConfig(for: 90)?.dataDescriptor.length) == 1
+                expect(profile.attributeConfig(for: 101)?.dataDescriptor.length) == 8
+                expect(profile.attributeConfig(for: 201)?.dataDescriptor.length) == 8
+                expect(profile.attributeConfig(for: 202)?.dataDescriptor.length) == 1
+                expect(profile.attributeConfig(for: 59001)?.dataDescriptor.length) == 1
+                expect(profile.attributeConfig(for: 59002)?.dataDescriptor.length) == 255
+                expect(profile.attributeConfig(for: 59004)?.dataDescriptor.length) == 255
+                expect(profile.attributeConfig(for: 59007)?.dataDescriptor.length) == 255
+                expect(profile.attributeConfig(for: 59036)?.dataDescriptor.length) == 255
+                expect(profile.attributeConfig(for: 59037)?.dataDescriptor.length) == 255
             }
 
             it("Should correctly show readable attributes") {
@@ -586,16 +586,16 @@ class DeviceProfileSpec: QuickSpec {
                 let a300_309 = AferoAttributeDataDescriptor(id: 309, type: .utf8S, semanticType: "power", key: nil, defaultValue: "7070", value: "PP", length: 2, operations: [.Read, .Write])
 
                 it("should have the expected attributes") {
-                    expect(profile.attributeConfig(for: 100)?.descriptor) == a100_100
-                    expect(profile.attributeConfig(for: 1010)?.descriptor) == a100_1010
-                    expect(profile.attributeConfig(for: 2000)?.descriptor) == a100_2000
-                    expect(profile.attributeConfig(for: 200)?.descriptor) == a200_200
-                    expect(profile.attributeConfig(for: 300)?.descriptor) == a300_300
-                    expect(profile.attributeConfig(for: 304)?.descriptor) == a300_304
-                    expect(profile.attributeConfig(for: 305)?.descriptor) == a300_305
-                    expect(profile.attributeConfig(for: 306)?.descriptor) == a300_306
-                    expect(profile.attributeConfig(for: 309)?.descriptor) == a300_309
-                    expect(profile.attributeConfig(for: 100)?.descriptor) == a100_100
+                    expect(profile.attributeConfig(for: 100)?.dataDescriptor) == a100_100
+                    expect(profile.attributeConfig(for: 1010)?.dataDescriptor) == a100_1010
+                    expect(profile.attributeConfig(for: 2000)?.dataDescriptor) == a100_2000
+                    expect(profile.attributeConfig(for: 200)?.dataDescriptor) == a200_200
+                    expect(profile.attributeConfig(for: 300)?.dataDescriptor) == a300_300
+                    expect(profile.attributeConfig(for: 304)?.dataDescriptor) == a300_304
+                    expect(profile.attributeConfig(for: 305)?.dataDescriptor) == a300_305
+                    expect(profile.attributeConfig(for: 306)?.dataDescriptor) == a300_306
+                    expect(profile.attributeConfig(for: 309)?.dataDescriptor) == a300_309
+                    expect(profile.attributeConfig(for: 100)?.dataDescriptor) == a100_100
                 }
             }
         }

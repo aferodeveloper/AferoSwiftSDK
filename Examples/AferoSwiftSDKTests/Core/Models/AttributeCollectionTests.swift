@@ -534,47 +534,47 @@ class AferoAttributeSpec: QuickSpec {
         let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
         let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
         
-        let a = AferoAttribute(descriptor: adesc)
+        let a = AferoAttribute(dataDescriptor: adesc)
         let ac = a.copy() as! AferoAttribute
 
-        let a2 = AferoAttribute(descriptor: adesc, currentValueState: astate)
+        let a2 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate)
         let ac2 = a2.copy() as! AferoAttribute
 
-        let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
+        let a3 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate, pendingValueState: astatep)
         let ac3 = a3.copy() as! AferoAttribute
 
         let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
         let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
         let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
-        let b = AferoAttribute(descriptor: bdesc)
-        let b2 = AferoAttribute(descriptor: bdesc, currentValueState: bstate)
-        let b3 = AferoAttribute(descriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
+        let b = AferoAttribute(dataDescriptor: bdesc)
+        let b2 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
+        let b3 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
 
         describe("initializing") {
             
             it("should initialize") {
                 
-                expect(a.descriptor) == adesc
+                expect(a.dataDescriptor) == adesc
                 expect(a.currentValueState).to(beNil())
                 expect(a.pendingValueState).to(beNil())
                 
-                expect(a2.descriptor) == adesc
+                expect(a2.dataDescriptor) == adesc
                 expect(a2.currentValueState) == astate
                 expect(a2.pendingValueState).to(beNil())
 
-                expect(a3.descriptor) == adesc
+                expect(a3.dataDescriptor) == adesc
                 expect(a3.currentValueState) == astate
                 expect(a3.pendingValueState) == astatep
 
-                expect(b.descriptor) == bdesc
+                expect(b.dataDescriptor) == bdesc
                 expect(b.currentValueState).to(beNil())
                 expect(b.pendingValueState).to(beNil())
                 
-                expect(b2.descriptor) == bdesc
+                expect(b2.dataDescriptor) == bdesc
                 expect(b2.currentValueState) == bstate
                 expect(b2.pendingValueState).to(beNil())
                 
-                expect(b3.descriptor) == bdesc
+                expect(b3.dataDescriptor) == bdesc
                 expect(b3.currentValueState) == bstate
                 expect(b3.pendingValueState) == bstatep
 
@@ -586,15 +586,15 @@ class AferoAttributeSpec: QuickSpec {
             it("should copy") {
                 expect(ac).toNot(beIdenticalTo(a))
                 
-                expect(ac.descriptor) == a.descriptor
-                expect(ac.descriptor).toNot(beIdenticalTo(a.descriptor))
+                expect(ac.dataDescriptor) == a.dataDescriptor
+                expect(ac.dataDescriptor).toNot(beIdenticalTo(a.dataDescriptor))
                 expect(ac.currentValueState).to(beNil())
                 expect(ac.pendingValueState).to(beNil())
                 
                 expect(ac2).toNot(beIdenticalTo(a2))
                 
-                expect(ac2.descriptor) == a2.descriptor
-                expect(ac2.descriptor).toNot(beIdenticalTo(a2.descriptor))
+                expect(ac2.dataDescriptor) == a2.dataDescriptor
+                expect(ac2.dataDescriptor).toNot(beIdenticalTo(a2.dataDescriptor))
                 
                 expect(ac2.currentValueState) == a2.currentValueState
                 expect(ac2.currentValueState).toNot(beIdenticalTo(a2.currentValueState))
@@ -604,8 +604,8 @@ class AferoAttributeSpec: QuickSpec {
                 expect(ac3) == a3
                 expect(ac3).toNot(beIdenticalTo(a3))
                 
-                expect(ac3.descriptor) == a3.descriptor
-                expect(ac3.descriptor).toNot(beIdenticalTo(a3.descriptor))
+                expect(ac3.dataDescriptor) == a3.dataDescriptor
+                expect(ac3.dataDescriptor).toNot(beIdenticalTo(a3.dataDescriptor))
                 
                 expect(ac3.currentValueState) == a3.currentValueState
                 expect(ac3.currentValueState).toNot(beIdenticalTo(a3.currentValueState))
@@ -696,12 +696,12 @@ class AferoAttributeSpec: QuickSpec {
                 var chgDesc: AferoAttributeDataDescriptor? = nil
                 let la = a.copy() as! AferoAttribute
                 
-                let obs = la.observe(\.descriptor) {
+                let obs = la.observe(\.dataDescriptor) {
                     obj, chg in
-                    chgDesc = obj.descriptor
+                    chgDesc = obj.dataDescriptor
                 }
                 
-                la.descriptor = newDesc
+                la.dataDescriptor = newDesc
                 
                 expect(chgDesc).toEventually(equal(newDesc), timeout: 0.5, pollInterval: 0.1)
             }
@@ -785,16 +785,16 @@ class AferoAttributeCollectionSpec: QuickSpec {
         let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
         let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
         let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
-//        let a = AferoAttribute(descriptor: adesc)
-//        let a2 = AferoAttribute(descriptor: adesc, currentValueState: astate)
-        let a3 = AferoAttribute(descriptor: adesc, currentValueState: astate, pendingValueState: astatep)
+//        let a = AferoAttribute(dataDescriptor: adesc)
+//        let a2 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate)
+        let a3 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate, pendingValueState: astatep)
         
         let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
         let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
         let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
-//        let b = AferoAttribute(descriptor: bdesc)
-//        let b2 = AferoAttribute(descriptor: bdesc, currentValueState: bstate)
-        let b3 = AferoAttribute(descriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
+//        let b = AferoAttribute(dataDescriptor: bdesc)
+//        let b2 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
+        let b3 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
 
         describe("initializing") {
             
@@ -870,8 +870,8 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 do {
                     let c = try AferoAttributeCollection(attributes: [a3, b3])
                     expect(c.attributes) == [b3, a3]
-                    expect(c.attributeIds) == [b3.descriptor.id, a3.descriptor.id]
-                    expect(c.attributeKeys) == Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })
+                    expect(c.attributeIds) == [b3.dataDescriptor.id, a3.dataDescriptor.id]
+                    expect(c.attributeKeys) == Set([b3.dataDescriptor.key, a3.dataDescriptor.key].flatMap { $0 })
                 } catch {
                     fail(error.localizedDescription)
                 }
@@ -882,8 +882,8 @@ class AferoAttributeCollectionSpec: QuickSpec {
 
                 do {
                     let c = try AferoAttributeCollection(attributes: [a3, b3])
-                    expect(c.attribute(forKey: a3.descriptor.key)) == a3
-                    expect(c.attribute(forKey: b3.descriptor.key)) == b3
+                    expect(c.attribute(forKey: a3.dataDescriptor.key)) == a3
+                    expect(c.attribute(forKey: b3.dataDescriptor.key)) == b3
                     expect(c.attribute(forKey: nil)).to(beNil())
                     expect(c.attribute(forKey: "foo")).to(beNil())
                 } catch {
@@ -896,8 +896,8 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
                 do {
                     let c = try AferoAttributeCollection(attributes: [a3, b3])
-                    expect(c.attribute(forId: a3.descriptor.id)) == a3
-                    expect(c.attribute(forId: b3.descriptor.id)) == b3
+                    expect(c.attribute(forId: a3.dataDescriptor.id)) == a3
+                    expect(c.attribute(forId: b3.dataDescriptor.id)) == b3
                     expect(c.attribute(forId: nil)).to(beNil())
                     expect(c.attribute(forId: 666)).to(beNil())
                 } catch {
@@ -916,7 +916,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
 //
 //                    do {
 //                        let c = try AferoAttributeCollection(attributes: [a3, b3])
-//                        let new a3Desc = AferoAttributeDescriptor(id: a3.descriptor.id, type: AferoAttributeDataType.q3132, semanticType: "monkeybutt", key: <#T##String?#>, defaultValue: <#T##String?#>, operations: <#T##AferoAttributeOperations#>)
+//                        let new a3Desc = AferoAttributeDescriptor(id: a3.dataDescriptor.id, type: AferoAttributeDataType.q3132, semanticType: "monkeybutt", key: <#T##String?#>, defaultValue: <#T##String?#>, operations: <#T##AferoAttributeOperations#>)
 //                    } catch {
 //                        fail(error.localizedDescription)
 //                    }
@@ -944,7 +944,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         var notificationCount: Int = 0
                         
                         guard let obs = try c.observeAttribute(
-                            withId: a3.descriptor.id,
+                            withId: a3.dataDescriptor.id,
                             on: \.currentValueState,
                             using: {
                             attribute, chg in
@@ -989,7 +989,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         var notificationCount: Int = 0
                         
                         guard let obs = try c.observeAttribute(
-                            withId: b3.descriptor.id,
+                            withId: b3.dataDescriptor.id,
                             on: \.pendingValueState,
                             using: {
                                 attribute, chg in
@@ -1001,7 +1001,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                             return
                         }
                         
-                        try c.setPending(value: "6", forAttributeWithId: b3.descriptor.id)
+                        try c.setPending(value: "6", forAttributeWithId: b3.dataDescriptor.id)
                         expect(newPendingValueState?.stringValue).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
                         expect(newAttribute).toEventually(equal(b3), timeout: 1.0, pollInterval: 0.1)
                     } catch {
@@ -1033,7 +1033,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
                 expect {
                     pendingObs = try c.observeAttribute(
-                        withId: b3.descriptor.id,
+                        withId: b3.dataDescriptor.id,
                         on: \.pendingValueState) {
                             _, _ in
                     }
@@ -1042,7 +1042,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
                 expect {
                     currentObs = try c.observeAttribute(
-                        withId: b3.descriptor.id,
+                        withId: b3.dataDescriptor.id,
                         on: \.currentValueState) {
                             _, _ in
                     }
@@ -1081,7 +1081,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
                 expect {
                     pendingObs = try c.observeAttribute(
-                        withKey: b3.descriptor.key!,
+                        withKey: b3.dataDescriptor.key!,
                         on: \.pendingValueState) {
                             _, _ in
                     }
@@ -1090,7 +1090,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 
                 expect {
                     currentObs = try c.observeAttribute(
-                        withKey: b3.descriptor.key!,
+                        withKey: b3.dataDescriptor.key!,
                         on: \.currentValueState) {
                             _, _ in
                     }
@@ -1182,11 +1182,11 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         expect(attrNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id, a3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeIds).toEventually(equal([b3.dataDescriptor.id, a3.dataDescriptor.id]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.dataDescriptor.key, a3.dataDescriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toEventually(equal(2), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(2), timeout: 1.0, pollInterval: 0.2)
                         
@@ -1234,11 +1234,11 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id, a3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeIds).toEventually(equal([b3.dataDescriptor.id, a3.dataDescriptor.id]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key, a3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.dataDescriptor.key, a3.dataDescriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
@@ -1285,18 +1285,18 @@ class AferoAttributeCollectionSpec: QuickSpec {
                             attrKeyNotifyCount += 1
                         }
                         
-                        let ret = c.unregister(attributeId: a3.descriptor.id)
+                        let ret = c.unregister(attributeId: a3.dataDescriptor.id)
                         expect(ret) == a3
 
                         expect(newAttributes).toEventually(equal([b3]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeIds).toEventually(equal([b3.dataDescriptor.id]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.dataDescriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
@@ -1339,18 +1339,18 @@ class AferoAttributeCollectionSpec: QuickSpec {
                             attrKeyNotifyCount += 1
                         }
                         
-                        let ret = c.unregister(attributeKey: a3.descriptor.key)
+                        let ret = c.unregister(attributeKey: a3.dataDescriptor.key)
                         expect(ret) == a3
                         
                         expect(newAttributes).toEventually(equal([b3]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeIds).toEventually(equal([b3.descriptor.id]), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeIds).toEventually(equal([b3.dataDescriptor.id]), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrIdNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         
-                        expect(newAttributeKeys).toEventually(equal(Set([b3.descriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
+                        expect(newAttributeKeys).toEventually(equal(Set([b3.dataDescriptor.key].flatMap { $0 })), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
                         expect(attrKeyNotifyCount).toNotEventually(beGreaterThan(1), timeout: 1.0, pollInterval: 0.2)
                         

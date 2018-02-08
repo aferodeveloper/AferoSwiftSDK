@@ -871,7 +871,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                     
                 case let .update(_, _, attribute):
                     
-                    let attributeId = attribute.config.descriptor.id
+                    let attributeId = attribute.config.dataDescriptor.id
                     
                     guard let wifiAttributeId = AferoSofthubWifiAttributeId(rawValue: attributeId) else {
                         DDLogDebug("Unrecognized attributeId \(attributeId) for wifi setup; ignoring.")

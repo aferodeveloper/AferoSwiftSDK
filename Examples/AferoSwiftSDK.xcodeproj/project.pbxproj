@@ -46,6 +46,9 @@
 		CB1CED961EF8A61900B86534 /* conclave_welcome.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */; };
 		CB1CED971EF8A61900B86534 /* conclaveConnectionInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */; };
 		CB1CED9B1EF8A89300B86534 /* conclave_peripheralList.json in Resources */ = {isa = PBXBuildFile; fileRef = CB1CED3C1EF8A5E500B86534 /* conclave_peripheralList.json */; };
+		CB33F764202BC87D00A46769 /* modulo2.json in Resources */ = {isa = PBXBuildFile; fileRef = CB33F763202BC87D00A46769 /* modulo2.json */; };
+		CB33F767202BD1E200A46769 /* bento.json in Resources */ = {isa = PBXBuildFile; fileRef = CB33F765202BD1E100A46769 /* bento.json */; };
+		CB33F768202BD1E200A46769 /* modulo.json in Resources */ = {isa = PBXBuildFile; fileRef = CB33F766202BD1E200A46769 /* modulo.json */; };
 		CB593CC01D74F8050069F8A0 /* coffeemaker.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB31D74F8050069F8A0 /* coffeemaker.json */; };
 		CB593CC11D74F8050069F8A0 /* fan.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB41D74F8050069F8A0 /* fan.json */; };
 		CB593CC21D74F8050069F8A0 /* fancyfan.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CB51D74F8050069F8A0 /* fancyfan.json */; };
@@ -135,6 +138,9 @@
 		CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_welcome.json; sourceTree = "<group>"; };
 		CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclaveConnectionInfo.json; sourceTree = "<group>"; };
 		CB1E2ED61B6543B30018C022 /* FetchedResults.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FetchedResults.playground; sourceTree = "<group>"; };
+		CB33F763202BC87D00A46769 /* modulo2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = modulo2.json; sourceTree = "<group>"; };
+		CB33F765202BD1E100A46769 /* bento.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bento.json; sourceTree = "<group>"; };
+		CB33F766202BD1E200A46769 /* modulo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modulo.json; sourceTree = "<group>"; };
 		CB3ACA8C1AF8212D00AD7E7D /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		CB593CB31D74F8050069F8A0 /* coffeemaker.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = coffeemaker.json; sourceTree = "<group>"; };
 		CB593CB41D74F8050069F8A0 /* fan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fan.json; sourceTree = "<group>"; };
@@ -262,6 +268,7 @@
 		CB1CED291EF8A5E500B86534 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				CB33F762202BC83D00A46769 /* Profiles */,
 				CB809A921F250FC30008DDD1 /* DeviceModel */,
 				CB1CED2A1EF8A5E500B86534 /* DeviceCollection */,
 				CB1CED3E1EF8A5E500B86534 /* DisplayRules */,
@@ -272,7 +279,6 @@
 		CB1CED2A1EF8A5E500B86534 /* DeviceCollection */ = {
 			isa = PBXGroup;
 			children = (
-				CB1CED2B1EF8A5E500B86534 /* accountDeviceProfiles.json */,
 				CB1CED2C1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json */,
 				CB1CED2D1EF8A5E500B86534 /* conclave-attributeUpdate-error.json */,
 				CB1CED2E1EF8A5E500B86534 /* conclave-error-device_error.json */,
@@ -326,6 +332,17 @@
 				CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		CB33F762202BC83D00A46769 /* Profiles */ = {
+			isa = PBXGroup;
+			children = (
+				CB1CED2B1EF8A5E500B86534 /* accountDeviceProfiles.json */,
+				CB33F765202BD1E100A46769 /* bento.json */,
+				CB33F766202BD1E200A46769 /* modulo.json */,
+				CB33F763202BC87D00A46769 /* modulo2.json */,
+			);
+			path = Profiles;
 			sourceTree = "<group>";
 		};
 		CB809A8A1F2391110008DDD1 /* RESTClientAPI */ = {
@@ -541,9 +558,11 @@
 				CB1CED581EF8A5E500B86534 /* conclave-OTA-ota_progress-unknown.json in Resources */,
 				CB1CED4C1EF8A5E500B86534 /* conclave-attributeUpdate-error.json in Resources */,
 				CB1CED551EF8A5E500B86534 /* conclave-OTA-ota_progress-complete.json in Resources */,
+				CB33F764202BC87D00A46769 /* modulo2.json in Resources */,
 				CB593CC81D74F8050069F8A0 /* massagechair.json in Resources */,
 				CB1CED5E1EF8A5E500B86534 /* displayRulesTest2.json in Resources */,
 				CB1CED541EF8A5E500B86534 /* conclave-OTA-device_ota.json in Resources */,
+				CB33F768202BD1E200A46769 /* modulo.json in Resources */,
 				CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */,
 				CB809A9A1F2533780008DDD1 /* deviceLocations1.json in Resources */,
 				CB1CED591EF8A5E500B86534 /* conclave-rate-device_mute.json in Resources */,
@@ -556,6 +575,7 @@
 				CB1CED4B1EF8A5E500B86534 /* conclave-attributeUpdate-attr_change.json in Resources */,
 				CB1CED4E1EF8A5E500B86534 /* conclave-invalidate-accounts.json in Resources */,
 				CB1CED511EF8A5E500B86534 /* conclave-invalidate-nokind.json in Resources */,
+				CB33F767202BD1E200A46769 /* bento.json in Resources */,
 				CB1CED951EF8A61900B86534 /* conclave_public.json in Resources */,
 				CB1CED4F1EF8A5E500B86534 /* conclave-invalidate-invitations.json in Resources */,
 				CB593CC91D74F8050069F8A0 /* moban.json in Resources */,

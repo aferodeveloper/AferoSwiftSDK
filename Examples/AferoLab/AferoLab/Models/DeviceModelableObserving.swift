@@ -393,15 +393,15 @@ extension AttributeEventObserving {
     }
     
     var attributeNameStringValue: String {
-        return attribute?.config.descriptor.semanticType ?? "-"
+        return attribute?.config.dataDescriptor.semanticType ?? "-"
     }
     
     var attributeTypeStringValue: String {
-        return attribute?.config.descriptor.dataType.stringValue ?? "-"
+        return attribute?.config.dataDescriptor.dataType.stringValue ?? "-"
     }
     
     var attributeIsWritable: Bool {
-        return attribute?.config.descriptor.isWritable ?? false
+        return attribute?.config.dataDescriptor.isWritable ?? false
     }
 
     var attributeValueStringValue: String {
@@ -424,7 +424,7 @@ extension AttributeEventObserving {
     
     typealias ValueOption = AferoAttributePresentationValueOption
     var attributeValueOptions: [ValueOption]? {
-        return attribute?.config.presentation?.valueOptions
+        return attribute?.config.presentationDescriptor?.valueOptions
     }
     
     var attributeValueOptionsMap: ValueOptionsMap? {
@@ -441,7 +441,7 @@ extension AttributeEventObserving {
             return nil
         }
         
-        guard let value = attribute.config.descriptor.attributeValue(for: stringValue) else {
+        guard let value = attribute.config.dataDescriptor.attributeValue(for: stringValue) else {
             return nil
         }
         
@@ -482,11 +482,11 @@ extension AttributeEventObserving {
 extension AttributeEventObserving {
     
     var attributeRangeOptions: AferoAttributePresentationRangeOptions? {
-        return attribute?.config.presentation?.rangeOptions
+        return attribute?.config.presentationDescriptor?.rangeOptions
     }
     
     var attributeRangeSubscriptor: RangeOptionsSubscriptor? {
-        guard let dataType = attribute?.config.descriptor.dataType else {
+        guard let dataType = attribute?.config.dataDescriptor.dataType else {
             return nil
         }
         return attributeRangeOptions?.subscriptor(dataType)

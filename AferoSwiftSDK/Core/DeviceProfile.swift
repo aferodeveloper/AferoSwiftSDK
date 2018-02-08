@@ -254,7 +254,7 @@ public protocol ControlPresentable: CustomDebugStringConvertible {
 
 public extension DeviceProfile {
     
-    public typealias AttributeConfig = (descriptor: DeviceProfile.AttributeDescriptor, presentation: DeviceProfile.Presentation.AttributeOption?)
+    public typealias AttributeConfig = (dataDescriptor: DeviceProfile.AttributeDescriptor, presentationDescriptor: DeviceProfile.Presentation.AttributeOption?)
     
     @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
     public func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
@@ -270,11 +270,11 @@ public extension DeviceProfile {
             return nil
         }
         
-        return (descriptor: descriptor, presentation: presentation(deviceId)?[attributeId])
+        return (dataDescriptor: descriptor, presentationDescriptor: presentation(deviceId)?[attributeId])
     }
     
     public func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
-        return attributeConfigs(on: deviceId) { $0.descriptor.semanticType == semanticType }.first
+        return attributeConfigs(on: deviceId) { $0.dataDescriptor.semanticType == semanticType }.first
     }
     
     /// Returns attributeConfigs filtered by `isIncluded`.
@@ -287,13 +287,13 @@ public extension DeviceProfile {
         let ret = descriptors()
             .map {
             descriptor in
-                return (descriptor: descriptor, presentation: self.presentation(deviceId)?[descriptor.id])
+                return (dataDescriptor: descriptor, presentationDescriptor: self.presentation(deviceId)?[descriptor.id])
         }.filter(isIncluded)
         return ret
     }
 
     public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
-        return attributeConfigs(on: deviceId) { range.contains($0.descriptor.id) }
+        return attributeConfigs(on: deviceId) { range.contains($0.dataDescriptor.id) }
     }
     
     public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
@@ -601,7 +601,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
             return ret
         }
         
-        guard let ret = attributeConfig(for: attributeId)?.presentation?.valueOptions.displayRulesProcessor() else {
+        guard let ret = attributeConfig(for: attributeId)?.presentationDescriptor?.valueOptions.displayRulesProcessor() else {
             return nil
         }
         

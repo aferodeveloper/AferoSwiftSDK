@@ -56,9 +56,9 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
                 return
             }
             
-            attributeNameLabel?.text = attribute.config.descriptor.semanticType
-            attributeIdLabel?.text = "\(attribute.config.descriptor.id)"
-            attributeTypeLabel?.text = attribute.config.descriptor.dataType.stringValue ?? "<unknown>"
+            attributeNameLabel?.text = attribute.config.dataDescriptor.semanticType
+            attributeIdLabel?.text = "\(attribute.config.dataDescriptor.id)"
+            attributeTypeLabel?.text = attribute.config.dataDescriptor.dataType.stringValue ?? "<unknown>"
             attributeStringValueLabel?.text = attribute.value.stringValue ?? "<empty>"
             attributeByteValueLabel?.text = attribute.value.byteArray.description
         }

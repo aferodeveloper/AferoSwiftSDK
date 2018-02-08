@@ -982,11 +982,11 @@ public extension DeviceModelable {
             .flatMap {
                 config -> Attribute? in
 
-                guard let value = self.value(for: config.descriptor) else {
+                guard let value = self.value(for: config.dataDescriptor) else {
                     return nil
                 }
                 
-                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+                let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
                 
                 return (value: value, config: config, displayParams: displayParams)
             }.lazy
@@ -997,11 +997,11 @@ public extension DeviceModelable {
             .flatMap {
                 config -> Attribute? in
                 
-                guard let value = self.value(for: config.descriptor) else {
+                guard let value = self.value(for: config.dataDescriptor) else {
                     return nil
                 }
                 
-                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+                let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
                 
                 return (value: value, config: config, displayParams: displayParams)
             }.lazy
@@ -1019,25 +1019,25 @@ public extension DeviceModelable {
             return nil
         }
 
-        let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+        let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
         
         return (value: value, config: config, displayParams: displayParams)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
-        return attributeConfig(for: attributeId)?.descriptor
+        return attributeConfig(for: attributeId)?.dataDescriptor
     }
     
     public func attributeOptionForAttributeId(_ attributeId: Int) -> DeviceProfile.Presentation.AttributeOption? {
-        return attributeConfig(for: attributeId)?.presentation
+        return attributeConfig(for: attributeId)?.presentationDescriptor
     }
     
     public func attributeConfig(for semanticType: String) -> DeviceProfile.AttributeConfig? {
-        return attributeConfigs { $0.descriptor.semanticType == semanticType }?.first
+        return attributeConfigs { $0.dataDescriptor.semanticType == semanticType }?.first
     }
     
     public func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {
-        return attributeConfig(for: semanticType)?.descriptor
+        return attributeConfig(for: semanticType)?.dataDescriptor
     }
     
     public func attributeId(for semanticType: String) -> Int? {
@@ -1045,7 +1045,7 @@ public extension DeviceModelable {
     }
     
     public func attributeOption(for semanticType: String) -> DeviceProfile.Presentation.AttributeOption? {
-        return attributeConfig(for: semanticType)?.presentation
+        return attributeConfig(for: semanticType)?.presentationDescriptor
     }
     
     public func defaultValueForAttributeId(_ id: Int) -> AttributeValue? {
