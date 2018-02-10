@@ -1,11 +1,11 @@
 PODS:
-  - AferoSofthub (1.1.1)
-  - AferoSwiftSDK/AFNetworking (1.0.6):
+  - AferoSofthub (1.2.0)
+  - AferoSwiftSDK/AFNetworking (1.0.7):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.0.6):
-    - AferoSofthub (~> 1.1)
+  - AferoSwiftSDK/Core (1.0.7):
+    - AferoSofthub (~> 1.2)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
     - CryptoSwift
@@ -13,20 +13,20 @@ PODS:
     - PromiseKit/CorePromise (~> 4)
     - ReactiveSwift (~> 1.1)
     - RSEnvironment (= 0.0.3)
-  - AFNetworking (3.1.0):
-    - AFNetworking/NSURLSession (= 3.1.0)
-    - AFNetworking/Reachability (= 3.1.0)
-    - AFNetworking/Security (= 3.1.0)
-    - AFNetworking/Serialization (= 3.1.0)
-    - AFNetworking/UIKit (= 3.1.0)
-  - AFNetworking/NSURLSession (3.1.0):
+  - AFNetworking (3.2.0):
+    - AFNetworking/NSURLSession (= 3.2.0)
+    - AFNetworking/Reachability (= 3.2.0)
+    - AFNetworking/Security (= 3.2.0)
+    - AFNetworking/Serialization (= 3.2.0)
+    - AFNetworking/UIKit (= 3.2.0)
+  - AFNetworking/NSURLSession (3.2.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.1.0)
-  - AFNetworking/Security (3.1.0)
-  - AFNetworking/Serialization (3.1.0)
-  - AFNetworking/UIKit (3.1.0):
+  - AFNetworking/Reachability (3.2.0)
+  - AFNetworking/Security (3.2.0)
+  - AFNetworking/Serialization (3.2.0)
+  - AFNetworking/UIKit (3.2.0):
     - AFNetworking/NSURLSession
   - AFOAuth2Manager (3.0.0):
     - AFNetworking/NSURLSession (~> 3.0)
@@ -81,9 +81,9 @@ EXTERNAL SOURCES:
     :path: ..
 
 SPEC CHECKSUMS:
-  AferoSofthub: 4fbe0656f1cef3b9d261959c862bfd4925ec2c88
-  AferoSwiftSDK: b8c2a64500c7ef423d4b7260773eab68fa8ad10c
-  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  AferoSofthub: ef9c6f7560c64a94280b5caad3f665c94382ed71
+  AferoSwiftSDK: 0b46c6d3afe6bbee1a0a2f08ca71f81c0afe4270
+  AFNetworking: 8ac6017b94ea105479f7776e5288e48ae9c59bb4
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 2e258a064cacc8eb9a2aca318e24d02a0a7fd56d
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
