@@ -9,7 +9,6 @@
 import Foundation
 import ReactiveSwift
 import CocoaLumberjack
-import AferoSofthub
 import Afero
 
 extension UserDefaults {
@@ -30,7 +29,7 @@ extension UserDefaults {
 extension DeviceModelable {
     
     var isLocalSofthub: Bool {
-        return softhubHardwareInfo?.contains(UserDefaults.standard.clientIdentifier) ?? false
+        return deviceId == Softhub.shared.deviceId
     }
     
 }
@@ -74,45 +73,22 @@ extension DeviceModelable {
         }
     }
     
-    fileprivate var otaProgressObserver: NSObjectProtocol? = nil {
-        willSet {
-            if let otaProgressObserver = otaProgressObserver {
-                NotificationCenter.default.removeObserver(otaProgressObserver)
-            }
-        }
-    }
-
-    fileprivate var otaCompleteObserver: NSObjectProtocol? = nil {
-        willSet {
-            if let otaCompleteObserver = otaCompleteObserver {
-                NotificationCenter.default.removeObserver(otaCompleteObserver)
-            }
-        }
-    }
+    fileprivate var otaStateObs: NSKeyValueObservation?
     
     var TAG: String { return "AferoSofthubMinder" }
     
     func start(
         withAccountId accountId: String,
-        logLevel: AferoSofthubLogLevel = .info,
+        logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
-        associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler
+        associationNeededHandler: @escaping (String)->Void
         ) throws {
         
-        otaProgressObserver = NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: AferoSofthubOTAInProgressNotification),
-            object: nil, queue: .main) {
-                [weak self] _ in
-                self?.shouldStopAferoSofthubInBackground = false
+        otaStateObs = Softhub.shared.observe(\.activeOTACount) {
+            [weak self] hub, chg in
+            self?.shouldStopAferoSofthubInBackground = (hub.activeOTACount == 0)
         }
         
-        otaCompleteObserver = NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: AferoSofthubOTACompleteNotification),
-            object: nil, queue: .main) {
-                [weak self] _ in
-                self?.shouldStopAferoSofthubInBackground = true
-        }
-
         backgroundNotificationObserver = NotificationCenter.default.addObserver(
             forName: .UIApplicationDidEnterBackground,
             object: nil, queue: .main) {
@@ -155,20 +131,18 @@ extension DeviceModelable {
     func stop() {
         backgroundNotificationObserver = nil
         foregroundNotificationObserver = nil
-        otaProgressObserver = nil
-        otaCompleteObserver = nil
         self.stopAferoSofthub()
     }
     
     fileprivate var hubbyStarted: Bool {
-        return AferoSofthub.state() ∈ [.starting, .started]
+        return Softhub.shared.state ∈ [.starting, .started]
     }
     
     fileprivate func startAferoSofthub(
         withAccountId accountId: String,
-        logLevel: AferoSofthubLogLevel,
+        logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
-        associationNeededHandler: @escaping AferoSofthubSecureHubAssociationHandler
+        associationNeededHandler: @escaping (String)->Void
         ) {
         
         if hubbyStarted { return }
@@ -178,10 +152,10 @@ extension DeviceModelable {
             return
         }
         
-        AferoSofthub.start(
-            withAccountId: accountId,
+        Softhub.shared.start(
+            with: accountId,
+            identifiedBy: hardwareIdentifier,
             logLevel: logLevel,
-            hardwareIdentifier: hardwareIdentifier,
             associationHandler: associationNeededHandler
         ) {
             completionReason in
@@ -191,8 +165,7 @@ extension DeviceModelable {
     }
     
     fileprivate func stopAferoSofthub() {
-        if !hubbyStarted { return }
-        AferoSofthub.stop()
+        Softhub.shared.stop()
     }
     
 }
