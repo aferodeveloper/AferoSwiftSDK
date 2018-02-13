@@ -101,6 +101,28 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     
 }
 
+@objc public enum SofthubType: Int, CustomStringConvertible, CustomDebugStringConvertible {
+    
+    case consumer
+    case enterprise
+    
+    var aferoSofthubType: AferoSofthubType {
+        switch self {
+        case .consumer: return .consumer
+        case .enterprise: return .enterprise
+        }
+    }
+
+    public var description: String {
+        return aferoSofthubType.rawValue
+    }
+    
+    public var debugDescription: String {
+        return "\(type(of: self)) (\(rawValue)): \(description)"
+    }
+    
+}
+
 /// The level at which the Softhub should log.
 
 @objc public enum SofthubLogLevel: Int, CustomStringConvertible, CustomDebugStringConvertible {
@@ -237,7 +259,6 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 
         _softhubStateObs = AferoSofthub.sharedInstance().observe(\.state) {
             [weak self] hub, chg in
-            let state = hub.state
             self?.state = SofthubState(hub.state)
         }
         
@@ -261,6 +282,11 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     ///
     /// - parameter cloud: The cloud to which to connect. Defaults to `.prod`, and should not
     ///             be changed for production applications.
+    ///
+    /// - parameter softhubType: Identifies the behavior a softhub should declar when it associates
+    ///             with the service. Unless otherwise instructed by Afero, this should be
+    ///             `.consumer`, the default. **This cannot be changed after a hub has been
+    ///             associated**.
     ///
     /// - parameter identifier: A string which, if present, is added to the HUBBY_HARDWARE_INFO
     ///             attribute of the softhub's device representation. It can be used to distinguish
@@ -317,6 +343,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     public func start(
         with accountId: String,
         using cloud: SofthubCloud = .prod,
+        behavingAs softhubType: SofthubType = .consumer,
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
         associationHandler: @escaping (String)->Void,
@@ -336,6 +363,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         AferoSofthub.start(
             withAccountId: accountId,
             cloud: cloud.aferoService,
+            softhubType: softhubType.aferoSofthubType,
             logLevel: logLevel.aferoSofthubLogLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,

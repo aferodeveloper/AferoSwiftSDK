@@ -1,5 +1,5 @@
 PODS:
-  - AferoSofthub (1.2.0)
+  - AferoSofthub (1.2.1)
   - AferoSwiftSDK/AFNetworking (1.0.7):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
@@ -81,7 +81,7 @@ EXTERNAL SOURCES:
     :path: ..
 
 SPEC CHECKSUMS:
-  AferoSofthub: ef9c6f7560c64a94280b5caad3f665c94382ed71
+  AferoSofthub: 2a0cad0a7d31dbfa5b42bf75c92fa9f5f64d42ec
   AferoSwiftSDK: 0b46c6d3afe6bbee1a0a2f08ca71f81c0afe4270
   AFNetworking: 8ac6017b94ea105479f7776e5288e48ae9c59bb4
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
