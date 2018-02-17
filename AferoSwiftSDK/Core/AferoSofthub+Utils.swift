@@ -87,6 +87,25 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     /// The Afero development cloud. Production apps and third parties should never use this.
     case dev = 1
     
+    /// A unique identifier to use to identify the cloud setting (for, say, storage in UserDefaults).
+    public var stringIdentifier: String {
+        switch self {
+        case .prod: return "prod"
+        case .dev: return "dev"
+        }
+    }
+    
+    /// Initialize with an optional StringIdentifier. If the `stringIdentifier` is nil,
+    /// or does not match a known `SofthubCloud.stringIdentifier`, fail initialization.
+    public init?(stringIdentifier: String?) {
+        guard let stringIdentifier = stringIdentifier else { return nil }
+        switch stringIdentifier {
+        case SofthubCloud.prod.stringIdentifier: self = .prod
+        case SofthubCloud.dev.stringIdentifier: self = .dev
+        default: return nil
+        }
+    }
+    
     var aferoService: AferoService {
         return AferoService(rawValue: rawValue)!
     }
@@ -98,6 +117,8 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     public var debugDescription: String {
         return "\(type(of: self)) \(rawValue): \(description)"
     }
+    
+    public static let allValues: [SofthubCloud] = [.prod, .dev]
     
 }
 
@@ -184,6 +205,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 
 @objc public enum SofthubCompletionReason: Int, CustomStringConvertible, CustomDebugStringConvertible {
 
+    case none = -1
     case stopCalled = 0
     case missingSetupPath
     case unhandledService
@@ -221,6 +243,17 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     
     private(set) public dynamic var state: SofthubState = .stopped
     private var _softhubStateObs: NSKeyValueObservation?
+    
+    /// The reason the softhub most recently stopped (for the current process).
+    /// - note Ideally this would be an `Optional<SofthubCompletionReason>` rather than
+    ///        a `SofthubCompletionReason` with case `.none`. However, ints are bridged to
+    ///        primitive types in objc, and primitives can't be nil.
+    private(set) public dynamic var completionReason: SofthubCompletionReason = .none
+    
+    /// The required association id, if any. This will only be present
+    /// when the softhub requires association; once we have a deviceId, this
+    /// will revert to `nil`.
+    private(set) public dynamic var associationId: String?
     
     /// The current deviceId, if any, of the softhub. KVO-compliant.
     ///
@@ -264,6 +297,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         
         _softhubDeviceIdObs = AferoSofthub.sharedInstance().observe(\.deviceId) {
             [weak self] hub, chg in
+            self?.associationId = nil
             self?.deviceId = hub.deviceId
         }
 
@@ -353,12 +387,19 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         if [.starting, .started].contains(state) { return }
         
         let localAssociationHandler: AferoSofthubSecureHubAssociationHandler = {
-            associationHandler($0)
+            [weak self] associationId in
+            self?.associationId = associationId
+            associationHandler(associationId)
         }
         
         let localCompletionHandler: AferoSofthubCompleteReasonHandler = {
-            completionHandler(SofthubCompletionReason($0))
+            [weak self] rawCompleteReason in
+            let cr = SofthubCompletionReason(rawCompleteReason)
+            self?.completionReason = cr
+            completionHandler(cr)
         }
+        
+        completionReason = .none
         
         AferoSofthub.start(
             withAccountId: accountId,
