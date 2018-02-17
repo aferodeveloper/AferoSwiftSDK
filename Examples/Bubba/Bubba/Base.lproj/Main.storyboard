@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--SofthubViewController-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" userLabel="SofthubViewController" customClass="SofhthubViewController" customModule="Bubba" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Ready To Associate" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDw-dD-sVc">
+                                <rect key="frame" x="16" y="20" width="343" height="31.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="Before connecting to the Afero cloud, the softhub must be associated to an account." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zo9-xu-Sbq">
+                                <rect key="frame" x="16" y="59.5" width="343" height="42.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oyF-fX-QBQ">
+                                <rect key="frame" x="16" y="110" width="343" height="537"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="oyF-fX-QBQ" secondAttribute="bottom" constant="20" id="F9a-vc-AWV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Zo9-xu-Sbq" secondAttribute="trailing" constant="16" id="KPk-CF-cir"/>
+                            <constraint firstItem="Zo9-xu-Sbq" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Wio-bm-Y1W"/>
+                            <constraint firstItem="RDw-dD-sVc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="czz-jx-hcx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="RDw-dD-sVc" secondAttribute="trailing" constant="16" id="eP0-Vt-4xV"/>
+                            <constraint firstItem="oyF-fX-QBQ" firstAttribute="top" secondItem="Zo9-xu-Sbq" secondAttribute="bottom" constant="8" symbolic="YES" id="gHG-3H-bz3"/>
+                            <constraint firstItem="RDw-dD-sVc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="nLR-Wt-Mb7"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="oyF-fX-QBQ" secondAttribute="trailing" constant="16" id="sBG-2M-Pv9"/>
+                            <constraint firstItem="Zo9-xu-Sbq" firstAttribute="top" secondItem="RDw-dD-sVc" secondAttribute="bottom" constant="8" symbolic="YES" id="xGz-Ej-Yuk"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="leading" secondItem="oyF-fX-QBQ" secondAttribute="leading" constant="-16" id="zmC-ia-YN8"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="associationNeededView" destination="Mua-di-n4u" id="fh7-Dz-f9n"/>
+                        <outlet property="currentStateDetailLabel" destination="Zo9-xu-Sbq" id="DZO-5q-Uaq"/>
+                        <outlet property="currentStateMessageLabel" destination="RDw-dD-sVc" id="sfV-SW-fEK"/>
+                        <outlet property="currentTaskContainerView" destination="oyF-fX-QBQ" id="tkX-2L-0Nq"/>
+                        <outlet property="hubControlView" destination="2LT-sd-6ng" id="vK8-qi-vKn"/>
+                        <outlet property="serviceSelectionView" destination="5zp-1N-IaN" id="xnO-5A-87q"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="5zp-1N-IaN" customClass="ServiceSelectionView" customModule="Bubba" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="341" height="179"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <viewLayoutGuide key="safeArea" id="h8c-RA-QKZ"/>
+                    <connections>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="I6H-C3-Pwf"/>
+                    </connections>
+                </view>
+                <view contentMode="scaleToFill" verticalHuggingPriority="252" horizontalCompressionResistancePriority="746" verticalCompressionResistancePriority="748" id="Mua-di-n4u" customClass="QRCodeView" customModule="Bubba" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="343" height="273.5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <viewLayoutGuide key="safeArea" id="DFt-zu-Hfn"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="0.85106798859999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+                <view contentMode="scaleToFill" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" id="2LT-sd-6ng" customClass="HubControlView" customModule="Bubba" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="343" height="219.5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <viewLayoutGuide key="safeArea" id="Acn-BU-hd0"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="0.89515281010000003" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="L6e-sW-uHJ"/>
+                    </connections>
+                </view>
+            </objects>
+            <point key="canvasLocation" x="36" y="33.733133433283363"/>
+        </scene>
+    </scenes>
+</document>
