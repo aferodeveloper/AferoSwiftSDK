@@ -19,27 +19,29 @@
                 <outlet property="captionLabel" destination="rlO-Ab-LcL" id="6mK-nV-bFq"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="IWo-fs-QLV"/>
                 <outlet property="qrCodeImageView" destination="ZCe-RC-1XD" id="1pD-a8-VRM"/>
+                <outlet property="tapRecognizer" destination="ZdJ-eU-0T9" id="GOk-gH-0Cu"/>
+                <outlet property="tapToCopyLabel" destination="zo4-5x-Ltv" id="f58-XC-3hp"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="230" height="313"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="512"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="YDX-rV-V6a">
-                    <rect key="frame" x="16" y="0.0" width="230" height="313"/>
+                    <rect key="frame" x="16" y="20" width="375" height="492"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" verticalCompressionResistancePriority="1000" text="Scan the QR Code using the &quot;Add Device&quot; functionality of an Afero app." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlO-Ab-LcL">
-                            <rect key="frame" x="0.0" y="0.0" width="230" height="156"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="327"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLt-uM-bby" userLabel="QRCode Container">
-                            <rect key="frame" x="0.0" y="164" width="230" height="100"/>
+                            <rect key="frame" x="0.0" y="335" width="375" height="100"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" image="QRCode" translatesAutoresizingMaskIntoConstraints="NO" id="ZCe-RC-1XD">
-                                    <rect key="frame" x="99" y="0.0" width="100" height="100"/>
+                                    <rect key="frame" x="171.5" y="0.0" width="100" height="100"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="ZCe-RC-1XD" secondAttribute="height" multiplier="1:1" id="LFx-zg-qij"/>
                                         <constraint firstAttribute="width" constant="100" id="kZH-E3-JSz"/>
@@ -57,7 +59,13 @@
                             </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="7F431704-FA2E-4910-A64D-5DDF05EC30C2" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Ig-c3-MDo">
-                            <rect key="frame" x="0.0" y="272" width="230" height="41"/>
+                            <rect key="frame" x="0.0" y="443" width="375" height="20.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(tap to copy)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zo4-5x-Ltv" userLabel="(tap to copy)">
+                            <rect key="frame" x="0.0" y="471.5" width="375" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -66,6 +74,7 @@
                 </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <gestureRecognizers/>
             <constraints>
                 <constraint firstAttribute="trailingMargin" secondItem="YDX-rV-V6a" secondAttribute="trailing" constant="-2" id="OUQ-ob-Ip0"/>
                 <constraint firstAttribute="leadingMargin" secondItem="YDX-rV-V6a" secondAttribute="leading" id="dht-Wa-81P"/>
@@ -74,8 +83,16 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="-59" y="-358.5"/>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="ZdJ-eU-0T9" appends="YES" id="XgF-5D-w27"/>
+            </connections>
+            <point key="canvasLocation" x="13.5" y="-259"/>
         </view>
+        <tapGestureRecognizer id="ZdJ-eU-0T9">
+            <connections>
+                <action selector="tapped:" destination="-1" id="IEB-RX-ocG"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="QRCode" width="44" height="44"/>

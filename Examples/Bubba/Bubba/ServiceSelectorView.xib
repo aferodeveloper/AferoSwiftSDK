@@ -44,8 +44,8 @@
                             <rect key="frame" x="1.5" y="245" width="340" height="30"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RXl-hr-yyH">
-                                    <rect key="frame" x="308" y="0.0" width="32" height="30"/>
-                                    <state key="normal" title="Next"/>
+                                    <rect key="frame" x="281" y="0.0" width="59" height="30"/>
+                                    <state key="normal" title="Connect"/>
                                     <connections>
                                         <action selector="nextButtonTapped:" destination="-1" eventType="touchUpInside" id="lji-Of-dK9"/>
                                     </connections>

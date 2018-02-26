@@ -46,6 +46,11 @@ fileprivate enum SofthubViewControllerUserDefaultsKey: String {
 
 fileprivate extension UserDefaults {
 
+    @objc func resetSofthubDefaults() {
+        set(nil, forKey: SofthubViewControllerUserDefaultsKey.softhubAccountId.rawValue)
+        self.softhubCloud = nil
+    }
+    
     /// The device id, if any, for the currently-associated softhub.
     /// Note that this is a cached value; the canonical value is always
     /// `Softhub.shared.deviceId`.
@@ -126,7 +131,7 @@ enum SofthubViewControllerTask: Equatable {
 
     case serviceSelection
     case associationNeeded(id: String)
-    case associated(deviceId: String, completionReason: SofthubCompletionReason?)
+    case associated(deviceId: String?, completionReason: SofthubCompletionReason?)
     
     static func ==(lhs: SofthubViewControllerTask, rhs: SofthubViewControllerTask) -> Bool {
         switch (lhs, rhs) {
@@ -156,61 +161,41 @@ enum SofthubViewControllerTask: Equatable {
     @IBOutlet var associationNeededView: QRCodeView!
     @IBOutlet var hubControlView: HubControlView!
 
+    // MARK: Versions Labels
+    
+    @IBOutlet weak var sdkVersionTitleLabel: UILabel!
+    @IBOutlet weak var sdkVersionValueLabel: UILabel!
+    @IBOutlet weak var softhubVersionTitleLabel: UILabel!
+    @IBOutlet weak var softhubVersionValueLabel: UILabel!
+    @IBOutlet weak var cloudValueLabel: UILabel!
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         startObservingSofthubState()
-        startObservingPrefs()
+        softhubVersionValueLabel.text = Softhub.shared.version
+        
+        var cloud = UserDefaults.standard.softhubCloud
+        
+        if cloud == nil {
+            cloud = .prod
+            UserDefaults.standard.softhubCloud = cloud
+        }
+        
+        serviceSelectionView.selectedIndex = cloud!.rawValue
     }
     
     // MARK: - KVO
     
-    /*
-     
-     We're using UserDefaults as our "model". Display state is entirely determined by observation of four things:
-     
-     * In UserDefaults, the accountId, cloud, and deviceId.
-     * On the Softhub, the state.
- 
-     */
-    
-    private var defaultsAccountIdObs: NSKeyValueObservation?
-    private var defaultsCloudObs: NSKeyValueObservation?
-    private var defaultsDeviceIdObs: NSKeyValueObservation?
-    
-    func startObservingPrefs() {
-        
-        /// If the user changes the cloud, then we tear everything down.
-        defaultsCloudObs = UserDefaults.standard.observe(\.softhubCloudId, options: [.initial]) {
-            [weak self] obj, chg in
-            self?.stopSofthub()
-        }
-        
-//        defaultsDeviceIdObs = UserDefaults.standard.obseve(\.)
-        
-    }
-    
-    /// Handle any task state changes as per changes to UserDefaults.
-    /// We don't handle absolutely everything here; for example, we enter
-    /// `.associationNeeded` in response to the softhub asking for association.
-    
-    func syncTaskToDefaults() {
-        
-        // If we don't have a softhub cloud, that means we need to
-        // present it to the user.
-        guard let _ = UserDefaults.standard.softhubCloud else {
-            currentTask = .serviceSelection
-            return
-        }
-        
-    }
-    
     // MARK: - Hub Control
 
-    /// Start the softhub, using the `accountId` and `cloud` stored in `UserDefaults`.
+    /// Start the softhub.
     /// If association is required, the softhub will ask us, at which point we'll
     /// display the `associationNeeded` task.
+    ///
+    /// - parameter accountId: The account id to use.
+    /// - parameter cloud: The cloud to which to connect.
     ///
     /// - note: The only explict state we set here is `.associationNeeded(id)`, because
     ///         that is not mapped to a specific softhub state but is an event that fires
@@ -222,23 +207,17 @@ enum SofthubViewControllerTask: Equatable {
     ///         (and the softhub's state is "started"), we'll show the `hubControlView`,
     ///         and this is the place where we acquire the complete reason if any.
     
-    func startSofthub() {
-        
-        guard let cloud = UserDefaults.standard.softhubCloud else {
-            syncState()
-            return
-        }
-
-        let accountId = UserDefaults.standard.softhubAccountId
-
+    func startSofthub(with accountId: String, in cloud: SofthubCloud) {
+        print("*** Starting softhub with accountId:\(accountId) cloud:\(String(describing: cloud))")
+        UserDefaults.standard.softhubCloud = cloud
         Softhub.shared.start(with: accountId, using: cloud, behavingAs: .enterprise, logLevel: .debug, associationHandler: {
             associationId in
             // Note: Used for logging only. See observers for softhub associationId and completeReason.
-            NSLog("We're being asked to associate \(associationId)")
+            print("*** We're being asked to associate \(associationId)")
             }, completionHandler: {
                 [weak self] cr in asyncMain {
                     // Note: Used for logging only. See observers for softhub associationId and completeReason.
-                    NSLog("We've completed with reason: \(String(reflecting: cr))")
+                    print("*** We've completed with reason: \(String(reflecting: cr))")
                     self?.hubControlView?.completionReason = cr.description
                 }
                 
@@ -255,65 +234,105 @@ enum SofthubViewControllerTask: Equatable {
     private var softhubDeviceIdObs: NSKeyValueObservation?
     private var softhubAssociationIdObs: NSKeyValueObservation?
     private var softhubCompleteReasonObs: NSKeyValueObservation?
+    private var cloudSelectionObs: NSKeyValueObservation?
     
     func startObservingSofthubState() {
         
         /// We learn whether or not we need to be associated here.
         softhubAssociationIdObs = Softhub.shared.observe(\.associationId) {
-            [weak self] obj, chg in self?.syncState()
+            [weak self] obj, chg in asyncMain {
+                print("*** Association id now: \(String(reflecting: obj.associationId))")
+                self?.syncCurrentTask()
+            }
         }
         
         /// We get starting, started, stopping, stopped from here.
         softhubDeviceIdObs = Softhub.shared.observe(\.deviceId) {
-            [weak self] obj, chg in self?.syncState()
+            [weak self] obj, chg in asyncMain {
+                print("*** DeviceId now: \(String(reflecting: obj.deviceId))")
+                self?.syncCurrentTask()
+            }
         }
         
         softhubStateObs = Softhub.shared.observe(\.state) {
-            [weak self] obj, chg in self?.syncState()
+            [weak self] obj, chg in asyncMain {
+                print("*** SofthubState now: \(String(reflecting: obj.state))")
+                self?.syncCurrentTask()
+            }
         }
         
         softhubCompleteReasonObs = Softhub.shared.observe(\.completionReason) {
-            [weak self] obj, chg in self?.syncState()
+            [weak self] obj, chg in asyncMain {
+                print("*** CompletionReason now: \(String(reflecting: obj.completionReason))")
+                self?.syncCurrentTask()
+            }
         }
         
-        syncState()
+        cloudSelectionObs = UserDefaults.standard.observe(\.softhubCloudId, options: [.initial]) {
+            [weak self] obj, chg in asyncMain {
+                print("*** Cloud now: \(String(reflecting: obj.softhubCloud))")
+                self?.cloudValueLabel.text = UserDefaults.standard.softhubCloud?.stringIdentifier
+//                self?.syncCurrentTask()
+            }
+        }
+        
+        setCurrentTask(to: .serviceSelection, animated: false)
     }
     
-    func syncState() {
+    func syncCurrentTask(animated: Bool = false, completion: @escaping ()->Void = {}) {
         
-        switch (Softhub.shared.state, Softhub.shared.associationId, Softhub.shared.deviceId, Softhub.shared.completionReason) {
+        let descrim = (UserDefaults.standard.softhubCloud, Softhub.shared.associationId, Softhub.shared.deviceId, Softhub.shared.completionReason)
+        
+        switch descrim {
             
         // We need to present cloud selector, which also gives us the ability to connect.
-        case let (_, .none, .some(deviceId), completionReason):
-            self.currentTask = .associated(deviceId: deviceId, completionReason: completionReason)
-            
+        case let (.some(_), .none, deviceId, completionReason):
+            setCurrentTask(to: .associated(deviceId: deviceId, completionReason: completionReason), animated: animated, completion: completion)
+
         // We need to present the QR code bit
-        case let (_, .some(associationId), _, _):
-            self.currentTask = .associationNeeded(id: associationId)
+        case let (.some(_), .some(associationId), _, _):
+            setCurrentTask(to: .associationNeeded(id: associationId), animated: animated, completion: completion)
 
         default:
-            self.currentTask = .serviceSelection
-            
+            setCurrentTask(to: .serviceSelection, animated: animated, completion: completion)
+
         }
 
     }
     
     /// The current task state, set by `syncState().
-    var currentTask: SofthubViewControllerTask = .serviceSelection {
+    
+    func setCurrentTask(to newTask: SofthubViewControllerTask, animated: Bool = false, completion: @escaping ()->Void = {}) {
         
-        didSet {
-            if oldValue == currentTask { return }
-            transitionTo(taskView: taskView(for: currentTask), animated: true, completion: { })
+        guard newTask != _currentTask  else {
+            completion()
+            return
         }
         
+        guard let taskView = taskView(for: newTask) else {
+            completion()
+            return
+        }
+        
+        _currentTask = newTask
+        
+        transitionTo(taskView: taskView, animated: animated, completion: completion)
     }
     
-    func taskView(for task: SofthubViewControllerTask) -> UIView {
+    private var _currentTask: SofthubViewControllerTask?
+    
+    func taskView(for task: SofthubViewControllerTask?) -> UIView? {
         
+        guard let task = task else { return nil }
         switch task {
         case .serviceSelection: return serviceSelectionView
-        case .associationNeeded: return associationNeededView
+        
+        case let .associationNeeded(associationId):
+            associationNeededView.associationId = associationId
+            return associationNeededView
+            
         case .associated: return hubControlView
+            
         }
         
     }
@@ -344,6 +363,7 @@ enum SofthubViewControllerTask: Equatable {
             currentTaskView?.removeFromSuperview()
             currentTaskContainerView.addSubview(view)
             configureConstraints(view)
+            completion()
             return
         }
         
@@ -378,11 +398,11 @@ enum SofthubViewControllerTask: Equatable {
     }
 
     func handleSofthubAssociationNeeded(for associationId: String) {
-//        syncTaskView()
+        syncCurrentTask(animated: true)
     }
     
     func handleSofthubCompleted(with completionReason: SofthubCompletionReason) {
-//        syncTaskView()
+        syncCurrentTask(animated: true)
     }
 
 
@@ -398,14 +418,47 @@ extension SofhthubViewController: ServiceSelectionViewDelegate {
         return SofthubCloud.allValues[index].description
     }
     
+    func selectedIndexChanged(to index: Int, in selectionView: ServiceSelectionView) {
+        let cloud = SofthubCloud.allValues[index]
+        UserDefaults.standard.softhubCloud = cloud
+        print("Selection changed to \(cloud) (\(index)).")
+    }
+    
+    func nextTapped(in selectionView: ServiceSelectionView) {
+        print("Next tapped!")
+        let cloud = SofthubCloud.allValues[selectionView.selectedIndex]
+        let accountId = UserDefaults.standard.softhubAccountId
+        startSofthub(with: accountId, in: cloud)
+    }
     
 }
 
 extension SofhthubViewController: HubControlViewDelegate {
+
+    func hubResetRequested(for hubControlView: HubControlView) {
+        stopSofthub()
+        UserDefaults.standard.resetSofthubDefaults()
+        syncCurrentTask()
+    }
+    
     
     func hubEnabledValueChanged(to enabled: Bool, for hubControlView: HubControlView) {
-        print("Enabled value changed to \(enabled)")
+        
+        if enabled {
+
+            guard let softhubCloud = UserDefaults.standard.softhubCloud else {
+                syncCurrentTask()
+                return
+            }
+            
+            startSofthub(with: UserDefaults.standard.softhubAccountId, in: softhubCloud)
+            return
+        }
+        
+        stopSofthub()
+        
     }
+    
     
 }
 

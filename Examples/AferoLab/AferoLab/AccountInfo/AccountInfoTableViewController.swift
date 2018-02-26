@@ -525,7 +525,7 @@ class AccountViewController: UITableViewController {
     }
     
     @objc func softhubSwitchValueChanged(_ sender: Any) {
-        softhubEnabled = (sender as? UISwitch)?.isOn ?? false
+            softhubEnabled = (sender as? UISwitch)?.isOn ?? false
     }
     
     // MARK: <UITableViewDelegate>

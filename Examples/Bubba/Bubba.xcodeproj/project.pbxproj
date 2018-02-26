@@ -192,7 +192,7 @@
 				"${SRCROOT}/../Pods/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
-				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
+				"${PODS_ROOT}/../../../AferoSofthub/AferoSofthub.framework",
 				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK/Afero.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaZ/CocoaZ.framework",
@@ -202,6 +202,7 @@
 				"${BUILT_PRODUCTS_DIR}/RSEnvironment/RSEnvironment.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/QRCode/QRCode.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -218,6 +219,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSEnvironment.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCode.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

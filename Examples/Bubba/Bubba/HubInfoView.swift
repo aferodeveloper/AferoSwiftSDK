@@ -21,6 +21,9 @@ fileprivate extension Optional where Wrapped: Collection {
     
     /// The user has indicated that the hub should or should not be enabled.
     func hubEnabledValueChanged(to enabled: Bool, for hubControlView: HubControlView)
+    
+    func hubResetRequested(for hubControlView: HubControlView)
+    
 }
 
 @IBDesignable class HubControlView: XibBasedView {
@@ -46,6 +49,7 @@ fileprivate extension Optional where Wrapped: Collection {
     @IBOutlet private weak var messageValueLable: UILabel!
     
     @IBOutlet weak var enabledSwitchContainer: UIStackView!
+    @IBOutlet weak var resetButton: UIButton!
     @IBOutlet private weak var enabledTitleLabel: UILabel!
     @IBOutlet private weak var enabledSwitch: UISwitch!
     private var enabledSwitchObs: NSKeyValueObservation?
@@ -95,6 +99,9 @@ fileprivate extension Optional where Wrapped: Collection {
         delegate?.hubEnabledValueChanged(to: enabledSwitch.isOn, for: self)
     }
     
+    @IBAction func resetTapped(_ sender: Any) {
+        delegate?.hubResetRequested(for: self)
+    }
 }
 
 

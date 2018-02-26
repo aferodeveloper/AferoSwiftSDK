@@ -26,6 +26,12 @@ import Afero
     
     @IBOutlet weak var captionLabel: UILabel!
     @IBOutlet weak var servicePickerView: UIPickerView!
+    
+    var selectedIndex: Int {
+        get { return servicePickerView.selectedRow(inComponent: 0)}
+        set { servicePickerView.selectRow(newValue, inComponent: 0, animated: true)}
+    }
+    
     @IBOutlet weak var nextButton: UIButton!
     
     @IBOutlet weak var delegate: ServiceSelectionViewDelegate!

@@ -47,6 +47,7 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
         case .setupFailed: return "The setup process for the embedded softhub has failed. (no other reason given)."
         case .fileIOError: return "I/O Error reading config values."
         case .unhandledService: return "Asked to start with an unrecognized Afero cloud."
+        case .serviceIssue: return "Ther was a problem communicating with the Afero cloud."
         }
     }
     
@@ -211,8 +212,9 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     case unhandledService
     case fileIOError
     case setupFailed
+    case serviceIssue
     
-    var aferoSofthubCompleteReason: AferoSofthubCompleteReason {
+    private var aferoSofthubCompleteReason: AferoSofthubCompleteReason {
         return AferoSofthubCompleteReason(rawValue: rawValue)!
     }
     
@@ -221,7 +223,11 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     }
     
     public var description: String {
-        return aferoSofthubCompleteReason.description
+        switch self {
+        case .none: return "<none>"
+        default: return aferoSofthubCompleteReason.description
+        }
+        
     }
     
     public var debugDescription: String {
@@ -238,6 +244,18 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     /// The softhub is a shared singleton; this gives access to it.
     
     public static let shared = Softhub()
+    
+    /// The internal build version of the softhub. This relates to and internal Afero
+    /// build number, and may differ from release tag identified in distribution
+    /// version control.
+    
+    public var version: String { return AferoSofthubVersion }
+
+    /// The internal build version of the softhub. This relates to and internal Afero
+    /// build number, and may differ from release tag identified in distribution
+    /// version control.
+    
+    public static var Version: String { return AferoSofthubVersion }
     
     /// The current state of the softhub. KVO-compliant.
     
@@ -301,7 +319,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
             self?.deviceId = hub.deviceId
         }
 
-        _softhubDeviceIdObs = AferoSofthub.sharedInstance().observe(\.otaCount) {
+        _softhubActiveOTACountObs = AferoSofthub.sharedInstance().observe(\.otaCount) {
             [weak self] hub, chg in
             self?.activeOTACount = hub.otaCount
         }
