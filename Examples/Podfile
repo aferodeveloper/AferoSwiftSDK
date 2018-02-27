@@ -82,8 +82,6 @@ target 'Bubba' do
     base_pods
     pod 'QRCode', '~> 2.0'
     pod 'SVProgressHUD', '1.1.3', :inhibit_warnings => true
-
-    pod 'AferoSofthub', :path => "../../AferoSofthub"
 end
 
 post_install do |installer|

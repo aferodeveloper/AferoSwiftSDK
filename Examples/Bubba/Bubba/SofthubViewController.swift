@@ -151,9 +151,6 @@ enum SofthubViewControllerTask: Equatable {
 
 @objcMembers class SofhthubViewController: UIViewController {
 
-    @IBOutlet weak var currentStateMessageLabel: UILabel!
-    @IBOutlet weak var currentStateDetailLabel: UILabel!
-    
     // MARK: Task Views
     
     @IBOutlet weak var currentTaskContainerView: UIView!
