@@ -2,7 +2,7 @@
 author: Justin Middleton <jrmiddle@afero.io>
 title: "Afero Softhub"
 date: Feb 9, 2018 4:21 PM
-status: 0.1
+status: 1.0
 ---
 
 **AFERO CONFIDENTIAL AND PROPRIETARY INFORMATION**
