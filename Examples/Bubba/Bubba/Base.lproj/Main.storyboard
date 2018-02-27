@@ -31,7 +31,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oyF-fX-QBQ">
+                            <view contentMode="scaleToFill" horizontalHuggingPriority="100" verticalHuggingPriority="100" translatesAutoresizingMaskIntoConstraints="NO" id="oyF-fX-QBQ">
                                 <rect key="frame" x="16" y="110" width="343" height="512.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -83,7 +83,7 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="hrd-AD-GLO" firstAttribute="top" relation="greaterThanOrEqual" secondItem="oyF-fX-QBQ" secondAttribute="bottom" constant="8" symbolType="layoutAnchor" id="1vK-1l-tXL"/>
+                            <constraint firstItem="hrd-AD-GLO" firstAttribute="top" secondItem="oyF-fX-QBQ" secondAttribute="bottom" constant="8" symbolType="layoutAnchor" id="1vK-1l-tXL"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Zo9-xu-Sbq" secondAttribute="trailing" constant="16" id="KPk-CF-cir"/>
                             <constraint firstItem="hrd-AD-GLO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="PXd-K2-ZFL"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hrd-AD-GLO" secondAttribute="bottom" constant="16" id="Rud-ML-XJK"/>
@@ -133,12 +133,6 @@
                         <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
                             <color key="value" white="0.85106798859999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="12"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                            <real key="value" value="2"/>
-                        </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" id="2LT-sd-6ng" customClass="HubControlView" customModule="Bubba" customModuleProvider="target">
@@ -147,14 +141,8 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <viewLayoutGuide key="safeArea" id="Acn-BU-hd0"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="12"/>
-                        </userDefinedRuntimeAttribute>
                         <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
                             <color key="value" white="0.89515281010000003" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                            <real key="value" value="2"/>
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                     <connections>

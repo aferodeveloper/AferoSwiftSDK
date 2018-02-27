@@ -61,7 +61,7 @@ fileprivate extension Optional where Wrapped: Collection {
         super.initializeView()
 
         emptyableLabelObs = emptyableLabels.map {
-            $0.observe(\.text) {
+            $0.observe(\.text, options: [.initial]) {
                 obj, chg in
                 obj.superview?.isHidden = obj.text.isEmpty
             }

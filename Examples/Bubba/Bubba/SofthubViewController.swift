@@ -250,6 +250,7 @@ enum SofthubViewControllerTask: Equatable {
         softhubDeviceIdObs = Softhub.shared.observe(\.deviceId) {
             [weak self] obj, chg in asyncMain {
                 print("*** DeviceId now: \(String(reflecting: obj.deviceId))")
+                self?.hubControlView.deviceId = obj.deviceId
                 self?.syncCurrentTask()
             }
         }
@@ -257,6 +258,7 @@ enum SofthubViewControllerTask: Equatable {
         softhubStateObs = Softhub.shared.observe(\.state) {
             [weak self] obj, chg in asyncMain {
                 print("*** SofthubState now: \(String(reflecting: obj.state))")
+                self?.hubControlView.status = obj.state.description
                 self?.syncCurrentTask()
             }
         }
@@ -264,6 +266,8 @@ enum SofthubViewControllerTask: Equatable {
         softhubCompleteReasonObs = Softhub.shared.observe(\.completionReason) {
             [weak self] obj, chg in asyncMain {
                 print("*** CompletionReason now: \(String(reflecting: obj.completionReason))")
+                let cr = obj.completionReason
+                self?.hubControlView.completionReason = cr == .none ? nil : cr.description
                 self?.syncCurrentTask()
             }
         }
@@ -279,7 +283,7 @@ enum SofthubViewControllerTask: Equatable {
         setCurrentTask(to: .serviceSelection, animated: false)
     }
     
-    func syncCurrentTask(animated: Bool = false, completion: @escaping ()->Void = {}) {
+    func syncCurrentTask(animated: Bool = true, completion: @escaping ()->Void = {}) {
         
         let descrim = (UserDefaults.standard.softhubCloud, Softhub.shared.associationId, Softhub.shared.deviceId, Softhub.shared.completionReason)
         
@@ -347,16 +351,33 @@ enum SofthubViewControllerTask: Equatable {
         
         let configureConstraints: (UIView)->Void = {
             view in
+            
             NSLayoutConstraint.activate(
-                ["H:|[v]|", "V:|[v]|"].flatMap {
-                    NSLayoutConstraint.constraints(
-                        withVisualFormat: $0,
-                        options: [],
-                        metrics: [:],
-                        views: ["v": view]
-                    )
+                [
+                    "H:|-[v]-|",
+                    "V:|-(>=0)-[v]-(>=0)-|",
+                    ].flatMap {
+                        NSLayoutConstraint.constraints(
+                            withVisualFormat: $0,
+                            options: [],
+                            metrics: [:],
+                            views: ["v": view]
+                        )
                 }
             )
+            
+            NSLayoutConstraint.activate([
+                NSLayoutConstraint(
+                    item: view,
+                    attribute: .centerY,
+                    relatedBy: .equal,
+                    toItem: self.currentTaskContainerView,
+                    attribute: .centerY,
+                    multiplier: 1.0,
+                    constant: 0
+                ),
+            ])
+            
         }
         
         guard animated else {
@@ -370,6 +391,7 @@ enum SofthubViewControllerTask: Equatable {
         guard let currentTaskView = currentTaskView else {
             currentTaskContainerView.addSubview(view)
             configureConstraints(view)
+            completion()
             return
         }
         
@@ -381,7 +403,7 @@ enum SofthubViewControllerTask: Equatable {
                 .beginFromCurrentState,
                 .layoutSubviews,
                 .curveEaseInOut,
-                .transitionFlipFromLeft
+                .transitionCrossDissolve
             ],
             animations: {
                 [weak self] in
