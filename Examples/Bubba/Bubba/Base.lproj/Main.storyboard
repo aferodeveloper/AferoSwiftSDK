@@ -19,10 +19,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hubbabubba" translatesAutoresizingMaskIntoConstraints="NO" id="WWd-B4-NEU">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WWd-B4-NEU">
                                 <rect key="frame" x="16" y="60" width="343" height="86"/>
                             </imageView>
-                            <view contentMode="scaleToFill" horizontalHuggingPriority="100" verticalHuggingPriority="100" translatesAutoresizingMaskIntoConstraints="NO" id="oyF-fX-QBQ">
+                            <view contentMode="scaleToFill" horizontalHuggingPriority="100" verticalHuggingPriority="100" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oyF-fX-QBQ">
                                 <rect key="frame" x="16" y="154" width="343" height="468.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -139,7 +139,4 @@
             <point key="canvasLocation" x="36" y="33.733133433283363"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="hubbabubba" width="200" height="86"/>
-    </resources>
 </document>
