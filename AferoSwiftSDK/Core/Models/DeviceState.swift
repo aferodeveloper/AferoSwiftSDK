@@ -546,6 +546,8 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     typealias DeviceTag = DeviceTagCollection.DeviceTag
     typealias DeviceTagEvent = DeviceTagCollection.Event
     
+    var attributeCollection: AferoAttributeCollection { get }
+    
     var deviceTagCollection: DeviceTagCollection? { get }
     
     /// All tags associated with this instance.
