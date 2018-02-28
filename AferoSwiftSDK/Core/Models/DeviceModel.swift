@@ -178,6 +178,8 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
     /// The account to which this device is associated.
     internal(set) public var accountId: String
     
+    private(set) public var attributeCollection: AferoAttributeCollection = AferoAttributeCollection()
+    
     /// DeviceProfile ID for this device. When setting, will always result in an update sent
     /// on the `stateSink`. If the profileID differs from current, is non-nil,
     /// AND the resolver has been configured, this will result in a request to the
@@ -205,6 +207,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         self.profile = profile
         self.profileSource = profileSource
         self.deviceCloudSupporting = deviceCloudSupporting
+        try! self.attributeCollection.configure(with: self.profile)
     }
     
     convenience init(
@@ -256,9 +259,15 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
     // MARK: Profile Shortcuts
     
     /// The profile associated with this device.
-    public var profile: DeviceProfile? {
+    internal(set) public var profile: DeviceProfile? {
         didSet {
             if oldValue == profile { return }
+            do {
+                try attributeCollection.configure(with: profile)
+            } catch {
+                DDLogError("Unable to configure attributeCollection with profile: \(String(reflecting: error)); ignoring.", tag: TAG)
+                return
+            }
             eventSink.send(value: .profileUpdate)
         }
     }
