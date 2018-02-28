@@ -424,6 +424,13 @@ extension AferoAttributeDataDescriptor {
     }
 }
 
+extension AferoAttributeDataDescriptor {
+    
+    var defaultAttributeValue: AttributeValue? {
+        return attributeValue(for: defaultValue)
+    }
+}
+
 public extension AferoAttributeDataDescriptor {
     
     public var isWritable: Bool { return operations.contains(.Write) }
@@ -750,10 +757,6 @@ public extension AferoAttributeDataDescriptor {
     public let rangeOptions: AferoAttributePresentationRangeOptions?
     public let valueOptions: [AferoAttributePresentationValueOption]
     
-    private (set) public lazy var valueOptionsMap: [String: [String: Any]] = {
-        return self.valueOptions.valueOptionsMap
-    }()
-    
     init(label: String? = nil, rangeOptions: AferoAttributePresentationRangeOptions? = nil, valueOptions: [AferoAttributePresentationValueOption] = [], flags: AferoAttributeOptionFlags = []) {
         self.label = label
         self.rangeOptions = rangeOptions
@@ -820,6 +823,23 @@ public extension AferoAttributeDataDescriptor {
     
     public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
     
+    // MARK: DisplayRules
+    
+    /// Returns a map of valid values (in string format) to a dictionary representation
+    /// of the apply block for those valueOptions.
+    
+    private (set) public lazy var valueOptionsMap: [String: [String: Any]] = {
+        return self.valueOptions.valueOptionsMap
+    }()
+    
+    /// Returns function which can take an `AttributeValue` as input, match against
+    /// the `valueOptions`'s `match` expressions, and return the resulting `apply` dictionary,
+    /// if any.
+    
+    private(set) public lazy var valueOptionProcessor: ((AttributeValue?) -> [String: Any]) = {
+        return self.valueOptions.displayRulesProcessor()
+    }()
+
 }
 
 // MARK: - AferoAttributeValueState -
@@ -1553,4 +1573,5 @@ public extension AferoAttributeCollection {
     }
 
 }
+
 
