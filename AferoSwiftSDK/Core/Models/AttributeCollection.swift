@@ -1035,6 +1035,26 @@ public extension AferoAttributeDataDescriptor {
 ///
 /// - note: This class has no 1:1 implementation on the Afero cloud; it's constructed for the SDK's
 ///         purposes only.
+///
+/// # ValueStates
+///
+/// `AferoAttribute` supports multiple "valueStates". These are not discrete states stored
+/// in a single property, but rather three separate properties with a precedence relationship.
+///
+/// * `currentValueState` is the stored value of the attribute as understood, and to the extent possible,
+/// confirmed by the cloud. In other words, it reflects the state of the device.
+///
+/// * `pendingValueState` is a stored value that has been committed to the cloud, but has
+///   not yet been confirmed by the device. It can be considered as "queued", and if all goes well
+///   (the device is online, bits are flowing), will become the `currentValueState`.
+///
+/// * `intendedValueState` is a stored value can be considered a "staging" state. The value
+///   is being modified by an end user, for example, but it has not yet been committed to the
+///   service and queued for delivery to a device.
+///
+/// * `displayValueState` is what we'd want to show to the user, and is computed based
+///   upon the other three; it's `intendedValueState` if non-nil, otherwise `pendingValueState`
+///   if non-nil, otherwise `currentValueState`.
 
 @objcMembers public class AferoAttribute: NSObject, NSCopying, Codable, AferoJSONCoding {
     
@@ -1053,12 +1073,14 @@ public extension AferoAttributeDataDescriptor {
         willSet {
             guard newValue != currentValueState else { return }
             willChangeValue(for: \.currentValueState)
+            guard pendingValueState == nil && intendedValueState == nil else { return }
             willChangeValue(for: \.displayValueState)
         }
         
         didSet {
             guard oldValue != currentValueState else { return }
             didChangeValue(for: \.currentValueState)
+            guard pendingValueState == nil && intendedValueState == nil else { return }
             didChangeValue(for: \.displayValueState)
         }
     }
@@ -1072,6 +1094,7 @@ public extension AferoAttributeDataDescriptor {
             guard newValue != pendingValueState else { return }
             willChangeValue(for: \.pendingValueState)
             willChangeValue(for: \.hasPendingValueState)
+            guard intendedValueState == nil else { return }
             willChangeValue(for: \.displayValueState)
         }
         
@@ -1079,10 +1102,40 @@ public extension AferoAttributeDataDescriptor {
             guard oldValue != pendingValueState else { return }
             didChangeValue(for: \.pendingValueState)
             didChangeValue(for: \.hasPendingValueState)
+            guard intendedValueState == nil else { return }
             didChangeValue(for: \.displayValueState)
         }
 
     }
+
+    /// The intended value state. This is the value that, e.g., controls would set
+    /// while being actuated, prior to committing to the backend. Upon successful commission,
+    /// `intendedValueState` becomes `nil`, and `pendingValueState` becomes the old
+    /// `intendedValueState`.
+    
+    dynamic internal(set) public var intendedValueState: AferoAttributeValueState? {
+        
+        willSet {
+            guard newValue != intendedValueState else { return }
+            willChangeValue(for: \.intendedValueState)
+            willChangeValue(for: \.hasIntendedValueState)
+            willChangeValue(for: \.displayValueState)
+        }
+        
+        didSet {
+            guard oldValue != intendedValueState else { return }
+            didChangeValue(for: \.intendedValueState)
+            didChangeValue(for: \.hasIntendedValueState)
+            didChangeValue(for: \.displayValueState)
+        }
+        
+    }
+    
+    dynamic public var hasIntendedValueState: Bool {
+        return intendedValueState != nil
+    }
+
+    
     
     /// Initialize an `AferoAttribute` with descriptors for data and presentation, current, and pending value state.
     /// - parameter dataDescriptpr: The structure describing the logical type of data being stored,
@@ -1129,6 +1182,8 @@ public extension AferoAttributeDataDescriptor {
         case "currentValueState": fallthrough
         case "pendingValueState": fallthrough
         case "hasPendingValueState": fallthrough
+        case "intendedValueState": fallthrough
+        case "hasIntendedValueState": fallthrough
         case "displayValueState":
             return false
             
@@ -1419,7 +1474,13 @@ public extension AferoAttributeDataDescriptor {
             throw AferoAttributeCollectionError.unrecognizedAttributeId
         }
         
+        guard attribute.pendingValueState != state else {
+            return
+        }
+        
+        willChangeValue(for: \.pendingAttributes)
         attribute.pendingValueState = state
+        didChangeValue(for: \.pendingAttributes)
     }
     
     func setPending(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
@@ -1436,6 +1497,7 @@ public extension AferoAttributeDataDescriptor {
         
         attribute.currentValueState = state
     }
+    
     
     func setCurrent(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
         let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
@@ -1457,9 +1519,13 @@ public extension AferoAttributeDataDescriptor {
     }
     
     /// A `Set` of all `AferoAttributes` in the collection.
-    
     public dynamic var attributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values)
+    }
+    
+    /// A `Set` of all `AferoAttributes` in the collection which have pending values.
+    public dynamic var pendingAttributes: Set<AferoAttribute> {
+        return Set(attributeRegistry.values.filter { $0.pendingValueState != nil })
     }
     
     /// Fetch an attribute for the given id
