@@ -207,7 +207,7 @@ enum SofthubViewControllerTask: Equatable {
     func startSofthub(with accountId: String, in cloud: SofthubCloud) {
         print("*** Starting softhub with accountId:\(accountId) cloud:\(String(describing: cloud))")
         UserDefaults.standard.softhubCloud = cloud
-        Softhub.shared.start(with: accountId, using: cloud, behavingAs: .enterprise, logLevel: .debug, associationHandler: {
+        Softhub.shared.start(with: accountId, using: cloud, logLevel: .debug, associationHandler: {
             associationId in
             // Note: Used for logging only. See observers for softhub associationId and completeReason.
             print("*** We're being asked to associate \(associationId)")
