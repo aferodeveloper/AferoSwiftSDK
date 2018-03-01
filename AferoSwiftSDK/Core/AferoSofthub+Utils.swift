@@ -394,7 +394,6 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         AferoSofthub.start(
             withAccountId: accountId,
             cloud: cloud.aferoService,
-            softhubType: .enterprise,
             logLevel: logLevel.aferoSofthubLogLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
