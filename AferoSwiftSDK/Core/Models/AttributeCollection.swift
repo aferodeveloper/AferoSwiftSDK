@@ -1144,14 +1144,18 @@ public extension AferoAttributeDataDescriptor {
     ///             or consumption by analytics.
     /// - parameter currentValueState: The current value state reported by the Afero peripheral device to the Afero cloud.
     /// - parameter pendingValueState: The pending value state, resulting from a successful write from the local client
+    /// - parameter intendedValueState: can be considered a "staging" state. The value
+    ///   being modified by an end user, for example, but it not yet been committed to the
+    ///   service and queued for delivery to a device
     ///             to the Afero cloud, prior to the associated Afero peripheral device applying
     ///             and reporting the successful application of a new value.
     
-    init(dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor? = nil, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil) {
+    init(dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor? = nil, currentValueState: AferoAttributeValueState? = nil, pendingValueState: AferoAttributeValueState? = nil, intendedValueState: AferoAttributeValueState? = nil) {
         self.presentationDescriptor = presentationDescriptor
         self.dataDescriptor = dataDescriptor
         self.currentValueState = currentValueState
         self.pendingValueState = pendingValueState
+        self.intendedValueState = intendedValueState
     }
     
     // MARK: NSObjectProtocol
@@ -1208,7 +1212,7 @@ public extension AferoAttributeDataDescriptor {
     /// `pendingValueState` if it's non-nil, otherwise `currentValueState`.
     
     dynamic public var displayValueState: AferoAttributeValueState? {
-        return pendingValueState ?? currentValueState
+        return intendedValueState ?? pendingValueState ?? currentValueState
     }
     
     // MARK: Codable
@@ -1218,6 +1222,7 @@ public extension AferoAttributeDataDescriptor {
         case presentationDescriptor
         case currentValueState
         case pendingValueState
+        case intendedValueState
     }
     
     // MARK: AferoJSONCoding
@@ -1239,7 +1244,11 @@ public extension AferoAttributeDataDescriptor {
         if let pendingValueState = pendingValueState?.JSONDict {
             ret[.pendingValueState] = pendingValueState
         }
-        
+
+        if let intendedValueState = intendedValueState?.JSONDict {
+            ret[.intendedValueState] = intendedValueState
+        }
+
         return ret.stringKeyed
     }
     
@@ -1254,12 +1263,14 @@ public extension AferoAttributeDataDescriptor {
         let presentationDescriptor: AferoAttributePresentationDescriptor? = |<(json[CodingKeys.presentationDescriptor.stringValue] as? [String: Any])
         let currentValueState: AferoAttributeValueState? = |<(json[CodingKeys.currentValueState.stringValue] as? [String: Any])
         let pendingValueState: AferoAttributeValueState? = |<(json[CodingKeys.pendingValueState.stringValue] as? [String: Any])
-        
+        let intendedValueState: AferoAttributeValueState? = |<(json[CodingKeys.intendedValueState.stringValue] as? [String: Any])
+
         self.init(
             dataDescriptor: dataDescriptor,
             presentationDescriptor: presentationDescriptor,
             currentValueState: currentValueState,
-            pendingValueState: pendingValueState
+            pendingValueState: pendingValueState,
+            intendedValueState: intendedValueState
         )
         
     }
@@ -1487,7 +1498,28 @@ public extension AferoAttributeDataDescriptor {
         let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
         try setPending(valueState: state, forAttributeWithId: id)
     }
+
+    func setIntended(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
+        
+        guard let attribute = attribute(forId: id) else {
+            afLogError("Unrecognized attribute id \(id)")
+            throw AferoAttributeCollectionError.unrecognizedAttributeId
+        }
+        
+        guard attribute.intendedValueState != state else {
+            return
+        }
+        
+        willChangeValue(for: \.intendedAttributes)
+        attribute.intendedValueState = state
+        didChangeValue(for: \.intendedAttributes)
+    }
     
+    func setIntended(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+        try setIntended(valueState: state, forAttributeWithId: id)
+    }
+
     func setCurrent(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
         
         guard let attribute = attribute(forId: id) else {
@@ -1527,7 +1559,12 @@ public extension AferoAttributeDataDescriptor {
     public dynamic var pendingAttributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values.filter { $0.pendingValueState != nil })
     }
-    
+
+    /// A `Set` of all `AferoAttributes` in the collection which have pending values.
+    public dynamic var intendedAttributes: Set<AferoAttribute> {
+        return Set(attributeRegistry.values.filter { $0.intendedValueState != nil })
+    }
+
     /// Fetch an attribute for the given id
     /// - parameter id: The id of the attribute to fetch. If `nil`, returns `nil`.
     /// - returns: An `AferoAttribute`, if `id` is non-`nil` and the attribute exists.
