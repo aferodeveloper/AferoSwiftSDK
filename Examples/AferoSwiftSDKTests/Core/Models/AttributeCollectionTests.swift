@@ -1022,7 +1022,81 @@ class AferoAttributeCollectionSpec: QuickSpec {
             }
             
         }
-        
+
+        describe("when updating intended value state") {
+            
+            it("should update on recognized id") {
+                
+                do {
+                    let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                    
+                    var newPendingValueState: AferoAttributeValueState?
+                    var newIntendedValueState: AferoAttributeValueState?
+                    var newDisplayValueState: AferoAttributeValueState?
+                    var pendingNotificationCount: Int = 0
+                    var intendedNotificationCount: Int = 0
+                    var displayNotificationCount: Int = 0
+
+                    guard let pendingObs = try c.observeAttribute(
+                        withId: b3.dataDescriptor.id,
+                        on: \.pendingValueState,
+                        using: {
+                            attribute, chg in
+                            pendingNotificationCount += 1
+                            newPendingValueState = attribute.pendingValueState
+                    }) else {
+                        fail("Couldn't observe.")
+                        return
+                    }
+
+                    guard let intendedObs = try c.observeAttribute(
+                        withId: b3.dataDescriptor.id,
+                        on: \.intendedValueState,
+                        using: {
+                            attribute, chg in
+                            intendedNotificationCount += 1
+                            newIntendedValueState = attribute.intendedValueState
+                    }) else {
+                        fail("Couldn't observe.")
+                        return
+                    }
+
+                    guard let displayObs = try c.observeAttribute(
+                        withId: b3.dataDescriptor.id,
+                        on: \.displayValueState,
+                        using: {
+                            attribute, chg in
+                            displayNotificationCount += 1
+                            newDisplayValueState = attribute.displayValueState
+                    }) else {
+                        fail("Couldn't observe.")
+                        return
+                    }
+
+                    try c.setIntended(value: "6", forAttributeWithId: b3.dataDescriptor.id)
+                    expect(newPendingValueState == nil).toNotEventually(beFalse(), timeout: 1.0, pollInterval: 0.1)
+                    expect(pendingNotificationCount).toNotEventually(beGreaterThan(0), timeout: 1.0, pollInterval: 0.1)
+                    expect(newIntendedValueState?.stringValue).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
+                    expect(intendedNotificationCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                    expect(newDisplayValueState?.stringValue).toEventually(equal("6"), timeout: 1.0, pollInterval: 0.1)
+                    expect(displayNotificationCount).toEventually(equal(1), timeout: 1.0, pollInterval: 0.1)
+                } catch {
+                    fail(error.localizedDescription)
+                }
+                
+            }
+            
+            it("should throw on unrecognized id") {
+                
+                let c = try! AferoAttributeCollection(attributes: [a3, b3])
+                expect {
+                    try c.setPending(value: "6", forAttributeWithId: 2323)
+                    }.to(throwError(AferoAttributeCollectionError.unrecognizedAttributeId))
+                
+            }
+            
+        }
+
         describe("Observing attributes") {
             
             it("should allow subscription to attributes by id") {
@@ -1030,6 +1104,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 let c = try! AferoAttributeCollection(attributes: [a3, b3])
                 var pendingObs: NSKeyValueObservation?
                 var currentObs: NSKeyValueObservation?
+                var intendedObs: NSKeyValueObservation?
                 
                 expect {
                     pendingObs = try c.observeAttribute(
@@ -1044,6 +1119,15 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     currentObs = try c.observeAttribute(
                         withId: b3.dataDescriptor.id,
                         on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.toNot(throwError())
+                expect(currentObs).toNot(beNil())
+
+                expect {
+                    currentObs = try c.observeAttribute(
+                        withId: b3.dataDescriptor.id,
+                        on: \.intendedValueState) {
                             _, _ in
                     }
                     }.toNot(throwError())
@@ -1067,6 +1151,14 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     _ = try c.observeAttribute(
                         withId: 2323,
                         on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+
+                expect {
+                    _ = try c.observeAttribute(
+                        withId: 2323,
+                        on: \.intendedValueState) {
                             _, _ in
                     }
                     }.to(throwError())
@@ -1097,6 +1189,15 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     }.toNot(throwError())
                 expect(currentObs).toNot(beNil())
 
+                expect {
+                    currentObs = try c.observeAttribute(
+                        withKey: b3.dataDescriptor.key!,
+                        on: \.intendedValueState) {
+                            _, _ in
+                    }
+                    }.toNot(throwError())
+                expect(currentObs).toNot(beNil())
+
             }
 
             it("should throw when trying to subscribe to an unrecognized key") {
@@ -1118,7 +1219,15 @@ class AferoAttributeCollectionSpec: QuickSpec {
                             _, _ in
                     }
                     }.to(throwError())
-                
+
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: "2323",
+                        on: \.intendedValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+
                 expect {
                     _ = try c.observeAttribute(
                         withKey: nil,
@@ -1131,6 +1240,14 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     _ = try c.observeAttribute(
                         withKey: nil,
                         on: \.currentValueState) {
+                            _, _ in
+                    }
+                    }.to(throwError())
+
+                expect {
+                    _ = try c.observeAttribute(
+                        withKey: nil,
+                        on: \.intendedValueState) {
                             _, _ in
                     }
                     }.to(throwError())
