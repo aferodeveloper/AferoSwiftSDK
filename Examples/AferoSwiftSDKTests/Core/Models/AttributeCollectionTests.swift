@@ -884,7 +884,6 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     let c = try AferoAttributeCollection(attributes: [a3, b3])
                     expect(c.attribute(forKey: a3.dataDescriptor.key)) == a3
                     expect(c.attribute(forKey: b3.dataDescriptor.key)) == b3
-                    expect(c.attribute(forKey: nil)).to(beNil())
                     expect(c.attribute(forKey: "foo")).to(beNil())
                 } catch {
                     fail(error.localizedDescription)
@@ -898,7 +897,6 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     let c = try AferoAttributeCollection(attributes: [a3, b3])
                     expect(c.attribute(forId: a3.dataDescriptor.id)) == a3
                     expect(c.attribute(forId: b3.dataDescriptor.id)) == b3
-                    expect(c.attribute(forId: nil)).to(beNil())
                     expect(c.attribute(forId: 666)).to(beNil())
                 } catch {
                     fail(error.localizedDescription)
