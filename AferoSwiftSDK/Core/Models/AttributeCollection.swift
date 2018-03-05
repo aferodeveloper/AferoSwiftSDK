@@ -1345,10 +1345,10 @@ public extension AferoAttributeDataDescriptor {
     // MARK: Model
     
     /// Primary storage for attributes, keyed by id.
-    private var attributeRegistry: [Int: AferoAttribute] = [:]
+    fileprivate var attributeRegistry: [Int: AferoAttribute] = [:]
     
     /// An index of keys to attribute ids.
-    private var attributeKeyMap: [String: Int] = [:]
+    fileprivate var attributeKeyMap: [String: Int] = [:]
 
     // MARK: KVO
     
@@ -1468,15 +1468,19 @@ public extension AferoAttributeDataDescriptor {
         }
     }
     
-    // MARK: Internal - Model State
+}
+
+// MARK: - Value State Manipulation -
+
+extension AferoAttributeCollection {
     
-//    func setDescriptor(_ descriptor: AferoAttributeDescriptor, forAttributeWithId id: Int) throws {
-//        guard let attribute = attribute(forId: id) else {
-//            afLogError("Unrecognized attribute id \(id)")
-//            throw AferoAttributeCollectionError.unrecognizedAttributeId
-//        }
-//        attribute.descriptor = descriptor
-//    }
+    //    func setDescriptor(_ descriptor: AferoAttributeDescriptor, forAttributeWithId id: Int) throws {
+    //        guard let attribute = attribute(forId: id) else {
+    //            afLogError("Unrecognized attribute id \(id)")
+    //            throw AferoAttributeCollectionError.unrecognizedAttributeId
+    //        }
+    //        attribute.descriptor = descriptor
+    //    }
     
     func setPending(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
         
@@ -1498,7 +1502,7 @@ public extension AferoAttributeDataDescriptor {
         let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
         try setPending(valueState: state, forAttributeWithId: id)
     }
-
+    
     func setIntended(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
         
         guard let attribute = attribute(forId: id) else {
@@ -1519,7 +1523,7 @@ public extension AferoAttributeDataDescriptor {
         let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
         try setIntended(valueState: state, forAttributeWithId: id)
     }
-
+    
     func setCurrent(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
         
         guard let attribute = attribute(forId: id) else {
@@ -1535,56 +1539,67 @@ public extension AferoAttributeDataDescriptor {
         let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
         try setCurrent(valueState: state, forAttributeWithId: id)
     }
-    
-    // MARK: Public
+
+}
+
+// MARK:  - Public Accessors -
+
+@objc public extension AferoAttributeCollection {
     
     /// A `Set` of all attributeIds in the collection.
     
-    public dynamic var attributeIds: Set<Int> {
+    @objc public dynamic var attributeIds: Set<Int> {
         return Set(attributeRegistry.keys)
     }
     
     /// A `Set` of all attributeKeys in the collection.
     
-    public dynamic var attributeKeys: Set<String> {
+    @objc public dynamic var attributeKeys: Set<String> {
         return Set(attributeKeyMap.keys)
     }
     
     /// A `Set` of all `AferoAttributes` in the collection.
-    public dynamic var attributes: Set<AferoAttribute> {
+    @objc public dynamic var attributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values)
     }
     
     /// A `Set` of all `AferoAttributes` in the collection which have pending values.
-    public dynamic var pendingAttributes: Set<AferoAttribute> {
+    @objc public dynamic var pendingAttributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values.filter { $0.pendingValueState != nil })
     }
-
+    
     /// A `Set` of all `AferoAttributes` in the collection which have pending values.
-    public dynamic var intendedAttributes: Set<AferoAttribute> {
+    @objc public dynamic var intendedAttributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values.filter { $0.intendedValueState != nil })
     }
-
+    
     /// Fetch an attribute for the given id
     /// - parameter id: The id of the attribute to fetch. If `nil`, returns `nil`.
     /// - returns: An `AferoAttribute`, if `id` is non-`nil` and the attribute exists.
     ///            Otherwise returns nil.
     
-    public func attribute(forId id: Int?) -> AferoAttribute? {
-        guard let id = id else { return nil }
+    @objc public func attribute(forId id: Int) -> AferoAttribute? {
         return attributeRegistry[id]
     }
-    
+
     /// Fetch an attribute for the given key.
     /// - parameter key: The key of the attribute to fetch. If `nil`, returns `nil`.
     /// - returns: An `AferoAttribute`, if `key` is non-`nil` and an attribute exists
     ///            with that key. Otherwise returns nil.
     
-    public func attribute(forKey key: String?) -> AferoAttribute? {
+    @objc public func attribute(forKey key: String?) -> AferoAttribute? {
         guard let key = key else { return nil }
-        return attribute(forId: attributeKeyMap[key])
+        guard let id = attributeKeyMap[key] else { return nil }
+        return attribute(forId: id)
     }
+
+}
+
+@objc public extension AferoAttributeCollection {
     
+    func commitIntended(with handler: ([AferoAttribute])) {
+        
+    }
 }
 
 // MARK: Profile Handling
@@ -1648,7 +1663,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` if we've successfully registered for notifications,
     ///            or nil if `id` is nil or the attribute wasn't found.
     
-    public func observeAttribute<Value>(withId id: Int?, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
+    public func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
         
         guard let attribute = attribute(forId: id) else {
             afLogError("Unrecognized attributeId: \(String(describing: id))")
