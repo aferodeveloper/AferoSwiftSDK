@@ -941,17 +941,13 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         var newCurrentValueState: AferoAttributeValueState?
                         var notificationCount: Int = 0
                         
-                        guard let obs = try c.observeAttribute(
+                        let obs = try c.observeAttribute(
                             withId: a3.dataDescriptor.id,
-                            on: \.currentValueState,
-                            using: {
+                            on: \.currentValueState) {
                             attribute, chg in
                                 notificationCount += 1
                                 newAttribute = attribute
                                 newCurrentValueState = attribute.currentValueState
-                        }) else {
-                            fail("Couldn't observe.")
-                            return
                         }
                         
                         expect {
@@ -986,17 +982,13 @@ class AferoAttributeCollectionSpec: QuickSpec {
                         var newPendingValueState: AferoAttributeValueState?
                         var notificationCount: Int = 0
                         
-                        guard let obs = try c.observeAttribute(
+                        let obs = try c.observeAttribute(
                             withId: b3.dataDescriptor.id,
-                            on: \.pendingValueState,
-                            using: {
+                            on: \.pendingValueState) {
                                 attribute, chg in
                                 notificationCount += 1
                                 newAttribute = attribute
                                 newPendingValueState = attribute.pendingValueState
-                        }) else {
-                            fail("Couldn't observe.")
-                            return
                         }
                         
                         try c.setPending(value: "6", forAttributeWithId: b3.dataDescriptor.id)
@@ -1035,40 +1027,28 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     var intendedNotificationCount: Int = 0
                     var displayNotificationCount: Int = 0
 
-                    guard let pendingObs = try c.observeAttribute(
+                    let pendingObs = try c.observeAttribute(
                         withId: b3.dataDescriptor.id,
-                        on: \.pendingValueState,
-                        using: {
+                        on: \.pendingValueState) {
                             attribute, chg in
                             pendingNotificationCount += 1
                             newPendingValueState = attribute.pendingValueState
-                    }) else {
-                        fail("Couldn't observe.")
-                        return
                     }
 
-                    guard let intendedObs = try c.observeAttribute(
+                    let intendedObs = try c.observeAttribute(
                         withId: b3.dataDescriptor.id,
-                        on: \.intendedValueState,
-                        using: {
+                        on: \.intendedValueState) {
                             attribute, chg in
                             intendedNotificationCount += 1
                             newIntendedValueState = attribute.intendedValueState
-                    }) else {
-                        fail("Couldn't observe.")
-                        return
                     }
 
-                    guard let displayObs = try c.observeAttribute(
+                    let displayObs = try c.observeAttribute(
                         withId: b3.dataDescriptor.id,
-                        on: \.displayValueState,
-                        using: {
+                        on: \.displayValueState) {
                             attribute, chg in
                             displayNotificationCount += 1
                             newDisplayValueState = attribute.displayValueState
-                    }) else {
-                        fail("Couldn't observe.")
-                        return
                     }
 
                     try c.setIntended(value: "6", forAttributeWithId: b3.dataDescriptor.id)
@@ -1092,6 +1072,115 @@ class AferoAttributeCollectionSpec: QuickSpec {
                     }.to(throwError(AferoAttributeCollectionError.unrecognizedAttributeId))
                 
             }
+            
+        }
+        
+        fdescribe("Committing intended values") {
+
+            let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
+            let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+            let a = AferoAttribute(dataDescriptor: adesc, currentValueState: astate)
+            
+            let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
+            let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+            let b = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
+
+            let attributes = [a, b]
+            
+            var c: AferoAttributeCollection!
+            
+            var observedPendingValueStates: [Int: String]!
+            var pendingValueObservers: [(Int, NSKeyValueObservation)]!
+            
+            var observedCurrentValueStates: [Int: String]!
+            var currentValueObservers: [(Int, NSKeyValueObservation)]!
+
+            var observedIntendedValueStates: [Int: String]!
+            var intendedValueObservers: [(Int, NSKeyValueObservation)]!
+
+            var observedDisplayValueStates: [Int: String]!
+            var displayValueObservers: [(Int, NSKeyValueObservation)]!
+
+            beforeEach {
+                
+                c =  try! AferoAttributeCollection(attributes: attributes)
+                
+                observedPendingValueStates = [:]
+                pendingValueObservers = try! c.observeAttributes(withIds: attributes.map { $0.id }, on: \.pendingValueState, options: [.initial]) {
+                    attribute, change in
+                    observedPendingValueStates[attribute.id] = attribute.pendingValueState?.stringValue
+                }
+                
+                observedCurrentValueStates = [:]
+                currentValueObservers = try! c.observeAttributes(withIds: attributes.map { $0.id }, on: \.currentValueState, options: [.initial]) {
+                    attribute, change in
+                    observedCurrentValueStates[attribute.id] = attribute.currentValueState?.stringValue
+                }
+                
+                observedIntendedValueStates = [:]
+                intendedValueObservers = try! c.observeAttributes(withIds: attributes.map { $0.id }, on: \.intendedValueState, options: [.initial]) {
+                    attribute, change in
+                    observedIntendedValueStates[attribute.id] = attribute.intendedValueState?.stringValue
+                }
+                
+                observedDisplayValueStates = [:]
+                displayValueObservers = try! c.observeAttributes(withIds: attributes.map { $0.id }, on: \.displayValueState, options: [.initial]) {
+                    attribute, change in
+                    observedDisplayValueStates[attribute.id] = attribute.displayValueState?.stringValue
+                }
+                
+            }
+
+            it("should do nothing if attributes are committed but there's nothing 'intended'") {
+                c.commitIntended()
+                expect(observedDisplayValueStates) == [:]
+                expect(observedCurrentValueStates) == [:]
+                expect(observedIntendedValueStates) == [:]
+                expect(observedDisplayValueStates) == [:]
+                expect(c.pendingAttributes).to(beEmpty())
+                expect(c.intendedAttributes).to(beEmpty())
+                expect(Set(c.attributes.flatMap { $0.currentValueState})) == Set([a.currentValueState, b.currentValueState].flatMap { $0 })
+            }
+            
+            it("should change pendingValueStates and intendedValueStates if there is something to commit.") {
+                do {
+                    try c.setIntended(value: "intended monkey", forAttributeWithId: a3.id)
+                    c.commitIntended()
+                    expect(observedIntendedValueStates).toEventually(beEmpty(), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedDisplayValueStates).toEventually(equal([a3.id: "intended monkey"]), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedPendingValueStates).toEventually(equal([a3.id: "intended monkey"]), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedCurrentValueStates.isEmpty).toNotEventually(beFalse(), timeout: 1.0, pollInterval: 0.1)
+                } catch {
+                    fail(String(reflecting: error))
+                }
+            }
+
+            it("should call the attributeCommitHandler with the expected values.") {
+                do {
+                    
+                    let originalHandler = c.attributeCommitHandler
+                    var committedAttributes: [Int: String]!
+                    
+                    c.attributeCommitHandler = {
+                        attributes, resultHandler in
+                        committedAttributes = attributes.reduce([:]) {
+                            curr, next in
+                            var ret = curr!
+                            ret[next.id] = next.value
+                            return ret
+                        }
+                        originalHandler(attributes, resultHandler)
+                    }
+                    
+                    try c.setIntended(value: "intended monkey", forAttributeWithId: a3.id)
+                    c.commitIntended()
+                    expect(committedAttributes).toEventually(equal([a3.id: "intended monkey"]), timeout: 1.0, pollInterval: 0.1)
+                } catch {
+                    fail(String(reflecting: error))
+                }
+            }
+
+            
             
         }
 
@@ -1221,30 +1310,6 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 expect {
                     _ = try c.observeAttribute(
                         withKey: "2323",
-                        on: \.intendedValueState) {
-                            _, _ in
-                    }
-                    }.to(throwError())
-
-                expect {
-                    _ = try c.observeAttribute(
-                        withKey: nil,
-                        on: \.pendingValueState) {
-                            _, _ in
-                    }
-                    }.to(throwError())
-                
-                expect {
-                    _ = try c.observeAttribute(
-                        withKey: nil,
-                        on: \.currentValueState) {
-                            _, _ in
-                    }
-                    }.to(throwError())
-
-                expect {
-                    _ = try c.observeAttribute(
-                        withKey: nil,
                         on: \.intendedValueState) {
                             _, _ in
                     }

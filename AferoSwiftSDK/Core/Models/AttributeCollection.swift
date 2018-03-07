@@ -1065,6 +1065,8 @@ public extension AferoAttributeDataDescriptor {
     /// Metadata describing the native, dimensionless storage of this attribute (its primitive type).
     dynamic internal(set) public var dataDescriptor: AferoAttributeDataDescriptor
     
+    public var id: Int { return dataDescriptor.id }
+    
     /// Metadata describing how this attribute should be presented.
     dynamic internal(set) public var presentationDescriptor: AferoAttributePresentationDescriptor?
     
@@ -1134,8 +1136,6 @@ public extension AferoAttributeDataDescriptor {
     dynamic public var hasIntendedValueState: Bool {
         return intendedValueState != nil
     }
-
-    
     
     /// Initialize an `AferoAttribute` with descriptors for data and presentation, current, and pending value state.
     /// - parameter dataDescriptpr: The structure describing the logical type of data being stored,
@@ -1321,7 +1321,7 @@ public extension AferoAttributeDataDescriptor {
 /// (e.g. due to a profile reload).
 
 @objcMembers public class AferoAttributeCollection: NSObject, Codable {
-
+    
     // MARK: Lifecycle
     
     init(attributes: [AferoAttribute]) throws {
@@ -1342,6 +1342,13 @@ public extension AferoAttributeDataDescriptor {
         try self.init(attributeConfigs: descriptors.map { return ($0, nil) })
     }
 
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case attributeRegistry
+        case attributeKeyMap
+    }
+    
     // MARK: Model
     
     /// Primary storage for attributes, keyed by id.
@@ -1468,9 +1475,80 @@ public extension AferoAttributeDataDescriptor {
         }
     }
     
+    /// A closure responsible for handling commits.
+    /// The closure will be called with a list of `id`/`value` pairs to commit, and is expected
+    /// to pass results to the given resultHandler.
+    /// Defaults to a simple passthrough.
+    
+    var attributeCommitHandler: (
+        _ attributes: [(id: Int, value: String)],
+        _ resultHandler: (([(req: (id: Int, value: String), resp: (success: Bool, reqId: Int, timestampMs: NSNumber))]) -> Void)
+        ) -> Void = {
+        attributes, resultHandler in
+            var reqIdGen = (0..<Int.max).makeIterator()
+            var results = attributes.map {
+                (req: $0, resp: (success: true, reqId: reqIdGen.next()!, timestampMs: Date().millisSince1970))
+            }
+            print("attributeCommitHandler: attributes:\(String(reflecting: attributes)) results:\(String(reflecting: results)) resultHandler:\(String(reflecting: resultHandler))")
+            resultHandler(results)
+    }
+    
 }
 
-// MARK: - Value State Manipulation -
+// MARK: - CurrentValueStates handling -
+
+/**
+ ## Manipulating Current ValueStates
+ 
+ "current" valueStates represent the current truth about a device's state. This means that
+ it has been explicitly reported by the device to the cloud, in response to one of two events:
+ 
+ 1. The device was rebooted, and the value is being initialized to its default state, or
+ 2. The attribute has successfully changed from one value to another.
+ 
+ These methods should only be called internally, to reflect a device's actual state.
+ public API callers should never call these methods.
+ */
+
+extension AferoAttributeCollection {
+    
+    /// Set the current value of an attribute, reflecting its known state in the cloud. This is called in response to
+    /// cloud-driven changes (through Conclave).
+    
+    func setCurrent(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
+        
+        guard let attribute = attribute(forId: id) else {
+            afLogError("Unrecognized attribute id \(id)")
+            throw AferoAttributeCollectionError.unrecognizedAttributeId
+        }
+        
+        attribute.currentValueState = state
+    }
+    
+    /// Set the current value of an attribute, reflecting its known state in the cloud. This is called in response to
+    /// cloud-driven changes (through Conclave).
+    
+    func setCurrent(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+        try setCurrent(valueState: state, forAttributeWithId: id)
+    }
+    
+}
+
+// MARK: - PendingValues handling -
+
+/**
+ ## Manipulating Pending ValueStates
+ 
+ "pending" valueStates are values which have been successfully committed to the client API
+ (or other attribute state consumer), but have not yet been confirmed by the device
+ as having been applied.
+ 
+ Once an "intended" valueState is committed, it is copied to a "pending" valueState, and that value's
+ "intended" value is removed if and only if it hasn't changed in the meantime.
+ 
+ This is an internal implementation detail; public API users should not be aware of this.
+*/
 
 extension AferoAttributeCollection {
     
@@ -1497,12 +1575,25 @@ extension AferoAttributeCollection {
         attribute.pendingValueState = state
         didChangeValue(for: \.pendingAttributes)
     }
-    
-    func setPending(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+
+    func setPending(value: String, data: String? = nil, updatedTimestampMs: NSNumber = Date().millisSince1970, requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
         try setPending(valueState: state, forAttributeWithId: id)
     }
+
+    func setPending(value: String, data: String? = nil, updatedTimestamp: Date, requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        try setPending(value: value, data: data, updatedTimestampMs: updatedTimestamp.millisSince1970, requestId: requestId, forAttributeWithId: id)
+    }
     
+}
+
+// MARK: - IntendedValueStates handling
+
+extension AferoAttributeCollection {
+    
+    /// Set the intended value of an attribute, reflecting a user's intent. This can be considered a "staging"
+    /// valueState, prior to committing the attribute to the cloud (after which time it becomes the `pendingValueState`.
+
     func setIntended(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
         
         guard let attribute = attribute(forId: id) else {
@@ -1519,25 +1610,69 @@ extension AferoAttributeCollection {
         didChangeValue(for: \.intendedAttributes)
     }
     
-    func setIntended(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+    /// Set the intended value of an attribute, reflecting a user's intent. This can be considered a "staging"
+    /// valueState, prior to committing the attribute to the cloud (after which time it becomes the `pendingValueState`.
+    
+    func setIntended(value: String, data: String? = nil, updatedTimestampMs: NSNumber = Date().millisSince1970, requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        let state = AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
         try setIntended(valueState: state, forAttributeWithId: id)
     }
+    /// Set the intended value of an attribute, reflecting a user's intent. This can be considered a "staging"
+    /// valueState, prior to committing the attribute to the cloud (after which time it becomes the `pendingValueState`.
     
-    func setCurrent(valueState state: AferoAttributeValueState?, forAttributeWithId id: Int) throws {
-        
-        guard let attribute = attribute(forId: id) else {
-            afLogError("Unrecognized attribute id \(id)")
-            throw AferoAttributeCollectionError.unrecognizedAttributeId
-        }
-        
-        attribute.currentValueState = state
+    func setIntended(value: String, data: String? = nil, updatedTimestamp: Date, requestId: Int? = nil, forAttributeWithId id: Int) throws {
+        try setIntended(value: value, data: data, updatedTimestampMs: updatedTimestamp.millisSince1970, requestId: requestId, forAttributeWithId: id)
     }
     
-    
-    func setCurrent(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
-        try setCurrent(valueState: state, forAttributeWithId: id)
+    /// Commit intended value states to the cloud.
+    /// - parameter isIncluded: A which selects which intended attributes should be committed.
+    ///                         By default, all intended attributes are committed.
+
+    func commitIntended(where isIncluded: (AferoAttribute)->Bool = { _ in true }) {
+        
+        let attrs = intendedAttributes.filter(isIncluded).flatMap {
+            attr -> (Int, String)? in
+            guard let stringValue = attr.intendedValueState?.stringValue else { return nil }
+            return (attr.dataDescriptor.id, stringValue)
+        }
+        
+        attributeCommitHandler(attrs) {
+            responses in
+            responses.filter { $0.resp.success }.forEach {
+                req, resp in
+                do {
+                    
+                    // NOTE: This is kind of a critical section. When migrating a value from "intended" to "pending", we only
+                    // want to do it if the attribute's value hasn't changed from the time we attempted to commit it to
+                    // the time we succeeded. It's possible that the UI has changed, so the current intended value differs
+                    // from what we're now attempting to move to pending.
+                    //
+                    // So, we go ahead and set the pending value, but then we only remove the intended value
+                    // if it hasn't changed since the commit operation started.
+                    
+                    try setPending(
+                        value: req.value,
+                        data: nil,
+                        updatedTimestampMs: resp.timestampMs,
+                        requestId: resp.reqId,
+                        forAttributeWithId: req.id
+                    )
+                    
+                    if attribute(forId: req.id)?.intendedValueState?.stringValue == req.value {
+                        
+                        try setIntended(
+                            valueState: nil,
+                            forAttributeWithId: req.id
+                        )
+                        
+                    }
+                    
+                } catch {
+                    afLogError("Unable to set pending value req:\(req) resp:\(resp): \(String(reflecting: error))")
+                }
+            }
+        }
+        
     }
 
 }
@@ -1595,13 +1730,6 @@ extension AferoAttributeCollection {
 
 }
 
-@objc public extension AferoAttributeCollection {
-    
-    func commitIntended(with handler: ([AferoAttribute])) {
-        
-    }
-}
-
 // MARK: Profile Handling
 
 extension AferoAttributeCollection {
@@ -1657,13 +1785,14 @@ extension AferoAttributeCollection {
 public extension AferoAttributeCollection {
 
     /// Register for KVO changes on individual attributes.
-    /// - parameter id: The id of the attribute to observe. If nil, this method returns nil immediately.
+    /// - parameter id: The id of the attribute to observe.
     /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter options: The `NSKeyValueObservingOptions` to use when registering for observation.
     /// - parameter changeHandler: The handler for changes.
-    /// - returns: An `NSKeyValueObservation` if we've successfully registered for notifications,
-    ///            or nil if `id` is nil or the attribute wasn't found.
+    /// - returns: An `NSKeyValueObservation` associated with the observation request.
+    /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
+    public func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         
         guard let attribute = attribute(forId: id) else {
             afLogError("Unrecognized attributeId: \(String(describing: id))")
@@ -1673,14 +1802,33 @@ public extension AferoAttributeCollection {
         return attribute.observe(keyPath, changeHandler: changeHandler)
     }
     
-    /// Register for KVO changes on individual attributes.
-    /// - parameter id: The id of the attribute to observe. If nil, this method returns nil immediately.
+
+    /// Register for KVO changes on multiple attributes.
+    /// - parameter ids: A `Sequence` of ids for attributes to observe. If nil, this method returns nil immediately.
     /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter options: The `NSKeyValueObservingOptions` to use when registering for observation.
     /// - parameter changeHandler: The handler for changes.
-    /// - returns: An `NSKeyValueObservation` if we've successfully registered for notifications,
-    ///            or nil if `id` is nil or the attribute wasn't found.
+    /// - returns: An `NSKeyValueObservation` associated with the observation request.
+    /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
+
+    public func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int {
+        
+        let ret: [(Int, NSKeyValueObservation)] = try ids.map {
+            return ($0, try observeAttribute(withId: $0, on: keyPath, options: options, using: changeHandler))
+        }
+        
+        return ret
+    }
     
-    public func observeAttribute<Value>(withKey key: String?, on keyPath: KeyPath<AferoAttribute, Value>, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation? {
+    /// Register for KVO changes on individual attributes.
+    /// - parameter id: The id of the attribute to observe.
+    /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter options: The `NSKeyValueObservingOptions` to use when registering for observation.
+    /// - parameter changeHandler: The handler for changes.
+    /// - returns: An `NSKeyValueObservation` associated with the observation request.
+    /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
+
+    public func observeAttribute<Value>(withKey key: String, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         
         guard let attribute = attribute(forKey: key) else {
             afLogError("Unrecognized key: \(String(describing: key))")
@@ -1689,6 +1837,25 @@ public extension AferoAttributeCollection {
         
         return attribute.observe(keyPath, changeHandler: changeHandler)
     }
+    
+    /// Register for KVO changes on multiple attributes.
+    /// - parameter ids: A `Sequence` of keys for attributes to observe.
+    /// - parameter keyPath: The `KeyPath` to observe on the attribute.
+    /// - parameter options: The `NSKeyValueObservingOptions` to use when registering for observation.
+    /// - parameter changeHandler: The handler for changes.
+    /// - returns: An `NSKeyValueObservation` associated with the observation request.
+    /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
+    
+    public func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, using options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
+        
+        let ret: [(String, NSKeyValueObservation)] = try keys.map {
+            return ($0, try observeAttribute(withKey: $0, on: keyPath, options: options, using: changeHandler))
+        }
+        
+        return ret
+    }
+    
+
 
 }
 
