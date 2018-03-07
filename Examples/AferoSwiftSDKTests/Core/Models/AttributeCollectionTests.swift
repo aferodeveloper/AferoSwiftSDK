@@ -1155,10 +1155,9 @@ class AferoAttributeCollectionSpec: QuickSpec {
                 }
             }
 
-            it("should call the attributeCommitHandler with the expected values.") {
+            it("should call the attributeCommitHandler with the expected values, and not migrate to pending upon failure.") {
                 do {
                     
-                    let originalHandler = c.attributeCommitHandler
                     var committedAttributes: [Int: String]!
                     
                     c.attributeCommitHandler = {
@@ -1169,18 +1168,23 @@ class AferoAttributeCollectionSpec: QuickSpec {
                             ret[next.id] = next.value
                             return ret
                         }
-                        originalHandler(attributes, resultHandler)
+                        var reqIdGen = (0..<Int.max).makeIterator()
+                        resultHandler(committedAttributes.filter { $0.key != a3.id}.map {
+                            (req: $0, resp: (success: true, reqId: reqIdGen.next()!, timestampMs: Date().millisSince1970))
+                        })
                     }
                     
                     try c.setIntended(value: "intended monkey", forAttributeWithId: a3.id)
                     c.commitIntended()
                     expect(committedAttributes).toEventually(equal([a3.id: "intended monkey"]), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedIntendedValueStates).toNotEventually(beEmpty(), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedPendingValueStates.isEmpty).toNotEventually(beFalse(), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedCurrentValueStates.isEmpty).toNotEventually(beFalse(), timeout: 1.0, pollInterval: 0.1)
+                    expect(observedDisplayValueStates).toEventually(equal([a3.id: "intended monkey"]), timeout: 1.0, pollInterval: 0.1)
                 } catch {
                     fail(String(reflecting: error))
                 }
             }
-
-            
             
         }
 
