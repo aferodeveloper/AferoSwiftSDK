@@ -193,31 +193,9 @@ extension AferoAPIClientProto {
         return POST("/v1/accounts/\(escapedAccountId)/conclaveAccess", parameters: body)
     }
     
-    @available(*, deprecated, message: "Use authConclave(with accountId:) instead.")
+    @available(*, unavailable, message: "Use authConclave(with accountId:).")
     public func authConclave(accountId: String, userId: String, mobileDeviceId: String) -> Promise<ConclaveAccess> {
-        
-        guard
-            let escapedAccountId = accountId.pathAllowedURLEncodedString,
-            let escapedMobileDeviceId = mobileDeviceId.pathAllowedURLEncodedString else {
-                NSLog("Unable to encode accountId \(accountId) or mobileDeviceId \(mobileDeviceId)")
-                return Promise { _, reject in reject("Bad or missing parameters") }
-        }
-        
-        return updateDeviceInfo(userId: userId, mobileDeviceId: mobileDeviceId)
-            .then {
-                () -> Promise<ConclaveAccess> in
-                self.POST("/v1/accounts/\(escapedAccountId)/mobileDevices/\(escapedMobileDeviceId)/conclaveAccess", parameters: [:])
-            }.recover {
-                err throws -> ConclaveAccess in
-                NSLog("Error obtaining ConclaveAccess token: \(String(reflecting: err))")
-                let error = err as NSError
-                if error.httpStatusCodeValue == .forbidden {
-                    NSLog("Access denied by conclave (\(err)); sigining out.")
-                    self.doSignOut(error: error, completion: {})
-                }
-                throw err
-        }
-        
+        return Promise { _, reject in reject("Method unsupported.") }
     }
 
 }
