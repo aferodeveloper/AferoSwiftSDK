@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 
     s.subspec 'Core' do |ss|
         ss.source_files  = "AferoSwiftSDK/Core/**/*"
-        ss.dependency 'AferoSofthub', '~> 1.3'
+        ss.dependency 'AferoSofthub', '1.3.1'
         ss.dependency 'CocoaLumberjack/Swift', '~> 3.2'
         ss.dependency 'CryptoSwift'
         ss.dependency 'CocoaZ', '~> 1.4'
