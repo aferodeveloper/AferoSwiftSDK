@@ -60,11 +60,10 @@ public extension AferoAPIClientProto {
     ///
     ///  - returns: A `Promise<[String: Any]>`
     
-    @available(*, deprecated, message: "Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead")
+    @available(*, unavailable, message: "Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead")
     public func associateDevice(_ accountId: String, associationId: String, location: CLLocation? = nil, verified: Bool = false) -> Promise<[String: Any]> {
         
-        return associateDevice(with: associationId, to: accountId, locatedAt: location, ownershipTransferVerified: verified)
-        
+        return Promise { _, reject in reject("Unavailable.") }
     }
     
     /// Associate a device to an Afero account.
@@ -92,7 +91,7 @@ public extension AferoAPIClientProto {
     
     public func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false, expansions: Set<String> = [
         "state", "tags", "attributes", "extendedData", "profile", "timezone",
-        ]) -> Promise<[String: Any]> {
+        ]) -> Promise<DeviceStreamEvent.Peripheral> {
         
         var deviceData : [String: Any] = [
             "associationId": associationId,
