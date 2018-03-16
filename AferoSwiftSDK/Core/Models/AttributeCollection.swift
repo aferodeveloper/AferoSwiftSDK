@@ -594,7 +594,7 @@ public extension AferoAttributeDataDescriptor {
     public let match: String
     
     /// A `[String: Any]`, indicating presentation keys and values that are valid for given attribute.
-    public let apply: [String: Any]
+    public let apply: ValueOptionApplyPresentable
     
     public init(match: ValueOptionMatchPresentable, apply: ValueOptionApplyPresentable) {
         self.match = match
@@ -623,16 +623,18 @@ public extension AferoAttributeDataDescriptor {
     }
     
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(match, forKey: .match)
-        try container.encode(apply, forKey: .apply)
+        throw "Encoding of ValueOptions is not supported, as [String: Any] isn't codable in Swift 4.1"
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//        try container.encode(match, forKey: .match)
+//        try container.encode(apply, forKey: .apply)
     }
     
     public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let match = try container.decode(String.self, forKey: .match)
-        let apply = try container.decode([String: Any].self, forKey: .apply)
-        self.init(match: match, apply: apply)
+        throw "Decoding of ValueOptions is not supported, as [String: Any] isn't codable in Swift 4.1"
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        let match = try container.decode(String.self, forKey: .match)
+//        let apply = try container.decode(ValueOptionApplyPresentable.self, forKey: CodingKeys.apply)
+//        self.init(match: match, apply: apply)
     }
 
     // MARK: AferoJSONCoding

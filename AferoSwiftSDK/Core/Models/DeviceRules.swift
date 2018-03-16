@@ -39,24 +39,23 @@ public extension DeviceModelable where Self: DeviceActionSource {
         
         get {
             var ret: [DeviceRuleAction] = []
-            if currentState.attributes.count > 0 {
-                ret.append(DeviceRuleAction(deviceId: deviceId, state: currentState))
+            if attributeCollection.intendedAttributes.count > 0 {
+                ret.append(DeviceRuleAction(deviceId: deviceId, attributes: attributeCollection.intendedAttributes.flatMap { $0.intendedValueState } ))
             }
             return ret
         }
         
         set {
-            var state = currentState
-            state.attributes = newValue
-                .filter { $0.deviceId == self.deviceId }
+            newValue
+                .filter { $0.deviceId == deviceId }
                 .flatMap { $0.attributeDict }
-                .reduce([:]) {
-                    (current, next) -> [Int: AttributeValue] in
-                    var ret = current
-                    ret[next.0] = next.1
-                    return ret
+                .forEach {
+                    do {
+                        try attributeCollection.setIntended(value: $0.value, forAttributeWithId: $0.key)
+                    } catch {
+                        DDLogError("Error attempting to update deviceModel:\(deviceId) attributeCollection: \(String(reflecting: error))", tag: TAG)
+                    }
             }
-            currentState = state
         }
     }
     
@@ -81,20 +80,20 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     ///
     /// - Important: By default, this does NOT overlay the current state
     
-    func update(_ filterCriterion: DeviceFilterCriterion, accumulative: Bool = false) {
+    func update(_ filterCriterion: DeviceFilterCriterion, accumulative: Bool = false) throws {
         
         guard filterCriterion.deviceId == deviceId else { return }
         
-        guard let stringValue = filterCriterion.attribute.value.stringValue else {
-            DDLogInfo("Unable to determine stringValue for \(filterCriterion.attribute)")
+        guard let attributeId = filterCriterion.attribute.attributeId else {
+            DDLogError("Unable to determine stringValue for \(filterCriterion.attribute)")
             return
         }
         
         let attributes: [Int: String] = [
-            filterCriterion.attribute.id: stringValue
+            attributeId: filterCriterion.attribute.stringValue
         ]
-        attributeFilterOperations[filterCriterion.attribute.id] = filterCriterion.operation
-        update(attributes, accumulative: accumulative)
+        attributeFilterOperations[attributeId] = filterCriterion.operation
+        try update(attributes, accumulative: accumulative)
     }
     
     /// This device's state as an array of filterCriteria, with `trigger` and `operation`
@@ -109,10 +108,9 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     var filterCriteria: [DeviceFilterCriterion] {
 
         get {
-            return DeviceFilterCriterion.CriteriaFromState(
-                currentState,
-                deviceId: deviceId,
-                trigger: true,
+            return attributeCollection.intendedAttributes.deviceFilterCriteria(
+                with: deviceId,
+                triggering: true,
                 attributeFilterOperations: attributeFilterOperations
             )
         }
@@ -120,11 +118,40 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
         set {
             attributeFilterOperations = [:]
             newValue.forEach {
-                update($0, accumulative: true)
+                do {
+                    try update($0, accumulative: true)
+                } catch {
+                    DDLogError("Unable to update deviceId:\(deviceId) with filterCriterion:\(String(reflecting: $0)) error:\(String(reflecting: error))", tag: TAG)
+                }
             }
         }
+        
     }
 
+}
+
+extension Sequence where Element == AferoAttribute {
+    
+    func deviceFilterCriteria(
+        with deviceId: String,
+        triggering: Bool = false,
+        attributeFilterOperations: [Int: DeviceFilterCriterion.Operation] = [:],
+        defaultOperation: DeviceFilterCriterion.Operation = .equals
+        ) -> [DeviceFilterCriterion] {
+        
+        return flatMap {
+        
+            let id = $0.attributeId
+            guard let attribute = $0.intendedValueState else { return nil }
+            
+            return DeviceFilterCriterion(
+                attribute: attribute,
+                operation: attributeFilterOperations[id] ?? defaultOperation,
+                deviceId: deviceId,
+                trigger: triggering
+            )
+        }
+    }
 }
 
 extension RecordingDeviceModel: DeviceActionSource { }
@@ -331,16 +358,10 @@ public extension DeviceRule {
 
 public extension DeviceRuleAction {
     
-    init(deviceId: String, state: DeviceState, durationSeconds: Int? = nil) {
-        let attributeInstances = state.attributes.map {
-            return AttributeInstance(id: $0, value: $1)
-        }
-        self.init(deviceId: deviceId, attributes: attributeInstances, durationSeconds: durationSeconds)
-    }
-    
     var attributeDict: [Int: AttributeValue] {
         return Dictionary(attributes.map { return ($0.id, $0.value) }.makeIterator())
     }
+
 }
 
 // MARK: - DeviceGroups
@@ -668,20 +689,20 @@ public struct DeviceRuleAction: Hashable, CustomDebugStringConvertible {
     }
     
     public var deviceId: String
-    public var attributes: [AttributeInstance] = []
+    public var attributes: [AferoAttributeValueState] = []
     public var durationSeconds: Int?
     
     public init(deviceId: String, durationSeconds: Int? = nil) {
         self.init(deviceId: deviceId, attributes: [], durationSeconds: durationSeconds)
     }
     
-    public init(
+    public init<T: Sequence>(
         deviceId: String,
-        attributes: [AttributeInstance],
+        attributes: T,
         durationSeconds: Int? = nil
-        ) {
+        ) where T.Element == AferoAttributeValueState {
             self.deviceId = deviceId
-            self.attributes = attributes
+            self.attributes = Array(attributes)
             self.durationSeconds = durationSeconds
     }
     
@@ -712,7 +733,7 @@ extension DeviceRuleAction: AferoJSONCoding {
             let json = json as? AferoJSONObject,
             let deviceId = json[type(of: self).CoderKeyDeviceId] as? String,
             let attributesJson = json[type(of: self).CoderKeyAttributes] as? [AnyObject],
-            let attributes: [AttributeInstance] = |<attributesJson {
+            let attributes: [AferoAttributeValueState] = |<attributesJson {
                 
                 let durationSeconds = json[type(of: self).CoderKeyDurationSeconds] as? Int
                 self.init(deviceId: deviceId, attributes: attributes, durationSeconds: durationSeconds)
@@ -759,32 +780,19 @@ public struct DeviceFilterCriterion: Hashable, CustomDebugStringConvertible {
         h.combine(trigger)
     }
     
-    public var attribute: AttributeInstance
+    public var attribute: AferoAttributeValueState
+    
     public var operation: Operation
     public var deviceId: String
     public var trigger: Bool = false
     
-    public init(attribute: AttributeInstance, operation: Operation, deviceId: String, trigger: Bool = false) {
-        self.attribute = attribute
+    public init(attribute: AferoAttributeValueState, operation: Operation, deviceId: String, trigger: Bool = false) {
+        self.attribute = attribute.copy() as! AferoAttributeValueState
         self.operation = operation
         self.deviceId = deviceId
         self.trigger = trigger
     }
     
-}
-
-extension DeviceFilterCriterion {
-    
-    static func CriteriaFromState(_ state: DeviceState, deviceId: String, trigger: Bool = false, attributeFilterOperations: [Int: Operation] = [:], defaultOperation: Operation = .equals) -> [DeviceFilterCriterion] {
-        return state.attributeInstances.map {
-            return DeviceFilterCriterion(
-                attribute: $0,
-                operation: attributeFilterOperations[$0.id] ?? defaultOperation,
-                deviceId: deviceId,
-                trigger: trigger
-            )
-        }
-    }
 }
 
 extension DeviceFilterCriterion: AferoJSONCoding {
@@ -811,7 +819,7 @@ extension DeviceFilterCriterion: AferoJSONCoding {
             let jsonDict = json as? AferoJSONObject,
             let attributeJson = jsonDict[type(of: self).CoderKeyAttribute] as? [String: Any],
             let deviceId = jsonDict[type(of: self).CoderKeyDeviceId] as? String,
-            let attribute = AttributeInstance(json: attributeJson) else {
+            let attribute = AferoAttributeValueState(json: attributeJson) else {
                 DDLogInfo("Invalid FilterCriterion JSON: \(String(reflecting: json))")
                 return nil
         }
@@ -915,7 +923,10 @@ public struct DeviceRule: Equatable, CustomDebugStringConvertible {
     }
     
     public init(deviceId: String, attributeId: Int, attributeValue: Bool) {
-        let attributeValue = AttributeInstance(id: attributeId, bytes: attributeValue.bytes)
+        let attributeValue = AferoAttributeValueState(
+            attributeId: attributeId,
+            value: attributeValue ? "true":"false"
+        )
         self.init(action: DeviceRuleAction(deviceId: deviceId, attributes: [attributeValue], durationSeconds: nil))
     }
     

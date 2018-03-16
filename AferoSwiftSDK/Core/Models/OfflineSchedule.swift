@@ -318,7 +318,7 @@ extension OfflineSchedule {
                     DDLogDebug("Autocommiting attributeIds \(String(describing: commitIds))", tag: self.TAG)
                     return self.commitEvents(forAttributeIds: commitIds).then {
                         instances in
-                        return Promise { fulfill, _ in fulfill(Set(instances.map { $0.id })) }
+                        return Promise { fulfill, _ in fulfill(Set(instances.map { $0.0 })) }
                     }
             }
     }
@@ -444,7 +444,7 @@ extension OfflineSchedule {
     /// - parameter forEventIds: A `Sequence` of `eventIds` referencing the events
     ///                          to commit.
     
-    public func commitEvents<T>(forEventIds eventIds: T?) -> Promise<[AttributeInstance]>
+    public func commitEvents<T>(forEventIds eventIds: T?) -> Promise<[(Int, String)]>
         where T: Collection, T.Iterator.Element == Int {
             
             guard let eventIds = eventIds, !eventIds.isEmpty else {
@@ -472,7 +472,7 @@ extension OfflineSchedule {
     /// - parameter forAttributeIds: A sequence of attributeIds to commit.
     ///
     
-    public func commitEvents<T>(forAttributeIds attributeIds: T?) -> Promise<[AttributeInstance]>
+    public func commitEvents<T>(forAttributeIds attributeIds: T?) -> Promise<[(Int, String)]>
         where T: Collection, T.Iterator.Element == Int {
             
             guard let attributeIds = attributeIds, !attributeIds.isEmpty else {
@@ -481,7 +481,7 @@ extension OfflineSchedule {
             }
             
             let instances = attributeIds.enumerated().map {
-                idx, attributeId -> AttributeInstance in
+                idx, attributeId -> (AttributeInstance) in
 
                 DDLogDebug("Will commit value for schedule idx \(idx) attributeId \(attributeId)", tag: "OfflineSchedule")
                 
@@ -501,11 +501,15 @@ extension OfflineSchedule {
             
             return firstly {
                 self.storage?.set(attributes: instances) ?? Promise {
-                    fulfill, _ in fulfill((instances.batchActionRequests ?? []).successfulUnpostedResults)
+                    fulfill, _ in
+                    fulfill((instances.map { ($0.id, $0.value.stringValue!) }.batchActionRequests ?? []).successfulUnpostedResults)
                 }
                 }.then {
-                    results in return instances.filter {
-                        instance in results.wasSuccessfulFor(attributeId: instance.id)
+                    results in return instances
+                        .filter {
+                            instance in results.wasSuccessfulFor(attributeId: instance.id)
+                        }.map {
+                            ($0.id, $0.value.stringValue!)
                     }
             }
     }

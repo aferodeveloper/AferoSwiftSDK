@@ -588,24 +588,17 @@ extension DeviceBatchAction.Response: AferoJSONCoding {
     }
 }
 
-public extension Sequence where Iterator.Element == AttributeInstance {
+extension Sequence where Iterator.Element == (Int, String) {
     
     /// Return an array of attributeWrite requests for this sequence
     
     var batchActionRequests: [DeviceBatchAction.Request]? {
-        let ret = try? map {
-            (instance: AttributeInstance) -> DeviceBatchAction.Request in
-            guard let stringValue = instance.value.stringValue else {
-                throw "Unable to convert \(instance) to stringValue; skipping"
-            }
-            return DeviceBatchAction.Request.attributeWrite(attributeId: instance.id, value: stringValue)
-        }
-        return ret
+        return map { DeviceBatchAction.Request.attributeWrite(attributeId: $0.0, value: $0.1) }
     }
     
 }
 
-public extension Sequence where Iterator.Element == DeviceBatchAction.Request {
+extension Sequence where Iterator.Element == DeviceBatchAction.Request {
     
     var successfulUnpostedResults: DeviceBatchAction.Results {
         return DeviceBatchAction.Results(requests: Array(self), responses: map { _ -> DeviceBatchAction.Response in return .success(requestId: nil, statusCode: nil, timestampMs: 0) })

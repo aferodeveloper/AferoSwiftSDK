@@ -244,25 +244,17 @@ class OfflineScheduleSpec: QuickSpec {
 
                 it("should not perform an conversion if already in local time.") {
                     
-                    do {
-                        try expect(sunday0000NoRepeatLTSpec.asDeviceLocalTimeSpecification(in: utcPlus1)) == sunday0000NoRepeatLTSpec
-                        try expect(sunday0000RepeatLTSpec.asDeviceLocalTimeSpecification(in: utcPlus1)) == sunday0000RepeatLTSpec
-                        try expect(saturday2300NoRepeatLTSpec.asDeviceLocalTimeSpecification(in: utcMinus1)) == saturday2300NoRepeatLTSpec
-                        try expect(saturday2300RepeatLTSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300RepeatLTSpec
-                    } catch {
-                        fail(String(reflecting: error))
-                    }
+                    try! expect(sunday0000NoRepeatLTSpec.asDeviceLocalTimeSpecification(in: utcPlus1)) == sunday0000NoRepeatLTSpec
+                    try! expect(sunday0000RepeatLTSpec.asDeviceLocalTimeSpecification(in: utcPlus1)) == sunday0000RepeatLTSpec
+                    try! expect(saturday2300NoRepeatLTSpec.asDeviceLocalTimeSpecification(in: utcMinus1)) == saturday2300NoRepeatLTSpec
+                    try! expect(saturday2300RepeatLTSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300RepeatLTSpec
                 }
                 
                 it("should only modify the .usesDeviceLocaltime if converting from UTC→UTC") {
-                    do {
-                        try expect(sunday0000NoRepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == sunday0000NoRepeatLTSpec
-                        try expect(sunday0000RepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == sunday0000RepeatLTSpec
-                        try expect(saturday2300NoRepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300NoRepeatLTSpec
-                        try expect(saturday2300RepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300RepeatLTSpec
-                    } catch {
-                        fail(String(reflecting: error))
-                    }
+                    try! expect(sunday0000NoRepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == sunday0000NoRepeatLTSpec
+                    try! expect(sunday0000RepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == sunday0000RepeatLTSpec
+                    try! expect(saturday2300NoRepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300NoRepeatLTSpec
+                    try! expect(saturday2300RepeatUTCSpec.asDeviceLocalTimeSpecification(in: .UTC)) == saturday2300RepeatLTSpec
                 }
                 
                 it("should update dayOfWeek if crossing a day boundary.") {
@@ -496,26 +488,17 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 
                 it("should not perform an conversion if already in local time.") {
-                    
-                    do {
-                        try expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000NoRepeatLTEvent
-                        try expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000RepeatLTEvent
-                        try expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcMinus1)) == saturday2300NoRepeatLTEvent
-                        try expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC)) == saturday2300RepeatLTEvent
-                    } catch {
-                        fail(String(reflecting: error))
-                    }
+                    try! expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000NoRepeatLTEvent
+                    try! expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: utcPlus1)) == sunday0000RepeatLTEvent
+                    try! expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: utcMinus1)) == saturday2300NoRepeatLTEvent
+                    try! expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC)) == saturday2300RepeatLTEvent
                 }
                 
                 it("should only modify the .usesDeviceLocaltime if converting from UTC→UTC") {
-                    do {
-                        try expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000NoRepeatLTEvent.timeSpecification
-                        try expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000RepeatLTEvent.timeSpecification
-                        try expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300NoRepeatLTEvent.timeSpecification
-                        try expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300RepeatLTEvent.timeSpecification
-                    } catch {
-                        fail(String(reflecting: error))
-                    }
+                    try! expect(sunday0000NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000NoRepeatLTEvent.timeSpecification
+                    try! expect(sunday0000RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == sunday0000RepeatLTEvent.timeSpecification
+                    try! expect(saturday2300NoRepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300NoRepeatLTEvent.timeSpecification
+                    try! expect(saturday2300RepeatLTEvent.asDeviceLocalTimeEvent(in: .UTC).timeSpecification) == saturday2300RepeatLTEvent.timeSpecification
                 }
                 
                 it("should update dayOfWeek if crossing a day boundary.") {

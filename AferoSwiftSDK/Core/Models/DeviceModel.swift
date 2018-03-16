@@ -189,6 +189,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
          accountId: String,
          associationId: String? = nil,
          state: DeviceState = DeviceState(),
+         attributes: DeviceAttributes = [:],
          profile: DeviceProfile? = nil,
          deviceCloudSupporting: AferoCloudSupporting? = nil,
          profileSource: DeviceProfileSource? = nil
@@ -207,7 +208,17 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         self.profile = profile
         self.profileSource = profileSource
         self.deviceCloudSupporting = deviceCloudSupporting
-        try! self.attributeCollection.configure(with: self.profile)
+
+        try! self.attributeCollection.configure(
+            with: self.profile,
+            currentAttributeStringValues: attributes.reduce([:]) {
+                curr, next in
+                guard let v = next.value.stringValue else { return curr }
+                var ret = curr
+                ret[next.key] = v
+                return ret
+        })
+        
     }
     
     convenience init(
@@ -223,7 +234,6 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         ) {
         
         let state = DeviceState(
-            attributes: attributes,
             connectionState: connectionState,
             profileId: profileId,
             friendlyName: friendlyName
@@ -265,7 +275,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         didSet {
             if oldValue == profile { return }
             do {
-                try attributeCollection.configure(with: profile)
+                try attributeCollection.configure(with: profile, currentAttributeStringValues: [:])
             } catch {
                 DDLogError("Unable to configure attributeCollection with profile: \(String(reflecting: error)); ignoring.", tag: TAG)
                 return
@@ -277,7 +287,7 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
     // MARK: State
     
     /// The current state of the device; canonical storage for isAvailable, attributes, and profileId.
-    public var currentState: DeviceState = [:] {
+    public var currentState: DeviceState {
         didSet {
             if oldValue == currentState { return }
             emitEventsForStateChange(oldValue, newState: currentState)
@@ -638,6 +648,7 @@ public class DeviceModel: BaseDeviceModel {
         accountId: String,
         associationId: String? = nil,
         state: DeviceState = DeviceState(),
+        attributes: DeviceAttributes = [:],
         tags: [DeviceTag] = [],
         profile: DeviceProfile? = nil,
         deviceCloudSupporting: AferoCloudSupporting? = nil,
@@ -649,6 +660,7 @@ public class DeviceModel: BaseDeviceModel {
             accountId: accountId,
             associationId: associationId,
             state: state,
+            attributes: attributes,
             profile: profile,
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
@@ -671,7 +683,6 @@ public class DeviceModel: BaseDeviceModel {
         ) {
         
         let state = DeviceState(
-            attributes: attributes,
             connectionState: connectionState,
             profileId: profileId,
             friendlyName: friendlyName
@@ -682,6 +693,7 @@ public class DeviceModel: BaseDeviceModel {
             accountId: accountId,
             associationId: associationId,
             state: state,
+            attributes: attributes,
             tags: tags,
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
@@ -953,9 +965,12 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
     // MARK: <DeviceModelable>
     
     public func clearAttributes() {
-        var state = currentState
-        state.attributes.removeAll()
-        currentState = state
+        do {
+            try attributeCollection.clearIntended()
+        } catch {
+            assert(false, String(reflecting: error))
+            DDLogError("Unable to clear attributes: \(String(reflecting: error))")
+        }
     }
 
     /// Whether or not writes to this device cause state to accumulate. This value
@@ -967,6 +982,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
                   accountId: String,
                   associationId: String? = nil,
                   state: DeviceState = DeviceState(),
+                  attributes: DeviceAttributes = [:],
                   profile: DeviceProfile? = nil,
                   deviceCloudSupporting: AferoCloudSupporting? = nil,
                   profileSource: DeviceProfileSource? = nil
@@ -977,6 +993,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
             accountId: accountId,
             associationId: associationId,
             state: state,
+            attributes: attributes,
             profile: profile,
             deviceCloudSupporting: deviceCloudSupporting,
             profileSource: profileSource
@@ -987,11 +1004,16 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
     
     public convenience init(model: DeviceModelable, copyState: Bool = false) {
         
+        var state = model.currentState
+        if !copyState {
+            state = DeviceState(profileId: model.profileId ?? model.profile?.id, friendlyName: model.friendlyName)
+        }
+        
         self.init(
             deviceId: model.deviceId,
             accountId: model.accountId,
             associationId: model.associationId,
-            state: (copyState ? model.currentState : DeviceState(profileId: model.profileId ?? model.profile?.id, friendlyName: model.friendlyName)),
+            state: state,
             profile: model.profile
         )
         
@@ -1059,7 +1081,7 @@ extension RecordingDeviceModel: DeviceActionable {
         
         let results = actions.successfulUnpostedResults
         
-        update(updateDict, accumulative: accumulative)
+        try! update(updateDict, accumulative: accumulative)
         
         asyncMain { onDone(results, nil) }
     }
@@ -1108,7 +1130,7 @@ public extension RecordingDeviceModel {
         for model in models {
             if let action = actionMap[model.deviceId] {
                 let recordingModel = RecordingDeviceModel(model: model, copyState: false)
-                recordingModel.update(action)
+                try! recordingModel.update(action)
                 recordingModel.isAvailable = true
                 modelMap[model.deviceId] = recordingModel
                 DDLogDebug("Added recording model \(String(reflecting: modelMap[model.deviceId]))")
@@ -1127,7 +1149,7 @@ public extension RecordingDeviceModel {
         
         var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]
         for model in models {
-            let criteria = filterCriteria.filter { $0.deviceId == model.deviceId && (model.profile?.attributeHasControls($0.attribute.id) ?? false) }
+            let criteria = filterCriteria.filter { $0.deviceId == model.deviceId && (model.profile?.attributeHasControls($0.attribute.attributeId!) ?? false) }
             if criteria.count == 0 { continue }
             let recordingModel = FilterCriteriaRecordingDeviceModel(model: model, copyState: false)
             recordingModel.filterCriteria = criteria
