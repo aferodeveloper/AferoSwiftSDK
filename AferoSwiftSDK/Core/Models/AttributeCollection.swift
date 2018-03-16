@@ -1065,7 +1065,10 @@ public extension AferoAttributeDataDescriptor {
     /// Metadata describing the native, dimensionless storage of this attribute (its primitive type).
     dynamic internal(set) public var dataDescriptor: AferoAttributeDataDescriptor
     
-    public var id: Int { return dataDescriptor.id }
+    public var attributeId: Int { return dataDescriptor.id }
+    
+    @available(*, deprecated, message: "use attributeId instead.")
+    public var id: Int { return attributeId }
     
     /// Metadata describing how this attribute should be presented.
     dynamic internal(set) public var presentationDescriptor: AferoAttributePresentationDescriptor?
@@ -1082,9 +1085,51 @@ public extension AferoAttributeDataDescriptor {
         didSet {
             guard oldValue != currentValueState else { return }
             didChangeValue(for: \.currentValueState)
+            
+            pendingValueState = type(of: self).newPendingValueState(
+                givenExistingPendingValueState: pendingValueState,
+                andNewCurrentValueState: currentValueState
+            )
+            
             guard pendingValueState == nil && intendedValueState == nil else { return }
             didChangeValue(for: \.displayValueState)
         }
+    }
+    
+    /// Horribly named pure function whose raison d'etre is to, with as little context
+    /// as possible, determine whether a pending value state should be nuked given
+    /// a currentValueState.
+    
+    private static func newPendingValueState(
+        givenExistingPendingValueState pending: AferoAttributeValueState?,
+        andNewCurrentValueState current: AferoAttributeValueState?
+        ) -> AferoAttributeValueState? {
+        
+        switch (current?.requestId, pending?.requestId) {
+
+        case (.none, .none):
+            // We don't have a current request id, so we also can't rendezvous.
+            // Use a light touch and don't even check to see if we have a pending in this case.
+            return nil
+            
+        case (.some, .none):
+            // We don't have an actual pending reqId, so we can't rendezvous.
+            return nil
+            
+        case let (.some(cid), .some(pid)):
+            // We have a Conclave-sourced requestId on current, and
+            // a ClientAPI-sourced requestId on pending.
+
+            if cid == pid          { return  nil } // We have a match
+            if cid > pid           { return nil }  // We have a superceding id
+            if cid == 0            { return nil }  // We have a peripheral-originated update (?)
+            return pending                         // We're none of the above; our req is still pending.
+            
+        default:
+            return pending
+
+        }
+    
     }
     
     /// The pending value state, resulting from a successful write from the local client
@@ -1274,6 +1319,22 @@ public extension AferoAttributeDataDescriptor {
         )
         
     }
+    
+    public var currentValue: AttributeValue? {
+        return dataDescriptor.attributeValue(for: currentValueState?.stringValue)
+    }
+    
+    public var pendingValue: AttributeValue? {
+        return dataDescriptor.attributeValue(for: pendingValueState?.stringValue)
+    }
+    
+    public var intendedValue: AttributeValue? {
+        return dataDescriptor.attributeValue(for: intendedValueState?.stringValue)
+    }
+
+    public var displayValue: AttributeValue? {
+        return dataDescriptor.attributeValue(for: displayValueState?.stringValue)
+    }
 
 }
 
@@ -1320,7 +1381,7 @@ public extension AferoAttributeDataDescriptor {
 /// stop observing `AferoAttribute` instances when they're removed from a collection
 /// (e.g. due to a profile reload).
 
-@objcMembers public class AferoAttributeCollection: NSObject, Codable {
+@objcMembers public class AferoAttributeCollection: NSObject, Codable, NSCopying {
     
     // MARK: Lifecycle
     
@@ -1340,6 +1401,17 @@ public extension AferoAttributeDataDescriptor {
     
     convenience init(descriptors: [AferoAttributeDataDescriptor]) throws {
         try self.init(attributeConfigs: descriptors.map { return ($0, nil) })
+    }
+    
+    // MARK: NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        
+        let attributes = self.attributes.map {
+            $0.copy() as! AferoAttribute
+        }
+        
+        return try! AferoAttributeCollection(attributes: attributes)
     }
 
     // MARK: Codable
@@ -1624,6 +1696,17 @@ extension AferoAttributeCollection {
         try setIntended(value: value, data: data, updatedTimestampMs: updatedTimestamp.millisSince1970, requestId: requestId, forAttributeWithId: id)
     }
     
+    func clearIntended(forAttributeWithId id: Int) throws {
+        try setIntended(valueState: nil, forAttributeWithId: id)
+    }
+    
+    func clearIntended(where isIncluded: (AferoAttribute)->Bool = { _ in true }) throws {
+        try intendedAttributes.filter(isIncluded).flatMap { $0.attributeId }.forEach {
+            try setIntended(valueState: nil, forAttributeWithId: $0)
+        }
+    }
+    
+    
     /// Commit intended value states to the cloud.
     /// - parameter isIncluded: A which selects which intended attributes should be committed.
     ///                         By default, all intended attributes are committed.
@@ -1772,10 +1855,14 @@ extension AferoAttributeCollection {
     /// if the new profile is the same as the old one.
     /// If the new profile is `nil`, all attributes are removed.
     
-    func configure(with profile: DeviceProfile?) throws {
+    func configure(with profile: DeviceProfile?, currentAttributeStringValues: [Int: String] = [:]) throws {
         unregisterAllAttributes()
         guard let configs = profile?.attributeConfigs() else { return }
         try register(attributeConfigs: configs)
+        try currentAttributeStringValues.forEach {
+            try setCurrent(value: $0.value, forAttributeWithId: $0.key)
+        }
+        
     }
     
 }
