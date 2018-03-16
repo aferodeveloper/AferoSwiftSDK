@@ -677,11 +677,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
             profileId: profileId,
             attributes: [:],
             deviceCloudSupporting: self,
-            profileSource: profileSource,
-            viewingNotificationConsumer: {
-                [weak self] isViewing, deviceId in
-                self?.notifyIsViewing(isViewing, deviceId: deviceId)
-        })
+            profileSource: profileSource
+            )
         
         ret.shouldAttemptAutomaticUTCMigration = true
         registerDevice(ret, onDone: nil)
@@ -1231,13 +1228,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
     func handleEnteredForegroundNotification() {
         DDLogInfo("Notified entered foreground", tag: TAG)
         startEventStream()
-    }
-    
-    // MARK: View Notification
-    
-    public func notifyIsViewing(_ isViewing: Bool, deviceId: String) {
-        DDLogDebug(String(format: "DeviceCollection notifyIsViewing: %@ device: %@", isViewing as CVarArg, deviceId))
-        eventStream.publishIsViewingNotification(isViewing, deviceId: deviceId)
     }
     
     // MARK: Queries

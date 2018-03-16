@@ -53,9 +53,65 @@ extension NSError {
     
 }
 
+protocol ViewingNotifiable: class {
+    var notifiableIdentifier: String { get }
+    func notifyViewing(for timeInterval: TimeInterval, onDone: @escaping (Error?)->Void)
+}
+
+class DeviceViewingNotifier {
+    
+    var TAG: String { return "DeviceViewingNotifiier" }
+    
+    weak var viewingNotifiable: ViewingNotifiable? {
+        willSet { notifyViewingTimer = nil }
+    }
+    
+    var notifyViewingTimer: Timer? {
+        willSet { notifyViewingTimer?.invalidate() }
+    }
+    
+    func startViewing(with interval: TimeInterval = 5 * 60) {
+        
+        notifyViewingTimer = nil
+        
+        guard let viewingNotifiable = viewingNotifiable else {
+            DDLogInfo("Nothing to notify; bailing.", tag: TAG)
+            return
+        }
+        
+        DDLogInfo("Notify viewing device:\(viewingNotifiable.notifiableIdentifier) every \(interval)s.", tag: TAG)
+        
+        viewingNotifiable.notifyViewing(for: interval) {
+            
+            [weak self] maybeError in
+            
+            guard interval > 0 else {
+                DDLogInfo("New interval == 0; no longer viewing.")
+                return
+            }
+            
+            if interval > 0 {
+                self?.notifyViewingTimer = Timer.schedule(interval) {
+                    maybeTimer in
+                    self?.startViewing(with: interval)
+                }
+            }
+            
+        }
+        
+    }
+    
+    func stopViewing() {
+        startViewing(with: 0)
+    }
+    
+}
+
+
+
 // MARK: - Service-connected device model
 
-public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, Hashable, Comparable {
+public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, Hashable, Comparable, ViewingNotifiable {
     
 
     internal(set) public var utcMigrationIsInProgress: Bool = false {
@@ -456,7 +512,44 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         DDLogWarn("deleteTag(identifiedBy:\(id) default (no-op) implementation called.", tag: TAG)
         asyncMain { onDone(id, nil) }
     }
-
+    
+    // MARK: Viewing Notification
+    
+    lazy var viewingNotifier: DeviceViewingNotifier = {
+        let ret = DeviceViewingNotifier()
+        ret.viewingNotifiable = self
+        return ret
+    }()
+    
+    var notifiableIdentifier: String { return deviceId }
+    
+    func notifyViewing(for interval: TimeInterval, onDone: @escaping (Error?) -> Void = { _ in }) {
+        
+        DDLogInfo("Notify viewing device:\(deviceId) for \(interval)s.", tag: TAG)
+        
+        commandSink.send(value:
+            .postBatchActions(
+                actions: [.notifyViewing(interval: interval)],
+                completion: {
+                    _, maybeError in
+                    defer { onDone(maybeError) }
+                    if let error = maybeError {
+                        DDLogError("NotifyViewing(\(interval)s) failed with error: \(String(reflecting: error)).")
+                        return
+                    }
+                    DDLogInfo("Notified viewing(\(interval)s).")
+            }
+            )
+        )
+    }
+    
+    public func notifyViewing(_ isViewing: Bool) {
+        if isViewing {
+            viewingNotifier.startViewing()
+            return
+        }
+        viewingNotifier.stopViewing()
+    }
     
 }
 
@@ -472,11 +565,9 @@ public class DeviceModel: BaseDeviceModel {
         tags: [DeviceTag] = [],
         profile: DeviceProfile? = nil,
         deviceCloudSupporting: AferoCloudSupporting? = nil,
-        profileSource: DeviceProfileSource? = nil,
-        viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
+        profileSource: DeviceProfileSource? = nil
         ) {
         
-        self.viewingNotificationConsumer = viewingNotificationConsumer
         super.init(
             deviceId: deviceId,
             accountId: accountId,
@@ -500,8 +591,7 @@ public class DeviceModel: BaseDeviceModel {
         tags: [DeviceTag] = [],
         connectionState: DeviceModelState = DeviceModelState(),
         deviceCloudSupporting: AferoCloudSupporting? = nil,
-        profileSource: DeviceProfileSource? = nil,
-        viewingNotificationConsumer:  @escaping NotifyDeviceViewing = { _ in }
+        profileSource: DeviceProfileSource? = nil
         ) {
         
         let state = DeviceState(
@@ -518,8 +608,7 @@ public class DeviceModel: BaseDeviceModel {
             state: state,
             tags: tags,
             deviceCloudSupporting: deviceCloudSupporting,
-            profileSource: profileSource,
-            viewingNotificationConsumer: viewingNotificationConsumer
+            profileSource: profileSource
         )
     }
     
@@ -595,14 +684,6 @@ public class DeviceModel: BaseDeviceModel {
         }
         
         super.handle(command: localCommand)
-    }
-    
-    public typealias NotifyDeviceViewing = (_ isViewing: Bool, _ deviceId: String) -> Void
-
-    fileprivate var viewingNotificationConsumer: NotifyDeviceViewing = { _, _ in }
-    
-    public func notifyViewing(_ isViewing: Bool) {
-        viewingNotificationConsumer(isViewing, deviceId)
     }
     
     // MARK: OTA Handling
