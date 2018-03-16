@@ -65,9 +65,6 @@ class MockDeviceCloudSupporting: AferoCloudSupporting {
 
     }
     
-    
-    
-    
     var setLocationWasInvoked: Bool = false
     var lastSetLocationArgsProvided: (location: DeviceLocation?, deviceId: String, accountId: String)?
     var setLocationErrorToReturn: Error?
@@ -104,11 +101,12 @@ class MockDeviceCloudSupporting: AferoCloudSupporting {
     var postResultsToReturn: DeviceBatchAction.Results?
     var postErrorToReturn: Error?
     
-    var writeWasInvoked: Bool = false
+    var postWasInvoked: Bool = false
+    var postedActions: [DeviceBatchAction.Request] = []
     
     func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
-        writeWasInvoked = true
-        
+        postWasInvoked = true
+        postedActions = actions
         onDone(postResultsToReturn, postErrorToReturn)
     }
     
