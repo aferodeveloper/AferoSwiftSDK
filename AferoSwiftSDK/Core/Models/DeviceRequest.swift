@@ -289,13 +289,14 @@ public struct DeviceBatchAction {
     /// * attributeRead: Request a read of an attribute (result will be sent through Conclave)
     /// * attributeWrite: Write an attribute value to a device
     
-    public enum Request: CustomDebugStringConvertible {
+    public enum Request: CustomDebugStringConvertible, Equatable {
         
         public var debugDescription: String {
             let ret = "<DevicRequest."
             switch self {
             case let .attributeRead(id): return ret + "attributeRead> (id: \(id))"
             case let .attributeWrite(id, value): return ret + "attributeWrite> (id: \(id) value: \(value))"
+            case let .notifyViewing(interval): return ret + "notifyViewing> (interval: \(interval))"
             }
         }
         
@@ -304,6 +305,9 @@ public struct DeviceBatchAction {
         
         /// Write an attribute value to a device
         case attributeWrite(attributeId: Int, value: String)
+        
+        /// Notify that a local UI client is viewing the device, for N seconds.
+        case notifyViewing(interval: TimeInterval)
         
         /// Initialize with an attibuteValue, as a `.attributeWrite(Int, String)` case
         public init?(attributeId: Int, value: AttributeValue) {
@@ -316,12 +320,22 @@ public struct DeviceBatchAction {
             self = .attributeRead(attributeId: attributeId)
         }
         
-        public var attributeId: Int {
-            switch self {
-            case .attributeRead(let id): return id
-            case .attributeWrite(let id, _): return id
+        public static func == (lhs: Request, rhs: Request) -> Bool {
+            switch (lhs, rhs) {
+                
+            case let (.attributeRead(lid), .attributeRead(rid)):
+                return lid == rid
+                
+            case let (.attributeWrite(lid, lval), .attributeWrite(rid, rval)):
+                return lid == rid && lval == rval
+                
+            case let (.notifyViewing(li), .notifyViewing(ri)):
+                return li == ri
+                
+            default: return false
             }
         }
+        
         
     }
     
@@ -396,29 +410,40 @@ public struct DeviceBatchAction {
 
 extension DeviceBatchAction.Request: AferoJSONCoding {
     
-    private static var AttributeWriteName: String { return "attribute_write" }
-    private static var AttributeReadName: String { return "attribute_read" }
+    enum CodingKeys: String, CodingKey {
+        case type
+        case attributeId
+        case value
+        case interval = "seconds"
+    }
     
-    private static var CoderKeyRequestType: String { return "type" }
-    private static var CoderKeyAttributeId: String { return "attrId" }
-    private static var CoderKeyValue: String { return "value" }
+    enum CodingTypeValues: String, CodingKey {
+        case attributeWrite = "attribute_write"
+        case attributeRead = "attribute_read"
+        case notifyViewing = "notify_viewing"
+    }
     
     public var JSONDict: AferoJSONCodedType? {
         
+        var ret: [CodingKeys: Any] = [:]
+        
         switch self {
+            
         case let .attributeWrite(attributeId, value):
-            return [
-                type(of: self).CoderKeyRequestType: type(of: self).AttributeWriteName,
-                type(of: self).CoderKeyAttributeId: attributeId,
-                type(of: self).CoderKeyValue: value,
-            ]
+            ret[.type] = CodingTypeValues.attributeWrite.stringValue
+            ret[.attributeId] = attributeId
+            ret[.value] = value
             
         case let .attributeRead(attributeId):
-            return [
-                type(of: self).CoderKeyRequestType: type(of: self).AttributeReadName,
-                type(of: self).CoderKeyAttributeId: attributeId,
-            ]
+            ret[.type] = CodingTypeValues.attributeRead.stringValue
+            ret[.attributeId] = attributeId
+            
+        case let .notifyViewing(interval):
+            ret[.type] = CodingTypeValues.notifyViewing.stringValue
+            ret[.interval] = interval
         }
+        
+        return ret.stringKeyed
     }
     
     public init?(json: AferoJSONCodedType?) {
@@ -429,28 +454,39 @@ extension DeviceBatchAction.Request: AferoJSONCoding {
         }
         
         guard
-            let requestType = jsonDict[type(of: self).CoderKeyRequestType] as? String,
-            let attrId = jsonDict[type(of: self).CoderKeyAttributeId] as? Int else {
-                DDLogError("Unable to extract required attributes from \(jsonDict.debugDescription); bailing.")
+            let requestTypeName = jsonDict[CodingKeys.type.stringValue] as? String,
+            let requestType = CodingTypeValues(rawValue: requestTypeName) else {
+                DDLogError("Unable to extract rquest type from \(jsonDict.debugDescription); bailing.")
                 return nil
         }
         
         switch requestType {
             
-        case type(of: self).AttributeWriteName:
-            guard let value = jsonDict[type(of: self).CoderKeyValue] as? String else {
-                DDLogError("Attempt to create attributeWrite with nil value.")
+        case .attributeWrite:
+            guard
+                let attrId = jsonDict[CodingKeys.attributeId.stringValue] as? Int,
+                let value = jsonDict[CodingKeys.value.stringValue] as? String else {
+                DDLogError("Attempt to create attributeWrite with nil attrId or nil value.")
                 return nil
             }
             
             self = .attributeWrite(attributeId: attrId, value: value)
             
-        case type(of: self).AttributeReadName:
+        case .attributeRead:
+            guard
+                let attrId = jsonDict[CodingKeys.attributeId.stringValue] as? Int else {
+                    DDLogError("Attempt to create attributeRead with nil attrId.")
+                    return nil
+            }
             self = .attributeRead(attributeId: attrId)
             
-        default:
-            DDLogError("Unrecognized name for DeviceRequest: \(requestType)")
-            return nil
+        case .notifyViewing:
+            guard let intervalDouble = jsonDict[CodingKeys.interval.stringValue] as? NSNumber else {
+                DDLogError("Attempt to create notifyViewing with nil interval.")
+                return nil
+            }
+            self = .notifyViewing(interval: TimeInterval(intervalDouble))
+            
         }
         
     }

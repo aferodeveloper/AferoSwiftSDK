@@ -333,7 +333,7 @@ class DeviceModelSpec: QuickSpec {
 
         }
         
-        describe("When writing attributes to the device") {
+        describe("When posting actions") {
             
             let writeSink = MockDeviceCloudSupporting()
             let deviceModel = BaseDeviceModel(
@@ -345,14 +345,15 @@ class DeviceModelSpec: QuickSpec {
             
             beforeEach() {
                 writeSink.postErrorToReturn = nil
-                writeSink.writeWasInvoked = false
+                writeSink.postWasInvoked = false
+                writeSink.postedActions = []
             }
             
             it("Should forward the update to its writeSink") {
                 
-                expect(writeSink.writeWasInvoked).to(beFalse())
+                expect(writeSink.postWasInvoked).to(beFalse())
                 expect(deviceModel.deviceCloudSupporting) === writeSink
-                expect(writeSink.writeWasInvoked).to(beFalse())
+                expect(writeSink.postWasInvoked).to(beFalse())
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
                 var error: Error? = nil
@@ -362,14 +363,14 @@ class DeviceModelSpec: QuickSpec {
                 }
                 
                 expect(error).to(beNil())
-                expect(writeSink.writeWasInvoked).to(beTrue())
+                expect(writeSink.postWasInvoked).to(beTrue())
             }
             
             it("Should forward errors.") {
                 
-                expect(writeSink.writeWasInvoked).to(beFalse())
+                expect(writeSink.postWasInvoked).to(beFalse())
                 expect(deviceModel.deviceCloudSupporting) === writeSink
-                expect(writeSink.writeWasInvoked).to(beFalse())
+                expect(writeSink.postWasInvoked).to(beFalse())
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
                 var error: Error? = nil
@@ -381,10 +382,31 @@ class DeviceModelSpec: QuickSpec {
                     error = $1
                 }
                 
-                expect(writeSink.writeWasInvoked).to(beTrue())
+                expect(writeSink.postWasInvoked).to(beTrue())
                 expect(error).toNot(beNil())
                 expect(error as NSError?) == writeSink.postErrorToReturn! as NSError
             }
+            
+            it("should post notify requests with a five-minut interval on start") {
+
+                expect(deviceModel.deviceCloudSupporting) === writeSink
+                expect(writeSink.postWasInvoked).to(beFalse())
+                expect(writeSink.postErrorToReturn).to(beNil())
+                
+                deviceModel.notifyViewing(true)
+                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 5 * 60)), timeout: 1, pollInterval: 0.1)
+            }
+
+            it("should post notify requests with 0-length interval on stop") {
+                
+                expect(deviceModel.deviceCloudSupporting) === writeSink
+                expect(writeSink.postWasInvoked).to(beFalse())
+                expect(writeSink.postErrorToReturn).to(beNil())
+                
+                deviceModel.notifyViewing(false)
+                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 0)), timeout: 1, pollInterval: 0.1)
+            }
+
         }
 
         describe("When the device's state is updated") {

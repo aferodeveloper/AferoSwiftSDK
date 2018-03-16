@@ -20,7 +20,7 @@ import OHHTTPStubs
 ///
 /// see https://github.com/AliSoftware/OHHTTPStubs for info on the HTTP stubbing lib.
 
-class APIClientSpec: QuickSpec {
+class APIClientAccountSpec: QuickSpec {
     
     override func spec() {
         describe("when calling fetchAccountInfo()") {
