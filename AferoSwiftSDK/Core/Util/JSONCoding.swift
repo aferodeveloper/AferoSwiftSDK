@@ -106,4 +106,16 @@ public extension Array where Element: AferoJSONCoding {
     
 }
 
+public extension Dictionary where Key: CodingKey {
+    
+    var stringKeyed: [String: Value] {
+        return reduce([:]) {
+            curr, next in
+            var ret = curr
+            ret[next.key.stringValue] = next.value
+            return ret
+        }
+        
+    }
+}
 
