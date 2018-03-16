@@ -289,7 +289,7 @@ public struct DeviceBatchAction {
     /// * attributeRead: Request a read of an attribute (result will be sent through Conclave)
     /// * attributeWrite: Write an attribute value to a device
     
-    public enum Request: CustomDebugStringConvertible {
+    public enum Request: CustomDebugStringConvertible, Equatable {
         
         public var debugDescription: String {
             let ret = "<DevicRequest."
@@ -318,6 +318,22 @@ public struct DeviceBatchAction {
         /// Initialize with an attributeId only, implied to be an `.attributeRead(Int)` case.
         public init(attributeId: Int) {
             self = .attributeRead(attributeId: attributeId)
+        }
+        
+        public static func == (lhs: Request, rhs: Request) -> Bool {
+            switch (lhs, rhs) {
+                
+            case let (.attributeRead(lid), .attributeRead(rid)):
+                return lid == rid
+                
+            case let (.attributeWrite(lid, lval), .attributeWrite(rid, rval)):
+                return lid == rid && lval == rval
+                
+            case let (.notifyViewing(li), .notifyViewing(ri)):
+                return li == ri
+                
+            default: return false
+            }
         }
         
         
