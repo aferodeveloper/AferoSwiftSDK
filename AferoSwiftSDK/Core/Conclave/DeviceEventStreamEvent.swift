@@ -752,11 +752,6 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             public var hashValue: Int {
                 return (isAvailable ?? false).hashValue
                     ^ (isVisible ?? false).hashValue
-                    ^ (isDirty ?? false).hashValue
-                    ^ (isConnectable ?? false).hashValue
-                    ^ (isConnected ?? false).hashValue
-                    ^ (isRebooted ?? false).hashValue
-                    ^ (isDirect ?? false).hashValue
                     ^ (RSSI ?? 0).hashValue
                     ^ (location?.hashValue ?? 0)
             }

@@ -1075,7 +1075,7 @@ class AferoAttributeCollectionSpec: QuickSpec {
             
         }
         
-        fdescribe("Committing intended values") {
+        describe("Committing intended values") {
 
             let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
             let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)

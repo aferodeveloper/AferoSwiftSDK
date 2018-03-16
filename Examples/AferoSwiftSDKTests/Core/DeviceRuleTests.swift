@@ -9,7 +9,7 @@
 import Foundation
 import Quick
 import Nimble
-import Afero
+@testable import Afero
 
 
 class DeviceRuleTimeSpec: QuickSpec {
@@ -75,8 +75,8 @@ class DeviceRuleDecodeSpec: QuickSpec {
                     expect(rule.filterCriteria?.count ?? 0) == 1
                     let criterion: DeviceFilterCriterion = (rule.filterCriteria?.first!)!
                     
-                    expect(criterion.attribute.id) == 123
-                    expect(criterion.attribute.value.int64Value) == 3735928559
+                    expect(criterion.attribute.attributeId) == 123
+                    expect(criterion.attribute.stringValue) == "3735928559"
                     expect(criterion.operation) == DeviceFilterCriterion.Operation.equals
                     expect(criterion.deviceId) == "ABCD3456"
                     expect(criterion.trigger).to(beFalse())
@@ -112,8 +112,8 @@ class DeviceRuleDecodeSpec: QuickSpec {
                     expect(action.attributes.count) == 1
                     
                     let attribute = action.attributes[0]
-                    expect(attribute.id) == 234
-                    expect(attribute.value.int64Value) == 1933036286
+                    expect(attribute.attributeId) == 234
+                    expect(attribute.stringValue) == "1933036286"
                     
                 }
             } else {
@@ -132,23 +132,12 @@ class DeviceRuleEncodeSpec: QuickSpec {
             let usla = TimeZone(identifier: "America/Los_Angeles")
             let uschi = TimeZone(identifier: "America/Chicago")
             
-            it("Should round-trip Attributes") {
-                
-                let attribute = AttributeInstance(id: 5, stringValue: "AABBCC")
-                if let attribute2: AttributeInstance = |<attribute.JSONDict {
-                    expect(attribute2) == attribute
-                } else {
-                    fail("attribute2 did not decode as expected.")
-                }
-                
-            }
-            
             it("Should round-trip actions.") {
 
-                let attributes: [AttributeInstance] = [
-                    AttributeInstance(id: 1, stringValue: "CCCC"),
-                    AttributeInstance(id: 2, stringValue: "DDDD"),
-                    ].flatMap { $0 }
+                let attributes: [AferoAttributeValueState] = [
+                    AferoAttributeValueState(attributeId: 1, value: "CCCC"),
+                    AferoAttributeValueState(attributeId: 1, value: "DDDD"),
+                    ]
                 
                 let action = DeviceRuleAction(deviceId: "I'm a device ID", attributes: attributes, durationSeconds: 9)
                 if let copied: DeviceRuleAction = |<action.JSONDict {
@@ -234,7 +223,7 @@ class DeviceRuleEncodeSpec: QuickSpec {
                 
                 it("Should round-trip") {
 
-                    let attribute1 = AttributeInstance(id: 1, stringValue: "0011")
+                    let attribute1 = AferoAttributeValueState(attributeId: 1, value: "0011")
                     let crit1 = DeviceFilterCriterion(attribute: attribute1, operation: .equals, deviceId: "bar", trigger: true)
                     
                     if let copied: DeviceFilterCriterion = |<crit1.JSONDict {
@@ -277,10 +266,10 @@ class DeviceRuleEncodeSpec: QuickSpec {
             
             describe("With device rules") {
 
-                let attribute1 = AttributeInstance(id: 1, stringValue: "0011")
-                let attribute2 = AttributeInstance(id: 2, stringValue: "0022")
-                let attribute3 = AttributeInstance(id: 3, stringValue: "0033")
-                let attribute4 = AttributeInstance(id: 4, stringValue: "0044")
+                let attribute1 = AferoAttributeValueState(attributeId: 1, value: "0011")
+                let attribute2 = AferoAttributeValueState(attributeId: 2, value: "0022")
+                let attribute3 = AferoAttributeValueState(attributeId: 3, value: "0033")
+                let attribute4 = AferoAttributeValueState(attributeId: 4, value: "0044")
 
                 let crit1 = DeviceFilterCriterion(attribute: attribute1, operation: .equals, deviceId: "bar", trigger: true)
                 let crit2 = DeviceFilterCriterion(attribute: attribute1, operation: .equals, deviceId: "bar", trigger: false)

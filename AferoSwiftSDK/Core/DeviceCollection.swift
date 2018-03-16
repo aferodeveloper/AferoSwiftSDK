@@ -679,7 +679,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return true
     }
     
-    fileprivate func createOrUpdateDevices(with json: [[String: Any]]) {
+    fileprivate func createOrUpdateDevices(with json: [DeviceStreamEvent.Peripheral]) {
         json.forEach {
             elem in
             asyncMain {
@@ -687,127 +687,147 @@ public class DeviceCollection: NSObject, MetricsReportable {
             }
         }
     }
-    
-    fileprivate func createOrUpdateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
-        
-        guard
-            let deviceId = json["deviceId"] as? String,
-            let profileId = json["profileId"] as? String else {
-                DDLogError("No deviceId in json; bailing create.", tag: TAG)
-                onDone(nil)
-                return
-        }
-        
-        if !profileSource.containsProfile(for: profileId),
-            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]) {
-            profileSource.add(profile: profile)
-        }
-        
-        let created = createDevice(with: deviceId, profileId: profileId)
-        
-        updateDevice(with: json) {
-            [weak self] maybeDevice in
-            guard let device = maybeDevice else {
-                onDone(nil)
-                return
-            }
-            onDone(device)
-            guard created else { return }
-            
-            self?.postAddedVisibleDeviceNotification()
-            self?.contentsSink?.send(value: .create(device))
-        }
-        
-    }
+
+//    @available(*, unavailable, message: "Use createOrUpdateDevices(with: [Peripheral]) instead.")
+//    fileprivate func createOrUpdateDevices(with json: [[String: Any]]) {
+//        json.forEach {
+//            elem in
+//            asyncMain {
+//                self.createOrUpdateDevice(with: elem)
+//            }
+//        }
+//    }
+//
+//    @available(*, unavailable, message: "Use createOrUpdateDevice(with:Peripheral) instead.")
+//    fileprivate func createOrUpdateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
+//
+//        guard
+//            let deviceId = json["deviceId"] as? String,
+//            let profileId = json["profileId"] as? String else {
+//                DDLogError("No deviceId in json; bailing create.", tag: TAG)
+//                onDone(nil)
+//                return
+//        }
+//
+//        if !profileSource.containsProfile(for: profileId),
+//            let profile: DeviceProfile = |<(json["profile"] as? [String: Any]) {
+//            profileSource.add(profile: profile)
+//        }
+//
+//        let created = createDevice(with: deviceId, profileId: profileId)
+//
+//        updateDevice(with: json) {
+//            [weak self] maybeDevice in
+//            guard let device = maybeDevice else {
+//                onDone(nil)
+//                return
+//            }
+//            onDone(device)
+//            guard created else { return }
+//
+//            self?.postAddedVisibleDeviceNotification()
+//            self?.contentsSink?.send(value: .create(device))
+//        }
+//
+//    }
     
     /// Create a device, from the given peripheral struct instance.
     ///
     /// - parameter peripheral: The peripheral for which the device should be created.
     /// - parameter seq: The sequence number of the event stream message, if any.
+    /// - parameter onDone: The completion handler for the call.
     /// - note: sequence numbers are currently ignored.
     
-    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil) {
+    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil, onDone: @escaping (DeviceModel?, Error?)->Void = { _ in }) {
         
+        if !profileSource.containsProfile(for: peripheral.profileId),
+            let profile = peripheral.profile {
+            profileSource.add(profile: profile)
+        }
+
         let deviceId = peripheral.id
         
         let created = createDevice(with: deviceId, profileId: peripheral.profileId)
         
         updateDevice(with: peripheral) {
-            [weak self] maybeDevice in
+            [weak self] maybeDevice, maybeError in
+            onDone(maybeDevice, maybeError)
             guard let device = maybeDevice else {
                 return
             }
             guard created else { return }
             self?.postAddedVisibleDeviceNotification()
             self?.contentsSink?.send(value: .create(device))
+            
         }
         
     }
     
-    fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
-        
-        let tag = TAG
-
-        guard
-            let deviceId = json["deviceId"] as? String,
-            let device = _devices[deviceId] else {
-                DDLogWarn("No deviceId or device; bailing", tag: tag)
-                return
-        }
-
-        guard
-            let profileId = json["profileId"] as? String,
-            let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
-            let attributes = json["attributes"] as? [[String: Any]] else {
-                DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
-                onDone(nil)
-                return
-        }
-        
-        if let timeZoneState: TimeZoneState = |<(json["timezone"] as? [String: Any]) {
-            device.timeZoneState = timeZoneState
-        }
-
-        device.associationId = json["associationId"] as? String
-        device.friendlyName = json["friendlyName"] as? String
-        device.currentState.connectionState = modelState
-        device.profileId = profileId
-        
-        if let tags: [DeviceTagCollection.DeviceTag.Model] = |<(json["deviceTags"] as? [[String: Any]]) {
-            device.deviceTags = Set(tags.map { return DeviceTagCollection.DeviceTag(model: $0) } )
-        }
-        
-        device.updateProfile {
-            
-            [weak device] updateProfileSuccess, maybeError in
-            
-            if updateProfileSuccess {
-                
-                guard let device = device else {
-                    DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
-                    return
-                }
-                
-                device.update(with: attributes)
-                onDone(device)
-            }
-            
-            if let error = maybeError {
-                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
-            }
-            
-        }
-        
-        
-    }
+//    fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
+//
+//        let tag = TAG
+//
+//        guard
+//            let deviceId = json["deviceId"] as? String,
+//            let device = _devices[deviceId] else {
+//                DDLogWarn("No deviceId or device; bailing", tag: tag)
+//                return
+//        }
+//
+//        guard
+//            let profileId = json["profileId"] as? String,
+//            let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
+//            let attributes = json["attributes"] as? [[String: Any]] else {
+//                DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
+//                onDone(nil)
+//                return
+//        }
+//
+//        if let timeZoneState: TimeZoneState = |<(json["timezone"] as? [String: Any]) {
+//            device.timeZoneState = timeZoneState
+//        }
+//
+//        device.associationId = json["associationId"] as? String
+//        device.friendlyName = json["friendlyName"] as? String
+//        device.currentState.connectionState = modelState
+//        device.profileId = profileId
+//
+//        if let tags: [DeviceTagCollection.DeviceTag.Model] = |<(json["deviceTags"] as? [[String: Any]]) {
+//            device.deviceTags = Set(tags.map { return DeviceTagCollection.DeviceTag(model: $0) } )
+//        }
+//
+//        device.updateProfile {
+//
+//            [weak device] updateProfileSuccess, maybeError in
+//
+//            if updateProfileSuccess {
+//
+//                guard let device = device else {
+//                    DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
+//                    return
+//                }
+//
+//                device.update(with: attributes)
+//                onDone(device)
+//            }
+//
+//            if let error = maybeError {
+//                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+//            }
+//
+//        }
+//
+//
+//    }
     
-    fileprivate func updateDevice(with peripheral: DeviceStreamEvent.Peripheral, onDone: @escaping (DeviceModel?)->Void) {
+    fileprivate func updateDevice(with peripheral: DeviceStreamEvent.Peripheral, onDone: @escaping (DeviceModel?, Error?)->Void) {
 
         let tag = TAG
         
         guard let device = _devices[peripheral.id] else {
-            DDLogWarn("No device \(peripheral.id); bailing", tag: tag)
-            onDone(nil)
+            let msg = "No device \(peripheral.id); bailing"
+            DDLogWarn(msg, tag: tag)
+            onDone(nil, msg)
             return
         }
         
@@ -819,17 +839,22 @@ public class DeviceCollection: NSObject, MetricsReportable {
             
             if updateProfileSuccess {
                 
+                if let error = maybeError {
+                    DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+                }
+                
                 guard let device = device else {
                     DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", peripheral.id), tag: tag)
+                    onDone(nil, maybeError)
                     return
                 }
                 
-                device.update(with: peripheral)
-                onDone(device)
-            }
-            
-            if let error = maybeError {
-                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+                do {
+                    try device.update(with: peripheral)
+                    onDone(device, maybeError)
+                } catch {
+                    onDone(device, error)
+                }
             }
             
         }
@@ -862,7 +887,13 @@ public class DeviceCollection: NSObject, MetricsReportable {
             return
         }
         
-        device.update(with: attribute)
+        do {
+            try device.update(with: attribute)
+        } catch {
+            DDLogError("Unable to update device:\(device.deviceId): \(String(reflecting: error))", tag: TAG)
+        }
+        
+        
     }
     
     /// Handle a `DeviceStreamEvent.statusChange` event.
@@ -1278,12 +1309,12 @@ public extension DeviceCollection {
             ownershipTransferVerified: isOwnershipChangeVerified
             ).then {
                 
-                deviceJson in
+                peripheral in
                 
-                self.createOrUpdateDevice(with: deviceJson) {
+                self.createOrUpdateDevice(with: peripheral) {
                     
-                    deviceModel in
-                    guard let deviceModel = deviceModel else {
+                    maybeDeviceModel, maybeError in
+                    guard let deviceModel = maybeDeviceModel else {
                         onDone(nil, "No deviceModel returned.")
                         return
                     }

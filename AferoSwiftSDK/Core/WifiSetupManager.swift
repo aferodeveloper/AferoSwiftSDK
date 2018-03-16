@@ -409,7 +409,7 @@ extension WifiConfigurable {
             
             let attributeValue = AttributeValue.rawBytes(data)
 
-            self?.write(attributeId, attributeValue: attributeValue) {
+            self?.write(id: attributeId, value: attributeValue.stringValue!) {
                 maybeInstance, maybeError in
                 
                 if let error = maybeError {

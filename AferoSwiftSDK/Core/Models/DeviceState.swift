@@ -199,48 +199,48 @@ extension DeviceState {
 
 // MARK: ExpressibleByDictionaryLiteral
 
-extension DeviceState:  ExpressibleByDictionaryLiteral {
-
-    public typealias Element = AttributeInstance
-    
-    public init(dictionaryLiteral elements: (Key, Value)...) {
-        self.init(elements: elements)
-    }
-
-
-    public init(elements: [(Key, Value)]) {
-        var d = [Key: Value]()
-        for (k, v) in elements {
-            d[k] = v
-        }
-        self.init(attributes: d, profileId: nil, friendlyName: nil)
-    }
-
-}
+//extension DeviceState:  ExpressibleByDictionaryLiteral {
+//
+//    public typealias Element = AttributeInstance
+//
+//    public init(dictionaryLiteral elements: (Key, Value)...) {
+//        self.init(elements: elements)
+//    }
+//
+//
+//    public init(elements: [(Key, Value)]) {
+//        var d = [Key: Value]()
+//        for (k, v) in elements {
+//            d[k] = v
+//        }
+//        self.init(attributes: d, profileId: nil, friendlyName: nil)
+//    }
+//
+//}
 
 // MARK: SafeSubscriptable
 
-extension DeviceState: SafeSubscriptable {
-    
-    public typealias Key = Int
-    public typealias Value = AttributeValue
-    
-    public subscript(safe key: Key?) -> Value? {
-        get {
-            if let key = key {
-                return attributes[key]
-            }
-            return nil
-        }
-        
-        set {
-            if let key = key {
-                attributes[key] = newValue
-            }
-        }
-    }
-
-}
+//extension DeviceState: SafeSubscriptable {
+//
+//    public typealias Key = Int
+//    public typealias Value = AttributeValue
+//
+//    public subscript(safe key: Key?) -> Value? {
+//        get {
+//            if let key = key {
+//                return attributes[key]
+//            }
+//            return nil
+//        }
+//
+//        set {
+//            if let key = key {
+//                attributes[key] = newValue
+//            }
+//        }
+//    }
+//
+//}
 
 /// The set of attributes representing the current state of the device.
 public struct DeviceState: CustomDebugStringConvertible, Hashable {
@@ -248,7 +248,7 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     // MARK: <CustomDebugStringConvertible>
     
     public var debugDescription: String {
-        return "<DeviceState> profileId: \(String(reflecting: profileId)) connectionState: \(String(reflecting: connectionState)) timeZoneState: \(String(reflecting: timeZoneState)) attributes: \(attributes)"
+        return "<DeviceState> profileId: \(String(reflecting: profileId)) connectionState: \(String(reflecting: connectionState)) timeZoneState: \(String(reflecting: timeZoneState))"
     }
     
     public var timeZoneState: TimeZoneState = .invalid(error: nil)
@@ -256,20 +256,16 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     public var friendlyName: String?
     public var profileId: String?
     
-    /// Internal attributes representation
-    internal(set) public var attributes: DeviceAttributes = [:]
-    
     var connectionState: DeviceModelState = DeviceModelState()
     
-    init(attributes: DeviceAttributes = [:], connectionState: DeviceModelState = DeviceModelState(), profileId: String?, friendlyName: String?, timeZoneState: TimeZoneState = .invalid(error: nil)) {
-        self.attributes = attributes
+    init(connectionState: DeviceModelState = DeviceModelState(), profileId: String? = nil, friendlyName: String? = nil, timeZoneState: TimeZoneState = .invalid(error: nil)) {
         self.connectionState = connectionState
         self.friendlyName = friendlyName
         self.profileId = profileId
         self.timeZoneState = timeZoneState
     }
     
-    init(attributes: DeviceAttributes = [:], isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?, timeZoneState: TimeZoneState = .invalid(error: nil)) {
+    init(isAvailable: Bool, isDirect: Bool, profileId: String, friendlyName: String?, timeZoneState: TimeZoneState = .invalid(error: nil)) {
         
         let connectionState = DeviceModelState(
             isAvailable: isAvailable,
@@ -277,7 +273,6 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
         )
         
         self.init(
-            attributes: attributes,
             connectionState: connectionState,
             profileId: profileId,
             friendlyName: friendlyName,
@@ -290,7 +285,6 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     public static func ==(lhs: DeviceState, rhs: DeviceState) -> Bool {
         return lhs.isAvailable == rhs.isAvailable
             && lhs.isDirect == rhs.isDirect
-            && lhs.attributes == rhs.attributes
             && lhs.friendlyName == rhs.friendlyName
             && lhs.locationState == rhs.locationState
             && lhs.timeZoneState == rhs.timeZoneState
@@ -298,21 +292,26 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     }
 
     public var hashValue: Int {
-        return attributes.count
+        return connectionState.hashValue ^ (friendlyName?.hashValue ?? 0) ^ (profileId?.hashValue ?? 0)
     }
     
-    
+    @available(*, unavailable, message: "attributes have been moved to DeviceModel.attributeCollection.")
     public mutating func update(_ attributeInstance: AttributeInstance?) {
-        guard let attributeInstance = attributeInstance else { return }
-        attributes[attributeInstance.id] = attributeInstance.value
+//        guard let attributeInstance = attributeInstance else { return }
+        fatalError("unsupported.")
+//        attributes[attributeInstance.id] = attributeInstance.value
     }
     
+    @available(*, unavailable, message: "attributes have been moved to DeviceModel.attributeCollection.")
     public mutating func reset() {
-        attributes.removeAll(keepingCapacity: true)
+        fatalError("unsupported.")
+//        attributes.removeAll(keepingCapacity: true)
     }
     
+    @available(*, unavailable, message: "attributes have been moved to DeviceModel.attributeCollection.")
     public var attributeInstances: [AttributeInstance] {
-        return attributes.map { AttributeInstance(id: $0, value: $1) }
+        fatalError("unsupported.")
+//        return attributes.map { AttributeInstance(id: $0, value: $1) }
     }
     
 
@@ -329,12 +328,6 @@ extension DeviceState: AferoJSONCoding {
         
         var ret: [String: Any] = [
             CoderKeyIsAvailable: isAvailable,
-            CoderKeyAttributes: Dictionary(
-                attributes.map {
-                    (key: Key, value: Value) -> (String, String) in
-                    return ("\(key)", value.debugDescription)
-                }
-            )
         ]
         
         if let friendlyName = friendlyName {
@@ -867,7 +860,7 @@ public extension DeviceModelable {
     /// Fetch an attribute by id
     /// - parameter attributeId: The id of the attribute to fetch
     public func value(for attributeId: Int) -> AttributeValue? {
-        return currentState[safe: attributeId]
+        return attributeCollection.attribute(forId: attributeId)?.displayValue
     }
     
     public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
@@ -885,6 +878,7 @@ public extension DeviceModelable {
         return value(for: systemAttribute.rawValue)
     }
     
+    @available(*, deprecated, message: "Use set(value: String, forAttributeId: Int, localOnly: Bool) instead")
     public func set(value: AttributeValue, forAttributeId attributeId: Int) -> Promise<DeviceBatchAction.Results> {
         return set(value: value, forAttributeId: attributeId, localOnly: false)
     }
@@ -896,16 +890,54 @@ public extension DeviceModelable {
     ///                        and is not propogated through the service.and
     /// - returns: A `Promise<DeviceBatchAction.Results>` containing all request and response info.
 
-    public func set(value: AttributeValue, forAttributeId attributeId: Int, localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
+    public func set(value: String, forAttributeId attributeId: Int, localOnly: Bool)  -> Promise<DeviceBatchAction.Results> {
         return set(attributes: [(attributeId, value)], localOnly: localOnly)
     }
 
-    public func set(attributes: [AttributeInstance]) -> Promise<DeviceBatchAction.Results> {
-        return set(attributes: attributes.map { ($0.id, $0.value) }, localOnly: false)
+    /// Set an attributeValue by id
+    /// - parameter value: The `AttributeValue` to set
+    /// - parameter forAttributeId: The attributeId which associated with the value
+    /// - parameter localOnly: If true, the value is only written locally to the device state,
+    ///                        and is not propogated through the service.and
+    /// - returns: A `Promise<DeviceBatchAction.Results>` containing all request and response info.
+    
+    @available(*, deprecated, message: "Use set(value: String, forAttributeId: Int, localOnly: Bool) instead")
+    public func set(value: AttributeValue, forAttributeId attributeId: Int, localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
+        
+        guard let stringValue = value.stringValue else {
+            return Promise { _, reject in reject ("Unable to derive stringValue for \(value).") }
+        }
+        return set(value: stringValue, forAttributeId: attributeId, localOnly: localOnly)
     }
 
+    @available(*, deprecated, message: "Use set(attributes:[(Int, String)], localOnly: Bool) instead")
+    public func set(attributes: [AttributeInstance]) -> Promise<DeviceBatchAction.Results> {
+
+        do {
+            let attStrings: [(Int, String)] = try attributes.map {
+                guard let sv = $0.value.stringValue else { throw "Unable to derive stringValue for \($0.value)." }
+                return ($0.id, sv)
+            }
+            return set(attributes: attStrings, localOnly: false)
+        } catch {
+            return Promise { _, reject in reject(error) }
+        }
+
+    }
+
+    @available(*, deprecated, message: "Use set(attributes:[(Int, String)], localOnly: Bool) instead")
     public func set(attributes: [(Int, AttributeValue)]) -> Promise<DeviceBatchAction.Results> {
-        return set(attributes: attributes, localOnly: false)
+        
+        do {
+            let attStrings: [(Int, String)] = try attributes.map {
+                guard let sv = $0.1.stringValue else { throw "Unable to derive stringValue for \($0.1)." }
+                return ($0.0, sv)
+            }
+            return set(attributes: attStrings, localOnly: false)
+        } catch {
+            return Promise { _, reject in reject(error) }
+        }
+        
     }
 
     /// Given a sequence of `(Int, AttributeValue)` pairs, apply apply them to the device.apply
@@ -916,23 +948,22 @@ public extension DeviceModelable {
     ///                        and is not propogated through the service.and
     /// - returns: A `Promise<DeviceBatchAction.Results>` containing all request and response info.
 
-    public func set(attributes: [(Int, AttributeValue)], localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
+    public func set(attributes: [(Int, String)], localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
 
         return Promise {
             
             [weak self] fulfill, reject in
 
-            let instances = attributes.map { AttributeInstance(id: $0.0, value: $0.1) }
-
             if localOnly {
-                self?.update(with: instances, accumulative: false)
-                fulfill((instances.batchActionRequests ?? []).successfulUnpostedResults)
+                assert(false, "LocalOnly no longer supported.")
+//                try self?.update(with: instances, accumulative: false)
+                fulfill((attributes.batchActionRequests ?? []).successfulUnpostedResults)
                 return
             }
             
-            self?.write(instances) {
+            self?.write(attributes: attributes) {
                 
-                (maybeResults, maybeError) -> Void in
+                maybeResults, maybeError -> Void in
                 
                 if let error = maybeError {
                     reject(error)
@@ -940,11 +971,11 @@ public extension DeviceModelable {
                 }
                 
                 guard let results = maybeResults else {
-                    reject(NSError(domain: "DeviceState", code: -1000, localizedDescription: NSLocalizedString("No attribute instance returned fromw rite operation", comment: "Device state error -1000 localizedDescription")))
+                    reject(NSError(domain: "DeviceState", code: -1000, localizedDescription: NSLocalizedString("No attribute instance returned fromw write operation", comment: "Device state error -1000 localizedDescription")))
                     return
                 }
                 
-                self?.update(with: instances)
+//                try self?.update(with: instances)
                 
                 fulfill(results)
             }
@@ -1055,35 +1086,20 @@ public extension DeviceModelable {
         return AttributeValue(stringLiteral: defaultString)
     }
     
-    @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
+    @available(*, unavailable, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
     public subscript(attributeId id: Int) -> AttributeValue? {
-        
-        get {
-            return self.currentState[safe: id]
-        }
-        
-        set {
-            
-            if currentState[safe: id] == newValue {
-                return
-            }
-            
-            var state = currentState
-            state[safe: id] = newValue
-            currentState = state
-        }
+        get { return nil }
+        set { }
     }
     
-    @available(*, deprecated, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
+    @available(*, unavailable, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
     public subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
-        get {
-            return self[attributeId: attributeDescriptor.id]
-        }
+        get { return nil }
     }
     
 }
 
-public extension DeviceModelable {
+extension DeviceModelable {
     
     public static var CoderKeyId: String { return "id" }
     public static var CoderKeyData: String { return "data" }
@@ -1097,7 +1113,7 @@ public extension DeviceModelable {
     
     // MARK: - Update Methods: Handle external model updates
     
-    func update(with peripheral: DeviceStreamEvent.Peripheral) {
+    func update(with peripheral: DeviceStreamEvent.Peripheral) throws {
 
         profileId = peripheral.profileId
         
@@ -1105,29 +1121,32 @@ public extension DeviceModelable {
 
         state.friendlyName = peripheral.friendlyName
         state.connectionState.update(with: peripheral.status)
-        
+        if let timeZoneState = peripheral.timeZoneState {
+            self.timeZoneState = timeZoneState
+        }
+
         currentState = state
         
-        update(with: peripheral.attributes.values)
+        try update(with: peripheral.attributes.values)
     }
     
-    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
-        update(with: [attribute])
+    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) throws {
+        try update(with: [attribute])
     }
     
-    func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S) throws
         where S.Element == DeviceStreamEvent.Peripheral.Attribute {
             let s: [(Int, String?)] = attributes.flatMap {
                 v -> (Int, String?)? in
                 guard let id = v.attributeId else { return nil }
-                return (id, v.value)
+                return (id, v.stringValue)
             }
-        update(with: s)
+        try update(with: s)
     }
     
-    func update<S: Sequence> (with attributes: S)
+    func update<S: Sequence> (with attributes: S) throws
         where S.Element == (Int, String?) {
-            update(attributes.reduce([Int: String]()) {
+            try update(attributes.reduce([Int: String]()) {
                 curr, next in
                 var ret = curr
                 if let nextV = next.1 {
@@ -1139,49 +1158,49 @@ public extension DeviceModelable {
     
     /// Update the modelable's state with the given data as provided in a `Conclave` payload.
     
-    public func update(_ deviceData: [String: Any], attrsOnly: Bool = true) {
-        
-        DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
-        
-        // TODO: Refactor this, as the code has evolved beyond the current function sig.
-        
-        var state = self.currentState
-        
-        if !attrsOnly {
-            state.friendlyName = deviceData[type(of: self).CoderKeyFriendlyName] as? String
-        }
-        
-        if let availableValue = deviceData[type(of: self).CoderKeyAvailable] as? Int {
-            state.isAvailable = availableValue != 0
-        }
-        
-        currentState = state
-        
-        if let rawAttributes = deviceData[type(of: self).CoderKeyValues] as? [String: Any] {
-            
-            var attributes: [Int: String] = [:]
-            
-            for (key, value) in rawAttributes {
-                if let
-                    attrId = Int(key),
-                    let attrData = value as? String {
-                        attributes[attrId] = attrData
-                        
-                }
-            }
-            
-            update(attributes)
-        }
-        
-        if let
-            attrId = deviceData[type(of: self).CoderKeyAttributeId] as? Int,
-            let attrData = deviceData[type(of: self).CoderKeyValue] as? String {
-                let attributes: [Int: String] = [attrId: attrData]
-                update(attributes)
-        }
-        
-        DDLogDebug("After state update: \(self)", tag: "DeviceModel")
-    }
+//    public func update(_ deviceData: [String: Any], attrsOnly: Bool = true) throws {
+//
+//        DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
+//
+//        // TODO: Refactor this, as the code has evolved beyond the current function sig.
+//
+//        var state = self.currentState
+//
+//        if !attrsOnly {
+//            state.friendlyName = deviceData[type(of: self).CoderKeyFriendlyName] as? String
+//        }
+//
+//        if let availableValue = deviceData[type(of: self).CoderKeyAvailable] as? Int {
+//            state.isAvailable = availableValue != 0
+//        }
+//
+//        currentState = state
+//
+//        if let rawAttributes = deviceData[type(of: self).CoderKeyValues] as? [String: Any] {
+//
+//            var attributes: [Int: String] = [:]
+//
+//            for (key, value) in rawAttributes {
+//                if let
+//                    attrId = Int(key),
+//                    let attrData = value as? String {
+//                        attributes[attrId] = attrData
+//
+//                }
+//            }
+//
+//            update(attributes)
+//        }
+//
+//        if let
+//            attrId = deviceData[type(of: self).CoderKeyAttributeId] as? Int,
+//            let attrData = deviceData[type(of: self).CoderKeyValue] as? String {
+//                let attributes: [Int: String] = [attrId: attrData]
+//                update(attributes)
+//        }
+//
+//        DDLogDebug("After state update: \(self)", tag: "DeviceModel")
+//    }
     
     /// Update the current state by successively applying the given attributeInstances. If `accumulative` is `true`,
     /// then the current state will be modified. If `accumulative` is `false`, then
@@ -1189,7 +1208,7 @@ public extension DeviceModelable {
     /// - parameter attributes: The array of `AttributeInstance`s to apply
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
+    func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) throws {
 
         defer {
             if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
@@ -1197,46 +1216,54 @@ public extension DeviceModelable {
             }
         }
         
-        var state = currentState
+//        var state = currentState
+//
+//        if !accumulative {
+//            state.reset()
+//        }
+//
+//        attributeInstances.forEach {
+//            state.update($0)
+//        }
         
-        if !accumulative {
-            state.reset()
+        try attributeInstances.forEach {
+            guard let stringValue = $0.value.stringValue else {
+                DDLogWarn("Unable to derive stringValue for \(String(reflecting: $0))", tag: TAG)
+                return
+            }
+            try attributeCollection.setCurrent(value: stringValue, forAttributeWithId: $0.id)
         }
         
-        attributeInstances.forEach {
-            state.update($0)
-        }
+//        if state == currentState { return }
         
-        if state == currentState { return }
-        
-        currentState = state
+//        currentState = state
 
-        attributeInstances.forEach {
-            self.signalAttributeUpdate($0.id, value: $0.value)
-        }
+//        attributeInstances.forEach {
+//            self.signalAttributeUpdate($0.id, value: $0.value)
+//        }
         
     }
     
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
     /// array of instances.
     
-    public func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) {
-        update(with: [attributeInstance], accumulative: accumulative)
+    func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) throws {
+        try update(with: [attributeInstance], accumulative: accumulative)
     }
     
-    public func update(with attributes: [[String: Any]], accumulative: Bool = true) {
-        
-        let attrs: [Int: String] = attributes.reduce([:]) {
-            curr, next in
-            guard
-                let id = next["id"] as? Int, let value = next["value"] as? String else { return curr }
-            var ret = curr
-            ret[id] = value
-            return ret
-        }
-        
-        update(attrs, accumulative: accumulative)
-    }
+//    public func update(with attributes: [[String: Any]], accumulative: Bool = true) {
+//
+//        let attrs: [Int: String] = attributes.reduce([:]) {
+//            curr, next in
+//            guard
+//                let id = next["id"] as? Int, let value = next["value"] as? String else { return curr }
+//            var ret = curr
+//            ret[id] = value
+//            return ret
+//        }
+//
+//        update(attrs, accumulative: accumulative)
+//    }
     
     /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
     /// then the current state will be modified. If `accumulative` is `false`, then
@@ -1244,7 +1271,7 @@ public extension DeviceModelable {
     /// - parameter attributes: A set of attributes from which to draw device state.
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ attributes: [Int: String], accumulative: Bool = true) {
+    func update(_ attributes: [Int: String], accumulative: Bool = true) throws {
         
         let attributeInstances: [AttributeInstance] = attributes.flatMap {
             
@@ -1252,7 +1279,7 @@ public extension DeviceModelable {
             
             let descriptor = descriptorForAttributeId(attributeId)
             
-            let attributeValue = self.profile?.attributes[attributeId]?.valueForStringLiteral(stringLiteralValue)
+            let attributeValue = self.profile?.attributes[attributeId]?.attributeValue(for: stringLiteralValue)
             
             if attributeValue == nil {
                 DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, deviceId))
@@ -1264,22 +1291,15 @@ public extension DeviceModelable {
             return AttributeInstance(id: attributeId, value: attributeValue!)
         }
         
-        update(with: attributeInstances, accumulative: accumulative)
+        try update(with: attributeInstances, accumulative: accumulative)
     }
     
-    /// Overlay (or optoinally set) this modelable's state to that indicated by the given `DeviceRuleAction`.
+    /// Overlay (or optionally set) this modelable's state to that indicated by the given `DeviceRuleAction`.
     /// - parameter filterCriterion: The filterCriterion from which to pull attribute state
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ action: DeviceRuleAction, accumulative: Bool = true) {
-        
-        var attributes: [Int: String] = [:]
-        for (key, value) in action.attributeDict {
-            guard let jsonValue = value.stringValue else { continue }
-            attributes[key] = jsonValue
-        }
-        
-        update(attributes, accumulative: accumulative)
+    func update(_ action: DeviceRuleAction, accumulative: Bool = true) throws {
+        try update(action.attributeDict, accumulative: accumulative)
     }
     
     
@@ -1288,7 +1308,7 @@ public extension DeviceModelable {
     /// Successively send write commands for members of `attributes` to the commandSink (which in turn will
     /// invoke `completion` as per `.AttributeWrite` docs above.
     
-    public func write(_ attributes: [AttributeInstance?], completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+    func write(attributes: [(Int, String)], completion: @escaping WriteAttributeOnDone = { _, _ in }) {
 
         guard let actions = attributes.flatMap({ $0 }).batchActionRequests else {
             DDLogError("Unable to convert \(attributes) to batchActionRequests; bailing on write.")
@@ -1302,23 +1322,23 @@ public extension DeviceModelable {
     }
     
     /// Send a write command for a single optional `AttributeInstance`
-    public func write(_ attribute: AttributeInstance?, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
-        write([attribute], completion: completion)
+    func write(attribute: (Int, String), completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+        write(attributes: [attribute], completion: completion)
     }
     
     /// Send a write command for the given `attributeId` and `attributeValue`.
-    public func write(_ attributeId: Int, attributeValue: AttributeValue, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
-        write(AttributeInstance(id: attributeId, value: attributeValue), completion: completion)
+    func write(id: Int, value: String, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+        write(attribute: (id, value), completion: completion)
     }
-    
-    /// Send a write command for a `Bool` value to the given `attributeId`. Note that no profile type checks
-    /// are currently being done, so it's the responsiblity of the invoker to ensure that `Bool` is an appropriate
-    /// type for the given `attributeId`.
-    
-    public func write(_ attributeId: Int, value: Bool, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
-        let attributeValue = AttributeValue(value)
-        write(attributeId, attributeValue: attributeValue, completion: completion)
-    }
+//
+//    /// Send a write command for a `Bool` value to the given `attributeId`. Note that no profile type checks
+//    /// are currently being done, so it's the responsiblity of the invoker to ensure that `Bool` is an appropriate
+//    /// type for the given `attributeId`.
+//
+//    func write(_ attributeId: Int, value: Bool, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+//        let attributeValue = AttributeValue(value)
+//        write(attributeId, attributeValue: attributeValue, completion: completion)
+//    }
     
     public func notifyViewing(_ isViewing: Bool) {
         DDLogDebug("DeviceModelable notifyViewing(\(isViewing))")
@@ -1335,7 +1355,8 @@ public extension DeviceModelable {
     }
     
     var primaryOperationValue: AttributeValue? {
-        return self.currentState[safe: primaryOperationAttributeDescriptor?.id]
+        guard let id = primaryOperationAttributeDescriptor?.id else { return nil }
+        return value(for: id)
     }
     
     var primaryOperationAttributeOptions: DeviceProfile.Presentation.AttributeOption? {
@@ -1368,8 +1389,14 @@ public extension DeviceModelable {
             if primaryOperationValue == newValue {
                 newValue = maxValue
             }
+            
+            guard let stringValue = newValue.stringValue else {
+                DDLogError("Unable to determine stringValue for \(newValue); bailing.", tag: TAG)
+                onDone(nil, nil)
+                return
+            }
 
-            write(primaryOperationAttributeDescriptor.id, attributeValue: newValue, completion: {
+            write(id: primaryOperationAttributeDescriptor.id, value: stringValue, completion: {
                 results, maybeError in
                 onDone(results, maybeError)
             })
@@ -1401,7 +1428,13 @@ public extension DeviceModelable {
             newValue = avMax
         }
         
-        write(primaryOperationAttributeDescriptor.id, attributeValue: newValue, completion: {
+        guard let stringValue = newValue.stringValue else {
+            DDLogError("Unable to determine stringValue for \(newValue); bailing.", tag: TAG)
+            onDone(nil, nil)
+            return
+        }
+        
+        write(id: primaryOperationAttributeDescriptor.id, value: stringValue, completion: {
             results, maybeError in
             onDone(results, maybeError)
         })
