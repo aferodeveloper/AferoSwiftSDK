@@ -407,18 +407,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         public var id: String
         public var profileId: String
+        public var profile: DeviceProfile?
         public var attributes: [AttributeId: Attribute]
         public var status: Status
-        
-        @available(*, deprecated, message: "Use status.isAvailable instead.")
-        public var isAvailable: Bool? {
-            return status.isAvailable
-        }
-        
-        @available(*, deprecated, message: "Use status.isVisible instead.")
-        public var isVisible: Bool? {
-            return status.isVisible
-        }
         
         /// If true, this peripheral's connection to the Afero service is direct,
         /// rather than through a hub (e.g., Wifi capable devices)
@@ -441,15 +432,18 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         public var locationState: LocationState?
         
+        public var timeZoneState: TimeZoneState?
+        
         public var createdTimestampMs: DeviceStreamEventTimestamp
         
         public var created: Date {
             return Date.dateWithMillisSince1970(createdTimestampMs)
         }
         
-        public init(id: String,  profileId: String, attributes: [Attribute], status: Status, friendlyName: String? = nil, virtual: Bool, locationState: LocationState? = nil, tags: [DeviceTag], createdTimestampMs: DeviceStreamEventTimestamp) {
+        public init(id: String,  profileId: String, profile: DeviceProfile? = nil, attributes: [Attribute], status: Status, friendlyName: String? = nil, virtual: Bool, locationState: LocationState? = nil, timeZoneState: TimeZoneState? = nil, tags: [DeviceTag], createdTimestampMs: DeviceStreamEventTimestamp) {
             self.id = id
             self.profileId = profileId
+            self.profile = profile
 
             self.attributes = attributes.reduce([:]) {
                 curr, next in
@@ -463,6 +457,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             self.friendlyName = friendlyName
             self.virtual = virtual
             self.locationState = locationState
+            self.timeZoneState = timeZoneState
             self.tags = tags
             self.createdTimestampMs = createdTimestampMs
         }
@@ -470,7 +465,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         // MARK: <CustomDebugStringConvertible>
         
         public var debugDescription: String {
-            return "<Peripheral> id:\(id) profileId:\(profileId) friendlyName:\(String(describing: friendlyName)) virtual:\(virtual) status:\(String(reflecting: status)) locationState:\(String(reflecting: locationState)) tags: \(String(reflecting: tags)) created: \(String(describing: created)) createdTimestampMs:\(createdTimestampMs) attributes:\(String(reflecting: attributes))"
+            return "<Peripheral> id:\(id) profileId:\(profileId) friendlyName:\(String(describing: friendlyName)) virtual:\(virtual) status:\(String(reflecting: status)) locationState:\(String(reflecting: locationState)) timeZoneState:\(String(reflecting: timeZoneState)) tags: \(String(reflecting: tags)) created: \(String(describing: created)) createdTimestampMs:\(createdTimestampMs) attributes:\(String(reflecting: attributes))"
         }
 
         // MARK: <Hashable>
@@ -480,51 +475,81 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         public static func ==(lhs: Peripheral, rhs: Peripheral) -> Bool {
             return lhs.id == rhs.id
                 && lhs.profileId == rhs.profileId
+                && lhs.profile == rhs.profile
                 && lhs.attributes == rhs.attributes
                 && lhs.status == rhs.status
                 && lhs.friendlyName == rhs.friendlyName
                 && lhs.virtual == rhs.virtual
                 && lhs.locationState == rhs.locationState
+                && lhs.timeZoneState == rhs.timeZoneState
                 && lhs.tags == rhs.tags
                 && lhs.createdTimestampMs == rhs.createdTimestampMs
         }
         
         // MARK: <AferoJSONCoding>
         
-        static let CoderKeyId = "id"
-        static let CoderKeyProfileId = "profileId"
-        static let CoderKeyAttributes = "attributes"
-        static let CoderKeyStatus = "status"
-        static let CoderKeyFriendlyName = "friendlyName"
-        static let CoderKeyVirtual = "virtual"
-        static let CoderKeyTags = "tags"
-        static let CoderKeyDeviceTags = "deviceTags"
-        static let CoderKeyCreatedTimestamp = "createdTimestamp"
-        static let CoderKeyLocationState = "locationState"
+        enum CodingKeys: String, CodingKey {
+            case id
+            case deviceId // TODO: ∆ key from client API, same meaning as .id
+            case profileId
+            case profile
+            case attributes
+            case status
+            case deviceState // TODO: ∆ key from client API; same meaning as .status
+            case friendlyName
+            case virtual
+            case tags
+            case deviceTags
+            case createdTimestamp
+            case locationState
+            case timeZoneState = "timezone"
+            case location
+        }
+        
+//        static let CoderKeyId = "id"
+//        static let CoderKeyProfileId = "profileId"
+//        static let CoderKeyAttributes = "attributes"
+//        static let CoderKeyStatus = "status"
+//        static let CoderKeyFriendlyName = "friendlyName"
+//        static let CoderKeyVirtual = "virtual"
+//        static let CoderKeyTags = "tags"
+//        static let CoderKeyDeviceTags = "deviceTags"
+//        static let CoderKeyCreatedTimestamp = "createdTimestamp"
+//        static let CoderKeyLocationState = "locationState"
         
         public var JSONDict: AferoJSONCodedType? {
             
-            var ret: [String: Any] = [
-                type(of: self).CoderKeyId: id,
-                type(of: self).CoderKeyProfileId: profileId,
-                type(of: self).CoderKeyAttributes: Array(attributes.values.map { $0.JSONDict! }),
-                type(of: self).CoderKeyStatus: status.JSONDict!,
-                type(of: self).CoderKeyVirtual: virtual,
-                type(of: self).CoderKeyDeviceTags: tags.JSONDict,
-                type(of: self).CoderKeyCreatedTimestamp: createdTimestampMs
+            var ret: [CodingKeys: Any] = [
+                .id: id,
+                .deviceId: id, // TODO: ∆ key from client API
+                .profileId: profileId,
+                .attributes: Array(attributes.values.map { $0.JSONDict! }),
+                .status: status.JSONDict!,
+                .deviceState: status.JSONDict!, // TODO: ∆ key from client API
+                .virtual: virtual,
+                .deviceTags: tags.JSONDict,
+                .createdTimestamp: createdTimestampMs
             ]
             
+            if let profile = profile {
+                ret[.profile] = profile
+            }
+            
             if let friendlyName = friendlyName {
-                ret[type(of: self).CoderKeyFriendlyName] = friendlyName
+                ret[.friendlyName] = friendlyName
             }
             
-            if
-                case let .some(.known(loc)) = locationState,
-                let locationJSON = loc.JSONDict {
-                ret[type(of: self).CoderKeyLocationState] = locationJSON
+            if let timeZoneState = timeZoneState {
+                ret[.timeZoneState] = timeZoneState
             }
             
-            return ret
+//            if
+//                case let .some(.known(loc)) = locationState,
+//                let locationJSON = loc.JSONDict {
+//                ret[type(of: self).CoderKeyLocationState] = locationJSON
+//            }
+            
+            return ret.stringKeyed
         }
         
         public init?(json: AferoJSONCodedType?) {
@@ -535,11 +560,11 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             }
             
             guard
-                let id = jsonDict[type(of: self).CoderKeyId] as? String,
-                let profileId = jsonDict[type(of: self).CoderKeyProfileId] as? String,
-                let status: Status = |<jsonDict[type(of: self).CoderKeyStatus],
-                let virtual = jsonDict[type(of: self).CoderKeyVirtual] as? Bool,
-                let createdTimestampMs = jsonDict[type(of: self).CoderKeyCreatedTimestamp] as? DeviceStreamEventTimestamp else {
+                let id = (jsonDict[CodingKeys.id.stringValue] ?? jsonDict[CodingKeys.deviceId.stringValue]) as? String,
+                let profileId = jsonDict[CodingKeys.profileId.stringValue] as? String,
+                let status: Status = |<(jsonDict[CodingKeys.status.stringValue] ?? jsonDict[CodingKeys.deviceState.stringValue]),
+                let virtual = jsonDict[CodingKeys.virtual.stringValue] as? Bool,
+                let createdTimestampMs = jsonDict[CodingKeys.createdTimestamp.stringValue] as? DeviceStreamEventTimestamp else {
                     DDLogWarn("Unable to decode peripheral from \(jsonDict)", tag: "DeviceStreamEvent.Peripheral")
                     return nil
             }
@@ -548,22 +573,23 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // location state is officially acquired by fetching from the Client API,
             // otherwise it's <nil> as a sentinel that it /needs/ to be fetched.
             
-            var locationState: LocationState? = nil
-            if let loc: LocationState.Location = |<(jsonDict[type(of: self).CoderKeyLocationState] as? [String: Any]) {
-                locationState = .known(loc)
-            }
+//            var locationState: LocationState? = nil
+//            if let loc: LocationState.Location = |<(jsonDict[type(of: self).CoderKeyLocationState] as? [String: Any]) {
+//                locationState = .known(loc)
+//            }
             
-            let tags = jsonDict[type(of: self).CoderKeyTags]
-            let deviceTags = jsonDict[type(of: self).CoderKeyDeviceTags]
+            let tags = jsonDict[CodingKeys.tags.stringValue]
+            let deviceTags = jsonDict[CodingKeys.deviceTags.stringValue]
             
             self.init(
                 id: id,
                 profileId: profileId,
-                attributes: |<(jsonDict[type(of: self).CoderKeyAttributes] as? [Any]) ?? [],
+                profile: |<(jsonDict[CodingKeys.profile.stringValue] as? [String: Any]),
+                attributes: |<(jsonDict[CodingKeys.attributes.stringValue] as? [Any]) ?? [],
                 status: status,
-                friendlyName: jsonDict[type(of: self).CoderKeyFriendlyName] as? String,
+                friendlyName: jsonDict[CodingKeys.friendlyName.stringValue] as? String,
                 virtual: virtual,
-                locationState: locationState,
+                timeZoneState: |<(jsonDict[CodingKeys.timeZoneState.stringValue] as? [String: Any]),
                 tags: (|<((tags ?? deviceTags) as? [Any]) ?? []),
                 createdTimestampMs: createdTimestampMs
             )
@@ -654,7 +680,13 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             /// The peripheral's current RSSI.
             public var RSSI: Int?
             
-            init(isAvailable: Bool? = nil, isVisible: Bool? = nil, isDirty: Bool? = nil, isConnectable: Bool? = nil, isConnected: Bool? = nil, isRebooted: Bool? = nil, isDirect: Bool? = nil, RSSI: Int? = nil) {
+            /// The peripheral's current location, if any.
+            /// - note: This is included here for serialization only. A `nil` value should not be interpreted
+            ///         as `LocationState.unknown`. See `LocationState` for more details.
+            
+            public var location: LocationState.Location?
+            
+            init(isAvailable: Bool? = nil, isVisible: Bool? = nil, isDirty: Bool? = nil, isConnectable: Bool? = nil, isConnected: Bool? = nil, isRebooted: Bool? = nil, isDirect: Bool? = nil, RSSI: Int? = nil, location: LocationState.Location? = nil) {
                 self.isAvailable = isAvailable
                 self.isVisible = isVisible
                 self.isDirty = isDirty
@@ -663,6 +695,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 self.isRebooted = isRebooted
                 self.isDirect = isDirect
                 self.RSSI = RSSI
+                self.location = location
             }
             
             // MARK: <CustomDebugStringConvertible>
@@ -703,6 +736,10 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     flags.append("rssi:\(rssi)")
                 }
                 
+                if let location = location {
+                    flags.append("location:\(location)")
+                }
+                
                 if flags.count > 0 {
                     return "<Status> \(flags.joined(separator: " "))"
                 }
@@ -721,6 +758,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     ^ (isRebooted ?? false).hashValue
                     ^ (isDirect ?? false).hashValue
                     ^ (RSSI ?? 0).hashValue
+                    ^ (location?.hashValue ?? 0)
             }
             
             public static func ==(lhs: Status, rhs: Status) -> Bool {
@@ -732,56 +770,64 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     && lhs.isRebooted == rhs.isRebooted
                     && lhs.isDirect == rhs.isDirect
                     && lhs.RSSI == rhs.RSSI
+                    && lhs.location == rhs.location
             }
             
             // MARK: <AferoJSONCoding>
             
-            static let CoderKeyAvailable = "available"
-            static let CoderKeyVisible = "visible"
-            static let CoderKeyDirty = "dirty"
-            static let CoderKeyConnectable = "connectable"
-            static let CoderKeyConnected = "connected"
-            static let CoderKeyRebooted = "rebooted"
-            static let CoderKeyDirect = "direct"
-            static let CoderKeyRSSI = "rssi"
+            enum CodingKeys: String, CodingKey {
+                case available
+                case visible
+                case dirty
+                case connectable
+                case connected
+                case rebooted
+                case direct
+                case rssi
+                case location
+            }
             
             public var JSONDict: AferoJSONCodedType? {
 
-                var ret: [String: Any] = [:]
+                var ret: [CodingKeys: Any] = [:]
                 
                 if let isAvailable = isAvailable {
-                    ret[type(of: self).CoderKeyAvailable] = isAvailable
+                    ret[.available] = isAvailable
                 }
                 
                 if let isVisible = isVisible {
-                    ret[type(of: self).CoderKeyVisible] = isVisible
+                    ret[.visible] = isVisible
                 }
                 
                 if let isDirty = isDirty {
-                    ret[type(of: self).CoderKeyDirty] = isDirty
+                    ret[.dirty] = isDirty
                 }
 
                 if let isConnectable = isConnectable {
-                    ret[type(of: self).CoderKeyConnectable] = isConnectable
+                    ret[.connectable] = isConnectable
                 }
                 
                 if let isConnected = isConnected {
-                    ret[type(of: self).CoderKeyConnected] = isConnected
+                    ret[.connected] = isConnected
                 }
                 
                 if let isRebooted = isRebooted {
-                    ret[type(of: self).CoderKeyRebooted] = isRebooted
+                    ret[.rebooted] = isRebooted
                 }
                 
                 if let isDirect = isDirect {
-                    ret[type(of: self).CoderKeyDirect] = isDirect
+                    ret[.direct] = isDirect
                 }
                 
                 if let RSSI = RSSI {
-                    ret[type(of: self).CoderKeyRSSI] = RSSI
+                    ret[.rssi] = RSSI
                 }
                 
-                return ret
+                if let location = location {
+                    ret[.location] = location.JSONDict!
+                }
+                
+                return ret.stringKeyed
             }
             
             public init?(json: AferoJSONCodedType?) {
@@ -792,14 +838,15 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 }
                 
                 self.init(
-                    isAvailable: jsonDict[type(of: self).CoderKeyAvailable] as? Bool,
-                    isVisible: jsonDict[type(of: self).CoderKeyVisible] as? Bool,
-                    isDirty: jsonDict[type(of: self).CoderKeyDirty] as? Bool,
-                    isConnectable: jsonDict[type(of: self).CoderKeyConnectable] as? Bool,
-                    isConnected: jsonDict[type(of: self).CoderKeyConnected] as? Bool,
-                    isRebooted: jsonDict[type(of: self).CoderKeyRebooted] as? Bool,
-                    isDirect: jsonDict[type(of: self).CoderKeyDirect] as? Bool,
-                    RSSI: jsonDict[type(of: self).CoderKeyRSSI] as? Int
+                    isAvailable: jsonDict[CodingKeys.available.stringValue] as? Bool,
+                    isVisible: jsonDict[CodingKeys.visible.stringValue] as? Bool,
+                    isDirty: jsonDict[CodingKeys.dirty.stringValue] as? Bool,
+                    isConnectable: jsonDict[CodingKeys.connectable.stringValue] as? Bool,
+                    isConnected: jsonDict[CodingKeys.connected.stringValue] as? Bool,
+                    isRebooted: jsonDict[CodingKeys.rebooted.stringValue] as? Bool,
+                    isDirect: jsonDict[CodingKeys.dirty.stringValue] as? Bool,
+                    RSSI: jsonDict[CodingKeys.rssi.stringValue] as? Int,
+                    location: |<(jsonDict[CodingKeys.location.stringValue] as? [String: Any])
                     )
             }
             
