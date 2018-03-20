@@ -9,6 +9,16 @@ status: 1.0
 
 An SDK for interacting with the Afero service and peripheral platform.
 
+<!-- @import "[TOC]" {cmd:"toc", depthFrom:2, depthTo:6, orderedList:true} -->
+<!-- code_chunk_output -->
+
+* [AferoSwiftSDK](#aferoswiftsdk)
+	* [LICENSE](#license)
+	* [Getting Started](#getting-started)
+	* [Additional Documents](#additional-documents)
+
+<!-- /code_chunk_output -->
+
 ## LICENSE
 
   AFERO CONFIDENTIAL AND PROPRIETARY INFORMATION
@@ -31,30 +41,41 @@ An SDK for interacting with the Afero service and peripheral platform.
   Computer Software--Restricted Rights at 48 CFR 52.227-19, as
   applicable.
 
+
 ## Getting Started
 
-In you podfile, add:
+### Configure your Podfile
 
 ```ruby
-pod "AferoSwiftSDK"
+source 'git@github.com:aferodeveloper/Podspecs.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
+pod `AferoSwiftSDK`
 ```
 
-For details, see the [Quick Start Guide][qsg]
+## See Also
 
-## Additional Documents
-
-| Doc | Description |
+| Title/Link | Description |
 | - | - |
-| [Quick Start][qsg] | Quick Start guide |
+| [Softhub] | Afero Softhub Usage |
 | [REST API Client][rest-api-client] | Describes interaction with the Afero Cloud REST API. |
 | [Push Notifications][push-notifications] | Documents use of DeviceRules to implement push notifications for Afero device state changes. |
-| [API Reference][api-ref] | Reference documentation for the `Afero` module. |
+| [SofthubMinder] | Example code for managing softhub state *vis á vis*  UIApplication lifecycle. |
 
-[qsg]: Docs/Quickstart.md
+[aferodeveloper]: https://github.com/aferodeveloper
+[AferoIOSSofthub]: https://github.com/aferodeveloper/AferoIOSSofthub
+[AferoSwiftSDK]: https://github.com/aferodeveloper/AferoSwiftSDK
+[AferoLab]: https://github.com/aferodeveloper/AferoSwiftSDK/tree/master/Examples/AferoLab
+[Softhub]: https://github.com/aferodeveloper/AferoSwiftSDK/blob/f87b691c571c1945feba43e800065e77ce075678/AferoSwiftSDK/Core/AferoSofthub%2BUtils.swift#L220
+[SofthubMinder]:https://github.com/aferodeveloper/AferoSwiftSDK/blob/master/Examples/AferoLab/AferoLab/SofthubMinder.swift
 [push-notifications]: Docs/Push_Notifications.md
 [rest-api-client]: Docs/RESTApiClient.md
 [api-ref]: Docs/Reference/index.html
 
-[^1]: [Afero Swift SDK Quick Start Guide][qsg]
-[^2]: [Afero Rest API Client Guide][rest-api-client]
-[^3]: [Push Notifications in the Afero Cloud][push-notifications]
+## Colophon
+
+This document was created using a combination of  [Github-Flavored Markdown](https://github.github.com/gfm/),
+[Mermaid](https://mermaidjs.github.io) for sequence diagrams, and
+[PlantUML](http://plantuml.com) for UML.
+
+Creation was done in [Atom](), with rendered output created using [markdown-preview-enhanced](https://github.com/shd101wyy/markdown-preview-enhanced).
