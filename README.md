@@ -65,9 +65,9 @@ pod `AferoSwiftSDK`
 [aferodeveloper]: https://github.com/aferodeveloper
 [AferoIOSSofthub]: https://github.com/aferodeveloper/AferoIOSSofthub
 [AferoSwiftSDK]: https://github.com/aferodeveloper/AferoSwiftSDK
-[AferoLab]: https://github.com/aferodeveloper/AferoSwiftSDK/tree/master/Examples/AferoLab
-[Softhub]: https://github.com/aferodeveloper/AferoSwiftSDK/blob/f87b691c571c1945feba43e800065e77ce075678/AferoSwiftSDK/Core/AferoSofthub%2BUtils.swift#L220
-[SofthubMinder]:https://github.com/aferodeveloper/AferoSwiftSDK/blob/master/Examples/AferoLab/AferoLab/SofthubMinder.swift
+[AferoLab]: https://github.com/aferodeveloper/AferoSwiftSDK/tree/maint-1.0/Examples/AferoLab
+[Softhub]: https://github.com/aferodeveloper/AferoSwiftSDK/blob/maint-1.0/Docs/Softhub.md
+[SofthubMinder]:https://github.com/aferodeveloper/AferoSwiftSDK/blob/maint-1.0/Examples/AferoLab/AferoLab/SofthubMinder.swift
 [push-notifications]: Docs/Push_Notifications.md
 [rest-api-client]: Docs/RESTApiClient.md
 [api-ref]: Docs/Reference/index.html
