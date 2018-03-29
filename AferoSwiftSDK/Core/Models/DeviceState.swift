@@ -538,7 +538,7 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     var writeState: DeviceWriteState { get }
     var currentState: DeviceState { get set }
     var friendlyName: String? { get set }
-    var otaProgress: Double? { get }
+    var otaProgress: Float? { get }
     var deviceErrors: Set<DeviceErrorStatus> { get }
     
     func notifyViewing(_ isViewing: Bool)
@@ -1078,8 +1078,6 @@ public extension DeviceModelable {
             return self[attributeId: attributeDescriptor.id]
         }
     }
-    
-    public var otaProgress: Double? { return nil }
     
 }
 
