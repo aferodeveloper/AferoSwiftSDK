@@ -549,6 +549,44 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
             return
         }
         viewingNotifier.stopViewing()
+
+    }   
+    
+    // MARK: OTA Handling
+    
+    var otaProgressWatchdog: Timer? {
+        willSet {
+            otaProgressWatchdog?.invalidate()
+        }
+    }
+    
+    public var pendingOTAVersion: String?
+    
+    public var otaProgress: Float? {
+        
+        didSet {
+            
+            if otaProgress == oldValue { return }
+            
+            guard let otaProgress = otaProgress else {
+                eventSink.send(value: .otaFinish)
+                pendingOTAVersion = nil
+                otaProgressWatchdog = nil
+                return
+            }
+            
+            if oldValue == nil {
+                eventSink.send(value: .otaStart)
+            }
+            
+            eventSink.send(value: .otaProgress(progress: otaProgress))
+            
+            otaProgressWatchdog = Timer.schedule(45) {
+                [weak self] _ in
+                self?.otaProgress = nil
+            }
+            
+        }
     }
     
 }
@@ -684,43 +722,6 @@ public class DeviceModel: BaseDeviceModel {
         }
         
         super.handle(command: localCommand)
-    }
-    
-    // MARK: OTA Handling
-    
-    var otaProgressWatchdog: Timer? {
-        willSet {
-            otaProgressWatchdog?.invalidate()
-        }
-    }
-    
-    public var pendingOTAVersion: String?
-    
-    public var otaProgress: Float? {
-        
-        didSet {
-            
-            if otaProgress == oldValue { return }
-            
-            guard let otaProgress = otaProgress else {
-                eventSink.send(value: .otaFinish)
-                pendingOTAVersion = nil
-                otaProgressWatchdog = nil
-                return
-            }
-            
-            if oldValue == nil {
-                eventSink.send(value: .otaStart)
-            }
-            
-            eventSink.send(value: .otaProgress(progress: otaProgress))
-            
-            otaProgressWatchdog = Timer.schedule(45) {
-                [weak self] _ in
-                self?.otaProgress = nil
-            }
-            
-        }
     }
     
     // MARK: Tags
