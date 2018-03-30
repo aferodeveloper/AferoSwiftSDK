@@ -859,12 +859,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // MARK: <Hashable>
             
             public var hashValue: Int {
-                
-                return value.hashValue
-                    ^ (key?.hashValue ?? 0)
-                    ^ (localizationKey?.hashValue ?? 0)
-                    ^ type.hashValue
-                    ^ (id?.hashValue ?? 0)
+                return value.hashValue ^ (key?.hashValue ?? 0)
             }
             
             public static func ==(lhs: DeviceTag, rhs: DeviceTag) -> Bool {
