@@ -509,7 +509,7 @@ public class DeviceModel: BaseDeviceModel {
         profile: DeviceProfile? = nil,
         deviceCloudSupporting: AferoCloudSupporting? = nil,
         profileSource: DeviceProfileSource? = nil,
-        viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _ in }
+        viewingNotificationConsumer: @escaping NotifyDeviceViewing = { _, _ in }
         ) {
         
         self.viewingNotificationConsumer = viewingNotificationConsumer

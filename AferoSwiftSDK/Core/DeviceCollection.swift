@@ -1236,7 +1236,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     // MARK: View Notification
     
     public func notifyIsViewing(_ isViewing: Bool, deviceId: String) {
-        DDLogDebug(String(format: "DeviceCollection notifyIsViewing: %@ device: %@", isViewing as CVarArg, deviceId))
+        DDLogDebug("String(format: DeviceCollection notifyIsViewing:\(isViewing) for device:\(deviceId)")
         eventStream.publishIsViewingNotification(isViewing, deviceId: deviceId)
     }
     
