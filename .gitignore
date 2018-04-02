@@ -18,8 +18,10 @@ DerivedData
 *.xcuserstate
 *.xcuserdata
 *.xctimeline
+**/IDEWorkspaceChecks.plist
 
 local_config.mk
+
 
 
 # Vim
