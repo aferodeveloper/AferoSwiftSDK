@@ -424,10 +424,13 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         let trace = isTraceEnabled
         
-        _ = apiClient.fetchDevices(for: accountId).then {
-            devicesJson -> Void in
-            self.createOrUpdateDevices(with: devicesJson)
-            self.state = .loaded
+        _ = profileSource.fetchProfiles(for: accountId)
+            .then {
+                _ in return self.apiClient.fetchDevices(for: self.accountId)
+            }.then {
+                devicesJson -> Void in
+                self.createOrUpdateDevices(with: devicesJson)
+                self.state = .loaded
             }.then {
                 self.eventStream.start(trace) {
                     maybeError in if let error = maybeError {
@@ -441,15 +444,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 DDLogError("Unable to fetch devices: \(String(reflecting: err))")
         }
 
-//        profileSource.fetchProfiles(accountId: accountId) {
-//            [weak self] _, _ in self?.eventStream.start(trace) {
-//                maybeError in if let error = maybeError {
-//                    DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
-//                    self?.state = .error(error)
-//                    return
-//                }
-//            }
-//        }
     }
     
     private func stopEventStream() {

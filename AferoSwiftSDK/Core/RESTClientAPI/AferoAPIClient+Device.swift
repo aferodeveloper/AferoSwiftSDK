@@ -34,7 +34,7 @@ public extension AferoAPIClientProto {
     /// * `timezone`: Include the device's timezone state.
     
     func fetchDevices(for accountId: String, expansions: Set<String> = [
-        "state", "tags", "attributes", "extendedData", "profile", "timezone",
+        "state", "tags", "attributes", "extendedData", "timezone",
         ]) -> Promise<[[String: Any]]> {
         
         guard let safeAccountId = accountId.pathAllowedURLEncodedString else {

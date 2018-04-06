@@ -45,6 +45,33 @@ public protocol DeviceAccountProfilesSource: DeviceProfileSource {
 
 }
 
+extension DeviceAccountProfilesSource {
+    
+    func fetchProfiles(for accountId: String) -> Promise<[DeviceProfile]> {
+        
+        return Promise {
+            
+            fulfill, reject in
+            
+            fetchProfiles(accountId: accountId) {
+                maybeProfiles, maybeError in
+                
+                if let error = maybeError {
+                    reject(error)
+                    return
+                }
+                
+                guard let profiles = maybeProfiles else {
+                    reject("No profiles returned.")
+                    return
+                }
+                
+                fulfill(profiles)
+            }
+        }
+    }
+}
+
 extension NSError {
 
     convenience init(code: DeviceModel.ErrorCode, localizedDescription: String) {
