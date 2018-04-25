@@ -412,7 +412,7 @@ extension DeviceBatchAction.Request: AferoJSONCoding {
     
     enum CodingKeys: String, CodingKey {
         case type
-        case attributeId
+        case attributeId = "attrId"
         case value
         case interval = "seconds"
     }
