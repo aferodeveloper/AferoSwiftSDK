@@ -1,10 +1,10 @@
 PODS:
   - AferoSofthub (1.4.4)
-  - AferoSwiftSDK/AFNetworking (1.1.2):
+  - AferoSwiftSDK/AFNetworking (1.1.3):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.1.2):
+  - AferoSwiftSDK/Core (1.1.3):
     - AferoSofthub (~> 1.4)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
@@ -52,7 +52,6 @@ PODS:
   - OHHTTPStubs/Swift (6.1.0):
     - OHHTTPStubs/Default
   - PromiseKit/CorePromise (4.5.2)
-  - QRCode (2.0)
   - QRCodeReader.swift (8.1.1)
   - Quick (1.3.0)
   - ReactiveSwift (1.1.5):
@@ -71,20 +70,40 @@ DEPENDENCIES:
   - Nimble
   - OHHTTPStubs/Swift
   - PromiseKit/CorePromise (~> 4.3)
-  - QRCode (~> 2.0)
   - QRCodeReader.swift (~> 8.0)
   - Quick
   - ReactiveSwift (~> 1.1)
   - RSEnvironment (= 0.0.3)
   - SVProgressHUD (= 1.1.3)
 
+SPEC REPOS:
+  "git@github.com:aferodeveloper/Podspecs.git":
+    - AferoSofthub
+  https://github.com/CocoaPods/Specs.git:
+    - AFNetworking
+    - AFOAuth2Manager
+    - CocoaLumberjack
+    - CocoaZ
+    - CryptoSwift
+    - HTTPStatusCodes
+    - LKAlertController
+    - Nimble
+    - OHHTTPStubs
+    - PromiseKit
+    - QRCodeReader.swift
+    - Quick
+    - ReactiveSwift
+    - Result
+    - RSEnvironment
+    - SVProgressHUD
+
 EXTERNAL SOURCES:
   AferoSwiftSDK:
-    :path: ..
+    :path: ".."
 
 SPEC CHECKSUMS:
   AferoSofthub: 5d214d950b27ec2d330447126f373f83b07681a1
-  AferoSwiftSDK: 05c6f5bef5d8aaa6f1b1f8dd2120b62cb757e144
+  AferoSwiftSDK: ecfb9400ddebdb11813d3b00412b523e537d7fd6
   AFNetworking: 8ac6017b94ea105479f7776e5288e48ae9c59bb4
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
@@ -95,7 +114,6 @@ SPEC CHECKSUMS:
   Nimble: 391f07782af4b37914f9bd7b2ffbb952731b8202
   OHHTTPStubs: 1e21c7d2c084b8153fc53d48400d8919d2d432d0
   PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
-  QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
   QRCodeReader.swift: b164a681887de276d405ff02bce854d82cd6360b
   Quick: 03278013f71aa05fe9ecabc94fbcc6835f1ee76f
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
@@ -103,6 +121,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 471ac3a83a5f0e2fde0b7e31458f37c6fe6e1b06
+PODFILE CHECKSUM: b1ba7898e5bb64163048636bab3d79b88ea616a2
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
