@@ -9,7 +9,7 @@ import Foundation
 import CocoaLumberjack
 
 @objc protocol AferoSemanticClassReferencing: class, NSObjectProtocol {
-    func semanticClass(for identifier: String) -> AferoAttributeSemanticClass?
+    func semanticClass(for identifier: String) -> AferoAttributeSemanticClassDescriptor?
 }
 
 infix operator <<-:  AdditionPrecedence
@@ -58,10 +58,10 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
 
 @objcMembers class AferoSemanticClassTable: NSObject, AferoSemanticClassReferencing {
     
-    private var identifierToClassMap: [String: AferoAttributeSemanticClass] =  [:]
+    private var identifierToClassMap: [String: AferoAttributeSemanticClassDescriptor] =  [:]
     
     @discardableResult
-    func register(semanticClass: AferoAttributeSemanticClass) throws -> AferoSemanticClassTable {
+    func register(semanticClass: AferoAttributeSemanticClassDescriptor) throws -> AferoSemanticClassTable {
         
         try semanticClass.isa.forEach {
             guard identifierToClassMap[$0] != nil else {
@@ -77,23 +77,23 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
     }
     
     @discardableResult
-    static func <<- (lhs: AferoSemanticClassTable, rhs: AferoAttributeSemanticClass) throws -> AferoSemanticClassTable {
+    static func <<- (lhs: AferoSemanticClassTable, rhs: AferoAttributeSemanticClassDescriptor) throws -> AferoSemanticClassTable {
         return try lhs.register(semanticClass: rhs)
     }
 
     @discardableResult
-    static func ← (lhs: AferoSemanticClassTable, rhs: AferoAttributeSemanticClass) throws -> AferoSemanticClassTable {
+    static func ← (lhs: AferoSemanticClassTable, rhs: AferoAttributeSemanticClassDescriptor) throws -> AferoSemanticClassTable {
         return try lhs <<- rhs
     }
 
-    var semanticClasses: LazyMapCollection<[String : AferoAttributeSemanticClass], AferoAttributeSemanticClass> {
+    var semanticClasses: LazyMapCollection<[String : AferoAttributeSemanticClassDescriptor], AferoAttributeSemanticClassDescriptor> {
         let ret = identifierToClassMap.values.lazy
         return ret
     }
     
     // MARK: <AferoSemanticClassReferencing>
     
-    func semanticClass(for identifier: String) -> AferoAttributeSemanticClass? {
+    func semanticClass(for identifier: String) -> AferoAttributeSemanticClassDescriptor? {
         return identifierToClassMap[identifier]
     }
     
@@ -102,12 +102,12 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
 /// Represents properties for a semantic claass representation, and provides a property
 /// inheritance mechanism.
 
-@objcMembers class AferoAttributeSemanticClass: NSObject, AferoJSONCoding {
+@objcMembers class AferoAttributeSemanticClassDescriptor: NSObject, AferoJSONCoding {
     
     public let identifier: String
     public let isa: [String]
     
-    lazy private var _isa: [AferoAttributeSemanticClass] = {
+    lazy private var _isa: [AferoAttributeSemanticClassDescriptor] = {
         return self.isa.compactMap { self.classTable?.semanticClass(for: $0) }
     }()
     
@@ -190,7 +190,7 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
     
 }
 
-@objc extension AferoAttributeSemanticClass {
+@objc extension AferoAttributeSemanticClassDescriptor {
     
     @nonobjc func builder() -> Builder { return Builder(semanticClass: self) }
     
@@ -208,7 +208,7 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
             self.classTable = classTable
         }
         
-        convenience init(semanticClass: AferoAttributeSemanticClass) {
+        convenience init(semanticClass: AferoAttributeSemanticClassDescriptor) {
             self.init(
                 identifier: semanticClass.identifier,
                 isa: semanticClass.isa,
@@ -252,16 +252,18 @@ enum AferoSemanticClassError: LocalizedError, CustomNSError, Equatable {
             return self
         }
         
-        func build() -> AferoAttributeSemanticClass {
-            return AferoAttributeSemanticClass(identifier: identifier, isa: isa, properties: properties, classTable: classTable)
+        func build() -> AferoAttributeSemanticClassDescriptor {
+            return AferoAttributeSemanticClassDescriptor(identifier: identifier, isa: isa, properties: properties, classTable: classTable)
         }
         
     }
 }
 
-@objc extension AferoAttributeSemanticClass: NSCopying {
+@objc extension AferoAttributeSemanticClassDescriptor: NSCopying {
     
     func copy(with zone: NSZone? = nil) -> Any {
         return builder().build()
     }
 }
+
+

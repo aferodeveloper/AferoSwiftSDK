@@ -37,7 +37,7 @@ class AferoSemanticClassTableSpec: QuickSpec {
                 expect(t.semanticClasses.count) == 0
                 
                 expect {
-                    expect(try t ← AferoAttributeSemanticClass(identifier: "foo")) === t
+                    expect(try t ← AferoAttributeSemanticClassDescriptor(identifier: "foo")) === t
                     }.toNot(throwError())
                 
                 expect(t.semanticClasses.count) == 1
@@ -53,7 +53,7 @@ class AferoSemanticClassTableSpec: QuickSpec {
                 expect(t.semanticClasses.count) == 0
                 
                 expect {
-                    expect(try t ← AferoAttributeSemanticClass(identifier: "foo") ← AferoAttributeSemanticClass(identifier: "bar", isa: ["foo"])) === t
+                    expect(try t ← AferoAttributeSemanticClassDescriptor(identifier: "foo") ← AferoAttributeSemanticClassDescriptor(identifier: "bar", isa: ["foo"])) === t
                     }.toNot(throwError())
                 
                 expect(t.semanticClasses.count) == 2
@@ -64,7 +64,7 @@ class AferoSemanticClassTableSpec: QuickSpec {
                 expect(t.semanticClasses.count) == 0
                 
                 expect {
-                    try t ← AferoAttributeSemanticClass(identifier: "bar") ← AferoAttributeSemanticClass(identifier: "foo", isa: ["foo"])
+                    try t ← AferoAttributeSemanticClassDescriptor(identifier: "bar") ← AferoAttributeSemanticClassDescriptor(identifier: "foo", isa: ["foo"])
                     }.to(throwError(AferoSemanticClassError.unrecognizedSemanticClass("foo")))
                 
                 expect(t.semanticClasses.count) == 1
