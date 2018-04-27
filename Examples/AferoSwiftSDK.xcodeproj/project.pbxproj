@@ -74,6 +74,7 @@
 		CBA993731EE750F50066213B /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA993711EE750F50066213B /* Mocks.swift */; };
 		CBB85CC51EC4D77B0010D61B /* userJohnSmith.json in Resources */ = {isa = PBXBuildFile; fileRef = CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */; };
 		CBB85CC71EC4DD920010D61B /* userJaneDoe.json in Resources */ = {isa = PBXBuildFile; fileRef = CBB85CC61EC4DD920010D61B /* userJaneDoe.json */; };
+		CBCD82272093919A00B53E1A /* SemanticClassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCD82262093919A00B53E1A /* SemanticClassTests.swift */; };
 		CBF1918C1B19211B00884457 /* SpecSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF1918A1B19211A00884457 /* SpecSupport.swift */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +173,7 @@
 		CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RulesProcessor2.playground; sourceTree = "<group>"; };
 		CBC7A2731ADD48D300655611 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		CBC7A2741ADD48D300655611 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		CBCD82262093919A00B53E1A /* SemanticClassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticClassTests.swift; sourceTree = "<group>"; };
 		CBD2D5661B7CFAFE0056C72D /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
 		CBD2D56B1B7CFBFC0056C72D /* libcorecrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcorecrypto.dylib; path = usr/lib/system/libcorecrypto.dylib; sourceTree = SDKROOT; };
 		CBE317711B2F485200E05CD1 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Scratchpad.playground; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				CB1CED431EF8A5E500B86534 /* UserTests.swift */,
 				CB809A971F2515490008DDD1 /* DeviceLocationTests.swift */,
 				CB0E66361FBE20E000E8A5BE /* DeviceTagCollectionTests.swift */,
+				CBCD82262093919A00B53E1A /* SemanticClassTests.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -640,6 +643,7 @@
 				CB1CED471EF8A5E500B86534 /* DeviceProfileTests.swift in Sources */,
 				CB7962501F84590D002E0C6C /* AferoLogFormatter.swift in Sources */,
 				CB1CED491EF8A5E500B86534 /* DisplayRulesTests.swift in Sources */,
+				CBCD82272093919A00B53E1A /* SemanticClassTests.swift in Sources */,
 				CBF1918C1B19211B00884457 /* SpecSupport.swift in Sources */,
 				CB1CED611EF8A5E500B86534 /* UserTests.swift in Sources */,
 				CB1CED481EF8A5E500B86534 /* DeviceRuleTests.swift in Sources */,
