@@ -341,6 +341,7 @@
 		CB93841B1AE1C8B70012ED7B /* playgrounds */ = {
 			isa = PBXGroup;
 			children = (
+				CB1EFDC92099183200D9898A /* SemanticClasses.playground */,
 				CBEEB6211AFC171F00A1570E /* RulesProcessor.playground */,
 				CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */,
 				CBA97B321B1CF01700AA216E /* AttributeValues.playground */,
