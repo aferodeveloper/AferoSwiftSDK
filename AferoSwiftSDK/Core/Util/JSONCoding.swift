@@ -33,6 +33,24 @@ public extension AferoJSONCoding {
     }
 }
 
+public func FromJSON<T: AferoJSONCoding>(_ json: Data?) -> [T]? {
+    guard let json = json else { return nil }
+    return FromJSON(String(data: json, encoding: .utf8)?.JSONObject as? [Any])
+}
+
+public func FromJSON<T: AferoJSONCoding>(_ json: Data?) -> T? {
+    guard let json = json else { return nil }
+    return FromJSON(String(data: json, encoding: .utf8)?.JSONObject)
+}
+
+public func FromJSON<T: AferoJSONCoding>(_ json: String?) -> [T]? {
+    return FromJSON(json?.JSONObject as? [Any])
+}
+
+public func FromJSON<T: AferoJSONCoding>(_ json: String?) -> T? {
+    return FromJSON(json?.JSONObject)
+}
+
 /**
 Given an [AnyObject] array, attempt to instantiate an array of objects
 from its elements and return it. If any of the instantiations fails,
@@ -67,6 +85,22 @@ public func FromJSON<T: AferoJSONCoding>(_ json: AferoJSONCodedType?) -> T? {
 }
 
 prefix operator |<
+
+public prefix func |< <T: AferoJSONCoding>(json: Data?) -> T? {
+    return FromJSON(json)
+}
+
+public prefix func |< <T: AferoJSONCoding>(json: Data?) -> [T]? {
+    return FromJSON(json)
+}
+
+public prefix func |< <T: AferoJSONCoding>(json: String?) -> T? {
+    return FromJSON(json)
+}
+
+public prefix func |< <T: AferoJSONCoding>(json: String?) -> [T]? {
+    return FromJSON(json)
+}
 
 public prefix func |< <T: AferoJSONCoding>(json: AferoJSONCodedType?) -> T? {
     return FromJSON(json)
@@ -118,4 +152,42 @@ public extension Dictionary where Key: CodingKey {
         
     }
 }
+
+extension String {
+    
+    var JSONObject: Any? {
+        
+        do {
+            return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [])
+        } catch {
+            NSLog("JSON decoding error: \(String(reflecting: error))")
+            return nil
+        }
+        
+    }
+}
+
+protocol JSONCodable { }
+
+extension JSONCodable {
+    
+    var JSONData: Data? {
+        do {
+            return try JSONSerialization.data(withJSONObject: self, options: JSONSerialization.WritingOptions.prettyPrinted)
+        } catch {
+            NSLog("JSON encoding error: \(String(reflecting: error))")
+            return nil
+        }
+    }
+    
+    var JSONString: String? {
+        guard let data = JSONData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+    
+}
+
+extension Dictionary: JSONCodable { }
+extension Array: JSONCodable { }
+
 
