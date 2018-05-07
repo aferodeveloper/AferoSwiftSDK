@@ -134,6 +134,7 @@
 		CB1CED7B1EF8A61900B86534 /* conclave_welcome.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclave_welcome.json; sourceTree = "<group>"; };
 		CB1CED7C1EF8A61900B86534 /* conclaveConnectionInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conclaveConnectionInfo.json; sourceTree = "<group>"; };
 		CB1E2ED61B6543B30018C022 /* FetchedResults.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FetchedResults.playground; sourceTree = "<group>"; };
+		CB1EFDC92099183200D9898A /* SemanticClasses.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SemanticClasses.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		CB3ACA8C1AF8212D00AD7E7D /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		CB593CB31D74F8050069F8A0 /* coffeemaker.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = coffeemaker.json; sourceTree = "<group>"; };
 		CB593CB41D74F8050069F8A0 /* fan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = fan.json; sourceTree = "<group>"; };

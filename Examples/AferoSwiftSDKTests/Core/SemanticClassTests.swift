@@ -194,6 +194,75 @@ class AferoSemanticClassSpec: QuickSpec {
         
         describe("JSON coding") {
             
+            it("should decode the expected format.") {
+                
+                let semanticTypesJSON = """
+                    [
+                        {
+                            "identifier": "number",
+                            "semanticDescription": "A value which can be prepresented as a numeric type. Two different `number`s can be compared and ordered, but no other information can be inferred."
+                        },
+
+                        {
+                            "identifier": "measurement",
+                            "isa": "number",
+                            "semanticDescription": "A `number` with an associated `unit`. Two `numbers` can be compared combined if they can be converted to a common base unit. This is for illustration only; in reality, `measurement` would be abstract, and simply be guaranteed to have a `unit`"
+                        },
+
+                        {
+                            "identifier": "length",
+                            "isa": "measurement",
+                            "properties": {
+                                "unit": "length.meter"
+                            },
+                            "semanticDescription": "A one-dimensional distance between two points."
+                        },
+
+                        {
+                            "identifier": "duration",
+                            "isa": "measurement",
+                            "properties": {
+                                "unit": "time.milliseconds"
+                            },
+                            "semanticDescription": "A quantity of time"
+                        },
+
+                        {
+                            "identifier": "timestamp",
+                            "isa": "duration",
+                            "properties": {
+                                "unit": "time.second",
+                                "unix_epoch_offset": 0,
+                                "utc_offset": 0
+                            },
+                            "semanticDescription": "An absolute instant in time. Offsets are denominiated in the unit described by `unit`."
+                        },
+
+                        {
+                            "identifier": "UNIXEpochDate",
+                            "isa": "duration",
+                            "properties": {
+                                "unit": "time.second",
+                                "unix_epoch_offset": 0,
+                                "utc_offset": 0
+                            },
+                            "semanticDescription": "An absolute instant in time. Offsets are denominiated in the unit described by `unit`."
+                        },
+
+                        {
+                            "identifier": "temperature",
+                            "isa": "measurement",
+                            "properties": {
+                                "unit": "temperature.kelvin"
+                            },
+                            "semanticDescription": "A measurement of heat density."
+                        }
+
+                    ]
+                """.JSONObject as! [[String: Any]]
+                
+            }
+            
             it("should roundtrip") {
                 
             }
