@@ -480,7 +480,6 @@
 				CBF191661B191EF800884457 /* Resources */,
 				CBA97AED1B192E5B00AA216E /* CopyFiles */,
 				925D5E6AF66D6B5B9CD6580F /* [CP] Embed Pods Frameworks */,
-				00A1743C4BF33AF4BF2C22F7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -593,21 +592,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00A1743C4BF33AF4BF2C22F7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AferoTests/Pods-AferoTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		246639EDC5D807B92D94B663 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
