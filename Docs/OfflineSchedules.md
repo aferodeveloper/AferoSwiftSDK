@@ -77,7 +77,6 @@ applicable.
 		* [Time specification](#time-specification)
 		* [Attributes](#attributes-1)
 	* [Observe changes to an Offline Schedule](#observe-changes-to-an-offline-schedule)
-	* [Miscellaneous Informational Properties and Methods](#miscellaneous-informational-properties-and-methods)
 	* [Manipulate an Offline Schedule's Events](#manipulate-an-offline-schedules-events)
 		* [Create an individual Offline Schedule Event](#create-an-individual-offline-schedule-event)
 		* [Removing Schedule Events](#removing-schedule-events)
@@ -332,7 +331,6 @@ OfflineSchedule --> App: e
 deactivate App
 ```
 
-
 ```swift
 extension OfflineSchedule {
 
@@ -343,7 +341,38 @@ extension OfflineSchedule {
     /// - warning: 0 ≤ index < numberOfEvents must be true, otherwise
     ///            an out-of-bounds will be thrown.
     public func scheduleEvent(_ index: Int) -> OfflineSchedule.ScheduleEvent
+
+    /// The total number of events this device supports
+    public var numberOfSupportedEvents: Int { get }
+
+    /// The total number of events per day that this device supports
+    public var numberOfSupportedEventsPerDay: Int { get }
+
+    /// Local days in the schedule which which have maxed out their event count.
+    public var unavailableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> { get }
+
+    /// Local days in the schedule which which have *not* maxed out their event count.
+    public var availableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> { get }
+
+    /// A map of `DayOfWeek` to the number of events currently scheduled on that local day.
+    public var dayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] { get }
+
+    /// Return all events for a given local day of week
+    /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
+    public func events(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent]
+
+    /// Return all events whose local day of week is in `localDaysOfWeek`
+    /// - parameter localDaysOfWeek: The local days for which to filter
+
+    public func events<T: Sequence>(forDaysOfWeek daysOfWeek: T) -> [ScheduleEvent]
+        where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek
+
+    /// Return all events matching the given predicate.
+    /// - parameter predicate: The predicate which to evaluate each `ScheduleEvent` against.
+    ///                        defaults to matching all.
+    public func events(matching predicate: ScheduleEventPredicate = { _ in return true }) -> [ScheduleEvent]
 }
+
 ```
 
 ---
@@ -450,43 +479,6 @@ public class OfflineSchedule {
 }
 ```
 
-### Miscellaneous Informational Properties and Methods
-
-```swift
-public extension OfflineSchedule {
-
-    /// The total number of events this device supports
-    public var numberOfSupportedEvents: Int { get }
-
-    /// The total number of events per day that this device supports
-    public var numberOfSupportedEventsPerDay: Int { get }
-
-    /// Local days in the schedule which which have maxed out their event count.
-    public var unavailableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> { get }
-
-    /// Local days in the schedule which which have *not* maxed out their event count.
-    public var availableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> { get }
-
-    /// A map of `DayOfWeek` to the number of events currently scheduled on that local day.
-    public var dayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] { get }
-
-    /// Return all events for a given local day of week
-    /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
-    public func events(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent]
-
-    /// Return all events whose local day of week is in `localDaysOfWeek`
-    /// - parameter localDaysOfWeek: The local days for which to filter
-
-    public func events<T: Sequence>(forDaysOfWeek daysOfWeek: T) -> [ScheduleEvent]
-        where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek
-
-    /// Return all events matching the given predicate.
-    /// - parameter predicate: The predicate which to evaluate each `ScheduleEvent` against.
-    ///                        defaults to matching all.
-    public func events(matching predicate: ScheduleEventPredicate = { _ in return true }) -> [ScheduleEvent]
-}
-
-```
 
 ---
 
