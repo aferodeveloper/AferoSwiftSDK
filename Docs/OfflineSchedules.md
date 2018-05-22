@@ -1,9 +1,9 @@
 ---
 author: Justin Middleton <jrmiddle@afero.io>
 title: "Offline Schedules"
-date: May 18, 2018 11:18 AM
+date: 5/21/2018
 status: DRAFT
-version: 0.1
+version: 0.2
 
 toc:
     depth_from: 1
@@ -58,12 +58,24 @@ applicable.
 
 * [In This Document](#in-this-document)
 * [Overview](#overview)
+* [Key Concepts](#key-concepts)
+	* [The Offline Schedule object](#the-offline-schedule-object)
+	* [Daylight Savings Time](#daylight-savings-time)
+	* [Time Zones](#time-zones)
+	* [Explicitly Setting Device TimeZone](#explicitly-setting-device-timezone)
+	* [Cloud Inference of Device TimeZone](#cloud-inference-of-device-timezone)
+	* [Class Diagram](#class-diagram)
+		* [`class DeviceModel`](#class-devicemodel)
+		* [`class OfflineSchedule`](#class-offlineschedule)
+		* [`struct OfflineSchedule.ScheduleEvent`](#struct-offlineschedulescheduleevent)
+		* [`struct OfflineSchedule.ScheduleEvent.TimeSpecification`](#struct-offlineschedulescheduleeventtimespecification)
+		* [`attributes`](#attributes)
 * [Key Tasks](#key-tasks)
 	* [Obtain an Offline Schedule reference](#obtain-an-offline-schedule-reference)
-	* [Interrogate an Offline Schedule's Events](#interrogate-an-offline-schedules-events)
+	* [Interrogating an Offline Schedule](#interrogating-an-offline-schedule)
 	* [Examine an individual Offline Schedule Event](#examine-an-individual-offline-schedule-event)
 		* [Time specification](#time-specification)
-		* [Attributes](#attributes)
+		* [Attributes](#attributes-1)
 	* [Observe changes to an Offline Schedule](#observe-changes-to-an-offline-schedule)
 	* [Miscellaneous Informational Properties and Methods](#miscellaneous-informational-properties-and-methods)
 	* [Manipulate an Offline Schedule's Events](#manipulate-an-offline-schedules-events)
@@ -72,9 +84,12 @@ applicable.
 		* [Adding Schedule Events](#adding-schedule-events)
 		* [Replacing Schedule Events](#replacing-schedule-events)
 		* [Committing Changes](#committing-changes)
+* [See Also](#see-also)
 * [Colophon](#colophon)
 
 <!-- /code_chunk_output -->
+
+---
 
 ## Overview
 
@@ -83,6 +98,186 @@ scheduled actions independently, without being continually connected to the
 Afero cloud.
 
 This document describes the **iOS API for working with offline schedules**.
+
+> **NOTE**
+>
+> This document contains diagrams produced using [PlantUML]. An easy way to render them
+> is to open this document in the [Atom] text editor, and preview using the
+> [Markdown Preview Enhanced] package.
+
+
+## Key Concepts
+
+This section describes the key concepts of Afero Offline Schedules.
+
+### The Offline Schedule object
+
+The Offline Schedule object (class `OfflineSchedule`) vended by the `DeviceModel`
+provides a high-level interface for interacting with offline schedules, eliminating
+the need for the developer to concern herself with encoding and decoding schedule events,
+interpreting flags, working with time zones and daylight savings time details,
+
+### Daylight Savings Time
+
+It is important to note that Afero devices which support Offline Schedules
+automatically maintain schedules across time zones and Daylight Savings Time
+switchovers. This is done in a straightforward way:
+
+* Time specifications are stored in the local time of the device (note that while there
+  are deprecated methods for using UTC, these must be avoided for DST support).
+
+* Afero Devices, in cooperation with the Afero cloud, maintain their internal times
+  in UTC, and are also informed by the Afero cloud what their current UTC offset should
+  be.
+
+* Every time an Afero device links with the Afero cloud, the cloud supplies the
+  device with its UTC offset as per the [IANA Time Zone Database][TZDB].
+  The time zone assigned to the device can come either from:
+
+  * A timezone explicitly set on the `DeviceModel` instance representing the
+    Afero device.
+
+  * A timezone inferred by the Afero cloud from the device's location.
+
+  See [Time Zones](#time-zones), below, for more detail.
+
+
+> **IMPORTANT**
+>
+> While the SDK currently exposes deprecated methods for using UTC times, it
+is crucial to note that only events which are scheduled in local times will be
+accurately maintained across DST switchovers.
+
+### Time Zones
+
+Because offline schedule event fire times are specified in local time, it is
+unnecessary for a scheduler interface to know the timezone of an Afero device,
+unless it is desired to show the fire time in the time zone local to the mobile
+client displaying the schedule.
+
+However, it is crucial that a device's `timeZone` be set. This can be done in one
+of two ways:
+
+### Explicitly Setting Device TimeZone
+
+A `DeviceModel`'s timezone can be explicitly set using
+`DeviceModel.setTimeZone(timeZone:isUserOverride)`:
+
+```swift
+public extension DeviceModelable {
+
+    /// The device's timeZone, if set.
+    public var timeZone: TimeZone? { get }
+
+    /// Set the timezone for a device.
+    /// - parameter timeZone: The timezone to associate with the device.
+    /// - parameter isUserOverride: If true, indicates the user has explicitly set the timezone
+    ///                             on this device (rather than it being inferred by location).
+    ///                             If false, timeZone is the default timeZone of the phone.
+    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult>
+
+}
+```
+
+### Cloud Inference of Device TimeZone
+
+If a `DeviceModel`'s `timeZone` has not been explicitly set, the Afero cloud will
+infer the `timeZone` from the device's location. If the device's location has not
+been explictly set (either at association time, or afterward), the Afero cloud
+will attempt to infer the device's location from IP information.
+
+### Class Diagram
+
+```puml
+
+class DeviceModel {
+    {field} timeZone: TimeZone?
+    {method} setTimeZone(as: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult>
+    {field} supportsOfflineSchedules: Bool
+    {method} offlineSchedule(using: OfflineScheduleCollator = default) -> OfflineSchedule?
+}
+
+class OfflineSchedule {
+    {field} ...    
+    {method} ...
+}
+
+DeviceModel "vends" ..> "is vended by" OfflineSchedule
+
+class "OfflineSchedule.ScheduleEvent" as ScheduleEvent << (S,orchid) >> {
+    {field} timeSpecification: TimeSpecification
+    {field} attributes: [Int: AttributeValue]
+}
+
+OfflineSchedule "1" o-- "0..n" ScheduleEvent
+
+enum AttributeValue
+
+class "OfflineSchedule.ScheduleEvent.TimeSpecification" as TimeSpecification << (S,orchid) >> {
+    {field} repeats: Bool
+    {field} dayOfWeek: DayOfWeek
+    {field} hour: UInt
+    {field} minute: UInt
+}
+
+ScheduleEvent "1" o-- "1" TimeSpecification
+ScheduleEvent "1" o-- "0..n" AttributeValue
+
+```
+
+
+#### `class DeviceModel`
+
+Every Afero-enabled device is represented by an instance of the `DeviceModel`
+class; each `DeviceModel` which represents an offline-schedule-aware device vends
+`OfflineSchedule` instances which can be used to view and manipulate that device's
+offline schedule.
+
+#### `class OfflineSchedule`
+
+An offline schedule is the set of all scheduled events, represented by
+`OfflineSchedule.ScheduleEvent` instances, that a supporting Afero-enabled
+persists in internal storage. Logically, the schedule is a collection `RAWBYTES`
+attributes in a private range.
+
+#### `struct OfflineSchedule.ScheduleEvent`
+
+`OfflineSchedule.ScheduleEvent` (hereafter, simply `ScheduleEvent`) instances comprise
+the information required for applying a set of attribute value states to an Afero
+device. Each `ScheduleEvent` contains a single `TimeSpecification` and a set of
+actions represented by a mapping of attribute `id`s to attribute values.
+
+#### `struct OfflineSchedule.ScheduleEvent.TimeSpecification`
+
+`OfflineSchedule.ScheduleEvent.TimeSpecification` (hereafter, simply
+`TimeSpecification`) describes the fire time of a `ScheduleEvent` in terms of
+day of week and time of day that an event fires, as well as whether or not
+the event repeats. Some key points about `TimeSpecification`s include:
+
+* All times are expected to be represented in a device's **local** time. This
+is necessary for maintenance of schedule times across **Daylight Savings Time**
+switchovers. While the interface does include **deprecated** methods related to
+use of UTC times, these are a historical artifact and should not be used. See
+[Time Zones and Daylight Savings Time](#time-zones-and-daylight-savings-time)
+for more information.
+
+* If the `repeats` flag is set to `true`, then the event associated with a given
+`TimeSpecification` fires on a weekly basis.
+If it is set to `false`, then the associated event will fire only once, and then
+internally be marked by the firmware to not fire again.
+
+> **IMPORTANT**
+>
+> As of this writing, there is no public API for determining whether or not a
+> non-repeating event has fired. For this reason, it is expected that any user
+> interface for manipulating offline schedules work only with `ScheduleEvent`s
+> whose `timeSpecification.repeats` flags are set to `true`
+
+
+#### `attributes`
+
+The second aspect of a `ScheduleEvent` is the set of attributes it the event applies
+when it fires. This is represented in Swift by a `Dictionary<Int,Afero.AttributeValue>`.
 
 ## Key Tasks
 
@@ -99,6 +294,17 @@ This document describes the **iOS API for working with offline schedules**.
 `DeviceModelable` implementing instances, such as `DeviceModel` representing peripherals that support offline schedules
 expose the following symbols interpretation and manipulation of offline schedules.
 
+> **NOTE**
+>
+> The `OfflineScheduleCollator` referenced below is responsible for maintaining a stable
+> and compact map of events to attributes. While it is currently exposed in the API,
+> **using a collator other than the default is not supported.**
+
+```plantuml
+App -> DeviceModel: offlineSchedule()
+DeviceModel ->App: return
+```
+
 ```swift
 public extension DeviceModelable {
     /// If this `DeviceModelable` supports offline schedules, then this returns an
@@ -112,7 +318,20 @@ public extension DeviceModelable {
 
 ---
 
-### Interrogate an Offline Schedule's Events
+### Interrogating an Offline Schedule
+
+```plantuml
+App -> OfflineSchedule: numberOfEvents
+activate App
+OfflineSchedule --> App: n
+deactivate App
+
+App -> OfflineSchedule: event(at index: Int)
+activate App
+OfflineSchedule --> App: e
+deactivate App
+```
+
 
 ```swift
 extension OfflineSchedule {
@@ -273,6 +492,18 @@ public extension OfflineSchedule {
 
 ### Manipulate an Offline Schedule's Events
 
+With all of the methods below for manipulating an `OfflineSchedule`'s events,
+the following basic operations take place:
+
+1. Events are added, removed, or modified using the `OfflineSchedule`'s methods.
+2. The `OfflineSchedule` commits changes to the underlying `DeviceModel`'s attributes.
+3. The changes are applied to the Afero cloud, and the Afero cloud relays success/failure
+   (in the form of `Promise<>` fulfillment/rejection) to the caller.
+4. Separately, as the changes apply to the physical device, and the Afero Cloud receives
+   notification of said changes, the asynchronous attribute update messages are translated
+   by the `OfflineSchedule` into `OfflineSchedule.Event` events, emitted by
+   `OfflineSchedule.offlineScheduleEventSignal`.
+
 #### Create an individual Offline Schedule Event
 
 ```swift
@@ -291,7 +522,30 @@ public class OfflineSchedule {
 
 #### Removing Schedule Events
 
-The following methods are available for removing schedule events.
+The following methods are available for removing schedule events. Each of these follow
+the same basic pattern:
+
+```plantuml
+
+participant App
+participant OfflineSchedule
+participant DeviceModel
+participant APIClient
+participant Cloud
+
+App -> OfflineSchedule: removeScheduleEvent(atIndex:commit:)
+activate App
+OfflineSchedule -> APIClient: postBatchActions
+APIClient -> Cloud: POST []
+Cloud --> APIClient: HTTP resp
+APIClient --> App: success/failure
+deactivate App
+
+Cloud --> DeviceModel: attrUpdate
+DeviceModel --> OfflineSchedule: attributeUpdate
+OfflineSchedule --> App: .scheduleEventsChanged(deltas:)
+```
+
 
 > **NOTE**:
 > Some of the methods below support a `commit` parameter. In these cases, the changes made
@@ -331,6 +585,30 @@ public extension OfflineSchedule {
 ```
 
 #### Adding Schedule Events
+
+As with event removal, adding events follow the same basic flow as described in the
+sequence diagram below.
+
+```plantuml
+
+participant App
+participant OfflineSchedule
+participant DeviceModel
+participant APIClient
+participant Cloud
+
+App -> OfflineSchedule: addScheduleEvent(atIndex:commit:)
+activate App
+OfflineSchedule -> APIClient: postBatchActions
+APIClient -> Cloud: POST []
+Cloud --> APIClient: HTTP resp
+APIClient --> App: success/failure
+deactivate App
+
+Cloud --> DeviceModel: attrUpdate
+DeviceModel --> OfflineSchedule: attributeUpdate
+OfflineSchedule --> App: .scheduleEventsChanged(deltas:)
+```
 
 ```swift
 public extension OfflineSchedule {
@@ -388,10 +666,22 @@ public extension OfflineSchedule {
 
 ---
 
+## See Also
+
+| Title/Link | Description |
+| - | - |
+| [IANA Time Zone Database][TZDB] |  |
+
+[TZDB]: https://www.iana.org/time-zones "IANA Time Zone Database"
+[PlantUML]: http://plantuml.com "Plant UML"
+[Markdown Preview Enhanced]: https://github.com/shd101wyy/markdown-preview-enhanced "Markdown Preview Enhanced"
+[Atom]: https://atom.io "Atom"
+
+---
+
 ## Colophon
 
-This document was created using a combination of  [Github-Flavored Markdown](https://github.github.com/gfm/),
-[Mermaid](https://mermaidjs.github.io) for sequence diagrams, and
-[PlantUML](http://plantuml.com) for UML.
+This document was created using a combination of  [Github-Flavored Markdown](https://github.github.com/gfm/) and
+[PlantUML] for UML.
 
-Creation was done in [Atom](), with rendered output created using [markdown-preview-enhanced](https://github.com/shd101wyy/markdown-preview-enhanced).
+Creation was done in [Atom], with rendered output created using [Markdown Preview Enhanced].
