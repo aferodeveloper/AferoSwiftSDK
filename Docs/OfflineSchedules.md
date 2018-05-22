@@ -62,8 +62,8 @@ applicable.
 	* [The Offline Schedule object](#the-offline-schedule-object)
 	* [Daylight Savings Time](#daylight-savings-time)
 	* [Time Zones](#time-zones)
-	* [Explicitly Setting Device TimeZone](#explicitly-setting-device-timezone)
-	* [Cloud Inference of Device TimeZone](#cloud-inference-of-device-timezone)
+		* [Explicitly Setting Device TimeZone](#explicitly-setting-device-timezone)
+		* [Cloud Inference of Device TimeZone](#cloud-inference-of-device-timezone)
 	* [Class Diagram](#class-diagram)
 		* [`class DeviceModel`](#class-devicemodel)
 		* [`class OfflineSchedule`](#class-offlineschedule)
@@ -157,7 +157,7 @@ client displaying the schedule.
 However, it is crucial that a device's `timeZone` be set. This can be done in one
 of two ways:
 
-### Explicitly Setting Device TimeZone
+#### Explicitly Setting Device TimeZone
 
 A `DeviceModel`'s timezone can be explicitly set using
 `DeviceModel.setTimeZone(timeZone:isUserOverride)`:
@@ -178,7 +178,7 @@ public extension DeviceModelable {
 }
 ```
 
-### Cloud Inference of Device TimeZone
+#### Cloud Inference of Device TimeZone
 
 If a `DeviceModel`'s `timeZone` has not been explicitly set, the Afero cloud will
 infer the `timeZone` from the device's location. If the device's location has not
