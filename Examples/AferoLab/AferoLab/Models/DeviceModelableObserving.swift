@@ -409,8 +409,12 @@ extension AttributeEventObserving {
     }
     
     var attributeLastUpdatedStringValue: String {
-        // TODO: Implement last updated
-        return "-"
+
+        var ret = "-"
+        if let updatedTimestamp = attribute?.updatedTimestamp {
+            ret = String(describing: updatedTimestamp)
+        }
+        return ret
     }
     
     var attributeLabelDisplayValue: String? {

@@ -959,6 +959,36 @@ public extension AttributeValue {
     }
 }
 
+public struct DeviceAttributeValueState: Equatable, CustomStringConvertible, CustomDebugStringConvertible {
+    
+    public var value: AttributeValue
+    public var updatedTimestampMs: NSNumber?
+    
+    init(value: AttributeValue, updatedTimestampMs: NSNumber? = nil) {
+        self.value = value
+        self.updatedTimestampMs = updatedTimestampMs
+    }
+    
+    public var updatedTimestamp: Date? {
+        guard let updatedTimestampMs = updatedTimestampMs else { return nil }
+        return Date.dateWithMillisSince1970(updatedTimestampMs)
+    }
+    
+    public static func ==(lhs:DeviceAttributeValueState, rhs: DeviceAttributeValueState) -> Bool {
+        return lhs.value == rhs.value && lhs.updatedTimestampMs == rhs.updatedTimestampMs
+    }
+    
+    public var description: String {
+        return "value:\(value) updatedTimestampMs:\(String(describing: updatedTimestampMs))"
+    }
+    
+    public var debugDescription: String {
+        return "<\(type(of: self))>\(description)"
+    }
+    
+}
+
+
 public struct AttributeInstance: Hashable, Equatable, CustomDebugStringConvertible {
     
     public var TAG: String { return "AttributeInstance" }
@@ -976,7 +1006,28 @@ public struct AttributeInstance: Hashable, Equatable, CustomDebugStringConvertib
     }
     
     public var id: Int
-    public var value: AttributeValue
+    public var valueState: DeviceAttributeValueState
+    
+    enum Origin {
+        case local
+        case cloud
+    }
+    
+    var origin: Origin = .local
+    
+    public var value: AttributeValue {
+        get { return valueState.value }
+        set { valueState.value = newValue }
+    }
+    
+    public var updatedTimestampMs: NSNumber? {
+        get { return valueState.updatedTimestampMs }
+        set { valueState.updatedTimestampMs = newValue }
+    }
+    
+    public var lastUpdatedTimestamp: Date? {
+        return valueState.updatedTimestamp
+    }
     
     public var bytes: [UInt8] {
         return value.byteArray
@@ -987,22 +1038,26 @@ public struct AttributeInstance: Hashable, Equatable, CustomDebugStringConvertib
         set { value = AttributeValue.boolean(newValue) }
     }
     
-    public init(id: Int, value: AttributeValue) {
+    init(id: Int, valueState: DeviceAttributeValueState, origin: Origin = .local) {
         self.id = id
-        self.value = value
+        self.valueState = valueState
     }
     
-    public init(id: Int, bytes: [UInt8]) {
-        self.init(id: id, value: AttributeValue.rawBytes(bytes))
+    init(id: Int, value: AttributeValue, updatedTimestampMs: NSNumber? = nil, origin: Origin = .local) {
+        self.init(id: id, valueState: DeviceAttributeValueState(value: value, updatedTimestampMs: updatedTimestampMs), origin: origin)
     }
     
-    public init(id: Int, stringValue: String) {
-        self.init(id: id, value: AttributeValue.utf8S(stringValue))
+    init(id: Int, bytes: [UInt8], updatedTimestampMs: NSNumber? = nil, origin: Origin = .local) {
+        self.init(id: id, value: AttributeValue.rawBytes(bytes), updatedTimestampMs: updatedTimestampMs, origin: origin)
     }
     
-    public init?(id: Int, data: String) {
+    init(id: Int, stringValue: String, updatedTimestampMs: NSNumber? = nil, origin: Origin = .local) {
+        self.init(id: id, value: AttributeValue.utf8S(stringValue), updatedTimestampMs: updatedTimestampMs, origin: origin)
+    }
+    
+    init?(id: Int, data: String, updatedTimestampMs: NSNumber? = nil, origin: Origin = .local) {
         guard let bytes = Utils.bytesFromHexString(data) else { return nil }
-        self.init(id: id, bytes: bytes)
+        self.init(id: id, bytes: bytes, updatedTimestampMs: updatedTimestampMs, origin: origin)
     }
     
     // MARK: Equatable

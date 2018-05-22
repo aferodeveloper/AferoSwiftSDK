@@ -630,10 +630,10 @@ class DeviceStreamEventTests: QuickSpec {
         
         describe("DeviceStreamEvent.Peripheral.Attribute instances") {
             
-            let a1a = DeviceStreamEvent.Peripheral.Attribute(id: 1, data: "0100", value: "1")
-            let a1b = DeviceStreamEvent.Peripheral.Attribute(id: 1, data: "0200", value: "2")
+            let a1a = DeviceStreamEvent.Peripheral.Attribute(id: 1, data: "0100", value: "1", updatedTimestampMs: 10)
+            let a1b = DeviceStreamEvent.Peripheral.Attribute(id: 1, data: "0200", value: "2", updatedTimestampMs: 20)
 
-            let a2a = DeviceStreamEvent.Peripheral.Attribute(id: 2, data: "0200", value: "2")
+            let a2a = DeviceStreamEvent.Peripheral.Attribute(id: 2, data: "0200", value: "2", updatedTimestampMs: 30)
             
             // MARK: .. should initialize
             
@@ -875,9 +875,9 @@ class DeviceStreamEventTests: QuickSpec {
                 id: "peripheralId1",
                 profileId: "profileId1",
                 attributes: [
-                    Attribute(id: 21, data: "0100", value: "1"),
-                    Attribute(id: 22, data: "0200", value: "2"),
-                    Attribute(id: 23, data: "0300", value: "3"),
+                    Attribute(id: 21, data: "0100", value: "1", updatedTimestampMs: 10),
+                    Attribute(id: 22, data: "0200", value: "2", updatedTimestampMs: 20),
+                    Attribute(id: 23, data: "0300", value: "3", updatedTimestampMs: 30),
                 ],
                 status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName1",
@@ -893,9 +893,9 @@ class DeviceStreamEventTests: QuickSpec {
                 id: "peripheralId2",
                 profileId: "profileId2",
                 attributes: [
-                    Attribute(id: 4, data: "0400", value: "4"),
-                    Attribute(id: 5, data: "0500", value: "5"),
-                    Attribute(id: 6, data: "0600", value: "6"),
+                    Attribute(id: 4, data: "0400", value: "4", updatedTimestampMs: 10),
+                    Attribute(id: 5, data: "0500", value: "5", updatedTimestampMs: 20),
+                    Attribute(id: 6, data: "0600", value: "6", updatedTimestampMs: 30),
                 ],
                 status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName2",
@@ -911,9 +911,9 @@ class DeviceStreamEventTests: QuickSpec {
                 id: "peripheralId3",
                 profileId: "profileId3",
                 attributes: [
-                    Attribute(id: 7, data: "0700", value: "7"),
-                    Attribute(id: 8, data: "0800", value: "8"),
-                    Attribute(id: 9, data: "0900", value: "9"),
+                    Attribute(id: 7, data: "0700", value: "7", updatedTimestampMs: 10),
+                    Attribute(id: 8, data: "0800", value: "8", updatedTimestampMs: 20),
+                    Attribute(id: 9, data: "0900", value: "9", updatedTimestampMs: 30),
                 ],
                 status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName3",
@@ -929,9 +929,9 @@ class DeviceStreamEventTests: QuickSpec {
                 id: "peripheralId4",
                 profileId: "profileId4",
                 attributes: [
-                    Attribute(id: 10, data: "0a00", value: "10"),
-                    Attribute(id: 11, data: "0b00", value: "11"),
-                    Attribute(id: 12, data: "0c00", value: "12"),
+                    Attribute(id: 10, data: "0a00", value: "10", updatedTimestampMs: 10),
+                    Attribute(id: 11, data: "0b00", value: "11", updatedTimestampMs: 20),
+                    Attribute(id: 12, data: "0c00", value: "12", updatedTimestampMs: 30),
                 ],
                 status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName4",
@@ -947,9 +947,9 @@ class DeviceStreamEventTests: QuickSpec {
                 id: "peripheralId5",
                 profileId: "profileId5",
                 attributes: [
-                    Attribute(id: 13, data: "0d00", value: "13"),
-                    Attribute(id: 14, data: "0e00", value: "14"),
-                    Attribute(id: 15, data: "0f00", value: "15"),
+                    Attribute(id: 13, data: "0d00", value: "13", updatedTimestampMs: 10),
+                    Attribute(id: 14, data: "0e00", value: "14", updatedTimestampMs: 20),
+                    Attribute(id: 15, data: "0f00", value: "15", updatedTimestampMs: 30),
                 ],
                 status: Status(isAvailable: true, isVisible: true),
                 friendlyName: "friendlyName5",
@@ -967,9 +967,9 @@ class DeviceStreamEventTests: QuickSpec {
                 expect(p1.id) == "peripheralId1"
                 expect(p1.profileId) == "profileId1"
                 expect(p1.attributes.count) == 3
-                expect(p1.attribute(for: 21)) == Attribute(id: 21, data: "0100", value: "1")
-                expect(p1.attribute(for: 22)) == Attribute(id: 22, data: "0200", value: "2")
-                expect(p1.attribute(for: 23)) == Attribute(id: 23, data: "0300", value: "3")
+                expect(p1.attribute(for: 21)) == Attribute(id: 21, data: "0100", value: "1", updatedTimestampMs: 10)
+                expect(p1.attribute(for: 22)) == Attribute(id: 22, data: "0200", value: "2", updatedTimestampMs: 20)
+                expect(p1.attribute(for: 23)) == Attribute(id: 23, data: "0300", value: "3", updatedTimestampMs: 30)
                 expect(p1.attribute(for: 0)).to(beNil())
                 expect(p1.status) == Status(isAvailable: true, isVisible: true)
                 expect(p1.status.isAvailable).to(beTrue())
@@ -1035,23 +1035,23 @@ class DeviceStreamEventTests: QuickSpec {
             it("should get/set attributes correctly") {
                 
                 var p1var = p1
-                expect(p1var.attribute(for: 21)) == Attribute(id: 21, data: "0100", value: "1")
-                expect(p1var.attribute(for: 22)) == Attribute(id: 22, data: "0200", value: "2")
-                expect(p1var.attribute(for: 23)) == Attribute(id: 23, data: "0300", value: "3")
+                expect(p1var.attribute(for: 21)) == Attribute(id: 21, data: "0100", value: "1", updatedTimestampMs: 10)
+                expect(p1var.attribute(for: 22)) == Attribute(id: 22, data: "0200", value: "2", updatedTimestampMs: 20)
+                expect(p1var.attribute(for: 23)) == Attribute(id: 23, data: "0300", value: "3", updatedTimestampMs: 30)
                 
-                let p1var_21_new = Attribute(id: 21, data: "F100", value: "241")
+                let p1var_21_new = Attribute(id: 21, data: "F100", value: "241", updatedTimestampMs: 10)
                 let p1var_21_old = p1var.setAttribute(p1var_21_new)
                 expect(p1var.attribute(for: 21)) == p1var_21_new
                 expect(p1var_21_old?.id) == 21
                 expect(p1var_21_old?.data) == "0100"
                 expect(p1var_21_old?.value) == "1"
                 
-                let p1var_0_new = Attribute(id: 0, data: "F000", value: "240")
+                let p1var_0_new = Attribute(id: 0, data: "F000", value: "240", updatedTimestampMs: 20)
                 expect(p1var.attribute(for: 0)).to(beNil())
                 expect(p1var.setAttribute(p1var_0_new)).to(beNil())
                 expect(p1var.attribute(for: 0)) == p1var_0_new
                 
-                let p1var_0_new2 = Attribute(id: 0, data: "D000", value: "208")
+                let p1var_0_new2 = Attribute(id: 0, data: "D000", value: "208", updatedTimestampMs: 30)
                 expect(p1var.setAttribute(p1var_0_new2)) == p1var_0_new
                 expect(p1var.attribute(for: 0)) == p1var_0_new2
 

@@ -51,9 +51,9 @@ public extension DeviceModelable where Self: DeviceActionSource {
                 .filter { $0.deviceId == self.deviceId }
                 .flatMap { $0.attributeDict }
                 .reduce([:]) {
-                    (current, next) -> [Int: AttributeValue] in
+                    (current, next) -> [Int: DeviceAttributeValueState] in
                     var ret = current
-                    ret[next.0] = next.1
+                    ret[next.0] = DeviceAttributeValueState(value: next.1, updatedTimestampMs: nil)
                     return ret
             }
             currentState = state
@@ -90,11 +90,9 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
             return
         }
         
-        let attributes: [Int: String] = [
-            filterCriterion.attribute.id: stringValue
-        ]
+        let arg: UpdateArg = (id: filterCriterion.attribute.id, value: stringValue, updatedTimestampMs: nil)
         attributeFilterOperations[filterCriterion.attribute.id] = filterCriterion.operation
-        update(attributes, accumulative: accumulative)
+        update(with: [arg], accumulative: accumulative)
     }
     
     /// This device's state as an array of filterCriteria, with `trigger` and `operation`
@@ -310,7 +308,7 @@ public extension DeviceRuleAction {
     
     public init(deviceId: String, state: DeviceState, durationSeconds: Int? = nil) {
         let attributeInstances = state.attributes.map {
-            return AttributeInstance(id: $0, value: $1)
+            return AttributeInstance(id: $0, value: $1.value)
         }
         self.init(deviceId: deviceId, attributes: attributeInstances, durationSeconds: durationSeconds)
     }

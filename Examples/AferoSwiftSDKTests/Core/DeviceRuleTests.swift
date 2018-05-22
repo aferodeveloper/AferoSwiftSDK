@@ -9,7 +9,7 @@
 import Foundation
 import Quick
 import Nimble
-import Afero
+@testable import Afero
 
 
 class DeviceRuleTimeSpec: QuickSpec {

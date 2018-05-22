@@ -40,6 +40,7 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
     @IBOutlet weak var attributeTypeLabel: UILabel!
     @IBOutlet weak var attributeStringValueLabel: UILabel!
     @IBOutlet weak var attributeByteValueLabel: UILabel!
+    @IBOutlet weak var attributeUpdatedTimestampLabel: UILabel!
     
     /// The (compound) value which is used to populate all fields.
     
@@ -53,6 +54,7 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
                 attributeTypeLabel?.text = nil
                 attributeStringValueLabel?.text = nil
                 attributeByteValueLabel?.text = nil
+                attributeUpdatedTimestampLabel?.text = nil
                 return
             }
             
@@ -61,6 +63,14 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
             attributeTypeLabel?.text = attribute.config.descriptor.dataType.stringValue ?? "<unknown>"
             attributeStringValueLabel?.text = attribute.value.stringValue ?? "<empty>"
             attributeByteValueLabel?.text = attribute.value.byteArray.description
+            
+            var attributeUpdatedTimestampText = "-"
+            if let updatedTimestamp = attribute.updatedTimestamp {
+                attributeUpdatedTimestampText = String(describing: updatedTimestamp)
+            }
+            
+            attributeUpdatedTimestampLabel?.text = attributeUpdatedTimestampText
+            setNeedsLayout()
         }
     }
     

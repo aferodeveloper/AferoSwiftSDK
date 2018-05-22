@@ -79,7 +79,7 @@ DEPENDENCIES:
 SPEC REPOS:
   "git@github.com:aferodeveloper/Podspecs.git":
     - AferoSofthub
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AFNetworking
     - AFOAuth2Manager
     - CocoaLumberjack
@@ -123,4 +123,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b1ba7898e5bb64163048636bab3d79b88ea616a2
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.2

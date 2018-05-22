@@ -117,7 +117,7 @@ public enum DeviceWriteState {
     
 }
 
-public typealias DeviceAttributes = Dictionary<Int, AttributeValue>
+public typealias DeviceAttributes = Dictionary<Int, DeviceAttributeValueState>
 
 // MARK: - Device State
 
@@ -223,7 +223,7 @@ extension DeviceState:  ExpressibleByDictionaryLiteral {
 extension DeviceState: SafeSubscriptable {
     
     public typealias Key = Int
-    public typealias Value = AttributeValue
+    public typealias Value = DeviceAttributeValueState
     
     public subscript(safe key: Key?) -> Value? {
         get {
@@ -303,8 +303,37 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     
     
     public mutating func update(_ attributeInstance: AttributeInstance?) {
+        
         guard let attributeInstance = attributeInstance else { return }
-        attributes[attributeInstance.id] = attributeInstance.value
+        
+        let id = attributeInstance.id
+        let origin = attributeInstance.origin
+        var newValueState = attributeInstance.valueState
+        
+        /*
+         
+         This code path is hit from three origins:
+         1) From the cloud (via conclave)
+         2) From the cloud (via an API client hit)
+         3) Locally, as an optimization
+         
+         If it's from the cloud, we always honor the updatedTimestamps,
+         but if it's from a local optimization, we don't.
+         
+         In the following code, we check the origin of the update and the
+         presence of a timestamp in the new value. If local, and the timestamp
+         isn't present, then we carry the old one forward.
+         
+         */
+        
+        if
+            let currentValueState = attributes[id],
+            .local == origin,
+            newValueState.updatedTimestampMs == nil {
+                newValueState.updatedTimestampMs = currentValueState.updatedTimestampMs
+        }
+        
+        attributes[id] = newValueState
     }
     
     public mutating func reset() {
@@ -312,7 +341,7 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
     }
     
     public var attributeInstances: [AttributeInstance] {
-        return attributes.map { AttributeInstance(id: $0, value: $1) }
+        return attributes.map { AttributeInstance(id: $0, valueState: $1) }
     }
     
 
@@ -331,8 +360,8 @@ extension DeviceState: AferoJSONCoding {
             CoderKeyIsAvailable: isAvailable,
             CoderKeyAttributes: Dictionary(
                 attributes.map {
-                    (key: Key, value: Value) -> (String, String) in
-                    return ("\(key)", value.debugDescription)
+                    elem -> (String, String) in
+                    return ("\(elem.key)", String(describing: elem.value))
                 }
             )
         ]
@@ -573,8 +602,32 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
 
     func addOrUpdate(tag: DeviceTagCollection.DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone)
     func deleteTag(identifiedBy id: DeviceTagCollection.DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone)
-
+    
 }
+
+public struct DeviceModelableAttributeDisposition {
+    
+    public let valueState: DeviceAttributeValueState
+    
+    public var value: AttributeValue {
+        return valueState.value
+    }
+    
+    public var updatedTimestampMs: NSNumber? {
+        return valueState.updatedTimestampMs
+    }
+    
+    public var updatedTimestamp: Date? {
+        return valueState.updatedTimestamp
+    }
+    
+    public let config: DeviceProfile.AttributeConfig
+    
+    public let displayParams: [String: Any]?
+    
+}
+
+
 
 protocol DeviceModelableInternal: DeviceModelable {
     var deviceCloudSupporting: AferoCloudSupporting? { get }
@@ -861,13 +914,24 @@ public extension DeviceModelable {
     public func valueForAttributeId(_ attributeId: Int) -> AttributeValue? {
         return value(for: attributeId)
     }
-    
+
+    /// Fetch an attribute's `DeviceAttributeValueState` by id.
+    public func valueState(for attributeId: Int) -> DeviceAttributeValueState? {
+        return currentState[safe: attributeId]
+    }
+
     /// Fetch an attribute by id
     /// - parameter attributeId: The id of the attribute to fetch
     public func value(for attributeId: Int) -> AttributeValue? {
-        return currentState[safe: attributeId]
+        return currentState[safe: attributeId]?.value
     }
-    
+
+    /// Fetch an attribute by id
+    /// - parameter attributeId: The id of the attribute to fetch
+    public func updatedTimestampMs(for attributeId: Int) -> NSNumber? {
+        return currentState[safe: attributeId]?.updatedTimestampMs
+    }
+
     public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
         return value(for: descriptor.id)
     }
@@ -972,9 +1036,7 @@ public extension DeviceModelable {
         return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
     
-    /// Comprises an attribute value and all type and presentation info.
-    public typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig, displayParams: [String: Any]?)
-    
+    public typealias Attribute = DeviceModelableAttributeDisposition
     
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
     public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
@@ -982,13 +1044,12 @@ public extension DeviceModelable {
             .flatMap {
                 config -> Attribute? in
 
-                guard let value = self.value(for: config.descriptor) else {
+                guard let valueState = self.valueState(for: config.descriptor.id) else {
                     return nil
                 }
                 
-                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
-                
-                return (value: value, config: config, displayParams: displayParams)
+                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(valueState.value)
+                return Attribute(valueState: valueState, config: config, displayParams: displayParams)
             }.lazy
     }
     
@@ -997,13 +1058,12 @@ public extension DeviceModelable {
             .flatMap {
                 config -> Attribute? in
                 
-                guard let value = self.value(for: config.descriptor) else {
+                guard let valueState = self.valueState(for: config.descriptor.id) else {
                     return nil
                 }
                 
-                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
-                
-                return (value: value, config: config, displayParams: displayParams)
+                let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(valueState.value)
+                return Attribute(valueState: valueState, config: config, displayParams: displayParams)
             }.lazy
     }
     
@@ -1014,14 +1074,14 @@ public extension DeviceModelable {
     /// Get the value and all metadata associated with an `attributeId`, if any.
     public func attribute(for attributeId: Int) -> Attribute? {
         guard
-            let value = value(for: attributeId),
+            let valueState = valueState(for: attributeId),
             let config = attributeConfig(for: attributeId) else {
             return nil
         }
 
-        let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
+        let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(valueState.value)
         
-        return (value: value, config: config, displayParams: displayParams)
+        return Attribute(valueState: valueState, config: config, displayParams: displayParams)
     }
     
     public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
@@ -1053,35 +1113,109 @@ public extension DeviceModelable {
         return AttributeValue(stringLiteral: defaultString)
     }
     
-    @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
+    @available(*, unavailable, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
     public subscript(attributeId id: Int) -> AttributeValue? {
-        
-        get {
-            return self.currentState[safe: id]
-        }
-        
-        set {
-            
-            if currentState[safe: id] == newValue {
-                return
-            }
-            
-            var state = currentState
-            state[safe: id] = newValue
-            currentState = state
-        }
+        get { return nil }
+        set { }
     }
     
-    @available(*, deprecated, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
+    @available(*, unavailable, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
     public subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
-        get {
-            return self[attributeId: attributeDescriptor.id]
-        }
+        get { return nil }
     }
     
 }
 
 public extension DeviceModelable {
+    
+    /// Update the current state by successively applying the given attributeInstances. If `accumulative` is `true`,
+    /// then the current state will be modified. If `accumulative` is `false`, then
+    /// the modelable's state will be replaced with new attributes.
+    /// - parameter attributes: The array of `AttributeInstance`s to apply
+    /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
+    
+    public func update<S: Sequence>(with attributeInstances: S, accumulative: Bool = true)
+        where S.Element == AttributeInstance {
+            
+            defer {
+                if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
+                    _ = migrateUTCOfflineScheduleEvents()
+                }
+            }
+            
+            var state = currentState
+            
+            if !accumulative {
+                state.reset()
+            }
+            
+            attributeInstances.forEach {
+                state.update($0)
+            }
+            
+            if state == currentState { return }
+            
+            currentState = state
+            
+            attributeInstances.forEach {
+                self.signalAttributeUpdate($0.id, value: $0.value)
+            }
+            
+    }
+    
+    typealias UpdateArg = (id: Int, value: String?, updatedTimestampMs: NSNumber?)
+    
+    /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
+    /// then the current state will be modified. If `accumulative` is `false`, then
+    /// the modelable's state will be replaced with new attributes.
+    /// - parameter attributes: A set of attributes from which to draw device state.
+    /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
+    
+    func update<S: Sequence>(with argsSeq: S, accumulative: Bool = true) where S.Element == UpdateArg {
+        
+        let attributeInstances: [AttributeInstance] = argsSeq.flatMap {
+            
+            args -> AttributeInstance? in
+            
+            let descriptor = descriptorForAttributeId(args.id)
+            
+            guard let attributeValue = self.profile?.attributes[args.id]?.valueForStringLiteral(args.value) else {
+                DDLogError("Unable to parse value for stringLiteral: \(String(describing: args.value)) with expected type \(String(describing: descriptor)) device: \(displayName) \(deviceId)")
+                return nil
+            }
+            
+            return AttributeInstance(id: args.id, value: attributeValue, updatedTimestampMs: args.updatedTimestampMs, origin: .cloud)
+        }
+        
+        update(with: attributeInstances, accumulative: accumulative)
+    }
+    
+    func update<S: Sequence> (with attributes: S)
+        where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
+            update(with: attributes.flatMap {
+                v -> UpdateArg in
+                return (v.id, v.value, v.updatedTimestampMs)
+            })
+    }
+    
+    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
+        update(with: [attribute])
+    }
+    
+    func update(with peripheral: DeviceStreamEvent.Peripheral) {
+        
+        profileId = peripheral.profileId
+        
+        var state = self.currentState
+        
+        state.friendlyName = peripheral.friendlyName
+        state.connectionState.update(with: peripheral.status)
+        
+        currentState = state
+        
+        update(with: peripheral.attributes.values)
+    }
+
     
     public static var CoderKeyId: String { return "id" }
     public static var CoderKeyData: String { return "data" }
@@ -1095,122 +1229,6 @@ public extension DeviceModelable {
     
     // MARK: - Update Methods: Handle external model updates
     
-    func update(with peripheral: DeviceStreamEvent.Peripheral) {
-
-        profileId = peripheral.profileId
-        
-        var state = self.currentState
-
-        state.friendlyName = peripheral.friendlyName
-        state.connectionState.update(with: peripheral.status)
-        
-        currentState = state
-        
-        update(with: peripheral.attributes.values)
-    }
-    
-    func update(with attribute: DeviceStreamEvent.Peripheral.Attribute) {
-        update(with: [attribute])
-    }
-    
-    func update<S: Sequence> (with attributes: S)
-        where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
-        update(with: attributes.flatMap {
-            v in return (v.id, v.value)
-        })
-    }
-    
-    func update<S: Sequence> (with attributes: S)
-        where S.Iterator.Element == (Int, String?) {
-            update(attributes.reduce([Int: String]()) {
-                curr, next in
-                var ret = curr
-                if let nextV = next.1 {
-                    ret[next.0] = nextV
-                }
-                return ret
-            })
-    }
-    
-    /// Update the modelable's state with the given data as provided in a `Conclave` payload.
-    
-    public func update(_ deviceData: [String: Any], attrsOnly: Bool = true) {
-        
-        DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
-        
-        // TODO: Refactor this, as the code has evolved beyond the current function sig.
-        
-        var state = self.currentState
-        
-        if !attrsOnly {
-            state.friendlyName = deviceData[type(of: self).CoderKeyFriendlyName] as? String
-        }
-        
-        if let availableValue = deviceData[type(of: self).CoderKeyAvailable] as? Int {
-            state.isAvailable = availableValue != 0
-        }
-        
-        currentState = state
-        
-        if let rawAttributes = deviceData[type(of: self).CoderKeyValues] as? [String: Any] {
-            
-            var attributes: [Int: String] = [:]
-            
-            for (key, value) in rawAttributes {
-                if let
-                    attrId = Int(key),
-                    let attrData = value as? String {
-                        attributes[attrId] = attrData
-                        
-                }
-            }
-            
-            update(attributes)
-        }
-        
-        if let
-            attrId = deviceData[type(of: self).CoderKeyAttributeId] as? Int,
-            let attrData = deviceData[type(of: self).CoderKeyValue] as? String {
-                let attributes: [Int: String] = [attrId: attrData]
-                update(attributes)
-        }
-        
-        DDLogDebug("After state update: \(self)", tag: "DeviceModel")
-    }
-    
-    /// Update the current state by successively applying the given attributeInstances. If `accumulative` is `true`,
-    /// then the current state will be modified. If `accumulative` is `false`, then
-    /// the modelable's state will be replaced with new attributes.
-    /// - parameter attributes: The array of `AttributeInstance`s to apply
-    /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
-    
-    public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
-
-        defer {
-            if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
-                _ = migrateUTCOfflineScheduleEvents()
-            }
-        }
-        
-        var state = currentState
-        
-        if !accumulative {
-            state.reset()
-        }
-        
-        attributeInstances.forEach {
-            state.update($0)
-        }
-        
-        if state == currentState { return }
-        
-        currentState = state
-
-        attributeInstances.forEach {
-            self.signalAttributeUpdate($0.id, value: $0.value)
-        }
-        
-    }
     
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
     /// array of instances.
@@ -1221,60 +1239,28 @@ public extension DeviceModelable {
     
     public func update(with attributes: [[String: Any]], accumulative: Bool = true) {
         
-        let attrs: [Int: String] = attributes.reduce([:]) {
-            curr, next in
+        let attrs: [UpdateArg] = attributes.flatMap {
+            next in
+            
             guard
-                let id = next["id"] as? Int, let value = next["value"] as? String else { return curr }
-            var ret = curr
-            ret[id] = value
-            return ret
-        }
-        
-        update(attrs, accumulative: accumulative)
-    }
-    
-    /// Update (or optionally set) this modelable with the given attributes. If `accumulative` is `true`,
-    /// then the current state will be modified. If `accumulative` is `false`, then
-    /// the modelable's state will be replaced with new attributes.
-    /// - parameter attributes: A set of attributes from which to draw device state.
-    /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
-    
-    public func update(_ attributes: [Int: String], accumulative: Bool = true) {
-        
-        let attributeInstances: [AttributeInstance] = attributes.flatMap {
-            
-            (attributeId: Int, stringLiteralValue: String) -> AttributeInstance? in
-            
-            let descriptor = descriptorForAttributeId(attributeId)
-            
-            let attributeValue = self.profile?.attributes[attributeId]?.valueForStringLiteral(stringLiteralValue)
-            
-            if attributeValue == nil {
-                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, deviceId))
-                return nil
+                let id = next["id"] as? Int,
+                let value = next["value"] as? String else {
+                    return nil
             }
             
-            if attributeValue == nil { return nil }
-            
-            return AttributeInstance(id: attributeId, value: attributeValue!)
+            let updatedTimestampMs = next["updatedTimestamp"] as? NSNumber
+            return (id: id, value: value, updatedTimestampMs: updatedTimestampMs)
         }
         
-        update(with: attributeInstances, accumulative: accumulative)
+        update(with: attrs, accumulative: accumulative)
     }
     
     /// Overlay (or optoinally set) this modelable's state to that indicated by the given `DeviceRuleAction`.
     /// - parameter filterCriterion: The filterCriterion from which to pull attribute state
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ action: DeviceRuleAction, accumulative: Bool = true) {
-        
-        var attributes: [Int: String] = [:]
-        for (key, value) in action.attributeDict {
-            guard let jsonValue = value.stringValue else { continue }
-            attributes[key] = jsonValue
-        }
-        
-        update(attributes, accumulative: accumulative)
+    func update(_ action: DeviceRuleAction, accumulative: Bool = true) {
+        update(with: action.attributes, accumulative: accumulative)
     }
     
     
@@ -1328,9 +1314,13 @@ public extension DeviceModelable {
     var primaryOperationAttributeDescriptor: DeviceProfile.AttributeDescriptor? {
         return profile?.primaryOperationAttribute
     }
+
+    var primaryOperationValueState: DeviceAttributeValueState? {
+        return self.currentState[safe: primaryOperationAttributeDescriptor?.id]
+    }
     
     var primaryOperationValue: AttributeValue? {
-        return self.currentState[safe: primaryOperationAttributeDescriptor?.id]
+        return primaryOperationValueState?.value
     }
     
     var primaryOperationAttributeOptions: DeviceProfile.Presentation.AttributeOption? {

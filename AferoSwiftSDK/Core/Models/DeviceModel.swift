@@ -955,17 +955,15 @@ extension RecordingDeviceModel: DeviceActionable {
             return
         }
         
-        let updateDict = actions.reduce([:]) {
-            curr, next -> [Int: String] in
-            guard case let .attributeWrite(id, value) = next else { return curr }
-            var ret = curr
-            ret[id] = value
-            return ret
+        let args = actions.flatMap {
+            next -> UpdateArg? in
+            guard case let .attributeWrite(id, value) = next else { return nil }
+            return (id: id, value: value, updatedTimestampMs: nil)
         }
         
         let results = actions.successfulUnpostedResults
         
-        update(updateDict, accumulative: accumulative)
+        update(with: args, accumulative: accumulative)
         
         asyncMain { onDone(results, nil) }
     }

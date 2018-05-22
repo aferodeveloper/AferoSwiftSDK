@@ -949,16 +949,27 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             /// The stringly value of the attribute.
             public var value: String?
             
-            public init(id: Int, data: String?, value: String?) {
+            /// The last time this attribute was updated (or the peripheral was rebooted).
+            public var updatedTimestampMs: NSNumber?
+            
+            public var updatedTimestamp: Date? {
+                guard let updatedTimestampMs = updatedTimestampMs else { return nil }
+                return Date.dateWithMillisSince1970(updatedTimestampMs)
+            }
+            
+            public init(id: Int, data: String?, value: String?, updatedTimestampMs: NSNumber?) {
                 self.id = id
                 self.data = data
                 self.value = value
+                self.updatedTimestampMs = updatedTimestampMs
             }
             
             // MARK: <CustomDebugStringConvertible>
             
             public var debugDescription: String {
-                return "<Attribute> id: \(id) data: \(data ?? "<nil>") value: \(value ?? "<nil>")"
+                var updatedTimestampMsDesc = "<nil>"
+                if let updatedTimestampMs = updatedTimestampMs { updatedTimestampMsDesc = "\(updatedTimestampMs)" }
+                return "<Attribute> id:\(id) data:\(data ?? "<nil>") value:\(value ?? "<nil>")  updatedTimestampMs:\(updatedTimestampMsDesc)"
             }
             
             // MARK: <Hashable>
@@ -974,6 +985,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             static let CoderKeyId = "id"
             static let CoderKeyData = "data"
             static let CoderKeyValue = "value"
+            static let CoderKeyUpdatedTimstampMs = "updatedTimestamp"
             
             public var JSONDict: AferoJSONCodedType? {
                 
@@ -987,6 +999,10 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 
                 if let value = value {
                     ret[type(of: self).CoderKeyValue] = value
+                }
+                
+                if let updatedTimestampMs = updatedTimestampMs {
+                    ret[type(of: self).CoderKeyUpdatedTimstampMs] = updatedTimestampMs
                 }
                 
                 return ret
@@ -1009,7 +1025,8 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 self.init(
                     id: id,
                     data: jsonDict[type(of: self).CoderKeyData] as? String,
-                    value: jsonDict[type(of: self).CoderKeyValue] as? String
+                    value: jsonDict[type(of: self).CoderKeyValue] as? String,
+                    updatedTimestampMs: jsonDict[type(of: self).CoderKeyUpdatedTimstampMs] as? NSNumber
                 )
             }
             
