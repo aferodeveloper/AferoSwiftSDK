@@ -425,8 +425,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
             .then {
                 _ in return self.apiClient.fetchDevices(for: self.accountId)
             }.then {
-                devicesJson -> Void in
-                self.createOrUpdateDevices(with: devicesJson)
+                peripherals -> Void in
+                self.createOrUpdateDevices(with: |<peripherals)
                 self.state = .loaded
             }.then {
                 self.eventStream.start(trace) {
@@ -676,8 +676,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return true
     }
     
-    fileprivate func createOrUpdateDevices(with json: [DeviceStreamEvent.Peripheral]) {
-        json.forEach {
+    fileprivate func createOrUpdateDevices(with peripherals: [DeviceStreamEvent.Peripheral]?) {
+        peripherals?.forEach {
             elem in
             asyncMain {
                 self.createOrUpdateDevice(with: elem)

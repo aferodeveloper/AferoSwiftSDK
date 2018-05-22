@@ -35,7 +35,7 @@ public extension AferoAPIClientProto {
     
     func fetchDevices(for accountId: String, expansions: Set<String> = [
         "state", "tags", "attributes", "extendedData", "timezone",
-        ]) -> Promise<[[String: Any]]> {
+        ]) -> Promise<[DeviceStreamEvent.Peripheral]> {
         
         guard let safeAccountId = accountId.pathAllowedURLEncodedString else {
             return Promise { _, reject in reject("Bad accountId '\(accountId)'.") }
