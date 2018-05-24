@@ -926,10 +926,16 @@ public extension DeviceModelable {
         return currentState[safe: attributeId]?.value
     }
 
-    /// Fetch an attribute by id
+    /// Fetch an attribute updatedTimestampMs by id
     /// - parameter attributeId: The id of the attribute to fetch
     public func updatedTimestampMs(for attributeId: Int) -> NSNumber? {
         return currentState[safe: attributeId]?.updatedTimestampMs
+    }
+
+    /// Fetch an attribute updatedTimestamp by id
+    /// - parameter attributeId: The id of the attribute to fetch
+    public func updatedTimestamp(for attributeId: Int) -> Date? {
+        return currentState[safe: attributeId]?.updatedTimestamp
     }
 
     public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
