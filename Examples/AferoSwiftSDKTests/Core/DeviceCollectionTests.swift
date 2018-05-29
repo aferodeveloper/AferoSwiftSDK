@@ -146,6 +146,8 @@ class DeviceCollectionSpec: QuickSpec {
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
                     expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
                     expect(deviceCollection.devices.filter { $0.isDirect }.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.filter { $0.isVisible }.count).toNotEventually(beGreaterThan(0), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.filter { $0.isAvailable }.count).toNotEventually(beGreaterThan(0), timeout: 5.0, pollInterval: 0.25)
                     expect(deviceCollection.state).toEventually(equal(State.loaded))
                     
                 }
