@@ -395,7 +395,7 @@ class DeviceModelSpec: QuickSpec {
                 let deviceModel = BaseDeviceModel(
                     deviceId: "foo",
                     accountId: accountId,
-                    attributes: [100: false, 101: "Moo"],
+                    attributes: [100: false, 1010: "Moo"],
                     profile: try! self.fixture(named: "profileTest")
                 )
                 
