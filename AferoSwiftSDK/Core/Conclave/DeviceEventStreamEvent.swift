@@ -846,7 +846,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     isConnectable: jsonDict[CodingKeys.connectable.stringValue] as? Bool,
                     isConnected: jsonDict[CodingKeys.connected.stringValue] as? Bool,
                     isRebooted: jsonDict[CodingKeys.rebooted.stringValue] as? Bool,
-                    isDirect: jsonDict[CodingKeys.dirty.stringValue] as? Bool,
+                    isDirect: jsonDict[CodingKeys.direct.stringValue] as? Bool,
                     RSSI: jsonDict[CodingKeys.rssi.stringValue] as? Int,
                     location: |<(jsonDict[CodingKeys.location.stringValue] as? [String: Any])
                     )
