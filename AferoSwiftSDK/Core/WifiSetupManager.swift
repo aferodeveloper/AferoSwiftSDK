@@ -751,7 +751,7 @@ public protocol WifiSetupManaging: class {
     
     var state: WifiSetupManagerState { get }
     
-    func start()
+    func start() throws
     func stop()
     func scan() throws
     func scan(timeout: TimeInterval) throws
@@ -844,16 +844,12 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         return wifiSetupEventPipe.1
     }
     
-    fileprivate final var wifiAttributesDisposable: Disposable? {
-        willSet {  wifiAttributesDisposable?.dispose() }
-    }
-    
     fileprivate var deviceAvailabilityDisposable: Disposable? {
         willSet { deviceAvailabilityDisposable?.dispose() }
     }
     
     fileprivate final func unsubscribeFromWifiAttributes() {
-        wifiAttributesDisposable = nil
+        allWifiSetupObservables = nil
         deviceAvailabilityDisposable = nil
     }
     
@@ -862,98 +858,93 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
         wifiSetupEventSink.send(value: event)
     }
     
+    fileprivate final func handleWifiSetupAttributeValueChange(for wifiAttributeId: AferoSofthubWifiAttributeId, with value: AttributeValue) {
+        
+        switch wifiAttributeId {
+            
+            // All of these map to emit() calls, which go straight to the event pipe...
+            // it's cool to keep them on a non-main queue.
+            
+        case .networkType:
+            
+            guard
+                let typeValue = value.intValue,
+                let networkType = AferoSofthubWifiNetworkType(rawValue: typeValue) else {
+                    DDLogError("\(value) cannot coerce to int for network type.", tag: TAG)
+                    return
+            }
+            
+            emit(.networkTypeChanged(newType: networkType))
+            
+        case .currentSSID:
+            
+            guard let newSSID = value.stringValue else {
+                DDLogError("\(value) cannot coerce to string for SSID", tag: TAG)
+                return
+            }
+            
+            emit(.wifiCurrentSSIDChanged(newSSID: newSSID))
+            
+        case .setupState:
+            
+            guard
+                let intState = value.intValue,
+                let newState = AferoSofthubWifiState(rawValue: intState) else {
+                    DDLogError("Invalid integer value for setup state (\(value))", tag: TAG)
+                    return
+            }
+            
+            emit(.wifiSetupStateChanged(newState: newState))
+            
+        case .steadyState:
+            
+            guard
+                let intState = value.intValue,
+                let newState = AferoSofthubWifiState(rawValue: intState) else {
+                    DDLogError("Invalid integer value for steady state (\(value))", tag: TAG)
+                    return
+            }
+            
+            emit(.wifiSteadyStateChanged(newState: newState))
+            
+        case .RSSI:
+            
+            guard let newRSSI = value.intValue else {
+                DDLogError("Invalid integer value for RSSI (\(value))", tag: TAG)
+                return
+            }
+            
+            emit(.wifiRSSIChanged(newRSSI: newRSSI))
+        }
+
+    }
+    
     /// Subscribes to all of the pertinent attributes related to hub wifi configuration,
     /// translates those changes into `WifiSetupEvent` instances, and forwards them to
     /// `wifiSetupEventSignal` subscribers.
     
-    fileprivate final func subscribeToWifiAttributes() {
+    private var allWifiSetupObservables: [NSKeyValueObservation]?
+    
+    fileprivate final func subscribeToWifiAttributes() throws {
         
         let TAG = self.TAG
         
         DDLogDebug("Subscribing to wifi attributes (\(AferoSofthub.allWifiSetupAttributes()) for deviceModel \(deviceModel)", tag: TAG)
         
-        // All of these map to emit() calls, which go straight to the event pipe...
-        // it's cool to keep them on a non-main queue.
-        
-        wifiAttributesDisposable = deviceModel
-            .eventSignalForAttributeIds(AferoSofthub.allWifiSetupAttributes())?
-            .observeValues {
-                [weak self] event in
+        allWifiSetupObservables = try AferoSofthub.allWifiSetupAttributes().map {
+            return try deviceModel.observeAttribute(withId: $0.intValue, on: \.currentValueState, options: [.initial]) {
+                [weak self] attr, chg in
                 
-                switch event {
-                    
-                case let .update(_, _, attribute):
-                    
-                    let attributeId = attribute.config.dataDescriptor.id
-                    
-                    guard let wifiAttributeId = AferoSofthubWifiAttributeId(rawValue: attributeId) else {
-                        DDLogDebug("Unrecognized attributeId \(attributeId) for wifi setup; ignoring.")
+                guard
+                    let wifiAttributeId = AferoSofthubWifiAttributeId(rawValue: attr.attributeId),
+                    let value = attr.currentValue else {
+                        DDLogDebug("Unrecognized attributeId \(attr.attributeId) for wifi setup; ignoring.")
                         return
-                    }
-                    
-                    switch wifiAttributeId {
-                        
-                    case .networkType:
-                        
-                        guard
-                            let typeValue = attribute.value.intValue,
-                            let networkType = AferoSofthubWifiNetworkType(rawValue: typeValue) else {
-                                DDLogError("\(attribute.value) cannot coerce to int for network type.", tag: TAG)
-                                return
-                        }
-                        
-                        self?.emit(.networkTypeChanged(newType: networkType))
-                        
-                    case .currentSSID:
-                        
-                        guard let newSSID = attribute.value.stringValue else {
-                            DDLogError("\(attribute.value) cannot coerce to string for SSID", tag: TAG)
-                            return
-                        }
-                        
-                        self?.emit(.wifiCurrentSSIDChanged(newSSID: newSSID))
-                        
-                    case .setupState:
-                        
-                        guard
-                            let intState = attribute.value.intValue,
-                            let newState = AferoSofthubWifiState(rawValue: intState) else {
-                                DDLogError("Invalid integer value for setup state (\(attribute.value))", tag: TAG)
-                                return
-                        }
-                        
-                        self?.emit(.wifiSetupStateChanged(newState: newState))
-                        
-                    case .steadyState:
-                        
-                        guard
-                            let intState = attribute.value.intValue,
-                            let newState = AferoSofthubWifiState(rawValue: intState) else {
-                                DDLogError("Invalid integer value for steady state (\(attribute.value))", tag: TAG)
-                                return
-                        }
-                        
-                        self?.emit(.wifiSteadyStateChanged(newState: newState))
-                        
-                    case .RSSI:
-                        
-                        guard let newRSSI = attribute.value.intValue else {
-                            DDLogError("Invalid integer value for RSSI (\(attribute.value))", tag: TAG)
-                            return
-                        }
-                        
-                        self?.emit(.wifiRSSIChanged(newRSSI: newRSSI))
-                        
-                    #if compiler(>=5)
-                    @unknown default:
-                        let msg = "Unknown wifi attribute ID \(wifiAttributeId) for event \(event)."
-                        assert(false, msg)
-                        DDLogError(msg, tag: TAG)
-                        return
-                    #endif
-                    }
-                    
                 }
+                
+                self?.handleWifiSetupAttributeValueChange(for: wifiAttributeId, with: value)
+                
+            }
         }
         
         // This, on the other hand, actually modifies the manager's state. We'll keep it
@@ -977,8 +968,8 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
     // MARK: -
     // MARK: Public
     
-    func start() {
-        subscribeToWifiAttributes()
+    func start() throws {
+        try subscribeToWifiAttributes()
         deviceModel.notifyViewing(true)
     }
     
