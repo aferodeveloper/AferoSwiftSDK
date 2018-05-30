@@ -945,7 +945,7 @@ class OfflineScheduleSpec: QuickSpec {
             }
             
             afterEach {
-                _ = schedule.removeAllEvents()
+                schedule = nil
             }
             
             // MARK: • Should default-initialize properly
@@ -1083,10 +1083,6 @@ class OfflineScheduleSpec: QuickSpec {
                     _ = schedule.addScheduleEvents([event1, event2, event3, event4, event5], commit: true)
                 }
                 
-                afterEach {
-                    deviceModel.timeZoneState = .none
-                }
-
                 it("should report the appropriate number of UTC events") {
                     expect(schedule.utcEvents) == [event3, event4, event5]
                 }
