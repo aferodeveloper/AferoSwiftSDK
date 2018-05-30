@@ -535,6 +535,11 @@ open class OfflineSchedule: NSObject {
     var collator: OfflineScheduleCollator
 
     fileprivate(set) weak var storage: OfflineScheduleStorage? {
+        
+        willSet {
+            stopObservingStorageEvents()
+        }
+        
         didSet {
             startObservingStorageEvents()
             primeStorage()
