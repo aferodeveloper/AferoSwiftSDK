@@ -1061,7 +1061,7 @@ public extension AferoAttributeDataDescriptor {
 @objcMembers public class AferoAttribute: NSObject, NSCopying, Codable, AferoJSONCoding {
     
     public override var debugDescription: String {
-        return "<AferoAttribute> dataDesc:\(String(reflecting: dataDescriptor)) presentationDesc:\(String(reflecting: presentationDescriptor)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState))"
+        return "<AferoAttribute> dataDesc:\(String(reflecting: dataDescriptor)) presentationDesc:\(String(reflecting: presentationDescriptor)) display:\(String(reflecting: displayValueState)) current:\(String(reflecting: currentValueState)) pending:\(String(reflecting: pendingValueState)) intended:\(String(reflecting: intendedValueState))"
     }
     
     /// Metadata describing the native, dimensionless storage of this attribute (its primitive type).
@@ -1935,7 +1935,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, using options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
+    public func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
         
         let ret: [(String, NSKeyValueObservation)] = try keys.map {
             return ($0, try observeAttribute(withKey: $0, on: keyPath, options: options, using: changeHandler))
