@@ -24,6 +24,9 @@ public protocol OfflineScheduleStorage: class {
     var readableAttributes: Set<DeviceProfile.AttributeDescriptor> { get }
     var readableAttributeIds: Set<Int> { get }
     func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == Int
+    
+    func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions, using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int
+    
     var types: [Int: AferoAttributeDataType] { get }
     
     var offlineScheduleFlags: OfflineSchedule.Flags { get }
@@ -534,8 +537,11 @@ open class OfflineSchedule: NSObject {
         }
         
         didSet {
-            startObservingStorageEvents()
-            primeStorage()
+            do {
+                try startObservingStorageEvents()
+            } catch {
+                DDLogError("Unable to observe storage events: \(String(reflecting: error))", tag: TAG)
+            }
         }
     }
 
@@ -551,8 +557,18 @@ open class OfflineSchedule: NSObject {
         self.flags = storage.offlineScheduleFlags
         super.init()
         
-        startObservingStorageEvents()
+        do {
+            try startObservingStorageEvents()
+        } catch {
+            DDLogError("Unable to observe storage: \(String(reflecting: error))", tag: TAG)
+            return nil
+        }
+        
         primeStorage()
+    }
+    
+    deinit {
+        stopObservingStorageEvents()
     }
     
     private func primeStorage() {
@@ -564,11 +580,9 @@ open class OfflineSchedule: NSObject {
     
     // MARK: Model Observation
     
-    fileprivate var disposable: Disposable? {
-        willSet { disposable?.dispose() }
-    }
+    fileprivate var observations: [(Int, NSKeyValueObservation)]?
     
-    func startObservingStorageEvents() {
+    func startObservingStorageEvents() throws {
         
         let TAG = self.TAG
         
@@ -577,17 +591,16 @@ open class OfflineSchedule: NSObject {
         
         observableAttributeIds.append(OfflineSchedule.FlagsAttributeId)
         
-        disposable = storage?.eventSignalForAttributeIds(observableAttributeIds)?.observeValues {
-            [weak self] event in switch event {
-            case let .update(_, _, attribute):
-                DDLogDebug("Got attributeUpdate: \(String(reflecting: attribute))", tag: TAG)
-                self?.storageUpdated(attribute.config.dataDescriptor.id, attributeValue: attribute.value)
-            }
+        observations = try storage?.observeAttributes(withIds: observableAttributeIds, on: \.currentValueState, options: []) {
+            [weak self] attr, chg in
+            DDLogDebug("Got attributeUpdate: \(String(reflecting: attr))", tag: TAG)
+            self?.storageUpdated(attr.attributeId, attributeValue: attr.currentValue)
         }
+        
     }
     
     func stopObservingStorageEvents() {
-        disposable = nil
+        observations = nil
     }
     
     func storageUpdated(_ attributeId: Int, attributeValue: AttributeValue?) {
