@@ -289,6 +289,12 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
             && lhs.locationState == rhs.locationState
             && lhs.timeZoneState == rhs.timeZoneState
             && lhs.profileId == rhs.profileId
+            && lhs.isDirty == rhs.isDirty
+            && lhs.isLinked == rhs.isLinked
+            && lhs.isVisible == rhs.isVisible
+            && lhs.isRebooted == rhs.isRebooted
+            && lhs.isConnectable == rhs.isConnectable
+            && lhs.isConnected == rhs.isConnected
     }
 
     public var hashValue: Int {

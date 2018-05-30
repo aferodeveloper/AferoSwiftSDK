@@ -38,9 +38,36 @@ class DeviceStateSpec: QuickSpec {
                 expect(state) == state1b
                 
                 var state2 = state
+                
+                state2.isDirty = true
                 expect(state2).toNot(equal(state))
                 expect(state).toNot(equal(state2))
-                
+
+                state2 = state
+                state2.isLinked = true
+                expect(state2).toNot(equal(state))
+                expect(state).toNot(equal(state2))
+
+                state2 = state
+                state2.isVisible = true
+                expect(state2).toNot(equal(state))
+                expect(state).toNot(equal(state2))
+
+                state2 = state
+                state2.isRebooted = true
+                expect(state2).toNot(equal(state))
+                expect(state).toNot(equal(state2))
+
+                state2 = state
+                state2.isConnected = true
+                expect(state2).toNot(equal(state))
+                expect(state).toNot(equal(state2))
+
+                state2 = state
+                state2.isConnectable = true
+                expect(state2).toNot(equal(state))
+                expect(state).toNot(equal(state2))
+
                 state2 = state
                 state2.isAvailable = false
                 expect(state2).toNot(equal(state))
