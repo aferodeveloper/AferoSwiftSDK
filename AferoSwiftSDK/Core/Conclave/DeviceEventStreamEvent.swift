@@ -545,11 +545,11 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 ret[.timeZoneState] = timeZoneState
             }
             
-//            if
-//                case let .some(.known(loc)) = locationState,
-//                let locationJSON = loc.JSONDict {
-//                ret[type(of: self).CoderKeyLocationState] = locationJSON
-//            }
+            if
+                case let .some(.known(loc)) = locationState,
+                let locationJSON = loc.JSONDict {
+                ret[.locationState] = locationJSON
+            }
             
             return ret.stringKeyed
         }
@@ -575,10 +575,10 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             // location state is officially acquired by fetching from the Client API,
             // otherwise it's <nil> as a sentinel that it /needs/ to be fetched.
             
-//            var locationState: LocationState? = nil
-//            if let loc: LocationState.Location = |<(jsonDict[type(of: self).CoderKeyLocationState] as? [String: Any]) {
-//                locationState = .known(loc)
-//            }
+            var locationState: LocationState? = nil
+            if let loc: LocationState.Location = |<(jsonDict[CodingKeys.locationState.rawValue] as? [String: Any]) {
+                locationState = .known(loc)
+            }
             
             let tags = jsonDict[CodingKeys.tags.stringValue]
             let deviceTags = jsonDict[CodingKeys.deviceTags.stringValue]
@@ -591,6 +591,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 status: status,
                 friendlyName: jsonDict[CodingKeys.friendlyName.stringValue] as? String,
                 virtual: virtual,
+                locationState: locationState,
                 timeZoneState: |<(jsonDict[CodingKeys.timeZoneState.stringValue] as? [String: Any]),
                 tags: (|<((tags ?? deviceTags) as? [Any]) ?? []),
                 createdTimestampMs: createdTimestampMs
