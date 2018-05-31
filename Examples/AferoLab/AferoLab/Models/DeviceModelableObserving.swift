@@ -405,7 +405,7 @@ extension AttributeEventObserving {
     }
 
     var attributeValueStringValue: String {
-        return attribute?.value.stringValue ?? "-"
+        return attribute?.value?.stringValue ?? "-"
     }
     
     var attributeLastUpdatedStringValue: String {
