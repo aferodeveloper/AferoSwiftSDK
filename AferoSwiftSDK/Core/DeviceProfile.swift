@@ -282,7 +282,7 @@ public extension DeviceProfile {
     ///                         including all configs in the result.
     /// - returns: A `LazyCollection<[AttributeConfig]>` which matches all results.
     
-    func attributeConfigs(on deviceId: String? = nil, isIncluded: @escaping (AttributeConfig)->Bool = { _ in true }) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, isIncluded: @escaping (AttributeConfig)->Bool = { _ in true }) -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], AttributeConfig>> {
         
         let ret = descriptors()
             .map {
@@ -292,11 +292,11 @@ public extension DeviceProfile {
         return ret
     }
 
-    func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId) { range.contains($0.dataDescriptor.id) }
     }
     
-    func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId, withIdsIn: platformAttributeRange.range)
     }
     
@@ -346,13 +346,13 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
     }
     
-    public required init(id: String? = nil, deviceType: String? = nil, attributes: [Int: AttributeDescriptor] = [:]) {
+    public required init(id: String? = nil, deviceType: String? = nil, attributes: [Int: AferoAttributeDataDescriptor] = [:]) {
         self.id = id
         self.deviceType = deviceType
         self.attributes = attributes
     }
     
-    public convenience init(id: String? = nil, deviceType: String? = nil, attributes: [AttributeDescriptor] = []) {
+    public convenience init(id: String? = nil, deviceType: String? = nil, attributes: [AferoAttributeDataDescriptor] = []) {
 
         self.init(id: id, deviceType: deviceType, attributes: attributes.reduce([:]) {
             curr, next in
@@ -420,25 +420,25 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     fileprivate(set) public var deviceType: String?
     fileprivate(set) public var deviceTypeId: String?
     
-    fileprivate(set) public var gaugeSummaryAttribute: AttributeDescriptor?
+    fileprivate(set) public var gaugeSummaryAttribute: AferoAttributeDataDescriptor?
     fileprivate(set) public var services: [Service] = []
 
     // MARK: Attribute Descriptors and Filters
-    fileprivate(set) public var attributes: [Int: AttributeDescriptor] = [:]
+    fileprivate(set) public var attributes: [Int: AferoAttributeDataDescriptor] = [:]
     
-    fileprivate var _semanticTypeDescriptorMap: [String: [AttributeDescriptor]]! = [:]
+    fileprivate var _semanticTypeDescriptorMap: [String: [AferoAttributeDataDescriptor]]! = [:]
     
-    var semanticTypeDescriptorMap: [String: [AttributeDescriptor]] {
+    var semanticTypeDescriptorMap: [String: [AferoAttributeDataDescriptor]] {
         
         if let ret = _semanticTypeDescriptorMap { return ret }
         
         _semanticTypeDescriptorMap = attributes.reduce([:]) {
             curr, next in
-            var ret: [String: [AttributeDescriptor]] = curr ?? [:]
+            var ret: [String: [AferoAttributeDataDescriptor]] = curr ?? [:]
             
             guard let semanticType = next.1.semanticType else { return curr }
             
-            var arr: [AttributeDescriptor]
+            var arr: [AferoAttributeDataDescriptor]
             
             if let existing = ret[semanticType] {
                 arr = existing
@@ -455,10 +455,10 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
     }
     
-    fileprivate var attributeOperationMap: [AferoAttributeOperations: Set<AttributeDescriptor>] = [:]
+    fileprivate var attributeOperationMap: [AferoAttributeOperations: Set<AferoAttributeDataDescriptor>] = [:]
     
     /// All attributes matching the given operation type
-    public func attributesForOperation(_ operation: AferoAttributeOperations) -> Set<AttributeDescriptor> {
+    public func attributesForOperation(_ operation: AferoAttributeOperations) -> Set<AferoAttributeDataDescriptor> {
         
         guard let ret = attributeOperationMap[operation] else {
             let attrs = Set(attributes.values.filter {
@@ -472,7 +472,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
     
     /// All readable attributes for this profile
-    public var readableAttributes: Set<AttributeDescriptor> {
+    public var readableAttributes: Set<AferoAttributeDataDescriptor> {
         return attributesForOperation(.Read)
     }
     
@@ -491,7 +491,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
 
     /// All writable attributes for this profile
-    public var writableAttributes: Set<AttributeDescriptor> {
+    public var writableAttributes: Set<AferoAttributeDataDescriptor> {
         return attributesForOperation(.Write)
     }
     
@@ -509,7 +509,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
     
     @available(*, deprecated, message: "Use descriptor(for:Int) instead.")
-    public subscript (attributeId: Int) -> AttributeDescriptor? {
+    public subscript (attributeId: Int) -> AferoAttributeDataDescriptor? {
         get { return descriptor(for: attributeId) }
     }
     
@@ -519,8 +519,8 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// - returns: A `LazyCollection<[AttributeDescriptor]>` which contains all
     ///            of the attributes in this profile filtered by `isIncluded`.
     
-    public func descriptors(isIncluded: (AttributeDescriptor)->Bool  = { _ in return true})
-        -> LazyCollection<[AttributeDescriptor]> {
+    public func descriptors(isIncluded: (AferoAttributeDataDescriptor)->Bool  = { _ in return true})
+        -> LazyCollection<[AferoAttributeDataDescriptor]> {
             return attributes.values.filter(isIncluded).lazy
     }
     
@@ -533,14 +533,14 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > if one exists. So, if the `id` of the `primaryOperationAttribute` is `5`, then
     /// > `descriptor(for: 0) == descriptor(for: 5)`
     
-    public func descriptor(for attributeId: Int) -> AttributeDescriptor? {
+    public func descriptor(for attributeId: Int) -> AferoAttributeDataDescriptor? {
         if attributeId == 0 {
             return self.primaryOperationAttribute
         }
         return self.attributes[attributeId]
     }
     
-    public var primaryOperationAttribute: AttributeDescriptor? {
+    public var primaryOperationAttribute: AferoAttributeDataDescriptor? {
         if let id = self.presentation?.primaryOperationId {
             return self.attributes[id]
         }
@@ -548,7 +548,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
     
     @available(*, deprecated, message: "Use descriptors(for:String) instead")
-    public subscript (semanticType: String) -> [AttributeDescriptor] {
+    public subscript (semanticType: String) -> [AferoAttributeDataDescriptor] {
         get { return Array(descriptors(for: semanticType)) }
     }
     
@@ -561,7 +561,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > since this is enforced by APE, and is transformed into a unique `#define`
     /// > in `device_description.h`, used by firmware developers.
     
-    public func descriptor(for semanticType: String) -> AttributeDescriptor? {
+    public func descriptor(for semanticType: String) -> AferoAttributeDataDescriptor? {
         return descriptors(for: semanticType).first
     }
     
@@ -574,7 +574,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     /// > since this is enforced by APE, and is transformed into a unique `#define`
     /// > in `device_description.h`, used by firmware developers.
     
-    public func descriptors(for semanticType: String) -> LazyCollection<[AttributeDescriptor]> {
+    public func descriptors(for semanticType: String) -> LazyCollection<[AferoAttributeDataDescriptor]> {
         return descriptors(isIncluded: { $0.semanticType == semanticType })
     }
     
@@ -647,7 +647,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
     }
     
     /// Return a list of controls referencing the given AttributeDescriptor.
-    public func controlsForAttribute(_ attribute: AttributeDescriptor) -> [Presentation.Control] {
+    public func controlsForAttribute(_ attribute: AferoAttributeDataDescriptor) -> [Presentation.Control] {
         return controlsForAttribute(attribute.id)
     }
 
@@ -673,7 +673,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         if let ret = groupIndicesForOperationCache[operations] { return ret }
         
         let indices = attributesForOperation(operations).flatMap {
-            (attribute: AttributeDescriptor) -> [Presentation.Control] in
+            (attribute: AferoAttributeDataDescriptor) -> [Presentation.Control] in
             DDLogVerbose("Found attibute \(attribute) for operation \(operations)")
             return self.controlsForAttribute(attribute)
             }.flatMap {
@@ -700,7 +700,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         if let ret = groupsForOperationCache[operations] { return ret }
 
         let ret: [Presentation.Group] = attributesForOperation(operations).flatMap {
-            (attribute: AttributeDescriptor) -> [Presentation.Control] in
+            (attribute: AferoAttributeDataDescriptor) -> [Presentation.Control] in
             DDLogVerbose("Found attibute \(attribute) for operation \(operations)")
             return self.controlsForAttribute(attribute)
             }.flatMap {
@@ -1006,9 +1006,6 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
 
     }
 
-    // MARK: - DeviceProfile.AttributeDescriptor
-    
-    public typealias AttributeDescriptor = AferoAttributeDataDescriptor
 
     // MARK: - DeviceProfile.Service
     
@@ -1019,7 +1016,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         }
         
         fileprivate(set) public var id: Int = 0
-        fileprivate(set) public var attributes: [AttributeDescriptor] = []
+        fileprivate(set) public var attributes: [AferoAttributeDataDescriptor] = []
     }
 
 }
@@ -1931,7 +1928,7 @@ extension AttributeValue {
     /// Returns an AttributeValue representation for a ValueOption's match value,
     /// based upon the given AttributeDescriptor
     
-    public init?(option: ValueOptionPresentable, descriptor: DeviceProfile.AttributeDescriptor) {
+    public init?(option: ValueOptionPresentable, descriptor: AferoAttributeDataDescriptor) {
         let value = option.match
         if let castValue = descriptor.attributeValue(for: value) {
             self = castValue
@@ -1952,11 +1949,11 @@ public struct ValueOptionsSubscriptor: OptionsSubscriptable {
     
     public typealias Presentable = AferoAttributePresentationValueOption
     
-    let descriptor: DeviceProfile.AttributeDescriptor
+    let descriptor: AferoAttributeDataDescriptor
     let valueOptions: [Presentable]
     let values: [AttributeValue]
     
-    public init?(valueOptions: [Presentable]?, descriptor: DeviceProfile.AttributeDescriptor) {
+    public init?(valueOptions: [Presentable]?, descriptor: AferoAttributeDataDescriptor) {
         guard let valueOptions = valueOptions else { return nil }
 
         let localValues = valueOptions.enumerated().map {

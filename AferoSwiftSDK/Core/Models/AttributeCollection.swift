@@ -1321,24 +1321,42 @@ public extension AferoAttributeDataDescriptor {
         )
         
     }
-    
+
     public var currentValue: AttributeValue? {
         return dataDescriptor.attributeValue(for: currentValueState?.stringValue)
+    }
+    
+    public var currentPresentationParameters: AferoAttributePresentationParameters {
+        return presentationDescriptor?.valueOptionProcessor(currentValue) ?? [:]
     }
     
     public var pendingValue: AttributeValue? {
         return dataDescriptor.attributeValue(for: pendingValueState?.stringValue)
     }
-    
+
+    public var pendingPresentationParameters: AferoAttributePresentationParameters {
+        return presentationDescriptor?.valueOptionProcessor(pendingValue) ?? [:]
+    }
+
     public var intendedValue: AttributeValue? {
         return dataDescriptor.attributeValue(for: intendedValueState?.stringValue)
+    }
+
+    public var intendedPresentationParameters: AferoAttributePresentationParameters {
+        return presentationDescriptor?.valueOptionProcessor(intendedValue) ?? [:]
     }
 
     public var displayValue: AttributeValue? {
         return dataDescriptor.attributeValue(for: displayValueState?.stringValue)
     }
 
+    public var displayPresentationParameters: AferoAttributePresentationParameters {
+        return presentationDescriptor?.valueOptionProcessor(displayValue) ?? [:]
+    }
+
 }
+
+public typealias AferoAttributePresentationParameters = [String: Any]
 
 // MARK: - AferoAttributeCollectionError -
 
@@ -1948,4 +1966,54 @@ public extension AferoAttributeCollection {
 
 }
 
+// MARK: - Deprecations -
 
+public extension DeviceProfile {
+
+    // MARK: - DeviceProfile.AttributeDescriptor
+    
+    @available(*, deprecated, message: "Use AferoAttributeDataDescriptor instead.")
+    public typealias AttributeDescriptor = AferoAttributeDataDescriptor
+
+    @available(*, deprecated, message: "Use AferoAttributeDataDescriptor and AferoAttributePresentationDescriptor instead.")
+    public typealias AttributeConfig = (dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor?)
+
+    @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
+    public func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
+        return attributeConfig(for: id, on: deviceId)
+    }
+
+}
+
+public extension AferoAttribute {
+    
+    @available(*, deprecated, message: "Use .dataDescriptor and .presentationDescriptor instead.")
+    public var config: DeviceProfile.AttributeConfig {
+        return (dataDescriptor: dataDescriptor, presentationDescriptor: presentationDescriptor)
+    }
+    
+    @available(*, deprecated, message: "use .displayPresentationParameters, .intendedPresentationParameters, .pendingPresentationParameters, or .currentPresentationParameters.")
+    public var displayParams: AferoAttributePresentationParameters? {
+        return displayPresentationParameters
+    }
+    
+    @available(*, deprecated, message: "use .displayValueState, .intendedValueState, .pendingValueState, or .currentValueState.")
+    var value: AttributeValue? {
+        guard let displayValue = displayValue else {
+            let msg = "No displayValue for attributeId:\(attributeId)"
+//            assert(false, msg)
+            afLogWarn(msg)
+            return nil
+        }
+        return displayValue
+    }
+    
+}
+
+public extension DeviceModelable {
+    
+    /// Comprises an attribute value and all type and presentation info.
+    @available(*, deprecated, message: "Use AferoAttribute instead.")
+    public typealias Attribute = AferoAttribute
+    
+}
