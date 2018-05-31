@@ -19,9 +19,9 @@ public protocol OfflineScheduleStorage: class {
     func valueForAttributeId(_ attributeId: Int) -> AttributeValue?
     var supportsOfflineSchedules: Bool { get }
     var displayName: String { get }
-    var writableAttributes: Set<DeviceProfile.AttributeDescriptor> { get }
+    var writableAttributes: Set<AferoAttributeDataDescriptor> { get }
     var writableAttributeIds: Set<Int> { get }
-    var readableAttributes: Set<DeviceProfile.AttributeDescriptor> { get }
+    var readableAttributes: Set<AferoAttributeDataDescriptor> { get }
     var readableAttributeIds: Set<Int> { get }
     func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == Int
     

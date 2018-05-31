@@ -372,7 +372,7 @@ public typealias DeviceEventPipe = (signal: DeviceEventSignal, sink: DeviceEvent
 // MARK: <AttributeSignaling>
 
 public enum AttributeEvent {
-    case update(accountId: String, deviceId: String, attribute: DeviceModelable.Attribute)
+    case update(accountId: String, deviceId: String, attribute: AferoAttribute)
 }
 
 extension AttributeEvent: CustomStringConvertible, CustomDebugStringConvertible {
@@ -443,7 +443,7 @@ public typealias AttributeEventPipe = PipeHolder<AttributeEvent, NoError>
 
 public protocol AttributeEventSignaling: class {
     
-    func attribute(for attributeId: Int) -> DeviceModelable.Attribute?
+    func attribute(for attributeId: Int) -> AferoAttribute?
     func eventSignalForAttributeId(_ attributeId: Int?) -> AttributeEventSignal?
     func signalAttributeUpdate(_ attributeId: Int, value: AttributeValue)
 }
@@ -789,7 +789,7 @@ public extension DeviceModelable {
         return profile?.presentation(deviceId)
     }
     
-    public var readableAttributes: Set<DeviceProfile.AttributeDescriptor> {
+    public var readableAttributes: Set<AferoAttributeDataDescriptor> {
         return profile?.readableAttributes ?? []
     }
 
@@ -805,7 +805,7 @@ public extension DeviceModelable {
         return profile?.hasPresentableReadableAttributes ?? false
     }
     
-    public var writableAttributes: Set<DeviceProfile.AttributeDescriptor> {
+    public var writableAttributes: Set<AferoAttributeDataDescriptor> {
         return profile?.writableAttributes ?? []
     }
     
@@ -869,7 +869,7 @@ public extension DeviceModelable {
         return attributeCollection.attribute(forId: attributeId)?.displayValue
     }
     
-    public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
+    public func value(for descriptor: AferoAttributeDataDescriptor) -> AttributeValue? {
         return value(for: descriptor.id)
     }
     
@@ -995,15 +995,15 @@ public extension DeviceModelable {
     }
     
     public func attributeConfigs(isIncluded: @escaping (DeviceProfile.AttributeConfig)->Bool = { _ in true })
-        -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
+        -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], DeviceProfile.AttributeConfig>>? {
             return profile?.attributeConfigs(on: deviceId, isIncluded: isIncluded)
     }
     
-    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
+    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], DeviceProfile.AttributeConfig>>? {
         return profile?.attributeConfigs(on: deviceId, withIdsIn: range)
     }
     
-    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
+    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[AferoAttributeDataDescriptor], DeviceProfile.AttributeConfig>>? {
         return attributeConfigs(withIdsIn: range.range)
     }
     
@@ -1011,31 +1011,27 @@ public extension DeviceModelable {
         return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
     
-    /// Comprises an attribute value and all type and presentation info.
-    public typealias Attribute = AferoAttribute
-    
-    
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
-    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
+    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[AferoAttribute]>? {
         return attributeCollection.attributes.filter(isIncluded).lazy
     }
     
-    public func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
+    public func attributes(in range: ClosedRange<Int>) -> LazyCollection<[AferoAttribute]>? {
         return attributes {
             range.contains($0.attributeId)
         }
     }
     
-    public func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[Attribute]>? {
+    public func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[AferoAttribute]>? {
         return attributes(in: range.range)
     }
     
     /// Get the value and all metadata associated with an `attributeId`, if any.
-    public func attribute(for attributeId: Int) -> Attribute? {
+    public func attribute(for attributeId: Int) -> AferoAttribute? {
         return attributeCollection.attribute(forId: attributeId)
     }
     
-    public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
+    public func descriptorForAttributeId(_ attributeId: Int) -> AferoAttributeDataDescriptor? {
         return attributeConfig(for: attributeId)?.dataDescriptor
     }
     
@@ -1047,7 +1043,7 @@ public extension DeviceModelable {
         return attributeConfigs { $0.dataDescriptor.semanticType == semanticType }?.first
     }
     
-    public func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {
+    public func descriptor(for semanticType: String) -> AferoAttributeDataDescriptor? {
         return attributeConfig(for: semanticType)?.dataDescriptor
     }
     
@@ -1070,8 +1066,8 @@ public extension DeviceModelable {
         set { }
     }
     
-    @available(*, unavailable, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
-    public subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
+    @available(*, unavailable, message: "Use value(for: AferoAttributeDataDescriptor) instead")
+    public subscript(attributeDescriptor: AferoAttributeDataDescriptor) -> AttributeValue? {
         get { return nil }
     }
     
