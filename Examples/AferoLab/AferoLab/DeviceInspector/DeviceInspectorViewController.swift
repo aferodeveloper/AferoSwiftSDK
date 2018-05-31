@@ -469,7 +469,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     func updateVisibleCells() {
-        tableView.indexPathsForVisibleRows?.flatMap {
+        tableView.indexPathsForVisibleRows?.compactMap {
             indexPath -> (cell: UITableViewCell, indexPath: IndexPath)? in
             guard let cell = tableView.cellForRow(at: indexPath) else { return nil }
             return (cell: cell, indexPath: indexPath)
