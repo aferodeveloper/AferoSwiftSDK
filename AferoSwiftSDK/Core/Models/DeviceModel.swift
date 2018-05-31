@@ -209,15 +209,19 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
         self.profileSource = profileSource
         self.deviceCloudSupporting = deviceCloudSupporting
 
-        try! self.attributeCollection.configure(
-            with: self.profile,
-            currentAttributeStringValues: attributes.reduce([:]) {
-                curr, next in
-                guard let v = next.value.stringValue else { return curr }
-                var ret = curr
-                ret[next.key] = v
-                return ret
-        })
+        do {
+            try self.attributeCollection.configure(
+                with: self.profile,
+                currentAttributeStringValues: attributes.reduce([:]) {
+                    curr, next in
+                    guard let v = next.value.stringValue else { return curr }
+                    var ret = curr
+                    ret[next.key] = v
+                    return ret
+            })
+        } catch {
+            fatalError(String(reflecting: error))
+        }
         
     }
     

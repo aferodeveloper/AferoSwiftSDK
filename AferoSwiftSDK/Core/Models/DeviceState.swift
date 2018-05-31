@@ -1014,38 +1014,18 @@ public extension DeviceModelable {
     }
     
     /// Comprises an attribute value and all type and presentation info.
-    typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig, displayParams: [String: Any]?)
+    typealias Attribute = AferoAttribute
     
     
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
     func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
-        return attributeConfigs()?
-            .compactMap {
-                config -> Attribute? in
-
-                guard let value = self.value(for: config.dataDescriptor) else {
-                    return nil
-                }
-                
-                let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
-                
-                return (value: value, config: config, displayParams: displayParams)
-            }.lazy
+        return attributeCollection.attributes.filter(isIncluded).lazy
     }
     
     func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
-        return attributeConfigs(withIdsIn: range)?
-            .compactMap {
-                config -> Attribute? in
-                
-                guard let value = self.value(for: config.dataDescriptor) else {
-                    return nil
-                }
-                
-                let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
-                
-                return (value: value, config: config, displayParams: displayParams)
-            }.lazy
+        return attributes {
+            range.contains($0.attributeId)
+        }
     }
     
     func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[Attribute]>? {
@@ -1054,15 +1034,7 @@ public extension DeviceModelable {
     
     /// Get the value and all metadata associated with an `attributeId`, if any.
     func attribute(for attributeId: Int) -> Attribute? {
-        guard
-            let value = value(for: attributeId),
-            let config = attributeConfig(for: attributeId) else {
-                return nil
-        }
-
-        let displayParams = profile?.valueOptionProcessor(for: config.dataDescriptor.id)?(value)
-        
-        return (value: value, config: config, displayParams: displayParams)
+        return attributeCollection.attribute(forId: attributeId)
     }
     
     func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
@@ -1213,7 +1185,8 @@ extension DeviceModelable {
     /// - parameter attributes: The array of `AttributeInstance`s to apply
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) throws {
+    func update<S: Sequence>(with attributeInstances: S, accumulative: Bool = true) throws
+        where S.Element == AttributeInstance {
 
         defer {
             if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
@@ -1237,6 +1210,8 @@ extension DeviceModelable {
                 return
             }
             try attributeCollection.setCurrent(value: stringValue, forAttributeWithId: $0.id)
+            eventSink.send(value: .stateUpdate(newState: currentState))
+            
         }
         
 //        if state == currentState { return }
@@ -1274,21 +1249,7 @@ extension DeviceModelable {
     func update(_ attributes: [Int: String], accumulative: Bool = true) throws {
         
         let attributeInstances: [AttributeInstance] = attributes.compactMap {
-            
-            (attributeId: Int, stringLiteralValue: String) -> AttributeInstance? in
-            
-            let descriptor = descriptorForAttributeId(attributeId)
-            
-            let attributeValue = self.profile?.attributes[attributeId]?.attributeValue(for: stringLiteralValue)
-            
-            if attributeValue == nil {
-                DDLogError(String(format: "Unable to parse value for stringLiteral: %@ with expected type %@ device: %@ (%@)", stringLiteralValue, (descriptor?.debugDescription ?? "<no descriptor>"), displayName, deviceId))
-                return nil
-            }
-            
-            if attributeValue == nil { return nil }
-            
-            return AttributeInstance(id: attributeId, value: attributeValue!)
+            return AttributeInstance(id: $0, stringValue: $1)
         }
         
         try update(with: attributeInstances, accumulative: accumulative)
