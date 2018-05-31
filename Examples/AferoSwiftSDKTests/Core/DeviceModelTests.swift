@@ -117,14 +117,18 @@ class DeviceModelSpec: QuickSpec {
                     deviceId: "foo",
                     accountId: accountId,
                     associationId: "fooassociation",
-                    attributes: [100: false])
+                    attributes: [100: 25],
+                    profile: try! self.fixture(named: "profileTest")
+                    )
                 
-                expect(deviceModel.attribute(for: 100)?.value.boolValue).toNot(beNil())
-                expect(deviceModel.attribute(for: 100)?.value.boolValue).to(beFalsy())
+                expect(deviceModel.attribute(for: 100)?.currentValue?.intValue).toNot(beNil())
+                expect(deviceModel.attribute(for: 100)?.currentValue?.intValue) == 25
+                expect(deviceModel.attribute(for: 100)?.displayValue?.intValue).toNot(beNil())
+                expect(deviceModel.attribute(for: 100)?.displayValue?.intValue) == 25
                 expect(deviceModel.deviceId) == "foo"
                 expect(deviceModel.accountId) == accountId
                 expect(deviceModel.associationId) == "fooassociation"
-                expect(deviceModel.profileId).to(beNil())
+                expect(deviceModel.profileId).toNot(beNil())
                 expect(deviceModel.deviceCloudSupporting).to(beNil())
             }
             
@@ -422,7 +426,7 @@ class DeviceModelSpec: QuickSpec {
                 let deviceModel = BaseDeviceModel(
                     deviceId: "foo",
                     accountId: accountId,
-                    attributes: [100: false, 1010: "Moo"],
+                    attributes: [100: 25, 1010: "Moo"],
                     profile: try! self.fixture(named: "profileTest")
                 )
                 
@@ -448,14 +452,14 @@ class DeviceModelSpec: QuickSpec {
 
                 try! deviceModel.update([2000: "Hi!"])
                 expect(deviceModel.isAvailable).to(beFalse())
-                expect(deviceModel.value(for: 100)) == false
+                expect(deviceModel.value(for: 100)) == 25
                 expect(deviceModel.value(for: 2000)) == "Hi!"
                 expect(writeCount).toEventually(equal(1))
                 
                 deviceModel.isAvailable = true
                 expect(writeState?.isAvailable).toEventually(beTrue())
                 expect(writeState?.isDirect).toEventually(beFalse())
-                expect(deviceModel.value(for: 100)) == false
+                expect(deviceModel.value(for: 100)) == 25
                 expect(deviceModel.value(for: 2000)) == "Hi!"
                 expect(writeCount).toEventually(equal(2))
                 
