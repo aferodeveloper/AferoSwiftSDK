@@ -156,7 +156,14 @@ class WifiSetupAwareViewController: UIViewController, Tagged, WifiSetupAware {
         
         didSet {
             subscribeToWifiSetupManager()
-            wifiSetupManager?.start()
+            do {
+                try wifiSetupManager?.start()
+            } catch {
+                let msg = "Exception starting wifi setup manager: \(String(reflecting: error))"
+                assert(false, msg)
+                DDLogError(msg, tag: TAG)
+            }
+            
         }
     }
     
@@ -270,7 +277,14 @@ class WifiSetupAwareTableViewController: UITableViewController, Tagged, WifiSetu
         
         didSet {
             subscribeToWifiSetupManager()
-            wifiSetupManager?.start()
+            do {
+                try wifiSetupManager?.start()
+            } catch {
+                let msg = "Exception starting wifi setup manager: \(String(reflecting: error))"
+                assert(false, msg)
+                DDLogError(msg, tag: TAG)
+            }
+            
         }
     }
     

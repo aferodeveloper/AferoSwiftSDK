@@ -624,10 +624,8 @@ class AferoAttributeUISwitch: UISwitch, DeviceModelableObserving, AttributeEvent
             return
         }
 
-        guard isOn != attribute.value.boolValue else { return }
-        isOn = attribute.value.boolValue
-
-        isOn = attribute.value.boolValue
+        guard isOn != attribute.value?.boolValue else { return }
+        isOn = attribute.value?.boolValue ?? false
     }
     
     // MARK: <DeviceModelableObserving>
@@ -685,7 +683,7 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
         isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
         
         guard let index = attributeValueOptions?.index(where: {
-            valueOption in return valueOption.match == attribute.value.stringValue
+            valueOption in return valueOption.match == attribute.value?.stringValue
         }) else {
             DDLogError("Unrecognized value for segmentedControl (== \(String(describing: attribute)); bailing.", tag: TAG)
             return
@@ -911,7 +909,7 @@ class AferoAttributeUIStepper: UIStepper, DeviceModelableObserving, AttributeEve
     
     func updateUI() {
         isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
-        value = attribute?.value.doubleValue ?? 0.0
+        value = attribute?.value?.doubleValue ?? 0.0
     }
     
     deinit {
@@ -1078,7 +1076,7 @@ class AferoAttributeUISlider: UISlider, DeviceModelableObserving, AttributeEvent
 
     func sliderParams(for attribute: DeviceModelable.Attribute) -> SliderParams {
 
-        let floatValue = attribute.value.floatValue ?? 0.0
+        let floatValue = attribute.value?.floatValue ?? 0.0
         
         var min = floatValue < 0.0 ? floatValue : 0.0
         var max = floatValue > 0.0 ? floatValue : 0.0
@@ -1134,7 +1132,7 @@ class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, Attrib
         }
         
         guard let index = attribute.config.presentationDescriptor?.valueOptions.index(where: {
-            valueOption in return valueOption.match == attribute.value.stringValue
+            valueOption in return valueOption.match == attribute.value?.stringValue
         }) else {
             DDLogError("Unrecognized value for picker (== \(String(describing: attribute)); bailing.", tag: TAG)
             return
