@@ -1113,7 +1113,7 @@ extension DeviceModelable {
     func update<S: Sequence> (with attributes: S) throws
         where S.Element == DeviceStreamEvent.Peripheral.Attribute {
             try update(with: attributes.compactMap {
-                v in return (v.id, v.value)
+                v in return (v.attributeId, v.stringValue)
             })
     }
     
