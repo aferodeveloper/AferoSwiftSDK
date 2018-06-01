@@ -84,11 +84,7 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
         
         guard filterCriterion.deviceId == deviceId else { return }
         
-        guard let attributeId = filterCriterion.attribute.attributeId else {
-            DDLogError("Unable to determine stringValue for \(filterCriterion.attribute)")
-            return
-        }
-        
+        let attributeId = filterCriterion.attribute.attributeId
         let attributes: [Int: String] = [
             attributeId: filterCriterion.attribute.stringValue
         ]
@@ -345,9 +341,8 @@ public extension DeviceRuleAction {
     public var attributeDict: [Int: String] {
         return attributes.reduce([:]) {
             curr, next in
-            guard let id = next.attributeId else { return curr }
             var ret = curr
-            ret[id] = next.stringValue
+            ret[ next.attributeId] = next.stringValue
             return ret
         }
     }

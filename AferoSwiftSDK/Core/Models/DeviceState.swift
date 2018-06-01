@@ -1112,8 +1112,7 @@ extension DeviceModelable {
         where S.Element == DeviceStreamEvent.Peripheral.Attribute {
             let s: [(Int, String?)] = attributes.flatMap {
                 v -> (Int, String?)? in
-                guard let id = v.attributeId else { return nil }
-                return (id, v.stringValue)
+                return (v.attributeId, v.stringValue)
             }
         try update(with: s)
     }

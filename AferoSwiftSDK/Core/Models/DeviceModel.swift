@@ -1151,7 +1151,7 @@ public extension RecordingDeviceModel {
         
         var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]
         for model in models {
-            let criteria = filterCriteria.filter { $0.deviceId == model.deviceId && (model.profile?.attributeHasControls($0.attribute.attributeId!) ?? false) }
+            let criteria = filterCriteria.filter { $0.deviceId == model.deviceId && (model.profile?.attributeHasControls($0.attribute.attributeId) ?? false) }
             if criteria.count == 0 { continue }
             let recordingModel = FilterCriteriaRecordingDeviceModel(model: model, copyState: false)
             recordingModel.filterCriteria = criteria

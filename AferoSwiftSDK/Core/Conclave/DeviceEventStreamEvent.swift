@@ -447,9 +447,8 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
 
             self.attributes = attributes.reduce([:]) {
                 curr, next in
-                guard let id = next.attributeId else { return curr }
                 var ret = curr
-                ret[id] = next
+                ret[next.attributeId] = next
                 return ret
             }
             
@@ -619,7 +618,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         @discardableResult
         public mutating func setAttribute(_ attribute: Attribute) -> Attribute? {
-            guard let id = attribute.attributeId else { return nil }
+            let id = attribute.attributeId
             let ret = self.attribute(for: id)
             attributes[id] = attribute
             return ret

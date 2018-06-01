@@ -453,10 +453,10 @@ class AferoAttributeValueStateSpec: QuickSpec {
     
     override func spec() {
         
-        let a = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: 3)
+        let a = AferoAttributeValueState(attributeId: 11, value: "1", data: "01", updatedTimestampMs: 0, requestId: 3)
         let a2 = a.copy() as! AferoAttributeValueState
 
-        let b = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+        let b = AferoAttributeValueState(attributeId: 22, value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
         let b2 = b.copy() as! AferoAttributeValueState
 
         describe("initializing") {
@@ -531,8 +531,8 @@ class AferoAttributeSpec: QuickSpec {
     override func spec() {
 
         let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
-        let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
-        let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
+        let astate = AferoAttributeValueState(attributeId: 11, value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+        let astatep = AferoAttributeValueState(attributeId: 22, value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
         
         let a = AferoAttribute(dataDescriptor: adesc)
         let ac = a.copy() as! AferoAttribute
@@ -544,8 +544,8 @@ class AferoAttributeSpec: QuickSpec {
         let ac3 = a3.copy() as! AferoAttribute
 
         let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
-        let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
-        let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
+        let bstate = AferoAttributeValueState(attributeId: 222, value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+        let bstatep = AferoAttributeValueState(attributeId: 333, value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
         let b = AferoAttribute(dataDescriptor: bdesc)
         let b2 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
         let b3 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
@@ -708,7 +708,7 @@ class AferoAttributeSpec: QuickSpec {
             
             it("should report currentValueState changes") {
 
-                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                let newState = AferoAttributeValueState(attributeId: 99, value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
                 var chgState: AferoAttributeValueState? = nil
                 let la = a.copy() as! AferoAttribute
 
@@ -725,7 +725,7 @@ class AferoAttributeSpec: QuickSpec {
             
             it("should report pendingValueState changes") {
 
-                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                let newState = AferoAttributeValueState(attributeId: 99, value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
                 var chgState: AferoAttributeValueState? = nil
                 let la2 = a2.copy() as! AferoAttribute
 
@@ -742,7 +742,7 @@ class AferoAttributeSpec: QuickSpec {
             
             it("should report hasPendingValueState changes") {
 
-                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                let newState = AferoAttributeValueState(attributeId: 99, value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
                 var chgState: Bool? = nil
                 let la2 = a2.copy() as! AferoAttribute
                 
@@ -759,7 +759,7 @@ class AferoAttributeSpec: QuickSpec {
             
             it("should report displayValueState changes") {
                 
-                let newState = AferoAttributeValueState(value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
+                let newState = AferoAttributeValueState(attributeId: 99, value: "9", data: "09", updatedTimestamp: Date(), requestId: 23)
                 var chgState: AferoAttributeValueState? = nil
                 let la2 = a2.copy() as! AferoAttribute
                 
@@ -783,15 +783,15 @@ class AferoAttributeCollectionSpec: QuickSpec {
     override func spec() {
         
         let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
-        let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
-        let astatep = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
+        let astate = AferoAttributeValueState(attributeId: 11, value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+        let astatep = AferoAttributeValueState(attributeId: 22, value: "2", data: "02", updatedTimestampMs: 1000, requestId: 4)
 //        let a = AferoAttribute(dataDescriptor: adesc)
 //        let a2 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate)
         let a3 = AferoAttribute(dataDescriptor: adesc, currentValueState: astate, pendingValueState: astatep)
         
         let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
-        let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
-        let bstatep = AferoAttributeValueState(value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
+        let bstate = AferoAttributeValueState(attributeId: 22, value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+        let bstatep = AferoAttributeValueState(attributeId: 33, value: "3", data: "03", updatedTimestampMs: 2000, requestId: 9)
 //        let b = AferoAttribute(dataDescriptor: bdesc)
 //        let b2 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
         let b3 = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate, pendingValueState: bstatep)
@@ -1078,11 +1078,11 @@ class AferoAttributeCollectionSpec: QuickSpec {
         describe("Committing intended values") {
 
             let adesc = AferoAttributeDataDescriptor(id: 111, type: .boolean, semanticType: "semantic111", key: "key111", defaultValue: "true", operations: [.Read, .Write])
-            let astate = AferoAttributeValueState(value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
+            let astate = AferoAttributeValueState(attributeId: 11, value: "1", data: "01", updatedTimestampMs: 0, requestId: nil)
             let a = AferoAttribute(dataDescriptor: adesc, currentValueState: astate)
             
             let bdesc = AferoAttributeDataDescriptor(id: 222, type: .sInt8, semanticType: "semantic222", key: "key222", defaultValue: "2", operations: [.Read])
-            let bstate = AferoAttributeValueState(value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
+            let bstate = AferoAttributeValueState(attributeId: 22, value: "2", data: "02", updatedTimestampMs: 1000, requestId: nil)
             let b = AferoAttribute(dataDescriptor: bdesc, currentValueState: bstate)
 
             let attributes = [a, b]

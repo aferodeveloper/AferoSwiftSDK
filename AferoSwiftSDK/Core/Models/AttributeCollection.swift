@@ -857,20 +857,20 @@ public extension AferoAttributeDataDescriptor {
     }
     
     /// The id of the attribute this state represents.
-    let attributeId: Int?
+    public let attributeId: Int
     
     /// Alias for `attributeId`.
     @available(*, deprecated, message: "Use attributeid instead.")
-    var id: Int? { return attributeId }
+    public var id: Int { return attributeId }
     
     /// The string value of this instance.
-    let stringValue: String
+    public let stringValue: String
     
     @available(*, deprecated, message: "Use stringValue instead.")
-    var value: String { return stringValue }
+    public var value: String { return stringValue }
     
     /// The encoded data value of htis instance (if provided).
-    let data: String?
+    public let data: String?
     
     /// When this attribute was last updated.
     /// - warning: When an Afero device resets and reports its values, `updatedTimestampMs`
@@ -878,12 +878,12 @@ public extension AferoAttributeDataDescriptor {
     ///            the value was actually changed due to user action, rule execution,
     ///            or MCU activity.
     
-    let updatedTimestampMs: NSNumber?
+    public let updatedTimestampMs: NSNumber?
     
     /// Any associated request id, returned from the Afero cloud when setting an attribute.
     let requestId: Int?
     
-    init(attributeId: Int? = nil, value: String, data: String? = nil, updatedTimestampMs: NSNumber? = nil, requestId: Int? = nil) {
+    init(attributeId: Int, value: String, data: String? = nil, updatedTimestampMs: NSNumber? = nil, requestId: Int? = nil) {
         self.attributeId = attributeId
         self.stringValue = value
         self.data = data
@@ -891,7 +891,7 @@ public extension AferoAttributeDataDescriptor {
         self.requestId = requestId
     }
     
-    convenience init(attributeId: Int? = nil, value: String, data: String? = nil, updatedTimestamp: Date, requestId: Int? = nil) {
+    convenience init(attributeId: Int, value: String, data: String? = nil, updatedTimestamp: Date, requestId: Int? = nil) {
         self.init(
             attributeId: attributeId,
             value: value,
@@ -966,7 +966,7 @@ public extension AferoAttributeDataDescriptor {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let stringValue = try container.decode(String.self, forKey: .stringValue)
-        let attributeId = try container.decodeIfPresent(Int.self, forKey: .attributeId)
+        let attributeId = try container.decode(Int.self, forKey: .attributeId)
         let data = try container.decodeIfPresent(String.self, forKey: .data)
         let requestId = try container.decodeIfPresent(Int.self, forKey: .requestId)
         
@@ -983,15 +983,12 @@ public extension AferoAttributeDataDescriptor {
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [CodingKeys: Any] = [
+            .attributeId: attributeId,
             .stringValue: stringValue,
         ]
         
         if let updatedTimestampMs = updatedTimestampMs {
             ret[.updatedTimestampMs] = updatedTimestampMs
-        }
-        
-        if let attributeId = attributeId {
-            ret[.attributeId] = attributeId
         }
         
         if let data = data {
@@ -1017,16 +1014,17 @@ public extension AferoAttributeDataDescriptor {
             return nil
         }
         
-        guard let value = jsonDict[CodingKeys.stringValue.rawValue] as? String else {
-            return nil
+        guard
+            let attributeId = jsonDict[CodingKeys.attributeId.rawValue] as? Int,
+            let stringValue = jsonDict[CodingKeys.stringValue.rawValue] as? String else {
+                return nil
         }
 
         let data = jsonDict[CodingKeys.data.rawValue] as? String
         let requestId = jsonDict[CodingKeys.requestId.rawValue] as? Int
-        let attributeId = jsonDict[CodingKeys.attributeId.rawValue] as? Int
         let updatedTimestampMs = jsonDict[CodingKeys.updatedTimestampMs.rawValue] as? NSNumber
         
-        self.init(attributeId: attributeId, value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+        self.init(attributeId: attributeId, value: stringValue, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
     }
     
 }
@@ -1621,7 +1619,7 @@ extension AferoAttributeCollection {
     /// cloud-driven changes (through Conclave).
     
     func setCurrent(value: String, data: String? = nil, updatedTimestamp: Date = Date(), requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
+        let state = AferoAttributeValueState(attributeId: id, value: value, data: data, updatedTimestamp: updatedTimestamp, requestId: requestId)
         try setCurrent(valueState: state, forAttributeWithId: id)
     }
     
@@ -1669,7 +1667,7 @@ extension AferoAttributeCollection {
     }
 
     func setPending(value: String, data: String? = nil, updatedTimestampMs: NSNumber = Date().millisSince1970, requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+        let state = AferoAttributeValueState(attributeId: id, value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
         try setPending(valueState: state, forAttributeWithId: id)
     }
 
@@ -1706,7 +1704,7 @@ extension AferoAttributeCollection {
     /// valueState, prior to committing the attribute to the cloud (after which time it becomes the `pendingValueState`.
     
     func setIntended(value: String, data: String? = nil, updatedTimestampMs: NSNumber = Date().millisSince1970, requestId: Int? = nil, forAttributeWithId id: Int) throws {
-        let state = AferoAttributeValueState(value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
+        let state = AferoAttributeValueState(attributeId: id, value: value, data: data, updatedTimestampMs: updatedTimestampMs, requestId: requestId)
         try setIntended(valueState: state, forAttributeWithId: id)
     }
     /// Set the intended value of an attribute, reflecting a user's intent. This can be considered a "staging"
@@ -2007,6 +2005,26 @@ public extension AferoAttribute {
         }
         return displayValue
     }
+    
+}
+
+public extension AferoAttributeDataDescriptor {
+    
+    @available(*, deprecated, message: "use AferoAttributeDataType instead.")
+    typealias DataType = AferoAttributeDataType
+    
+    @available(*, deprecated, message: "use AferoAttributeOperations instead.")
+    typealias Operations = AferoAttributeOperations
+    
+}
+
+public extension AferoAttributePresentationDescriptor {
+    
+    @available(*, deprecated, message: "use AferoAttributePresentationValueOption instead.")
+    typealias ValueOption = AferoAttributePresentationValueOption
+    
+    @available(*, deprecated, message: "use AferoAttributePresentationRangeOptions instead.")
+    typealias RangeOptions = AferoAttributePresentationRangeOptions
     
 }
 
