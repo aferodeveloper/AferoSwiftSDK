@@ -671,7 +671,7 @@ public extension AferoAttributeDataDescriptor {
     }
     
     public override var description: String {
-        return "{ min:\(min), max:\(max), step:\(step) }, unitLabel:\(String(describing: unitLabel))"
+        return "{ min:\(min), max:\(max), step:\(step) }, unitLabel:\(String(describing: unitLabel)) }"
     }
     
     public let min: String
