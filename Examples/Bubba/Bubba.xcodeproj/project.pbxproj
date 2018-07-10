@@ -121,7 +121,6 @@
 				CB4DB0EC203396C80086841B /* Frameworks */,
 				CB4DB0ED203396C80086841B /* Resources */,
 				7EF769F6855004F94587EF89 /* [CP] Embed Pods Frameworks */,
-				91F2EAE3A94EA289F3E4CF65 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -225,21 +224,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		91F2EAE3A94EA289F3E4CF65 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Bubba/Pods-Bubba-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BE53A525710D6458D3A10D48 /* [CP] Check Pods Manifest.lock */ = {
