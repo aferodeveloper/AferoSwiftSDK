@@ -47,7 +47,8 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
         case .setupFailed: return "The setup process for the embedded softhub has failed. (no other reason given)."
         case .fileIOError: return "I/O Error reading config values."
         case .unhandledService: return "Asked to start with an unrecognized Afero cloud."
-        case .serviceIssue: return "There was an issue communicating with the Afero cloud."
+        case .serviceIssue: return "There was a problem communicating with the Afero cloud."
+        case .notSupported: return "The installed softhub is not compatible with the Afero cloud, and must be updated."
         }
     }
     

@@ -1,11 +1,11 @@
 PODS:
-  - AferoSofthub (1.4.6)
+  - AferoSofthub (1.5.0)
   - AferoSwiftSDK/AFNetworking (1.0.16):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
   - AferoSwiftSDK/Core (1.0.16):
-    - AferoSofthub (= 1.4.6)
+    - AferoSofthub (~> 1.5)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
     - CryptoSwift
@@ -37,7 +37,7 @@ PODS:
   - CryptoSwift (0.7.2)
   - HTTPStatusCodes (3.2.0)
   - LKAlertController (1.12.1)
-  - Nimble (7.1.1)
+  - Nimble (7.1.3)
   - OHHTTPStubs/Core (6.1.0)
   - OHHTTPStubs/Default (6.1.0):
     - OHHTTPStubs/Core
@@ -53,7 +53,7 @@ PODS:
     - OHHTTPStubs/Default
   - PromiseKit/CorePromise (4.5.2)
   - QRCodeReader.swift (8.2.0)
-  - Quick (1.3.0)
+  - Quick (1.3.1)
   - ReactiveSwift (1.1.5):
     - Result (~> 3.2)
   - Result (3.2.4)
@@ -79,7 +79,7 @@ DEPENDENCIES:
 SPEC REPOS:
   "git@github.com:aferodeveloper/Podspecs.git":
     - AferoSofthub
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AFNetworking
     - AFOAuth2Manager
     - CocoaLumberjack
@@ -102,8 +102,8 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
-  AferoSofthub: 8fb6897671a89691e20e19de08ab255d5156903d
-  AferoSwiftSDK: 45b31145bf949dfa9dd9dd8cc630444b06eea88b
+  AferoSofthub: 7f4746fae9f7d41c231b383972241dfa9e95d258
+  AferoSwiftSDK: 62bd54551937a8af4d6210c58b02982f6c98c6f9
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
@@ -111,11 +111,11 @@ SPEC CHECKSUMS:
   CryptoSwift: cd2158be2bf639aabc63ec804707c7137c90157c
   HTTPStatusCodes: 69f50d229c4b5d6dcb48fad9c86e32ded975bcd3
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
-  Nimble: 391f07782af4b37914f9bd7b2ffbb952731b8202
+  Nimble: 2839b01d1b31f6a6a7777a221f0d91cf52e8e27b
   OHHTTPStubs: 1e21c7d2c084b8153fc53d48400d8919d2d432d0
   PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
   QRCodeReader.swift: 003eb32f18a5a675b936ec82ba0ff368cddbff45
-  Quick: 03278013f71aa05fe9ecabc94fbcc6835f1ee76f
+  Quick: d17304d58d0d169dd0bd1c6e5c28e3318de32a1a
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
@@ -123,4 +123,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b1ba7898e5bb64163048636bab3d79b88ea616a2
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
