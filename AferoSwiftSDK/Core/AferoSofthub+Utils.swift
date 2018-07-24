@@ -214,6 +214,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     case fileIOError
     case setupFailed
     case serviceIssue
+    case notSupported
     
     private var aferoSofthubCompleteReason: AferoSofthubCompleteReason {
         return AferoSofthubCompleteReason(rawValue: rawValue)!
