@@ -16,8 +16,9 @@ puts "Using Xcode version: #{XCODE_VERSION}"
 def base_pods
 
     # Else if on XCode 9/Swift 4, use:
-    if XCODE_VERSION.start_with?("9")
-        pod 'CryptoSwift', '0.7.2', :inhibit_warnings => true
+    if XCODE_VERSION.start_with?("9") || XCODE_VERSION.start_with?("10")
+        pod 'CryptoSwift', :git => "https://github.com/krzyzanowskim/CryptoSwift.git", :branch => "swift42", :inhibit_warnings => true
+        #pod 'CryptoSwift', '0.7.2', :inhibit_warnings => true
     else
         pod 'CryptoSwift', '0.7.0', :inhibit_warnings => true
     end
