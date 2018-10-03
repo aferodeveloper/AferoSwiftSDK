@@ -452,7 +452,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
         
         _semanticTypeDescriptorMap = attributes.reduce([:]) {
             curr, next in
-            var ret: [String: [AttributeDescriptor]] = curr
+            var ret: [String: [AttributeDescriptor]] = curr ?? [:]
             
             guard let semanticType = next.1.semanticType else { return curr }
             
