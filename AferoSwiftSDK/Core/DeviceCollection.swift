@@ -1202,7 +1202,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(handleEnteredForegroundNotification),
-                name: .UIApplicationWillEnterForeground,
+                name: .UIApplicationDidBecomeActive,
                 object: nil
             )
         
@@ -1213,7 +1213,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     func unregisterFromAppStateNotifications() {
         #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: .UIApplicationDidEnterBackground, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
         #endif
     }
     
