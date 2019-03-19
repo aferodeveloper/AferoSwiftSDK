@@ -1,11 +1,11 @@
 PODS:
-  - AferoSofthub (1.5.1)
-  - AferoSwiftSDK/AFNetworking (1.1.6):
+  - AferoSofthub (1.5.3)
+  - AferoSwiftSDK/AFNetworking (1.1.9):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.1.6):
-    - AferoSofthub (~> 1.5.1)
+  - AferoSwiftSDK/Core (1.1.9):
+    - AferoSofthub (~> 1.5.3)
     - CocoaLumberjack/Swift (~> 3.2)
     - CocoaZ (~> 1.4)
     - CryptoSwift
@@ -30,31 +30,31 @@ PODS:
     - AFNetworking/NSURLSession
   - AFOAuth2Manager (3.0.0):
     - AFNetworking/NSURLSession (~> 3.0)
-  - CocoaLumberjack/Default (3.4.2)
-  - CocoaLumberjack/Swift (3.4.2):
-    - CocoaLumberjack/Default
+  - CocoaLumberjack/Core (3.5.2)
+  - CocoaLumberjack/Swift (3.5.2):
+    - CocoaLumberjack/Core
   - CocoaZ (1.4.2)
   - CryptoSwift (0.10.0)
   - HTTPStatusCodes (3.2.0)
   - LKAlertController (1.12.1)
-  - Nimble (7.3.1)
-  - OHHTTPStubs/Core (6.1.0)
-  - OHHTTPStubs/Default (6.1.0):
+  - Nimble (8.0.1)
+  - OHHTTPStubs/Core (7.0.0)
+  - OHHTTPStubs/Default (7.0.0):
     - OHHTTPStubs/Core
     - OHHTTPStubs/JSON
     - OHHTTPStubs/NSURLSession
     - OHHTTPStubs/OHPathHelpers
-  - OHHTTPStubs/JSON (6.1.0):
+  - OHHTTPStubs/JSON (7.0.0):
     - OHHTTPStubs/Core
-  - OHHTTPStubs/NSURLSession (6.1.0):
+  - OHHTTPStubs/NSURLSession (7.0.0):
     - OHHTTPStubs/Core
-  - OHHTTPStubs/OHPathHelpers (6.1.0)
-  - OHHTTPStubs/Swift (6.1.0):
+  - OHHTTPStubs/OHPathHelpers (7.0.0)
+  - OHHTTPStubs/Swift (7.0.0):
     - OHHTTPStubs/Default
   - PromiseKit/CorePromise (4.5.2)
   - QRCode (2.0)
   - QRCodeReader.swift (8.2.0)
-  - Quick (1.3.2)
+  - Quick (2.0.0)
   - ReactiveSwift (1.1.5):
     - Result (~> 3.2)
   - Result (3.2.4)
@@ -112,26 +112,26 @@ CHECKOUT OPTIONS:
     :git: https://github.com/krzyzanowskim/CryptoSwift.git
 
 SPEC CHECKSUMS:
-  AferoSofthub: e2c25c2e72b96d6f042d8c6f6d8b6f5de59d7663
-  AferoSwiftSDK: cc5c28d3057a0851bd5dc4eac672bda039e4d768
+  AferoSofthub: 21de5a13e33871975219e9d7ddb8cab58a52764c
+  AferoSwiftSDK: a7cfdfc33d2cdfc19e52f110bb9acaddd70ad110
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
-  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
   CryptoSwift: a63cae9da3538235aae52af6f7eb45488d3c410c
   HTTPStatusCodes: 69f50d229c4b5d6dcb48fad9c86e32ded975bcd3
   LKAlertController: e229465c0b4543ea122bfe62567747e6213ee43f
-  Nimble: 04f732da099ea4d153122aec8c2a88fd0c7219ae
-  OHHTTPStubs: 1e21c7d2c084b8153fc53d48400d8919d2d432d0
+  Nimble: 45f786ae66faa9a709624227fae502db55a8bdd0
+  OHHTTPStubs: ef33a2c353110d306bb98f695435ec56ff5a26c3
   PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
   QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
   QRCodeReader.swift: 003eb32f18a5a675b936ec82ba0ff368cddbff45
-  Quick: 2623cb30d7a7f41ca62f684f679586558f483d46
+  Quick: ce1276c7c27ba2da3cb2fd0cde053c3648b3b22d
   ReactiveSwift: 3fea31f8fc49f112d2dc613282c5d395c4d167bb
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 7ee27f6daf20d99ce180e5ef5924bd7397996bf4
+PODFILE CHECKSUM: c6ff1471ddbd46fe021b37d22aaf34f87fabe7fa
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1
