@@ -586,7 +586,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
 				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
@@ -623,7 +623,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

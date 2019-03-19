@@ -188,7 +188,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
 				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
@@ -223,7 +223,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bubba/Pods-Bubba-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BE53A525710D6458D3A10D48 /* [CP] Check Pods Manifest.lock */ = {
