@@ -238,6 +238,9 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     
 }
 
+public typealias SofthubAssociationOnDone = () -> Void
+public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociationOnDone) -> Void
+
 /// A Swift wrapper around the Afero softhub software. This is the lowest-level
 /// interface available to non-Afero developers.
 
@@ -346,9 +349,12 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     ///             attribute of the softhub's device representation. It can be used to distinguish
     ///             the local softhub from others.
     ///
-    /// - parameter associationhandler: A callback which takes an `associationId` in the form of
-    ///             a string, and performs a call against the appropriate Afero REST API
-    ///             to associate.
+    /// - parameter associationHandler: A callback in the form `(String associationId, ()->Void onDone) -> Void`.
+    ///             * The `associationId` is to be used in a call to the
+    ///             appropriate Afero REST API to associate a device.
+    ///             * **AFTER** that has completed with a 2XX response from the
+    ///             Afero REST API, the provided `onDone` must be called
+    ///             to complete association.
     ///
     /// - parameter completionHandler: A callback called when the softhub stops. The reason
     ///             for stopping is provided as the sole parameter.
@@ -386,6 +392,9 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     /// then `associateDevice(with:to:locatedAt:ownershipTransferVerified:expansions)` can be used
     /// for this purpose. See `AferoAPIClient+Device.swift` for more info.
     ///
+    /// Upon a successful (2XX) response from the client, the callback must call
+    /// the provided `onDone()` handler to signal the softhub to complete its association.
+    ///
     /// Once a softhub has associated with an account,
     /// it saves its configuration info locally to a path determined in part by
     /// hashing the `accountId` value. Upon subsequent starts using the same `accountId`,
@@ -400,16 +409,16 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         behavingAs softhubType: SofthubType = .consumer,
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
-        associationHandler: @escaping (String)->Void,
+        associationHandler: @escaping SofthubAssociationHandler,
         completionHandler: @escaping (SofthubCompletionReason)->Void
         ) {
         
         if [.starting, .started].contains(state) { return }
         
         let localAssociationHandler: AferoSofthubSecureHubAssociationHandler = {
-            [weak self] associationId in
+            [weak self] associationId, onDone in
             self?.associationId = associationId
-            associationHandler(associationId)
+            associationHandler(associationId, onDone)
         }
         
         let localCompletionHandler: AferoSofthubCompleteReasonHandler = {

@@ -276,10 +276,11 @@ class AccountViewController: UITableViewController {
                 
                 do {
                     try SofthubMinder.sharedInstance.start(withAccountId: accountId) {
-                        associationId in
+                        associationId, onDone in
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {
-                                device in
+                                device -> Void in
+                                onDone()
                                 DDLogDebug("Associated device: \(String(describing: device))", tag: self.TAG)
                             }.catch {
                                 err in
