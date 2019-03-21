@@ -81,7 +81,7 @@ extension DeviceModelable {
         withAccountId accountId: String,
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
-        associationNeededHandler: @escaping (String)->Void
+        associationNeededHandler: @escaping SofthubAssociationHandler
         ) throws {
         
         otaStateObs = Softhub.shared.observe(\.activeOTACount) {
@@ -142,7 +142,7 @@ extension DeviceModelable {
         withAccountId accountId: String,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
-        associationNeededHandler: @escaping (String)->Void
+        associationNeededHandler: @escaping SofthubAssociationHandler
         ) {
         
         if hubbyStarted { return }
