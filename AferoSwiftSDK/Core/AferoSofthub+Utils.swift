@@ -10,7 +10,7 @@ import AferoSofthub
 
 
 extension AferoSofthubError:  Error {
-
+    
     public var localizedDescription: String {
         switch self {
         case .conclaveAccessEncoding: return "Conclave access token uses unrecognized encoding."
@@ -66,11 +66,11 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         case .dev: return "Afero development cloud"
         }
     }
-
+    
     public var debugDescription: String {
         return "<AferoService> \(rawValue): \(description)"
     }
-
+    
 }
 
 /// The Afero cloud to which a softhub should attempt to connect.
@@ -135,7 +135,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         case .enterprise: return .enterprise
         }
     }
-
+    
     public var description: String {
         return aferoSofthubType.rawValue
     }
@@ -206,7 +206,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 /// Reasons for the Softhub to stop running.
 
 @objc public enum SofthubCompletionReason: Int, CustomStringConvertible, CustomDebugStringConvertible {
-
+    
     case none = -1
     case stopCalled = 0
     case missingSetupPath
@@ -238,8 +238,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     
 }
 
-public typealias SofthubAssociationOnDone = () -> Void
-public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociationOnDone) -> Void
+public typealias SofthubAssociationHandler = (String) -> Void
 
 /// A Swift wrapper around the Afero softhub software. This is the lowest-level
 /// interface available to non-Afero developers.
@@ -255,7 +254,7 @@ public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociati
     /// version control.
     
     public var version: String { return AferoSofthubVersion }
-
+    
     /// The internal build version of the softhub. This relates to and internal Afero
     /// build number, and may differ from release tag identified in distribution
     /// version control.
@@ -312,7 +311,7 @@ public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociati
     }
     
     private func startObservingSofthubProperties() {
-
+        
         _softhubStateObs = AferoSofthub.sharedInstance().observe(\.state) {
             [weak self] hub, chg in
             self?.state = SofthubState(hub.state)
@@ -323,12 +322,12 @@ public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociati
             self?.associationId = nil
             self?.deviceId = hub.deviceId
         }
-
+        
         _softhubActiveOTACountObs = AferoSofthub.sharedInstance().observe(\.otaCount) {
             [weak self] hub, chg in
             self?.activeOTACount = hub.otaCount
         }
-
+        
     }
     
     /// Ask the softhub to start.
@@ -416,9 +415,9 @@ public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociati
         if [.starting, .started].contains(state) { return }
         
         let localAssociationHandler: AferoSofthubSecureHubAssociationHandler = {
-            [weak self] associationId, onDone in
+            [weak self] associationId in
             self?.associationId = associationId
-            associationHandler(associationId, onDone)
+            associationHandler(associationId)
         }
         
         let localCompletionHandler: AferoSofthubCompleteReasonHandler = {
@@ -439,6 +438,16 @@ public typealias SofthubAssociationHandler = (String, @escaping SofthubAssociati
             associationHandler: localAssociationHandler,
             completionHandler: localCompletionHandler
         )
+    }
+    
+    /// Tell the softhub that association has been completed.
+    ///
+    /// This is required after a successful call to the Afero Client API to associate
+    /// on behalf of the softhub (notably in cases where the softhub performs a live
+    /// reassociate if its cloud representation is deleted.
+    
+    public func notifyAssociationCompleted() {
+        AferoSofthub.notifyAssociationCompleted();
     }
     
     /// Stop the Softhub. The Softub will terminate immediately,

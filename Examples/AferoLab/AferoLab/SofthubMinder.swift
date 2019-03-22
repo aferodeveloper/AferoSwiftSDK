@@ -128,6 +128,18 @@ extension DeviceModelable {
 
     }
     
+    /// Tell the softhub that association has been completed.
+    ///
+    /// This is required after a successful call to the Afero Client API to associate
+    /// on behalf of the softhub (notably in cases where the softhub performs a live
+    /// reassociate if its cloud representation is deleted.
+    ///
+    /// - note: This simply proxies the vended API on `Softhub`.
+
+    func notifyAssociationCompleted() {
+        Softhub.shared.notifyAssociationCompleted()
+    }
+    
     func stop() {
         backgroundNotificationObserver = nil
         foregroundNotificationObserver = nil
