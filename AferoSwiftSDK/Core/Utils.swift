@@ -178,7 +178,7 @@ public func minimize<T, C: Comparable>(_ values: [T?], f: (T?)->C?) -> T? {
     return ret
 }
 
-public func floatNormalize<T: SignedNumber>(_ min: T?, max: T?, current: T?, conv: (T)->Float) -> Float? {
+public func floatNormalize<T: SignedNumeric & Comparable>(_ min: T?, max: T?, current: T?, conv: (T)->Float) -> Float? {
     
     guard let min = min, let max = max else { return nil }
     guard var current = current else { return nil }

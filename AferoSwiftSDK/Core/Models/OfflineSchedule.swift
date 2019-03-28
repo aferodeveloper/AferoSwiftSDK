@@ -160,7 +160,9 @@ public extension OfflineScheduleCollator {
 
 public typealias OfflineScheduleIndexDeltas = (deletions: IndexSet, insertions: IndexSet)
 
-class DefaultOfflineScheduleCollator: OfflineScheduleCollator { }
+public class DefaultOfflineScheduleCollator: OfflineScheduleCollator {
+    public init() {}
+}
 
 // MARK: Public Interface
 
