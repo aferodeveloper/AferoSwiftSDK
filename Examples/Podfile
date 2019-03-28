@@ -88,7 +88,7 @@ end
 post_install do |installer|
 
   # List of Pods to use as Swift 3.2
-  myTargets = ['AferoSwiftSDK', 'ReactiveSwift']
+  myTargets = ['ReactiveSwift']
 
   installer.pods_project.targets.each do |target|
     if myTargets.include? target.name

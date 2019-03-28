@@ -461,7 +461,7 @@ public extension AttributeEventSignaling {
         
         guard let attributeIds = attributeIds else { return nil }
         
-        let signals = attributeIds.flatMap {
+        let signals = attributeIds.compactMap {
             [weak self] attributeId in return self?.eventSignalForAttributeId(attributeId)
         }
         
@@ -471,7 +471,7 @@ public extension AttributeEventSignaling {
     }
     
     public func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == NSNumber {
-        return eventSignalForAttributeIds(attributeIds?.flatMap { $0.intValue})
+        return eventSignalForAttributeIds(attributeIds?.compactMap { $0.intValue})
     }
 
 }
@@ -979,7 +979,7 @@ public extension DeviceModelable {
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
     public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
         return attributeConfigs()?
-            .flatMap {
+            .compactMap {
                 config -> Attribute? in
 
                 guard let value = self.value(for: config.descriptor) else {
@@ -994,7 +994,7 @@ public extension DeviceModelable {
     
     public func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
         return attributeConfigs(withIdsIn: range)?
-            .flatMap {
+            .compactMap {
                 config -> Attribute? in
                 
                 guard let value = self.value(for: config.descriptor) else {
@@ -1115,7 +1115,7 @@ public extension DeviceModelable {
     
     func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
-        update(with: attributes.flatMap {
+        update(with: attributes.compactMap {
             v in return (v.id, v.value)
         })
     }
@@ -1241,7 +1241,7 @@ public extension DeviceModelable {
     
     public func update(_ attributes: [Int: String], accumulative: Bool = true) {
         
-        let attributeInstances: [AttributeInstance] = attributes.flatMap {
+        let attributeInstances: [AttributeInstance] = attributes.compactMap {
             
             (attributeId: Int, stringLiteralValue: String) -> AttributeInstance? in
             
@@ -1285,7 +1285,7 @@ public extension DeviceModelable {
     
     public func write(_ attributes: [AttributeInstance?], completion: @escaping WriteAttributeOnDone = { _, _ in }) {
 
-        guard let actions = attributes.flatMap({ $0 }).batchActionRequests else {
+        guard let actions = attributes.compactMap({ $0 }).batchActionRequests else {
             DDLogError("Unable to convert \(attributes) to batchActionRequests; bailing on write.")
             completion(nil, "Unable to convert \(attributes) to batchActionRequests; bailing on write.")
             return
@@ -1337,7 +1337,7 @@ public extension DeviceModelable {
         return profile?.presentation(deviceId)?.primaryOperationOption
     }
     
-    func togglePrimaryOperation(_ onDone: @escaping WriteAttributeOnDone = { _ in }) {
+    func togglePrimaryOperation(_ onDone: @escaping WriteAttributeOnDone = { _,_  in }) {
         
         guard let
             primaryOperationAttributeDescriptor = primaryOperationAttributeDescriptor,

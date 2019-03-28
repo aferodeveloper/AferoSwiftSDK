@@ -281,11 +281,11 @@ internal protocol DeviceTagPersisting: class {
             let deleted = oldValue.subtracting(deviceTags)
             let added = deviceTags.subtracting(oldValue)
             
-            deleted.sorted { $0.0.value < $0.1.value }.forEach {
+            deleted.sorted { $0.value < $1.value }.forEach {
                 eventSink.send(value: .deletedTag($0))
             }
             
-            added.sorted { $0.0.value < $0.1.value }.forEach {
+            added.sorted { $0.value < $1.value }.forEach {
                 eventSink.send(value: .addedTag($0))
             }
 
@@ -368,7 +368,7 @@ internal protocol DeviceTagPersisting: class {
         
         var newDeviceTags = deviceTags
         ret = Set(newDeviceTags.filter(isIncluded)
-            .flatMap {
+            .compactMap {
                 return newDeviceTags.remove($0)
         })
         deviceTags = newDeviceTags
@@ -542,7 +542,7 @@ internal protocol DeviceTagPersisting: class {
             }
             
             self?.add(tag: tag) {
-                onDone($0.0?.first, $0.1)
+                onDone($0?.first, $1)
             }
         }
 
@@ -573,7 +573,7 @@ internal protocol DeviceTagPersisting: class {
             }
             
             self?.remove(withId: id) {
-                onDone(id, $0.1)
+                onDone(id, $1)
             }
             
         }

@@ -91,7 +91,7 @@ extension AferoAPIClientProto {
             
             self?.doRefreshOAuth(
                 passthroughError: passthroughError,
-                success: { _ = fulfill() }) {
+                success: { _ = fulfill(()) }) {
                     error in self?.doSignOut(error: error) {
                         reject(error)
                     }
@@ -781,7 +781,7 @@ extension URLRequest {
 
 extension URLResponse {
     
-    public var verboseDescription: String {
+    @objc public var verboseDescription: String {
         
         #if INTERNAL
             let URLDescription = url?.debugDescription ?? "<none>"

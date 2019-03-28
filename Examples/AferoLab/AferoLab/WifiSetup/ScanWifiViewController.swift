@@ -35,7 +35,7 @@ import SVProgressHUD
         set { headerBodyLabel?.text = newValue }
     }
     
-    override init(frame: CGRect, style: UITableViewStyle) {
+    override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         commonInit()
     }
@@ -193,9 +193,9 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         }
         
         tableView.estimatedSectionHeaderHeight = 31
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 55
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(refreshTapped(_:)), for: .valueChanged)

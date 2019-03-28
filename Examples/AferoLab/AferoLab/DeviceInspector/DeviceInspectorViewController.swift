@@ -347,8 +347,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         tableView.remembersLastFocusedIndexPath = true
         tableView.estimatedRowHeight = 55
         tableView.estimatedSectionHeaderHeight = 25
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         
         TableViewHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
@@ -469,7 +469,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     func updateVisibleCells() {
-        tableView.indexPathsForVisibleRows?.flatMap {
+        tableView.indexPathsForVisibleRows?.compactMap {
             indexPath -> (cell: UITableViewCell, indexPath: IndexPath)? in
             guard let cell = tableView.cellForRow(at: indexPath) else { return nil }
             return (cell: cell, indexPath: indexPath)

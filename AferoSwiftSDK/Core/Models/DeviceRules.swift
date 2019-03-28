@@ -508,20 +508,20 @@ extension AccountAction: AferoJSONCoding {
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [String: Any] = [
-            type(of: self).CoderKeyRequestId: requestId,
-            type(of: self).CoderKeyType: type,
+            Swift.type(of: self).CoderKeyRequestId: requestId,
+            Swift.type(of: self).CoderKeyType: type,
         ]
         
         if let timestamp = timestamp {
-            ret[type(of: self).CoderKeyTimestamp] = timestamp.millisSince1970
+            ret[Swift.type(of: self).CoderKeyTimestamp] = timestamp.millisSince1970
         }
         
         if let sender = sender {
-            ret[type(of: self).CoderKeySender] = sender
+            ret[Swift.type(of: self).CoderKeySender] = sender
         }
         
         if let source = source {
-            ret[type(of: self).CoderKeySender] = source.JSONDict!
+            ret[Swift.type(of: self).CoderKeySender] = source.JSONDict!
         }
         
         return ret
@@ -531,15 +531,15 @@ extension AccountAction: AferoJSONCoding {
 
         guard
             let jsonDict = json as? [String: Any],
-            let requestId = jsonDict[type(of: self).CoderKeyRequestId] as? Int,
-            let type = jsonDict[type(of: self).CoderKeyType] as? String else {
+            let requestId = jsonDict[Swift.type(of: self).CoderKeyRequestId] as? Int,
+            let type = jsonDict[Swift.type(of: self).CoderKeyType] as? String else {
                 DDLogInfo("Unable to decode AccountAction: \(String(reflecting: json))")
                 return nil
         }
         
         var source: AccountActionSource? = nil
         
-        if let sourceJson = jsonDict[type(of: self).CoderKeySource] {
+        if let sourceJson = jsonDict[Swift.type(of: self).CoderKeySource] {
             guard let sourceObj: AccountActionSource = |<sourceJson else {
                 DDLogInfo("Invalid source for AccountAction: \(String(reflecting: json))")
                 return nil
@@ -549,11 +549,11 @@ extension AccountAction: AferoJSONCoding {
         
         var timestamp: Date? = nil
         
-        if let timestampMs = jsonDict[type(of: self).CoderKeyTimestamp] as? NSNumber {
+        if let timestampMs = jsonDict[Swift.type(of: self).CoderKeyTimestamp] as? NSNumber {
             timestamp = Date.dateWithMillisSince1970(timestampMs)
         }
         
-        let sender = jsonDict[type(of: self).CoderKeySender] as? String
+        let sender = jsonDict[Swift.type(of: self).CoderKeySender] as? String
         
         self.init(requestId: requestId, type: type, timestamp: timestamp as Date?, sender: sender, source: source)
     }
@@ -565,14 +565,14 @@ extension AccountAction.AccountActionSource: AferoJSONCoding {
     static let CoderKeyType = "type"
     
     public var JSONDict: AferoJSONCodedType? {
-        return [type(of: self).CoderKeyType: type]
+        return [Swift.type(of: self).CoderKeyType: type]
     }
     
     public init?(json: AferoJSONCodedType?) {
         
         guard
             let jsonDict = json as? [String: Any],
-            let type = jsonDict[type(of: self).CoderKeyType] as? String else {
+            let type = jsonDict[Swift.type(of: self).CoderKeyType] as? String else {
             DDLogInfo("Unable to decode accountActionSource: \(String(reflecting: json))")
             return nil
         }

@@ -188,7 +188,7 @@ public extension AFNetworkingAferoAPIClient {
                         )
 
                         self.sessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
-                        fulfill()
+                        fulfill(())
                     }
             },
 
@@ -202,7 +202,7 @@ public extension AFNetworkingAferoAPIClient {
     }
 
     func signOut(_ error: Error? = nil) -> Promise<Void> {
-        return Promise { fulfill, _ in self.doSignOut(error: error) { fulfill() } }
+        return Promise { fulfill, _ in self.doSignOut(error: error) { fulfill(()) } }
     }
     
 }

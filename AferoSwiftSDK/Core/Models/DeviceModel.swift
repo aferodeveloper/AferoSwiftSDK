@@ -1079,7 +1079,7 @@ extension RecordingDeviceModel: DeviceActionable {
             locationState = .notLocated
         }
         
-        return Promise { fulfill, _ in fulfill() }
+        return Promise { fulfill, _ in fulfill(()) }
     }
     
 }

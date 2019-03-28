@@ -184,7 +184,7 @@ extension NSError {
 public extension Dictionary {
     
     mutating func update(_ other: [Key: Value]) -> [Value] {
-        return other.flatMap {
+        return other.compactMap {
             self.updateValue($0.1, forKey: $0.0)
         }
     }

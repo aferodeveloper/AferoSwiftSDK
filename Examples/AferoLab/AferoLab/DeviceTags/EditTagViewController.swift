@@ -15,7 +15,7 @@ class EditTagViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.preferredContentSize = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+        self.preferredContentSize = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         updateUI()
     }
     

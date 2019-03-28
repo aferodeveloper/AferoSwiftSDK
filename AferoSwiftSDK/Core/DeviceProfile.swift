@@ -978,7 +978,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                 self.id = id
                 self.type = type
                 self.attributeMap = attributeMap
-                self.attributeIds = Set(attributeMap?.values.flatMap { $0 } ?? [])
+                self.attributeIds = Set(attributeMap?.values.compactMap { $0 } ?? [])
                 self.attributeKeys = Set(attributeMap?.keys.flatMap { $0 } ?? [])
                 self.displayRules = displayRules ?? []
             }
@@ -2088,13 +2088,13 @@ extension DeviceProfile.Presentation.Control: AferoJSONCoding {
     public var JSONDict: AferoJSONCodedType? {
 
         var ret: AferoJSONObject = [
-            type(of: self).CoderKeyId: id,
-            type(of: self).CoderKeyControlType: type,
-            type(of: self).CoderKeyDisplayRules:  displayRules
+            Swift.type(of: self).CoderKeyId: id,
+            Swift.type(of: self).CoderKeyControlType: type,
+            Swift.type(of: self).CoderKeyDisplayRules:  displayRules
         ]
         
         if let attributeMap = attributeMap {
-            ret[type(of: self).CoderKeyAttributeMap] = attributeMap
+            ret[Swift.type(of: self).CoderKeyAttributeMap] = attributeMap
         }
         
         return ret
@@ -2108,14 +2108,14 @@ extension DeviceProfile.Presentation.Control: AferoJSONCoding {
         }
         
         guard
-            let id = json[type(of: self).CoderKeyId] as? Int,
-            let type = json[type(of: self).CoderKeyControlType] as? String else {
+            let id = json[Swift.type(of: self).CoderKeyId] as? Int,
+            let type = json[Swift.type(of: self).CoderKeyControlType] as? String else {
                 DDLogError("ERROR: Unable to decode DeviceProfile.Presentation.Control (missing id or type): \(json)")
                 return nil
         }
         
-        let maybeAttributeMap = json[type(of: self).CoderKeyAttributeMap] as? [String: Int]
-        let maybeDisplayRules = json[type(of: self).CoderKeyDisplayRules] as? DisplayRules
+        let maybeAttributeMap = json[Swift.type(of: self).CoderKeyAttributeMap] as? [String: Int]
+        let maybeDisplayRules = json[Swift.type(of: self).CoderKeyDisplayRules] as? DisplayRules
         
         self.init(
             id: id,
@@ -2191,23 +2191,23 @@ extension DeviceProfile.Presentation.Gauge: AferoJSONCoding {
         var ret: AferoJSONObject = [:]
 
         if let foreground = foreground {
-            ret[type(of: self).CoderKeyForeground] = foreground.JSONDict
+            ret[Swift.type(of: self).CoderKeyForeground] = foreground.JSONDict
         }
 
         if let background = background {
-            ret[type(of: self).CoderKeyBackground] = background.JSONDict
+            ret[Swift.type(of: self).CoderKeyBackground] = background.JSONDict
         }
 
         if let label = label {
-            ret[type(of: self).CoderKeyLabel] = label
+            ret[Swift.type(of: self).CoderKeyLabel] = label
         }
 
         if let labelSize = labelSize {
-            ret[type(of: self).CoderKeyLabelSize] = labelSize
+            ret[Swift.type(of: self).CoderKeyLabelSize] = labelSize
         }
         
         if let displayRules = displayRules {
-            ret[type(of: self).CoderKeyDisplayRules] = displayRules
+            ret[Swift.type(of: self).CoderKeyDisplayRules] = displayRules
         }
         
         return ret
@@ -2216,9 +2216,9 @@ extension DeviceProfile.Presentation.Gauge: AferoJSONCoding {
     public init?(json: AferoJSONCodedType?) {
         if let json = json as? AferoJSONObject {
             self.init(
-                foreground: |<(json[type(of: self).CoderKeyForeground] as? [String: Any]),
-                background: |<(json[type(of: self).CoderKeyBackground] as? [String: Any]),
-                displayRules: json[type(of: self).CoderKeyDisplayRules] as? DisplayRules
+                foreground: |<(json[Swift.type(of: self).CoderKeyForeground] as? [String: Any]),
+                background: |<(json[Swift.type(of: self).CoderKeyBackground] as? [String: Any]),
+                displayRules: json[Swift.type(of: self).CoderKeyDisplayRules] as? DisplayRules
             )
         } else {
             return nil
@@ -2471,7 +2471,7 @@ extension RangeOptionsPresentable {
     /// for this instance.
     
     public var steps: [NSDecimalNumber] {
-        return (0..<count.uint64Value).flatMap { self[idx: $0] }
+        return (0..<count.uint64Value).compactMap { self[idx: $0] }
     }
     
     
@@ -2573,7 +2573,7 @@ public extension Array where Element: ValueOptionPresentable {
     
     public var displayRules: DisplayRules {
         
-        return self.flatMap {
+        return self.compactMap {
             opt in
             
             let filteredApply = opt.apply.filter {
@@ -2667,7 +2667,7 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
     }
     
     public var steps: [AttributeValue] {
-        return (0..<count).flatMap { self[$0] }
+        return (0..<count).compactMap { self[$0] }
     }
     
     public typealias Presentable = DeviceProfile.Presentation.AttributeOption.RangeOptions

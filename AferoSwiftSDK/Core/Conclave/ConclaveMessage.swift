@@ -68,9 +68,9 @@ extension ConclaveHost: AferoJSONCoding {
     public var JSONDict: AferoJSONCodedType? {
         
         return [
-            type(of: self).CoderKeyType: type,
-            type(of: self).CoderKeyHost: host,
-            type(of: self).CoderKeyPort: port,
+            Swift.type(of: self).CoderKeyType: type,
+            Swift.type(of: self).CoderKeyHost: host,
+            Swift.type(of: self).CoderKeyPort: port,
         ]
         
     }
@@ -84,9 +84,9 @@ extension ConclaveHost: AferoJSONCoding {
         
         guard let
             
-            type = jsonDict[type(of: self).CoderKeyType] as? HostType,
-            let host = jsonDict[type(of: self).CoderKeyHost] as? HostName,
-            let port = jsonDict[type(of: self).CoderKeyPort] as? Port
+            type = jsonDict[Swift.type(of: self).CoderKeyType] as? HostType,
+            let host = jsonDict[Swift.type(of: self).CoderKeyHost] as? HostName,
+            let port = jsonDict[Swift.type(of: self).CoderKeyPort] as? Port
             
             else {
                 
@@ -142,7 +142,7 @@ public struct ConclaveHosts: CustomDebugStringConvertible {
 extension ConclaveHosts: AferoJSONCoding {
     
     public var JSONDict: AferoJSONCodedType? {
-        return Array(registry.values.flatMap { $0 }.flatMap { $0.JSONDict! })
+        return Array(registry.values.flatMap { $0 }.compactMap { $0.JSONDict! })
     }
     
     public init?(json: AferoJSONCodedType?) {
@@ -795,32 +795,32 @@ extension ConclaveMessage: AferoJSONCoding {
         case let .login(channelId, accessToken, type, deviceId, mobileDeviceId, version, trace, proto):
             
             var body: AferoJSONObject = [
-                type(of: self).CoderKeyChannelId: channelId,
-                type(of: self).CoderKeyAccessToken: accessToken,
-                type(of: self).CoderKeyType: type,
+                Swift.type(of: self).CoderKeyChannelId: channelId,
+                Swift.type(of: self).CoderKeyAccessToken: accessToken,
+                Swift.type(of: self).CoderKeyType: type,
             ]
             
             if let deviceId = deviceId {
-                body[type(of: self).CoderKeyDeviceId] = deviceId
+                body[Swift.type(of: self).CoderKeyDeviceId] = deviceId
             }
             
             if let mobileDeviceId = mobileDeviceId {
-                body[type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
+                body[Swift.type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
             }
             
             if let version = version {
-                body[type(of: self).CoderKeyVersion] = version
+                body[Swift.type(of: self).CoderKeyVersion] = version
             }
             
             if let trace = trace {
-                body[type(of: self).CoderKeyTrace] = trace
+                body[Swift.type(of: self).CoderKeyTrace] = trace
             }
             
             if let proto = proto {
-                body[type(of: self).CoderKeyProtocol] = proto
+                body[Swift.type(of: self).CoderKeyProtocol] = proto
             }
 
-            return [type(of: self).CoderMessageNameLogin: body]
+            return [Swift.type(of: self).CoderMessageNameLogin: body]
         
         case let .welcome(sessionId, seq, channelId, generation):
             let body: AferoJSONCodedType = [
@@ -834,42 +834,42 @@ extension ConclaveMessage: AferoJSONCoding {
         case let .join(sessionId, timestamp, type, deviceId, mobileDeviceId, version):
             
             var body: AferoJSONObject = [
-                type(of: self).CoderKeySessionId: sessionId,
-                type(of: self).CoderKeyTimestamp: timestamp,
-                type(of: self).CoderKeyType: type,
+                Swift.type(of: self).CoderKeySessionId: sessionId,
+                Swift.type(of: self).CoderKeyTimestamp: timestamp,
+                Swift.type(of: self).CoderKeyType: type,
             ]
             
             if let deviceId = deviceId {
-                body[type(of: self).CoderKeyDeviceId] = deviceId
+                body[Swift.type(of: self).CoderKeyDeviceId] = deviceId
             }
 
             if let mobileDeviceId = mobileDeviceId {
-                body[type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
+                body[Swift.type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
             }
 
             if let version = version {
-                body[type(of: self).CoderKeyVersion] = version
+                body[Swift.type(of: self).CoderKeyVersion] = version
             }
             
-            return [type(of: self).CoderMessageNameJoin: body]
+            return [Swift.type(of: self).CoderMessageNameJoin: body]
             
         case let .leave(sessionId, timestamp, type, deviceId, mobileDeviceId):
             
             var body: AferoJSONObject = [
-                type(of: self).CoderKeySessionId: sessionId,
-                type(of: self).CoderKeyTimestamp: timestamp,
-                type(of: self).CoderKeyType: type,
+                Swift.type(of: self).CoderKeySessionId: sessionId,
+                Swift.type(of: self).CoderKeyTimestamp: timestamp,
+                Swift.type(of: self).CoderKeyType: type,
             ]
             
             if let deviceId = deviceId {
-                body[type(of: self).CoderKeyDeviceId] = deviceId
+                body[Swift.type(of: self).CoderKeyDeviceId] = deviceId
             }
             
             if let mobileDeviceId = mobileDeviceId {
-                body[type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
+                body[Swift.type(of: self).CoderKeyMobileDeviceId] = mobileDeviceId
             }
             
-            return [type(of: self).CoderMessageNameLeave: body]
+            return [Swift.type(of: self).CoderMessageNameLeave: body]
             
         case .bye:
             return [type(of: self).CoderMessageNameBye: [:]]
@@ -904,19 +904,19 @@ extension ConclaveMessage: AferoJSONCoding {
         case let .whisper(sessionId, type, event, data):
 
             var body: AferoJSONObject = [
-                type(of: self).CoderKeyEvent: event,
-                type(of: self).CoderKeyData: data,
+                Swift.type(of: self).CoderKeyEvent: event,
+                Swift.type(of: self).CoderKeyData: data,
             ]
             
             if let sessionId = sessionId {
-                body[type(of: self).CoderKeySessionId] = sessionId
+                body[Swift.type(of: self).CoderKeySessionId] = sessionId
             }
 
             if let type = type {
-                body[type(of: self).CoderKeyType] = type
+                body[Swift.type(of: self).CoderKeyType] = type
             }
             
-            return [type(of: self).CoderMessageNameWhisper: body]
+            return [Swift.type(of: self).CoderMessageNameWhisper: body]
             
         case let .private(seq, sessionId, target, event, data):
 
@@ -1000,11 +1000,11 @@ extension ConclaveMessage: AferoJSONCoding {
                     channelId = login[type(of: self).CoderKeyChannelId] as? String,
                     let accessToken = login[type(of: self).CoderKeyAccessToken] as? String,
                     let type = login[type(of: self).CoderKeyType] as? String {
-                        let deviceId = login[type(of: self).CoderKeyDeviceId] as? String
-                        let mobileDeviceId = login[type(of: self).CoderKeyMobileDeviceId] as? String
-                        let version = login[type(of: self).CoderKeyVersion] as? String
-                        let trace = login[type(of: self).CoderKeyTrace] as? Bool
-                        let proto = login[type(of: self).CoderKeyProtocol] as? Int
+                        let deviceId = login[Swift.type(of: self).CoderKeyDeviceId] as? String
+                        let mobileDeviceId = login[Swift.type(of: self).CoderKeyMobileDeviceId] as? String
+                        let version = login[Swift.type(of: self).CoderKeyVersion] as? String
+                        let trace = login[Swift.type(of: self).CoderKeyTrace] as? Bool
+                        let proto = login[Swift.type(of: self).CoderKeyProtocol] as? Int
 
                     self = .login(channelId: channelId, accessToken: accessToken, type: type, deviceId: deviceId, mobileDeviceId: mobileDeviceId, version: version, trace: trace, protocol: proto)
                     
@@ -1037,8 +1037,8 @@ extension ConclaveMessage: AferoJSONCoding {
                     sessionId = leave[type(of: self).CoderKeySessionId] as? Int,
                     let timestamp = leave[type(of: self).CoderKeyTimestamp] as? Int,
                     let type = leave[type(of: self).CoderKeyType] as? String {
-                        let deviceId = leave[type(of: self).CoderKeyDeviceId] as? String
-                        let mobileDeviceId = leave[type(of: self).CoderKeyMobileDeviceId] as? String
+                        let deviceId = leave[Swift.type(of: self).CoderKeyDeviceId] as? String
+                        let mobileDeviceId = leave[Swift.type(of: self).CoderKeyMobileDeviceId] as? String
                         self = .leave(sessionId: sessionId, timestamp: timestamp, type: type, deviceId: deviceId, mobileDeviceId: mobileDeviceId)
                 } else {
                     DDLogError("Unable to decode leave: \(leave)", tag: type(of: self).TAG)
@@ -1051,9 +1051,9 @@ extension ConclaveMessage: AferoJSONCoding {
                     sessionId = join[type(of: self).CoderKeySessionId] as? Int,
                     let timestamp = join[type(of: self).CoderKeyTimestamp] as? Int,
                     let type = join[type(of: self).CoderKeyType] as? String {
-                        let deviceId = join[type(of: self).CoderKeyDeviceId] as? String
-                        let mobileDeviceId = join[type(of: self).CoderKeyMobileDeviceId] as? String
-                        let version = join[type(of: self).CoderKeyVersion] as? String
+                        let deviceId = join[Swift.type(of: self).CoderKeyDeviceId] as? String
+                        let mobileDeviceId = join[Swift.type(of: self).CoderKeyMobileDeviceId] as? String
+                        let version = join[Swift.type(of: self).CoderKeyVersion] as? String
                         self = .join(sessionId: sessionId, timestamp: timestamp, type: type, deviceId: deviceId, mobileDeviceId: mobileDeviceId, version: version)
                 } else {
                     DDLogError("Unable to decode join: \(join)", tag: type(of: self).TAG)
@@ -1096,8 +1096,8 @@ extension ConclaveMessage: AferoJSONCoding {
                 if
                     let event = whisper[type(of: self).CoderKeyEvent] as? String,
                     let data = whisper[type(of: self).CoderKeyData] as? [String: Any] {
-                        let sessionId = whisper[type(of: self).CoderKeySessionId] as? Int
-                        let type = whisper[type(of: self).CoderKeyType] as? String
+                        let sessionId = whisper[Swift.type(of: self).CoderKeySessionId] as? Int
+                        let type = whisper[Swift.type(of: self).CoderKeyType] as? String
                         self = .whisper(sessionId: sessionId, type: type, event: event, data: data)
                 } else {
                     DDLogError("Unable to decode whisper: \(whisper)", tag: type(of: self).TAG)

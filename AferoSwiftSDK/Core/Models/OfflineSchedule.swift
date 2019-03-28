@@ -385,7 +385,7 @@ extension OfflineSchedule {
             }
             ).then {
                 results -> [ReplaceEventResult] in
-                return results.flatMap {
+                return results.compactMap {
                     result in switch result {
                     case .fulfilled(let replaceResult): return replaceResult
                     case .rejected: return nil
@@ -1066,7 +1066,7 @@ public extension OfflineSchedule {
         
         return collatedEvents.enumerated().filter {
             return predicate($0.element)
-            }.flatMap {
+            }.compactMap {
                 guard let attributeId = try? self.collator.attributeIdForIndex(self, index: $0.offset) else {
                     DDLogError("No attributeId for index \($0.offset); skipping.")
                     return nil
@@ -2009,12 +2009,12 @@ extension DeviceModelable {
 
         guard !((self as? BaseDeviceModel)?.utcMigrationIsInProgress ?? false) else {
             DDLogVerbose("Offline Schedule UTC migration currently in progress for \(deviceId); bailing.", tag: TAG)
-            return Promise { fulfill, _ in fulfill() }
+            return Promise { fulfill, _ in fulfill(()) }
         }
         
         guard timeZone != nil else {
             DDLogVerbose("Device \(deviceId) has no timeZone; not migrating UTC events.", tag: TAG)
-            return Promise { fulfill, _ in fulfill() }
+            return Promise { fulfill, _ in fulfill(()) }
         }
         
         (self as? BaseDeviceModel)?.utcMigrationIsInProgress = true
@@ -2050,12 +2050,12 @@ extension DeviceModelable {
 
         guard let schedule = offlineSchedule() else {
             DDLogVerbose("Offline schedules unsupported for device \(deviceId); not migrating UTC events.", tag: TAG)
-            return Promise { fulfill, _ in fulfill() }
+            return Promise { fulfill, _ in fulfill(()) }
         }
         
         guard schedule.utcEvents.count > 0 else {
             DDLogVerbose("No UTC events to migrate for device \(deviceId); bailing.", tag: TAG)
-            return Promise { fulfill, _ in fulfill() }
+            return Promise { fulfill, _ in fulfill(()) }
         }
         
         let preCount = schedule.utcEvents.count
@@ -2073,7 +2073,7 @@ extension DeviceModelable {
                     
                     guard schedule.utcEvents.count > 0 else {
                         DDLogDebug("Offline schedule UTC migration for device \(self.deviceId): done.", tag: self.TAG)
-                        fulfill()
+                        fulfill(())
                         return
                     }
                     
@@ -2082,7 +2082,7 @@ extension DeviceModelable {
                             .then {
                                 ()->Void in
                                 DDLogVerbose("Offline schedule UTC migration for device \(self.deviceId) batch \(batchNumber) unwind.", tag: self.TAG)
-                                fulfill()
+                                fulfill(())
                         }
                     }
                     

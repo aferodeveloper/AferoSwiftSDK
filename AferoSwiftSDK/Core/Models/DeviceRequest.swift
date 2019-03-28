@@ -279,7 +279,7 @@ public struct DeviceBatchAction {
         }
         
         public var requestIds: [Int] {
-            return responses.flatMap { $0.requestId }
+            return responses.compactMap { $0.requestId }
         }
     }
     

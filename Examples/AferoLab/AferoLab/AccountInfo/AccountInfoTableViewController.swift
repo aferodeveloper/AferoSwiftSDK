@@ -131,10 +131,10 @@ class AccountViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 60
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         
         tableView.estimatedSectionHeaderHeight = 70
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
 
         AccountInfoHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
@@ -578,7 +578,7 @@ class AccountViewController: UITableViewController {
 
             .addAction(
                 NSLocalizedString("Add", comment: "Manual add device add action title"),
-                style: UIAlertActionStyle.default) {
+                style: UIAlertAction.Style.default) {
                     [weak self] action in
                     DDLogInfo("Add tapped; association id: \(String(describing: textField.text))")
                     guard let associationId = textField.text else {
@@ -589,7 +589,7 @@ class AccountViewController: UITableViewController {
             
             .addAction(
                 NSLocalizedString("Cancel", comment: "Manual add device cancel button title"),
-                style: UIAlertActionStyle.cancel) {
+                style: UIAlertAction.Style.cancel) {
                     action in
                     DDLogInfo("Cancel tapped.")
             }

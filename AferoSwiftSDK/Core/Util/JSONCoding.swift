@@ -48,7 +48,7 @@ public func FromJSON<T: AferoJSONCoding>(_ json: [Any]?) -> [T]? {
     
     guard let json = json else { return nil }
     
-    let ret: [T] = json.flatMap { return T(json: $0) }
+    let ret: [T] = json.compactMap { return T(json: $0) }
     
     if ret.count != json.count {
         NSLog("Warning: expected \(json.count) results, got \(ret.count)")
@@ -101,7 +101,7 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: AferoJ
 public extension Array where Element: AferoJSONCoding {
     
     var JSONDict: AferoJSONCodedType {
-        return self.flatMap { $0.JSONDict }
+        return self.compactMap { $0.JSONDict }
     }
     
 }

@@ -781,11 +781,11 @@ extension UserAccount.User.Credential: AferoJSONCoding {
     public var JSONDict: AferoJSONCodedType? {
         
         return [
-            type(of: self).CoderKeyCredentialId: credentialId,
-            type(of: self).CoderKeyType: type,
-            type(of: self).CoderKeyVerified: verified,
-            type(of: self).CoderKeyLastUsedTimetamp: lastUsed.millisSince1970,
-            type(of: self).CoderKeyFailedAttempts: failedAttempts,
+            Swift.type(of: self).CoderKeyCredentialId: credentialId,
+            Swift.type(of: self).CoderKeyType: type,
+            Swift.type(of: self).CoderKeyVerified: verified,
+            Swift.type(of: self).CoderKeyLastUsedTimetamp: lastUsed.millisSince1970,
+            Swift.type(of: self).CoderKeyFailedAttempts: failedAttempts,
         ]
     }
     
@@ -793,11 +793,11 @@ extension UserAccount.User.Credential: AferoJSONCoding {
 
         guard
             let jsonDict = json as? [String: Any],
-            let credentialId = jsonDict[type(of: self).CoderKeyCredentialId] as? String,
-            let type = jsonDict[type(of: self).CoderKeyType] as? String,
-            let verified = jsonDict[type(of: self).CoderKeyVerified] as? Bool,
-            let lastUsedTimestamp = jsonDict[type(of: self).CoderKeyLastUsedTimetamp] as? NSNumber,
-            let failedAttempts = jsonDict[type(of: self).CoderKeyFailedAttempts] as? Int else {
+            let credentialId = jsonDict[Swift.type(of: self).CoderKeyCredentialId] as? String,
+            let type = jsonDict[Swift.type(of: self).CoderKeyType] as? String,
+            let verified = jsonDict[Swift.type(of: self).CoderKeyVerified] as? Bool,
+            let lastUsedTimestamp = jsonDict[Swift.type(of: self).CoderKeyLastUsedTimetamp] as? NSNumber,
+            let failedAttempts = jsonDict[Swift.type(of: self).CoderKeyFailedAttempts] as? Int else {
                 DDLogError("Unable to decode UserAccount.User.Credential json: \(String(reflecting: json))")
                 return nil
         }
@@ -819,20 +819,20 @@ extension UserAccount.User.AccountAccess: AferoJSONCoding {
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [String: Any] = [
-            type(of: self).CoderKeyAccount: account.JSONDict!,
-            type(of: self).CoderKeyPrivileges: privileges.JSONDict!,
+            Swift.type(of: self).CoderKeyAccount: account.JSONDict!,
+            Swift.type(of: self).CoderKeyPrivileges: privileges.JSONDict!,
         ]
         
         if let userId = userId {
-            ret[type(of: self).CoderKeyUserId] = userId
+            ret[Swift.type(of: self).CoderKeyUserId] = userId
         }
         
         if let startAccess = startAccess {
-            ret[type(of: self).CoderKeyStartAccess] = startAccess.millisSince1970
+            ret[Swift.type(of: self).CoderKeyStartAccess] = startAccess.millisSince1970
         }
         
         if let endAccess = endAccess {
-            ret[type(of: self).CoderKeyEndAccess] = endAccess.millisSince1970
+            ret[Swift.type(of: self).CoderKeyEndAccess] = endAccess.millisSince1970
         }
         
         return ret
@@ -842,22 +842,22 @@ extension UserAccount.User.AccountAccess: AferoJSONCoding {
         
         if
             let json = json as? [String: Any],
-            let account: Account = |<(json[type(of: self).CoderKeyAccount] as? [String: Any]),
-            let privileges: UserAccount.User.Privileges = |<(json[type(of: self).CoderKeyPrivileges] as? [String: Any]) {
+            let account: Account = |<(json[Swift.type(of: self).CoderKeyAccount] as? [String: Any]),
+            let privileges: UserAccount.User.Privileges = |<(json[Swift.type(of: self).CoderKeyPrivileges] as? [String: Any]) {
                 
                 var startAccess: Date? = nil
                 
-                if let startAccessMillis = json[type(of: self).CoderKeyStartAccess] as? NSNumber {
+                if let startAccessMillis = json[Swift.type(of: self).CoderKeyStartAccess] as? NSNumber {
                     startAccess = Date.dateWithMillisSince1970(startAccessMillis)
                 }
                 
                 var endAccess: Date? = nil
                 
-                if let endAccessMillis = json[type(of: self).CoderKeyStartAccess] as? NSNumber {
+                if let endAccessMillis = json[Swift.type(of: self).CoderKeyStartAccess] as? NSNumber {
                     endAccess = Date.dateWithMillisSince1970(endAccessMillis)
                 }
                 
-                self.init(account: account, userId: json[type(of: self).CoderKeyUserId] as? String, privileges: privileges, startAccess: startAccess as Date?, endAccess: endAccess as Date?)
+                self.init(account: account, userId: json[Swift.type(of: self).CoderKeyUserId] as? String, privileges: privileges, startAccess: startAccess as Date?, endAccess: endAccess as Date?)
         } else {
             DDLogError("Unable to decode AccountAccess: \(String(reflecting: json))")
             return nil
@@ -1046,13 +1046,13 @@ extension UserAccount.User.AccountAccess.Account: AferoJSONCoding {
     
     var JSONDict: AferoJSONCodedType? {
         var ret: [String: Any] = [
-            type(of: self).CoderKeyAccountId: accountId,
-            type(of: self).CoderKeyCreatedTimestamp: created.millisSince1970,
-            type(of: self).CoderKeyType: type
+            Swift.type(of: self).CoderKeyAccountId: accountId,
+            Swift.type(of: self).CoderKeyCreatedTimestamp: created.millisSince1970,
+            Swift.type(of: self).CoderKeyType: type
         ]
         
         if let accountDescription = accountDescription {
-            ret[type(of: self).CoderKeyDescription] = accountDescription
+            ret[Swift.type(of: self).CoderKeyDescription] = accountDescription
         }
 
         return ret
@@ -1062,14 +1062,14 @@ extension UserAccount.User.AccountAccess.Account: AferoJSONCoding {
 
         guard
             let jsonDict = json as? [String: Any],
-            let accountId = jsonDict[type(of: self).CoderKeyAccountId] as? String,
-            let type = jsonDict[type(of: self).CoderKeyType] as? String,
-            let createdMillis = jsonDict[type(of: self).CoderKeyCreatedTimestamp] as? NSNumber else {
+            let accountId = jsonDict[Swift.type(of: self).CoderKeyAccountId] as? String,
+            let type = jsonDict[Swift.type(of: self).CoderKeyType] as? String,
+            let createdMillis = jsonDict[Swift.type(of: self).CoderKeyCreatedTimestamp] as? NSNumber else {
                 DDLogError("Unable to decode UserAccount.User.AccountAccess.Account: \(String(reflecting: json))")
                 return nil
         }
         
-        let accountDescription = jsonDict[type(of: self).CoderKeyDescription] as? String
+        let accountDescription = jsonDict[Swift.type(of: self).CoderKeyDescription] as? String
 
         self.init(accountId: accountId, type: type, description: accountDescription, created: Date.dateWithMillisSince1970(createdMillis))
     }

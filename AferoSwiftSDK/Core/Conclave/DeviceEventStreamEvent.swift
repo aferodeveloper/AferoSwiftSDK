@@ -881,20 +881,20 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             public var JSONDict: AferoJSONCodedType? {
 
                 var ret: [String: Any] = [
-                    type(of: self).CoderKeyValue: value,
-                    type(of: self).CoderKeyType: type.rawValue,
+                    Swift.type(of: self).CoderKeyValue: value,
+                    Swift.type(of: self).CoderKeyType: type.rawValue,
                 ]
                 
                 if let id = id {
-                    ret[type(of: self).CoderKeyId] = id
+                    ret[Swift.type(of: self).CoderKeyId] = id
                 }
                 
                 if let key = key {
-                    ret[type(of: self).CoderKeyKey] = key
+                    ret[Swift.type(of: self).CoderKeyKey] = key
                 }
                 
                 if let localizationKey = localizationKey {
-                    ret[type(of: self).CoderKeyLocalizationKey] = localizationKey
+                    ret[Swift.type(of: self).CoderKeyLocalizationKey] = localizationKey
                 }
                 
                 return ret
@@ -909,7 +909,7 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                     return nil
                 }
                 
-                guard let value = jsonDict[type(of: self).CoderKeyValue] as? Value else {
+                guard let value = jsonDict[Swift.type(of: self).CoderKeyValue] as? Value else {
                     DDLogWarn("\(jsonDict) doesn't represent a valid DeviceTag (missing 'value')", tag: tag)
                     return nil
                 }
@@ -917,16 +917,16 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 var type = TagType.account
 
                 if
-                    let maybeTypeRawValue = jsonDict[type(of: self).CoderKeyType] as? TagType.RawValue,
+                    let maybeTypeRawValue = jsonDict[Swift.type(of: self).CoderKeyType] as? TagType.RawValue,
                     let maybeType = TagType(rawValue: maybeTypeRawValue) {
                     type = maybeType
                 }
                 
                 self.init(
-                    id: jsonDict[type(of: self).CoderKeyId] as? Id,
-                    key: jsonDict[type(of: self).CoderKeyKey] as? Key,
+                    id: jsonDict[Swift.type(of: self).CoderKeyId] as? Id,
+                    key: jsonDict[Swift.type(of: self).CoderKeyKey] as? Key,
                     value: value,
-                    localizationKey: jsonDict[type(of: self).CoderKeyLocalizationKey] as? LocalizationKey,
+                    localizationKey: jsonDict[Swift.type(of: self).CoderKeyLocalizationKey] as? LocalizationKey,
                     type: type
                 )
                 

@@ -112,7 +112,7 @@ extension NSRegularExpression {
             var ret : [String] = []
             
             for i in 1 ..< result.numberOfRanges {
-                let match = (string as NSString).substring(with: result.rangeAt(i))
+                let match = (string as NSString).substring(with: result.range(at: i))
                 ret.append(match)
             }
             
@@ -198,7 +198,7 @@ open class DisplayRulesProcessor {
     
     // MARK: Bitwise Operators
     
-    fileprivate class func BitwiseAnd<T, U: Integer>(_ value: T, xform: @escaping (T)->U?) -> (T?) -> Bool {
+    fileprivate class func BitwiseAnd<T, U: BinaryInteger>(_ value: T, xform: @escaping (T)->U?) -> (T?) -> Bool {
         return {
             if let
                 oper = $0,
@@ -210,7 +210,7 @@ open class DisplayRulesProcessor {
         }
     }
     
-    fileprivate class func BitwiseXor<T, U: Integer>(_ value: T, xform: @escaping (T)->U?) -> (T?) -> Bool {
+    fileprivate class func BitwiseXor<T, U: BinaryInteger>(_ value: T, xform: @escaping (T)->U?) -> (T?) -> Bool {
         return {
             if let
                 oper = $0,
@@ -264,7 +264,7 @@ open class DisplayRulesProcessor {
      - returns: A matcher representing the according logical combination of `lhs` and `rhs` matchers.
      */
     
-    fileprivate class func Combine<T: Comparable, U: Integer>(
+    fileprivate class func Combine<T: Comparable, U: BinaryInteger>(
         _ oper: Token,
         lhs: Token,
         rhs: Token,
@@ -306,7 +306,7 @@ open class DisplayRulesProcessor {
      - returns: A function which takes a value of type `T` and returns whether or not the given expression matches.
      */
     
-    open class func Matcher<T: Comparable, U: Integer>(
+    open class func Matcher<T: Comparable, U: BinaryInteger>(
         _ expr: String,
         operandXform: (Token)->T,
         integerOptionalXform: @escaping ((T)->U?)
@@ -577,7 +577,7 @@ open class DisplayRulesProcessor {
      - returns: A function which takes a single operand `T` as input, and returns a `[String: Any]` that's a result of evaluating the operand against the given rules.
      */
     
-    class func MakeRule<T: Hashable & Comparable, U: Integer>(
+    class func MakeRule<T: Hashable & Comparable, U: BinaryInteger>(
         
         _ ruleDict: [String: Any],
         operandXform: (String)->T,
@@ -605,7 +605,7 @@ open class DisplayRulesProcessor {
      - returns: A function which takes a single operand `T` as input, and returns a `[String: Any]` that's a result of evaluating the operand against the given rules.
      */
     
-    class func MakeRule<K: Hashable, C: Hashable & SafeSubscriptable, T: Comparable, U: Integer>(
+    class func MakeRule<K: Hashable, C: Hashable & SafeSubscriptable, T: Comparable, U: BinaryInteger>(
         
         _ ruleDict: [String: Any],
         operandXform: (String)->T,
@@ -661,7 +661,7 @@ open class DisplayRulesProcessor {
      - returns: A function which takes a single operand `T` as input, and returns a `[String: Any]` that's a result of evaluating the operand against the given rules.
      */
     
-    open class func MakeProcessor<T: Hashable & Comparable, U: Integer>(
+    open class func MakeProcessor<T: Hashable & Comparable, U: BinaryInteger>(
         
         _ initial: [String: Any],
         rules: DisplayRules,
@@ -691,7 +691,7 @@ open class DisplayRulesProcessor {
         K: Hashable,
         C: Hashable & SafeSubscriptable,
         T: Comparable,
-        U: Integer>(
+        U: BinaryInteger>(
         
         _ initial: [String: Any],
         rules: DisplayRules,

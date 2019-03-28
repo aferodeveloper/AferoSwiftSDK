@@ -90,7 +90,7 @@ extension DeviceModelable {
         }
         
         backgroundNotificationObserver = NotificationCenter.default.addObserver(
-            forName: .UIApplicationDidEnterBackground,
+            forName: UIApplication.didEnterBackgroundNotification,
             object: nil, queue: .main) {
                 [weak self] _ in
                 if self?.shouldStopAferoSofthubInBackground ?? false {
@@ -100,7 +100,7 @@ extension DeviceModelable {
         }
         
         foregroundNotificationObserver = NotificationCenter.default.addObserver(
-        forName: .UIApplicationWillEnterForeground,
+        forName: UIApplication.willEnterForegroundNotification,
         object: nil, queue: .main) {
             
             [weak self] _ in

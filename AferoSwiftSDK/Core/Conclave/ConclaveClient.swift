@@ -37,7 +37,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         return "<\(TAG)> connectionState: \(connectionState) (connection: \(String(describing: conclaveConnection)))"
     }
     
-    fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
+    fileprivate lazy var TAG: String = { return "\(Swift.type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
 
     static let ConclaveClientErrorDomain = "ConclaveClient"
 
@@ -219,7 +219,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         
         if connectionState != .disconnected {
             throw NSError(
-                domain: type(of: self).ConclaveClientErrorDomain,
+                domain: Swift.type(of: self).ConclaveClientErrorDomain,
                 code: Error.connectionErrorAlreadyConnected.rawValue,
                 userInfo: [NSLocalizedDescriptionKey: "Already connected."]
             )
@@ -251,7 +251,7 @@ class ConclaveClient: CustomDebugStringConvertible {
                 self.serverReadSignalDisposable = readSignalDisposable
         } else {
             throw NSError(
-                domain: type(of: self).ConclaveClientErrorDomain,
+                domain: Swift.type(of: self).ConclaveClientErrorDomain,
                 code: Error.observerError.rawValue,
                 userInfo: nil
             )
@@ -269,7 +269,7 @@ class ConclaveClient: CustomDebugStringConvertible {
             userInfo[NSUnderlyingErrorKey] = connectionError
             
             let localError = NSError(
-                domain: type(of: self).ConclaveClientErrorDomain,
+                domain: Swift.type(of: self).ConclaveClientErrorDomain,
                 code: Error.connectionErrorRemoteConnectionFailed.rawValue,
                 userInfo: userInfo)
             
@@ -393,7 +393,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         DDLogInfo("Got error from server connection: \(error)", tag: TAG)
 
         let forwardedError = NSError(
-            domain: type(of: self).ConclaveClientErrorDomain,
+            domain: Swift.type(of: self).ConclaveClientErrorDomain,
             code: Error.underlyingConnectionError.rawValue,
             userInfo: [NSUnderlyingErrorKey: error]
         )
@@ -460,7 +460,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         let localizedDescription = "Conclave client timed out after \(String(describing: heartbeatInterval)) seconds (with \(heartbeatSlack)s slack)"
         
         let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: localizedDescription]
-        let error = NSError(domain: type(of: self).ConclaveClientErrorDomain, code: Error.timeoutFatal.rawValue, userInfo: userInfo)
+        let error = NSError(domain: Swift.type(of: self).ConclaveClientErrorDomain, code: Error.timeoutFatal.rawValue, userInfo: userInfo as! [String : Any])
         
         DDLogError(error.localizedDescription, tag: TAG)
         
@@ -897,7 +897,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         }
         
         self.inputStream.delegate = self
-        self.inputStream.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+        self.inputStream.schedule(in: RunLoop.current, forMode: RunLoop.Mode.default)
         self.inputStream.open()
     }
     
@@ -920,7 +920,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         }
 
         self.inputStream.close()
-        self.inputStream.remove(from: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+        self.inputStream.remove(from: RunLoop.current, forMode: RunLoop.Mode.default)
         DDLogDebug("Conclave reader inputSteam closed.", tag: TAG)
         
     }
@@ -1201,7 +1201,7 @@ class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
         
         outputStream.delegate = self
         
-        self.outputStream.schedule(in: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+        self.outputStream.schedule(in: RunLoop.current, forMode: RunLoop.Mode.default)
         self.outputStream.open()
     }
     
@@ -1216,7 +1216,7 @@ class LineDelimitedJSONStreamWriter: NSObject, StreamDelegate {
         readSignalDisposable = nil
         outputStream.delegate = nil
         self.outputStream.close()
-        self.outputStream.remove(from: RunLoop.current, forMode: RunLoopMode.defaultRunLoopMode)
+        self.outputStream.remove(from: RunLoop.current, forMode: RunLoop.Mode.default)
     }
     
     // Object consumption
