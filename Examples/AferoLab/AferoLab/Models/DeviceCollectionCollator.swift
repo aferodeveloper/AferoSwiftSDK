@@ -106,7 +106,7 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     }
     
     /// Type for the sink to which we send `CollatorEvent`s.
-    fileprivate typealias CollatorEventSink = Observer<CollatorEvent, NoError>
+    fileprivate typealias CollatorEventSink = Signal<CollatorEvent, NoError>.Observer
     
     /// Type for the signal on which clients listen for `CollatorEvent`s.
     typealias CollatorEventSignal = Signal<CollatorEvent, NoError>
