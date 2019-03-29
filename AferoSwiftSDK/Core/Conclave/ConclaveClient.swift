@@ -177,8 +177,8 @@ class ConclaveClient: CustomDebugStringConvertible {
     // Observer Interface
     // "application-level" events are emitted through this interface.
     
-    lazy fileprivate var eventPipe: (Signal<ClientEvent, NSError>, Observer<ClientEvent, NSError>) = {
-        let ret: (Signal<ClientEvent, NSError>, Observer<ClientEvent, NSError>) = Signal.pipe()
+    lazy fileprivate var eventPipe: (Signal<ClientEvent, NSError>, Signal<ClientEvent, NSError>.Observer) = {
+        let ret: (Signal<ClientEvent, NSError>, Signal<ClientEvent, NSError>.Observer) = Signal.pipe()
         
         return Signal.pipe()
     }()
@@ -187,7 +187,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         return eventPipe.0
     }
     
-    fileprivate var eventSink: Observer<ClientEvent, NSError> {
+    fileprivate var eventSink: Signal<ClientEvent, NSError>.Observer {
         return eventPipe.1
     }
 
@@ -484,7 +484,7 @@ enum ConclaveConnectionEvent {
 }
 
 /// Type for messages sent to the Conclave server, and consumed by the connection's `writeSink`.
-typealias ConclaveMessageSink = Observer<ConclaveMessage, NSError>
+typealias ConclaveMessageSink = Signal<ConclaveMessage, NSError>.Observer
 
 /// Type for events received from the Conclave server.
 typealias ConclaveReadSignal = Signal<ConclaveConnectionEvent, NSError>
@@ -700,12 +700,12 @@ class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible
     }
     
     // MARK: Server to the client
-    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>) = {
+    lazy fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Signal<ConclaveConnectionEvent, NSError>.Observer) = {
         return Signal<ConclaveConnectionEvent, NSError>.pipe()
         }()
     
     /// The sink into which server messages bound for the client are inserted.
-    var serverOutboundSink: Observer<ConclaveConnectionEvent, NSError> {
+    var serverOutboundSink: Signal<ConclaveConnectionEvent, NSError>.Observer {
         return serverToClientPipe.1
     }
 
@@ -717,7 +717,7 @@ class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible
     }
     
     // MARK: Client to server
-    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>) = {
+    lazy fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Signal<ConclaveMessage, NSError>.Observer) = {
         return Signal<ConclaveMessage, NSError>.pipe()
         }()
     
@@ -729,7 +729,7 @@ class ConclaveStreamConnection: ConclaveConnection, CustomDebugStringConvertible
     /// The sink into which clients insert server-bound messages. Clients
     /// invoke `.sendNext()` on this.
     
-    open var writeSink: Observer<ConclaveMessage, NSError> {
+    open var writeSink: Signal<ConclaveMessage, NSError>.Observer {
         return clientToServerPipe.1
     }
 }
@@ -843,7 +843,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
     private let inputStream: InputStream
     var streamProcessor: StreamProcessor = PureStreamProcessor
     
-    lazy fileprivate var pipe: (Signal<JSONStreamEvent, NSError>, Observer<JSONStreamEvent, NSError>) = {
+    lazy fileprivate var pipe: (Signal<JSONStreamEvent, NSError>, Signal<JSONStreamEvent, NSError>.Observer) = {
         return Signal<JSONStreamEvent, NSError>.pipe()
         }()
 
@@ -857,7 +857,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         return pipe.0
     }
     
-    fileprivate var writeSink: Observer<JSONStreamEvent, NSError> {
+    fileprivate var writeSink: Signal<JSONStreamEvent, NSError>.Observer {
         return pipe.1
     }
     
@@ -1096,7 +1096,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
 // MARK: JSONStreamWriter
 
 typealias JSONStreamWriterSignal = Signal<Any?, NSError>
-typealias JSONStreamWriterSink = Observer<Any?, NSError>
+typealias JSONStreamWriterSink = Signal<Any?, NSError>.Observer
 typealias JSONStreamWriterPipe = (JSONStreamWriterSignal, JSONStreamWriterSink)
 
 /**
