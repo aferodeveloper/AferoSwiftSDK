@@ -475,7 +475,7 @@ internal protocol DeviceTagPersisting: class {
     }
     
     /// Type for the sink to which we send `Event`s.
-    private typealias EventSink = Observer<Event, NoError>
+    private typealias EventSink = Signal<Event, NoError>.Observer
     
     /// Type for the signal on which clients listen for `Event`s.
     typealias EventSignal = Signal<Event, NoError>

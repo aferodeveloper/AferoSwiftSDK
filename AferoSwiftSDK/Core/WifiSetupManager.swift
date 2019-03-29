@@ -808,7 +808,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
     // MARK: -
     // MARK: Signaling
     
-    fileprivate typealias WifiSetupEventSink = Observer<WifiSetupEvent, NoError>
+    fileprivate typealias WifiSetupEventSink = Signal<WifiSetupEvent, NoError>.Observer
     fileprivate typealias WifiSetupEventPipe = (output: WifiSetupEventSignal, input: WifiSetupEventSink)
     
     lazy fileprivate var wifiSetupEventPipe: WifiSetupEventPipe = {

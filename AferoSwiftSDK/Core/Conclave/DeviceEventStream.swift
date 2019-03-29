@@ -17,7 +17,7 @@ public typealias DeviceStreamEventTarget = String
 public typealias DeviceStreamEventTimestamp = NSNumber
 
 public typealias DeviceStreamEventSignal = Signal<DeviceStreamEvent, NSError>
-public typealias DeviceStreamEventSink = Observer<DeviceStreamEvent, NSError>
+public typealias DeviceStreamEventSink = Signal<DeviceStreamEvent, NSError>.Observer
 public typealias DeviceStreamEventPipe = (DeviceStreamEventSignal, DeviceStreamEventSink)
 
 protocol DeviceEventStreamable: class, CustomDebugStringConvertible {

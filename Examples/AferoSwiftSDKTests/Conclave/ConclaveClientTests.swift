@@ -173,8 +173,8 @@ class Mocklave: ConclaveConnection {
     
     // Server to the client
     
-    private var _serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)?
-    fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Observer<ConclaveConnectionEvent, NSError>)! {
+    private var _serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Signal<ConclaveConnectionEvent, NSError>.Observer)?
+    fileprivate var serverToClientPipe: (Signal<ConclaveConnectionEvent, NSError>, Signal<ConclaveConnectionEvent, NSError>.Observer)! {
         get {
             if let ret = _serverToClientPipe { return ret }
             let ret = Signal<ConclaveConnectionEvent, NSError>.pipe()
@@ -185,13 +185,13 @@ class Mocklave: ConclaveConnection {
         set { _serverToClientPipe = newValue }
     }
     
-    var serverOutboundSink: Observer<ConclaveConnectionEvent, NSError> {
+    var serverOutboundSink: Signal<ConclaveConnectionEvent, NSError>.Observer {
         return serverToClientPipe.1
     }
     
     // Client to server
-    private var _clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)?
-    fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Observer<ConclaveMessage, NSError>)! {
+    private var _clientToServerPipe: (Signal<ConclaveMessage, NSError>, Signal<ConclaveMessage, NSError>.Observer)?
+    fileprivate var clientToServerPipe: (Signal<ConclaveMessage, NSError>, Signal<ConclaveMessage, NSError>.Observer)! {
         get {
             if let ret = _clientToServerPipe { return ret }
             let ret = Signal<ConclaveMessage, NSError>.pipe()

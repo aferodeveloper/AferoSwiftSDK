@@ -704,7 +704,7 @@ open class OfflineSchedule: NSObject {
     }
     
     /// Type for the sink to which we send `Event`s.
-    fileprivate typealias EventSink = Observer<Event, NoError>
+    fileprivate typealias EventSink = Signal<Event, NoError>.Observer
     
     /// Type for the signal on which clients listen for `Event`s.
     public typealias EventSignal = Signal<Event, NoError>

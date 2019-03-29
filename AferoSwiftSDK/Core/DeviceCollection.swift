@@ -349,16 +349,14 @@ public class DeviceCollection: NSObject, MetricsReportable {
         // Set up the signal for contents changes
         var localContentsSink: Signal<ContentsChange, NoError>.Observer! = nil
         self.contentsSignal = Signal {
-            sink in localContentsSink = sink
-            return nil
+            sink, _ in localContentsSink = sink
         }
         self.contentsSink = localContentsSink
         
         // Set up the signal for state changes
         var localStateSink: Signal<State, NoError>.Observer! = nil
         self.stateSignal = Signal {
-            sink in localStateSink = sink
-            return nil
+            sink, _ in localStateSink = sink
         }
         self.stateSink = localStateSink
     }
