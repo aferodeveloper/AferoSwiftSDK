@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
     s.name         = "AferoSwiftSDK"
     s.module_name  = "Afero"
-    s.version      = "1.1.10"
+    s.version      = "1.2.0"
     s.summary      = "Library for interacting with Afero devices"
 
     s.description  = <<-DESC
