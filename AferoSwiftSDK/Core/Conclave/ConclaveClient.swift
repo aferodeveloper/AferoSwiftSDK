@@ -460,7 +460,7 @@ class ConclaveClient: CustomDebugStringConvertible {
         let localizedDescription = "Conclave client timed out after \(String(describing: heartbeatInterval)) seconds (with \(heartbeatSlack)s slack)"
         
         let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: localizedDescription]
-        let error = NSError(domain: Swift.type(of: self).ConclaveClientErrorDomain, code: Error.timeoutFatal.rawValue, userInfo: userInfo as! [String : Any])
+        let error = NSError(domain: Swift.type(of: self).ConclaveClientErrorDomain, code: Error.timeoutFatal.rawValue, userInfo: (userInfo as? [String : Any]))
         
         DDLogError(error.localizedDescription, tag: TAG)
         
@@ -741,7 +741,7 @@ A `ConclaveConnection` which binds to a socket.
 class ConclaveSocketConnection: ConclaveStreamConnection {
     
     override public var debugDescription: String {
-        return "<ConclaveSocketConnection> host: \(host) port: \(port) connectionState: \(connectionState)"
+        return "<ConclaveSocketConnection> host: \(host ?? "nil") port: \(port?.description ?? "nil") connectionState: \(connectionState)"
     }
     
     fileprivate(set) var port: ConclaveHost.Port! = nil
