@@ -10,7 +10,7 @@ import Foundation
 
 public extension NSNumber {
     
-    public var dateValueFromMillisSince1970: Date {
+    var dateValueFromMillisSince1970: Date {
         return Date.dateWithMillisSince1970(self)
     }
 }

@@ -13,7 +13,7 @@ public extension AferoAPIClientProto {
     
     // MARK: - Account Access and Sharing
     
-    public typealias AccountUserSummary = (users: [UserAccount.User], invitations: [Invitation])
+    typealias AccountUserSummary = (users: [UserAccount.User], invitations: [Invitation])
     
     /// Fetch a summary of users who have access to accounts, and the
     /// open invitations on an account.
@@ -21,7 +21,7 @@ public extension AferoAPIClientProto {
     /// - parameter accountId: The account for which to fetch access details
     /// - returns: A `Promise<AccountUserSummary>`
     
-    public func fetchAccountUserSummary(_ accountId: String) -> Promise<AccountUserSummary> {
+    func fetchAccountUserSummary(_ accountId: String) -> Promise<AccountUserSummary> {
         
         return GET("/v1/accounts/\(accountId)/accountUserSummary").then {
             (maybeBody: Any?) throws -> AccountUserSummary in
@@ -43,7 +43,7 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter accountId: The account for which to fetch access details
     
-    public func fetchAccountAccess(_ accountId: String) -> Promise<[UserAccount.User]> {
+    func fetchAccountAccess(_ accountId: String) -> Promise<[UserAccount.User]> {
         return GET("/v1/accounts/\(accountId)/userAccountAccess")
     }
     
@@ -53,7 +53,7 @@ public extension AferoAPIClientProto {
     /// - parameter userId: The user for which to revoke access
     /// - returns: A `Promise<Void>`
     
-    public func revokeAccountAccess(_ accountId: String, userId: String) -> Promise<Void> {
+    func revokeAccountAccess(_ accountId: String, userId: String) -> Promise<Void> {
         return DELETE("/v1/accounts/\(accountId)/userAccountAccess/\(userId)")
     }
     
@@ -70,7 +70,7 @@ public extension AferoAPIClientProto {
     /// - parameter owner: Whether or not the user will be be an owner, and therefore able to invite other users, etc. Defaults to `false`.
     /// - returns: a `Promise<Void>`
     
-    public func sendAccountAccessInvitation(accountId: String, userId: String, group: String? = nil, email: String, message: String? = nil, locale: String? = nil, startAccess: Date? = nil, endAccess: Date? = nil, canWrite: Bool = false, owner: Bool = false) -> Promise<Void> {
+    func sendAccountAccessInvitation(accountId: String, userId: String, group: String? = nil, email: String, message: String? = nil, locale: String? = nil, startAccess: Date? = nil, endAccess: Date? = nil, canWrite: Bool = false, owner: Bool = false) -> Promise<Void> {
         
         var params: [String: Any] = [
             "targetEmail": email,
@@ -83,7 +83,7 @@ public extension AferoAPIClientProto {
                 "canWrite": canWrite,
                 "owner": owner,
             ],
-            ]
+        ]
         
         if let message = message {
             params["customMessage"] = message
@@ -111,9 +111,9 @@ public extension AferoAPIClientProto {
     /// - parameter accountId: The account for which to revoke access.
     /// - parameter invitationId: The invitation to revoke.
     
-    public func revokeAccountAccessInvitation(_ accountId: String, invitationId: String) -> Promise<Void> {
+    func revokeAccountAccessInvitation(_ accountId: String, invitationId: String) -> Promise<Void> {
         return DELETE("/v1/accounts/\(accountId)/invitations/\(invitationId)")
     }
     
-
+    
 }

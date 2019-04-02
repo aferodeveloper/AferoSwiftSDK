@@ -64,12 +64,12 @@ public extension DeviceModelable where Self: DeviceActionSource {
 
 public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     
-    public func setOperation(_ operation: DeviceFilterCriterion.Operation?, forAttributeId attributeId: Int) {
+    func setOperation(_ operation: DeviceFilterCriterion.Operation?, forAttributeId attributeId: Int) {
         attributeFilterOperations[attributeId] = operation
         eventSink.send(value: .stateUpdate(newState: currentState))
     }
     
-    public func operationForAttributeId(_ attributeId: Int) -> DeviceFilterCriterion.Operation? {
+    func operationForAttributeId(_ attributeId: Int) -> DeviceFilterCriterion.Operation? {
         return attributeFilterOperations[attributeId]
     }
     
@@ -81,7 +81,7 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     ///
     /// - Important: By default, this does NOT overlay the current state
     
-    public func update(_ filterCriterion: DeviceFilterCriterion, accumulative: Bool = false) {
+    func update(_ filterCriterion: DeviceFilterCriterion, accumulative: Bool = false) {
         
         guard filterCriterion.deviceId == deviceId else { return }
         
@@ -106,7 +106,7 @@ public extension DeviceModelable where Self: DeviceFilterCriteriaSource {
     /// - Important: Setting this will **not** overlay the current state, but rather will successively
     ///              replace it.
     
-    public var filterCriteria: [DeviceFilterCriterion] {
+    var filterCriteria: [DeviceFilterCriterion] {
 
         get {
             return DeviceFilterCriterion.CriteriaFromState(
@@ -134,7 +134,7 @@ public extension Array where Element: DeviceModelable & DeviceFilterCriteriaSour
     
     /// Produce a merged array of filter criteria from this array.
     
-    public var filterCriteria: [DeviceFilterCriterion] {
+    var filterCriteria: [DeviceFilterCriterion] {
         
         get {
             return self
@@ -152,7 +152,7 @@ public extension Array where Element: DeviceModelable & DeviceActionSource {
     
     /// Get or Distribute `DeviceRuleAction`s across this collection's elements.
 
-    public var actions: [DeviceRuleAction] {
+    var actions: [DeviceRuleAction] {
         
         get {
             
@@ -180,13 +180,13 @@ public extension Dictionary where Value: DeviceModelable & DeviceActionSource {
     /// rule by continuously overlaying constituents' `deviceRules` properties,
     /// merging `actions` along the way.
     
-    public var deviceRule: DeviceRule {
+    var deviceRule: DeviceRule {
         get { return DeviceRule(actions: actions) }
     }
     
     /// Get or Distribute `DeviceRuleAction`s across this collection's elements.
     
-    public var actions: [DeviceRuleAction] {
+    var actions: [DeviceRuleAction] {
         
         get {
             // The trailing .filter() hack below is due to an overload in the Swift 2 (XC7b3)
@@ -218,8 +218,8 @@ public struct DeviceGroupMember: Hashable, CustomDebugStringConvertible {
         return "<DeviceSetMember> deviceId: \(deviceId) clientMetadata: \(clientMetadata)"
     }
     
-    public var hashValue: Int {
-        return deviceId.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(deviceId)
     }
     
     public var deviceId: String
@@ -266,10 +266,20 @@ public extension DeviceRule {
     /// Instantiate a `DeviceRule` using an object which provides
     /// a device interface (`DeviceModelable`)
     
-    public init(ruleId: String? = nil, actionable: DeviceModelable & DeviceActionSource, deviceGroupId: String? = nil, label: String? = nil, filterCriteria: [DeviceFilterCriterion]? = nil, enabled: Bool = true, userNotifications: [UserNotificationAssociation] = [], accountNotification: AccountNotification? = nil, notifies: Bool? = nil) {
+    init(
+        ruleId: String? = nil,
+        actionable: DeviceModelable & DeviceActionSource,
+        deviceGroupId: String? = nil,
+        label: String? = nil,
+        filterCriteria: [DeviceFilterCriterion]? = nil,
+        enabled: Bool = true,
+        userNotifications: [UserNotificationAssociation] = [],
+        accountNotification: AccountNotification? = nil,
+        notifies: Bool? = nil
+        ) {
         
         let localAccountNotification = (accountNotification ?? ((notifies ?? true)  ? AccountNotification.standard : nil))
-            
+        
         self.init(
             actions: actionable.actions,
             filterCriteria: filterCriteria,
@@ -285,7 +295,20 @@ public extension DeviceRule {
     
     /// Instantiate a `DeviceRule` using an array of `DeviceActionModelable` `DeviceActionSource`s.
     
-    public init(ruleId: String? = nil, accountId: String? = nil, scheduleId: String? = nil, schedule: DeviceRule.Schedule? = nil, actionables: [DeviceModelable & DeviceActionSource], filterCriteriaSources: [DeviceModelable & DeviceFilterCriteriaSource], enabled: Bool = true, deviceGroupId: String? = nil, label: String? = nil, userNotifications: [UserNotificationAssociation] = [], accountNotification: AccountNotification? = nil, notifies: Bool? = nil) {
+    init(
+        ruleId: String? = nil,
+        accountId: String? = nil,
+        scheduleId: String? = nil,
+        schedule: DeviceRule.Schedule? = nil,
+        actionables: [DeviceModelable & DeviceActionSource],
+        filterCriteriaSources: [DeviceModelable & DeviceFilterCriteriaSource],
+        enabled: Bool = true,
+        deviceGroupId: String? = nil,
+        label: String? = nil,
+        userNotifications: [UserNotificationAssociation] = [],
+        accountNotification: AccountNotification? = nil,
+        notifies: Bool? = nil
+        ) {
         
         let filterCriteria: [DeviceFilterCriterion]? = filterCriteriaSources.count > 0 ? filterCriteriaSources.flatMap { $0.filterCriteria } : nil
         
@@ -308,14 +331,14 @@ public extension DeviceRule {
 
 public extension DeviceRuleAction {
     
-    public init(deviceId: String, state: DeviceState, durationSeconds: Int? = nil) {
+    init(deviceId: String, state: DeviceState, durationSeconds: Int? = nil) {
         let attributeInstances = state.attributes.map {
             return AttributeInstance(id: $0, value: $1)
         }
         self.init(deviceId: deviceId, attributes: attributeInstances, durationSeconds: durationSeconds)
     }
     
-    public var attributeDict: [Int: AttributeValue] {
+    var attributeDict: [Int: AttributeValue] {
         return Dictionary(attributes.map { return ($0.id, $0.value) }.makeIterator())
     }
 }
@@ -638,10 +661,10 @@ public struct DeviceRuleAction: Hashable, CustomDebugStringConvertible {
     
     // <Hashable>
     
-    public var hashValue: Int {
-        return deviceId.hashValue
-            ^ attributes.reduce(0) { $0 ^ $1.hashValue }
-            ^ (durationSeconds?.hashValue ?? 0)
+    public func hash(into h: inout Hasher) {
+        h.combine(deviceId)
+        h.combine(attributes)
+        h.combine(durationSeconds)
     }
     
     public var deviceId: String
@@ -729,11 +752,11 @@ public struct DeviceFilterCriterion: Hashable, CustomDebugStringConvertible {
     
     // <Hashable>
     
-    public var hashValue: Int {
-        return attribute.hashValue
-            ^ operation.hashValue
-            ^ deviceId.hashValue
-            ^ trigger.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(attribute)
+        h.combine(operation)
+        h.combine(deviceId)
+        h.combine(trigger)
     }
     
     public var attribute: AttributeInstance
@@ -958,7 +981,7 @@ public extension DeviceRule {
     /// it's quite possible for a rule to have both filterCriteria and a schedule, for example,
     /// and all rules can be run on demand.
     
-    public var flags: Flags {
+    var flags: Flags {
         
         var ret: Flags = .OnDemand
         
@@ -982,7 +1005,7 @@ public extension DeviceRule {
     /// For determining what kind of editor to use, what kind of
     /// icon to display, etc, this gives us the single "most impotant" `Flags` value
     
-    public var primaryFlag: Flags {
+    var primaryFlag: Flags {
         
         let flags = self.flags
         
@@ -1003,7 +1026,7 @@ public extension DeviceRule {
     
     /// DeviceRule flags (scheduled, ondemand, etc)
     
-    public struct Flags: OptionSet {
+    struct Flags: OptionSet {
         
         // Yes, this is what a bitfield looks like in Swift :(
         

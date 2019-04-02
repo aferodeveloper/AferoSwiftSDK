@@ -32,9 +32,9 @@ public struct AferoAppEnvironment {
     static let appVersion = RSEnvironment.app.version.string
     static let appBuildNumber: AnyObject = Bundle.main.object(forInfoDictionaryKey: kCFBundleVersionKey as String) as AnyObject? ?? "<unknown>" as AnyObject
     
-    static let appBundleName: String! = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
+    static let appBundleName: String! = Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String
     
-    static let appGroupName: String! = Bundle.main.object(forInfoDictionaryKey: "KIAppGroupKey") as! String
+    static let appGroupName: String! = Bundle.main.object(forInfoDictionaryKey: "KIAppGroupKey") as? String
     
     static let appName = RSEnvironment.app.name
     static let appIdentifier = RSEnvironment.app.bundleID

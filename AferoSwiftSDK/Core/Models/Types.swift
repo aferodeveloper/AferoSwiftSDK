@@ -13,14 +13,14 @@ import CocoaLumberjack
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
 }
 
 
@@ -56,15 +56,15 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     case utf8S(String)
     
     public var flavor: AttributeFlavor {
-
+        
         switch self {
-
+            
         case .rawBytes: return .raw
-
+            
         case .utf8S: return .string
             
         case .boolean: return .boolean
-
+            
         case .signedInt8: fallthrough
         case .signedInt16: fallthrough
         case .signedInt32: fallthrough
@@ -115,13 +115,13 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     /// the value, otherwise it's the value converted to a `[UInt8]` according to its type.
     
     public var byteArray: [UInt8] {
-
+        
         switch self {
         case .rawBytes(let v):      return v
         case .boolean(let v):       return v.bytes
         case .utf8S(let v):
             return [UInt8](v.utf8)
-
+            
         case .signedInt8(let v):    return v.bytes
         case .signedInt16(let v):   return v.bytes
         case .signedInt32(let v):   return v.bytes
@@ -131,7 +131,7 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
             
         case .q1516(let v):
             return doubleToQ(v, n: 16, t: Int32.self)
-
+            
         case .q3132(let v):
             return doubleToQ(v, n: 32, t: Int64.self)
         }
@@ -145,23 +145,23 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     public init(_ v: Bool) {
         self = .boolean(v)
     }
-
+    
     public init(_ v: Int) {
         self = .signedInt64(Int64(v))
     }
-
+    
     public init(_ v: Int8) {
         self = .signedInt8(v)
     }
-
+    
     public init(_ v: Int16) {
         self = .signedInt16(v)
     }
-
+    
     public init(_ v: Int32) {
         self = .signedInt32(v)
     }
-
+    
     public init(_ v: Int64) {
         self = .signedInt64(v)
     }
@@ -177,7 +177,7 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
     public init(_ v: String) {
         self = .utf8S(v)
     }
-
+    
     public init?<T>(_ t: T?) {
         switch t {
             
@@ -216,7 +216,7 @@ public enum AttributeValue: CustomStringConvertible, CustomDebugStringConvertibl
 
 public extension NSDecimalNumber {
     
-    public class IntegerBehaviors: NSObject, NSDecimalNumberBehaviors {
+    class IntegerBehaviors: NSObject, NSDecimalNumberBehaviors {
         
         static let sharedInstance = IntegerBehaviors()
         
@@ -240,28 +240,28 @@ public extension AttributeValue {
     
     // NOTE: This is a workaround for rdar #25465729 (http://stackoverflow.com/questions/36322336/positive-nsdecimalnumber-returns-unexpected-64-bit-integer-values)
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Decimal) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Decimal) {
         self.init(value as Decimal)
     }
-
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: NSDecimalNumber) {
-
+    
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: NSDecimalNumber) {
+        
         switch type {
             
         case .float32:
             let roundedValue = value.floatValue
             self = .float32(roundedValue)
-
+            
         case .q1516: fallthrough
         case .q3132: fallthrough
         case .float64:
             let roundedValue = value.doubleValue
             self = .float64(roundedValue)
-
+            
         case .sInt64:
             let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).int64Value
             self = .signedInt64(roundedValue)
-
+            
         case .sInt32:
             let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).intValue
             self = .signedInt32(Int32(roundedValue))
@@ -269,35 +269,35 @@ public extension AttributeValue {
         case .sInt16:
             let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).int16Value
             self = .signedInt16(roundedValue)
-
+            
         case .sInt8:
             let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).int8Value
             self = .signedInt8(roundedValue)
-
+            
         case .boolean: self = .boolean(value.boolValue)
-            let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).boolValue
-            self = .boolean(roundedValue)
+        let roundedValue = value.rounding(accordingToBehavior: NSDecimalNumber.IntegerBehaviors.sharedInstance).boolValue
+        self = .boolean(roundedValue)
             
         case .utf8S:
             let formatter = NumberFormatter()
             formatter.locale = .current
             formatter.numberStyle = NumberFormatter.Style.decimal
             self = .utf8S(formatter.string(from: value) ?? "\(value)")
-
+            
         case .bytes:
             self = .rawBytes(value.doubleValue.bytes)
-           
+            
         case .uInt8: fallthrough
         case .uInt16: fallthrough
         case .uInt32: fallthrough
         case .uInt64: fallthrough
         case .unknown:
             return nil
-        
+            
         }
     }
-
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int) {
+    
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int) {
         switch type {
         case .float32: self = .float32(Float(value))
         case .float64: self = .float64(Double(value))
@@ -313,7 +313,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int64) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Int64) {
         switch type {
         case .float32: self = .float32(Float(value))
         case .float64: self = .float64(Double(value))
@@ -329,7 +329,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Float) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Float) {
         switch type {
         case .float32: self = .float32(Float(value))
         case .float64: self = .float64(Double(value))
@@ -347,7 +347,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Double) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Double) {
         switch type {
         case .float32: self = .float32(Float(value))
         case .float64: self = .float64(Double(value))
@@ -363,7 +363,7 @@ public extension AttributeValue {
         }
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Bool) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: Bool) {
         
         let intValue = value ? 0 : 1
         
@@ -381,12 +381,12 @@ public extension AttributeValue {
         default: return nil
         }
     }
-
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, slice: ArraySlice<UInt8>) {
+    
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, slice: ArraySlice<UInt8>) {
         self.init(type: type, bytes: Array(slice))
     }
     
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, bytes: [UInt8]) {
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, bytes: [UInt8]) {
         
         switch type {
             
@@ -425,7 +425,7 @@ public extension AttributeValue {
         case .boolean:
             guard let v = Bool(byteArray: bytes) else { return nil }
             self = .boolean(v)
-
+            
         case .utf8S:
             guard let v = String(byteArray: bytes) else { return nil }
             self = .utf8S(v)
@@ -436,10 +436,10 @@ public extension AttributeValue {
         default: return nil
         }
     }
-
-    public init?(type: DeviceProfile.AttributeDescriptor.DataType, value: String) {
+    
+    init?(type: DeviceProfile.AttributeDescriptor.DataType, value: String) {
         switch type {
-
+            
         case .q1516:
             guard let v = Double(value) else { return nil }
             self = .q1516(v)
@@ -447,7 +447,7 @@ public extension AttributeValue {
         case .q3132:
             guard let v = Double(value) else { return nil }
             self = .q3132(v)
-
+            
         case .float32:
             guard let v = Float(value) else { return nil }
             self = .float32(v)
@@ -483,7 +483,7 @@ public extension AttributeValue {
             } else {
                 return nil
             }
-
+            
         case .utf8S: self = .utf8S(value)
         case .bytes:
             guard let v = Utils.bytesFromHexString(value) else { return nil }
@@ -492,32 +492,53 @@ public extension AttributeValue {
         default: return nil
         }
     }
-
-
+    
+    
 }
 
 // MARK: - <Hashable> 
 
 extension AttributeValue: Hashable, Comparable {
     
-    public var hashValue: Int {
+    public func hash(into h: inout Hasher) {
         switch(self) {
-        case .rawBytes(let value):      return value.count
-        case .boolean(let value):       return 1  ^ value.hashValue
-        case .utf8S(let value):         return 2  ^ value.hashValue
-        case .signedInt8(let value):    return 7  ^ value.hashValue
-        case .signedInt16(let value):   return 8  ^ value.hashValue
-        case .signedInt32(let value):   return 9  ^ value.hashValue
-        case .signedInt64(let value):   return 10 ^ value.hashValue
-        case .float32(let value):       return 11 ^ value.hashValue
-        case .float64(let value):       return 12 ^ value.hashValue
-        case .q1516:                    return byteArray.reduce(13) { curr, next in return curr ^ Int(next) }
-        case .q3132:                    return byteArray.reduce(14) { curr, next in return curr ^ Int(next) }
             
+        case .rawBytes(let value):
+            h.combine(value)
+        case .boolean(let value):
+            h.combine(1)
+            h.combine(value)
+        case .utf8S(let value):
+            h.combine(2)
+            h.combine(value)
+        case .signedInt8(let value):
+            h.combine(3)
+            h.combine(value)
+        case .signedInt16(let value):
+            h.combine(4)
+            h.combine(value)
+        case .signedInt32(let value):
+            h.combine(5)
+            h.combine(value)
+        case .signedInt64(let value):
+            h.combine(6)
+            h.combine(value)
+        case .float32(let value):
+            h.combine(7)
+            h.combine(value)
+        case .float64(let value):
+            h.combine(8)
+            h.combine(value)
+        case .q1516:
+            h.combine(9)
+            h.combine(byteArray)
+        case .q3132:
+            h.combine(10)
+            h.combine(byteArray)
         }
     }
     
-    public var value: Any {
+    var value: Any {
         switch(self) {
         case .rawBytes(let value):      return value
         case .boolean(let value):       return value
@@ -549,13 +570,13 @@ public func ~==<T: Equatable>(lhs: T, rhs: T) -> Bool {
         
         lhs = lhs as? AttributeValue,
         let rhs = rhs as? AttributeValue {
-            return lhs ~== rhs
+        return lhs ~== rhs
     }
     return lhs == rhs
 }
 
 public func ~==(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
-
+    
     if (lhs == rhs) { return true }
     
     switch (lhs.flavor, rhs.flavor) {
@@ -612,7 +633,7 @@ public func ==(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
 }
 
 public func <(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
-
+    
     switch (lhs.flavor, rhs.flavor) {
         
     case (.string, .string): return lhs.stringValue < rhs.stringValue
@@ -620,11 +641,11 @@ public func <(lhs: AttributeValue, rhs: AttributeValue) -> Bool {
     case (.string, .boolean): fallthrough
     case (.boolean, .string): fallthrough
     case (.boolean, .boolean): return lhs.boolValue == false && rhs.boolValue == true
-    
+        
     case (.string, .uIntegral): fallthrough
     case (.uIntegral, .string): fallthrough
     case (.uIntegral, .uIntegral): return lhs.uintValue < rhs.uintValue
-    
+        
     case (.string, .sIntegral): fallthrough
     case (.sIntegral, .string): fallthrough
     case (.sIntegral, .sIntegral): return lhs.intValue < rhs.intValue
@@ -679,7 +700,7 @@ extension AttributeValue: ExpressibleByIntegerLiteral {
 }
 
 extension AttributeValue: ExpressibleByFloatLiteral {
-
+    
     public typealias FloatLiteralConvertibleType = FloatLiteralType
     
     public init(floatLiteral value: FloatLiteralType) {
@@ -703,7 +724,7 @@ prefix func ~(operand: AttributeValue?) -> AttributeValue? {
     guard let operand = operand else { return nil }
     
     switch operand {
-
+        
     case .signedInt16(let value): return .signedInt16(Int16.max - value)
     case .signedInt32(let value): return .signedInt32(Int32.max - value)
     case .signedInt64(let value): return .signedInt64(Int64.max - value)
@@ -711,7 +732,7 @@ prefix func ~(operand: AttributeValue?) -> AttributeValue? {
         
         
     case .boolean(let value): return .boolean(!value)
-    
+        
     default: return nil
         
     }
@@ -722,11 +743,11 @@ prefix func ~(operand: AttributeValue?) -> AttributeValue? {
 
 public extension AttributeValue {
     
-    public var decimal: Decimal? {
+    var decimal: Decimal? {
         return number as Decimal?
     }
     
-    public var number: NSDecimalNumber? {
+    var number: NSDecimalNumber? {
         
         get {
             switch self {
@@ -737,7 +758,7 @@ public extension AttributeValue {
                     return NSDecimalNumber(value: v.intValue ?? 0 as Int)
                 }
                 return NSDecimalNumber(string: v)
-             
+                
             case .float32(let v): return NSDecimalNumber(string: "\(v)")
             case .float64(let v): return NSDecimalNumber(string: "\(v)")
                 
@@ -753,39 +774,39 @@ public extension AttributeValue {
         }
         
     }
-
-    public var boolValue: Bool { return suited() }
-    public var doubleValue: Double? { return suited() }
-    public var floatValue: Float? { return suited() }
-    public var intValue: Int? { return suited() }
-
-    public var int32Value: Int32? { return suited() }
-    public var int64Value: Int64? { return suited() }
-    public var int16Value: Int16? { return suited() }
-    public var int8Value: Int8? { return suited() }
-    public var uintValue: UInt? { return suited() }
-    public var uint64Value: UInt64? { return suited() }
-    public var stringValue: String? { return suited() }
     
-    public func suited() -> Bool {
-
+    var boolValue: Bool { return suited() }
+    var doubleValue: Double? { return suited() }
+    var floatValue: Float? { return suited() }
+    var intValue: Int? { return suited() }
+    
+    var int32Value: Int32? { return suited() }
+    var int64Value: Int64? { return suited() }
+    var int16Value: Int16? { return suited() }
+    var int8Value: Int8? { return suited() }
+    var uintValue: UInt? { return suited() }
+    var uint64Value: UInt64? { return suited() }
+    var stringValue: String? { return suited() }
+    
+    func suited() -> Bool {
+        
         switch self {
         case .boolean(let value): return value
         case .rawBytes: return byteArray.index { $0 != 0 } != nil
         case .utf8S(let v):
             switch v.lowercased() {
-
+                
             case "0x01": fallthrough
             case "01": fallthrough
             case "1": fallthrough
             case "true": return true
-            
+                
             case "0x00": fallthrough
             case "00": fallthrough
             case "0": fallthrough
             case "false": return false
-
-                // TODO: Justification
+                
+            // TODO: Justification
             default: return false
             }
             
@@ -796,33 +817,33 @@ public extension AttributeValue {
             
         }
     }
-
+    
     /**
-    Return the value as a byte array. Identical to accessing the `byteArray` property.
-    */
-    public func suited() -> [UInt8] {
+     Return the value as a byte array. Identical to accessing the `byteArray` property.
+     */
+    func suited() -> [UInt8] {
         return byteArray
     }
     
-    public func suited() -> Double? { return number?.doubleValue }
-
-    /**
-    If possible, return value as a `Float`.
-    
-    - returns: a `Float` representing the wrapped value, if the value is a numeric type and and not Double, or if it's a String for which `NSString.floatValue` returns non-nil. Otherwise nil.
-    */
-    
-
-    public func suited() -> Float? { return number?.floatValue }
+    func suited() -> Double? { return number?.doubleValue }
     
     /**
-    If possible, return value as a Int.
+     If possible, return value as a `Float`.
+     
+     - returns: a `Float` representing the wrapped value, if the value is a numeric type and and not Double, or if it's a String for which `NSString.floatValue` returns non-nil. Otherwise nil.
+     */
     
-    - returns: a `Int` representing the wrapped value, if the value is a numeric
-    type and `0 <= value <= Int.max`. Otherwise nil.
-    */
     
-    public func suited() -> Int? { return number?.intValue }
+    func suited() -> Float? { return number?.floatValue }
+    
+    /**
+     If possible, return value as a Int.
+     
+     - returns: a `Int` representing the wrapped value, if the value is a numeric
+     type and `0 <= value <= Int.max`. Otherwise nil.
+     */
+    
+    func suited() -> Int? { return number?.intValue }
     
     /**
      If possible, return value as an Int64.
@@ -831,8 +852,8 @@ public extension AttributeValue {
      type and `0 <= value <= Int.max`. Otherwise nil.
      */
     
-    public func suited() -> Int64? { return number?.int64Value }
-
+    func suited() -> Int64? { return number?.int64Value }
+    
     /**
      If possible, return value as an Int32.
      
@@ -840,7 +861,7 @@ public extension AttributeValue {
      type and `0 ≤ value ≤ Int.max`. Otherwise nil.
      */
     
-    public func suited() -> Int32? {
+    func suited() -> Int32? {
         guard let n = number?.int64Value, (Int64(Int32.min)...Int64(Int32.max)).contains(n) else {
             return nil
         }
@@ -854,13 +875,13 @@ public extension AttributeValue {
      type and `Int16 ≤ value ≤ Int16.max`. Otherwise nil.
      */
     
-    public func suited() -> Int16? {
+    func suited() -> Int16? {
         guard let n = number?.int64Value, (Int64(Int16.min)...Int64(Int16.max)).contains(n) else {
             return nil
         }
         return Int16(n)
     }
-
+    
     /**
      If possible, return value as an Int8.
      
@@ -868,23 +889,14 @@ public extension AttributeValue {
      type and `Int.min ≤ value ≤ Int.max`. Otherwise nil.
      */
     
-    public func suited() -> Int8? {
+    func suited() -> Int8? {
         guard let n = number?.int64Value, (Int64(Int8.min)...Int64(Int8.max)).contains(n) else {
             return nil
         }
         return Int8(n)
     }
-
-
-    /**
-    If possible, return value as a UInt.
-
-    - returns: a `UInt` representing the wrapped value, if the value is a numeric
-              type and `0 <= value <= UInt.max`. Otherwise nil.
-    */
     
-    public func suited() -> UInt? { return number?.uintValue }
-
+    
     /**
      If possible, return value as a UInt.
      
@@ -892,15 +904,24 @@ public extension AttributeValue {
      type and `0 <= value <= UInt.max`. Otherwise nil.
      */
     
-    public func suited() -> UInt64? { return number?.uint64Value }
-        
+    func suited() -> UInt? { return number?.uintValue }
+    
     /**
-    If possible, return value as a String.
+     If possible, return value as a UInt.
+     
+     - returns: a `UInt` representing the wrapped value, if the value is a numeric
+     type and `0 <= value <= UInt.max`. Otherwise nil.
+     */
     
-    - returns: a `String` representing the wrapped value, iff the wrapped value is indeed a string.
-    */
+    func suited() -> UInt64? { return number?.uint64Value }
     
-    public func suited() -> String? {
+    /**
+     If possible, return value as a String.
+     
+     - returns: a `String` representing the wrapped value, iff the wrapped value is indeed a string.
+     */
+    
+    func suited() -> String? {
         switch self {
             
         case .rawBytes(let value):   return Utils.hexStringFromBytes(value)
@@ -917,7 +938,7 @@ public extension AttributeValue {
         }
     }
     
-    public var localizedStringValue: String {
+    var localizedStringValue: String {
         switch self {
             
         case .rawBytes(let value):   return Utils.hexStringFromBytes(value) ?? ""
@@ -933,13 +954,13 @@ public extension AttributeValue {
             return formatter.string(from: number) ?? "0"
         }
     }
-
+    
     
 }
 
 public extension AttributeValue {
     
-    public var JSONValue: Any? {
+    var JSONValue: Any? {
         switch self {
         case .rawBytes(let value):
             return Utils.hexStringFromBytes(value)
@@ -971,8 +992,8 @@ public struct AttributeInstance: Hashable, Equatable, CustomDebugStringConvertib
     
     // <Hashable>
     
-    public var hashValue: Int {
-        return id.hashValue ^ value.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(id)
     }
     
     public var id: Int
@@ -1075,8 +1096,8 @@ public func abs(_ number: NSDecimalNumber) -> NSDecimalNumber {
 }
 
 public extension NSDecimalNumber {
-
-    public func clamp(_ min: NSDecimalNumber, max: NSDecimalNumber) -> NSDecimalNumber {
+    
+    func clamp(_ min: NSDecimalNumber, max: NSDecimalNumber) -> NSDecimalNumber {
         
         if compare(min) == .orderedAscending {
             return min
@@ -1249,11 +1270,27 @@ public struct DateTypes {
     public struct Time: Equatable, Comparable, CustomDebugStringConvertible {
         
         public var debugDescription: String {
-            return "<Time> \(hour):\(minute):\(seconds) \(timeZone.abbreviation)"
+            var hourDesc = "-"
+            var minuteDesc = "-"
+            var secondsDesc = "-"
+            
+            if let hour = hour {
+                hourDesc = "\(hour)"
+            }
+            
+            if let minute = minute {
+                minuteDesc = "\(minute)"
+            }
+            
+            if let seconds = seconds {
+                secondsDesc = "\(seconds)"
+            }
+            
+            return "<Time> \(hourDesc):\(minuteDesc):\(secondsDesc) T \(timeZone.abbreviation(for: Date()) ?? "-")"
         }
         
         private var componentsCache = NSCache<NSTimeZone, NSDateComponents>()
-
+        
         /// The primary model for all component storage.
         private(set) public var components: DateComponents {
             didSet {
@@ -1261,7 +1298,7 @@ public struct DateTypes {
                 componentsCache.removeAllObjects()
             }
         }
-
+        
         /// Get the components for this Date in the given timezone. Results
         /// are cached.
         
@@ -1283,7 +1320,7 @@ public struct DateTypes {
             componentsCache.setObject(ret as NSDateComponents, forKey: timeZone as NSTimeZone)
             return ret
         }
-
+        
         public typealias Second = Int
         
         /// The `seconds` component the internal `components` object.
@@ -1316,7 +1353,7 @@ public struct DateTypes {
         
         /// A `Date` object, representing the current day, year, and month, with
         /// hour, minute, and second pulled from this instance's underlying components.
-
+        
         public var date: Date {
             
             // We create our components from the current date in order

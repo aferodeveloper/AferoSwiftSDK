@@ -32,7 +32,7 @@ public extension DeviceCollection {
     /// then the call can be retried with `isOwnershipTranferVerified == true`, and the service will disassociate
     /// said device from its existing account prior to associating it with the new account.
     
-    public func addDevice(with associationId: String, location: CLLocation? = nil, isOwnershipChangeVerified: Bool = false, timeZone: TimeZone = TimeZone.current, timeZoneIsUserOverride: Bool = false) -> Promise<DeviceModel> {
+    func addDevice(with associationId: String, location: CLLocation? = nil, isOwnershipChangeVerified: Bool = false, timeZone: TimeZone = TimeZone.current, timeZoneIsUserOverride: Bool = false) -> Promise<DeviceModel> {
         
         return Promise {
             fulfill, reject in
@@ -68,7 +68,7 @@ public extension DeviceCollection {
     /// This call results in a disassociate being called against the Afero service.
     /// - parameter deviceId: The id of the device to remove.
     
-    public func removeDevice(with deviceId: String) -> Promise<String> {
+    func removeDevice(with deviceId: String) -> Promise<String> {
         
         return Promise {
             fulfill, reject in

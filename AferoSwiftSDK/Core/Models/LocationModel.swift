@@ -389,8 +389,10 @@ public struct DeviceLocation: Hashable, CustomStringConvertible, CustomDebugStri
     
     // MARK: <Hashable>
     
-    public var hashValue: Int {
-        return location.hashValue ^ sourceType.hashValue ^ (formattedAddressLines?.count ?? 0)
+    public func hash(into h: inout Hasher) {
+        h.combine(location)
+        h.combine(sourceType)
+        h.combine(formattedAddressLines)
     }
     
 }

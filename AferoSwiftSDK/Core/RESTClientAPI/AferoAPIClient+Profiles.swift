@@ -76,7 +76,7 @@ public extension AferoAPIClientProto {
     /// - parameter name: The new name of the device.
     /// - parameter deviceId: The device's `id`
     
-    public func setFriendlyName(_ accountId: String, name: String, forDeviceId deviceId: String) -> Promise<Void>  {
+    func setFriendlyName(_ accountId: String, name: String, forDeviceId deviceId: String) -> Promise<Void>  {
         let body: [String: Any] = [
             "friendlyName": name
         ]

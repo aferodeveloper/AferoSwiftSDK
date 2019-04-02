@@ -10,7 +10,7 @@ import Foundation
 import PromiseKit
 
 public extension AferoAPIClientProto {
-
+    
     // MARK: Schedules
     
     /**
@@ -19,7 +19,7 @@ public extension AferoAPIClientProto {
      - parameter scheduleId: The id of the schedule to delete.
      */
     
-    public func deleteSchedule(_ accountId: String, scheduleId: String) -> Promise<Void> {
+    func deleteSchedule(_ accountId: String, scheduleId: String) -> Promise<Void> {
         return DELETE("/v1/accounts/\(accountId)/schedules/\(scheduleId)")
     }
     
@@ -28,7 +28,7 @@ public extension AferoAPIClientProto {
     /// - parameter schedule: The schedule to create or update
     /// - returns: A `Promise<DeviceRule.Schedule>`
     
-    public func createOrUpdateSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
+    func createOrUpdateSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
         
         if let _ = schedule.scheduleId {
             return updateSchedule(accountId, schedule:  schedule)
@@ -43,7 +43,7 @@ public extension AferoAPIClientProto {
     ///  - parameter schedule: The `DeviceRule.Schedule` which will be updated. `schedule.scheduleId` cannot be nil.
     /// - returns: A `Promise<DeviceRule.Schedule>`
     
-    public func updateSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
+    func updateSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
         
         guard let scheduleId = schedule.scheduleId else {
             NSLog("No scheduleId on schedule; didn't you mean create?")
@@ -59,7 +59,7 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<DeviceRule.Schedule>`
     /// - note: `schedule.scheduleId` must not be populated.
     
-    public func createSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
+    func createSchedule(_ accountId: String, schedule: DeviceRule.Schedule) -> Promise<DeviceRule.Schedule> {
         
         if let _ = schedule.scheduleId {
             return Promise { _, reject in reject(NSError(code: .badParameterError, localizedDescription: "ScheduleId present in schedule; didn't you mean update?")) }
@@ -77,7 +77,7 @@ public extension AferoAPIClientProto {
      - parameter sceneId: The ID of the scene itself.
      */
     
-    public func executeRule(_ accountId: String, ruleId: String) ->Promise<[AccountAction]> {
+    func executeRule(_ accountId: String, ruleId: String) ->Promise<[AccountAction]> {
         
         let body: [String: Any] = [
             "type": "execute_actions"
@@ -92,7 +92,7 @@ public extension AferoAPIClientProto {
      - parameter ruleId: The ruleId for the rule.
      */
     
-    public func fetchRule(_ accountId: String, ruleId: String) -> Promise<DeviceRule> {
+    func fetchRule(_ accountId: String, ruleId: String) -> Promise<DeviceRule> {
         return GET("/v1/accounts/\(accountId)/rules/\(ruleId)", expansions: ["schedule", "scene"])
     }
     
@@ -107,7 +107,7 @@ public extension AferoAPIClientProto {
      - parameter deviceId: The (optional) serial number of a device. Defaults to nil.
      */
     
-    public func fetchRules(_ accountId: String, deviceId: String? = nil, deviceGroupId: String? = nil) -> Promise<[DeviceRule]> {
+    func fetchRules(_ accountId: String, deviceId: String? = nil, deviceGroupId: String? = nil) -> Promise<[DeviceRule]> {
         
         if let deviceId = deviceId {
             return GET("/v1/accounts/\(accountId)/devices/\(deviceId)/rules", expansions: ["schedule"])
@@ -136,7 +136,7 @@ public extension AferoAPIClientProto {
      */
     
     
-    public func createOrUpdateRule(_ rule: DeviceRule) -> Promise<DeviceRule> {
+    func createOrUpdateRule(_ rule: DeviceRule) -> Promise<DeviceRule> {
         
         guard let accountId = rule.accountId else {
             let error = NSError(code: .badParameterError, localizedDescription: "Bad or missing parameters: no accountId in rule \(rule.accountId!).")
@@ -170,9 +170,9 @@ public extension AferoAPIClientProto {
      - parameter ruleId: The id of the rule to delete.
      */
     
-    public func deleteRule(_ accountId: String, ruleId: String) -> Promise<Void> {
+    func deleteRule(_ accountId: String, ruleId: String) -> Promise<Void> {
         return DELETE("/v1/accounts/\(accountId)/rules/\(ruleId)")
     }
     
-
+    
 }

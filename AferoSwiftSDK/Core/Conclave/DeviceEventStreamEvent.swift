@@ -474,7 +474,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
 
         // MARK: <Hashable>
         
-        public var hashValue: Int { return id.hashValue }
+        public func hash(into h: inout Hasher) {
+            h.combine(id)
+        }
         
         public static func ==(lhs: Peripheral, rhs: Peripheral) -> Bool {
             return lhs.id == rhs.id
@@ -710,15 +712,15 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
             // MARK: <Hashable>
             
-            public var hashValue: Int {
-                return (isAvailable ?? false).hashValue
-                    ^ (isVisible ?? false).hashValue
-                    ^ (isDirty ?? false).hashValue
-                    ^ (isConnectable ?? false).hashValue
-                    ^ (isConnected ?? false).hashValue
-                    ^ (isRebooted ?? false).hashValue
-                    ^ (isDirect ?? false).hashValue
-                    ^ (RSSI ?? 0).hashValue
+            public func hash(into h: inout Hasher) {
+                h.combine(isAvailable)
+                h.combine(isVisible)
+                h.combine(isDirty)
+                h.combine(isConnectable)
+                h.combine(isConnected)
+                h.combine(isRebooted)
+                h.combine(isDirect)
+                h.combine(RSSI)
             }
             
             public static func ==(lhs: Status, rhs: Status) -> Bool {
@@ -858,8 +860,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
             // MARK: <Hashable>
             
-            public var hashValue: Int {
-                return value.hashValue ^ (key?.hashValue ?? 0)
+            public func hash(into h: inout Hasher) {
+                h.combine(value)
+                h.combine(key)
             }
             
             public static func ==(lhs: DeviceTag, rhs: DeviceTag) -> Bool {
@@ -963,7 +966,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
             // MARK: <Hashable>
             
-            public var hashValue: Int { return id.hashValue }
+            public func hash(into h: inout Hasher) {
+                h.combine(id)
+            }
             
             public static func ==(lhs: Attribute, rhs: Attribute) -> Bool {
                 return lhs.id == rhs.id && lhs.data == rhs.data && lhs.value == rhs.value
@@ -1064,10 +1069,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
             // MARK: <Hashable>
             
-            public var hashValue: Int {
-                switch self {
-                case .unknown: return 0
-                case let .known(pos): return 1 ^ pos.hashValue
+            public func hash(into h: inout Hasher) {
+                if case let .known(pos) = self {
+                    h.combine(pos)
                 }
             }
             
@@ -1126,8 +1130,10 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 
                 // MARK: <Hashable>
                 
-                public var hashValue: Int {
-                    return latitude.hashValue ^ longitude.hashValue ^ source.hashValue
+                public func hash(into h: inout Hasher) {
+                    h.combine(latitude)
+                    h.combine(longitude)
+                    h.combine(source)
                 }
                 
                 // MARK: <AferoJSONCoding>
@@ -1442,7 +1448,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
                 && lhs.downloadURL == rhs.downloadURL
         }
         
-        public var hashValue: Int { return downloadURL.hashValue }
+        public func hash(into h: inout Hasher) {
+            h.combine(downloadURL)
+        }
         
         // MARK: <AferoJSONCoding>
         
@@ -1562,8 +1570,10 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
         
         // MARK: <Hashable>
         
-        public var hashValue: Int {
-            return state.hashValue ^ total.hashValue ^ offset.hashValue
+        public func hash(into h: inout Hasher) {
+            h.combine(state)
+            h.combine(total)
+            h.combine(offset)
         }
         
         public static func ==(lhs: OTAProgress, rhs: OTAProgress) -> Bool {
@@ -1623,7 +1633,9 @@ public enum DeviceStreamEvent: CustomStringConvertible, CustomDebugStringConvert
             
             // MARK: <Hashable>
             
-            public var hashValue: Int { return rawValue }
+            public func hash(into h: inout Hasher) {
+                h.combine(rawValue)
+            }
             
             // MARK: <Equatable>
             

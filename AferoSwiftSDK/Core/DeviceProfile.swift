@@ -36,11 +36,11 @@ public func ==<T: LayerImagePresentable>(lhs: T?, rhs: T?) -> Bool {
 
 public extension LayerImagePresentable {
     
-    public var URL: Foundation.URL? {
+    var URL: Foundation.URL? {
         return Foundation.URL(string: URI)
     }
     
-    public var cardURL: Foundation.URL? {
+    var cardURL: Foundation.URL? {
         guard let cardURI = cardURI else { return nil }
         return Foundation.URL(string: cardURI)
     }
@@ -165,8 +165,8 @@ public protocol AttributeOptionPresentable {
 }
 
 public extension AttributeOptionPresentable {
-    public var isLocallySchedulable: Bool { return flags.contains(.LocalSchedulable) }
-    public var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
+    var isLocallySchedulable: Bool { return flags.contains(.LocalSchedulable) }
+    var isPrimaryOperation: Bool { return flags.contains(.PrimaryOperation) }
 }
 
 
@@ -272,14 +272,14 @@ public protocol ControlPresentable: CustomDebugStringConvertible {
 
 public extension DeviceProfile {
     
-    public typealias AttributeConfig = (descriptor: DeviceProfile.AttributeDescriptor, presentation: DeviceProfile.Presentation.AttributeOption?)
+    typealias AttributeConfig = (descriptor: DeviceProfile.AttributeDescriptor, presentation: DeviceProfile.Presentation.AttributeOption?)
     
     @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
-    public func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
+    func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
         return attributeConfig(for: id, on: deviceId)
     }
     
-    public func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
+    func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
 
         // Note that we don't use attributeConfigs(on:isIncluded:) here, because we
         // can index directly into attributes using attributeId.
@@ -291,7 +291,7 @@ public extension DeviceProfile {
         return (descriptor: descriptor, presentation: presentation(deviceId)?[attributeId])
     }
     
-    public func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
+    func attributeConfig(for semanticType: String, on deviceId: String? = nil) -> AttributeConfig? {
         return attributeConfigs(on: deviceId) { $0.descriptor.semanticType == semanticType }.first
     }
     
@@ -300,7 +300,7 @@ public extension DeviceProfile {
     ///                         including all configs in the result.
     /// - returns: A `LazyCollection<[AttributeConfig]>` which matches all results.
     
-    public func attributeConfigs(on deviceId: String? = nil, isIncluded: @escaping (AttributeConfig)->Bool = { _ in true }) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, isIncluded: @escaping (AttributeConfig)->Bool = { _ in true }) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
         
         let ret = descriptors()
             .map {
@@ -310,11 +310,11 @@ public extension DeviceProfile {
         return ret
     }
 
-    public func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId) { range.contains($0.descriptor.id) }
     }
     
-    public func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
+    func attributeConfigs(on deviceId: String? = nil, withIdsIn platformAttributeRange: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], AttributeConfig>> {
         return attributeConfigs(on: deviceId, withIdsIn: platformAttributeRange.range)
     }
     
@@ -979,7 +979,7 @@ public class DeviceProfile: CustomDebugStringConvertible, Equatable {
                 self.type = type
                 self.attributeMap = attributeMap
                 self.attributeIds = Set(attributeMap?.values.compactMap { $0 } ?? [])
-                self.attributeKeys = Set(attributeMap?.keys.flatMap { $0 } ?? [])
+                self.attributeKeys = Set(attributeMap?.keys.compactMap { $0 } ?? [])
                 self.displayRules = displayRules ?? []
             }
             
@@ -1562,11 +1562,11 @@ extension UInt16 {
 
 public extension UInt32 {
     
-    public static var maxValue: AttributeValue? {
+    static var maxValue: AttributeValue? {
         return AttributeValue(self.max)
     }
     
-    public static var minValue: AttributeValue? {
+    static var minValue: AttributeValue? {
         return AttributeValue(self.min)
     }
     
@@ -1574,11 +1574,11 @@ public extension UInt32 {
 
 public extension UInt64 {
     
-    public static var maxValue: AttributeValue? {
+    static var maxValue: AttributeValue? {
         return AttributeValue(self.max)
     }
     
-    public static var minValue: AttributeValue? {
+    static var minValue: AttributeValue? {
         return AttributeValue(self.min)
     }
     
@@ -1586,7 +1586,7 @@ public extension UInt64 {
 
 public extension DeviceProfile.AttributeDescriptor.DataType {
     
-    public var maxValue: AttributeValue? {
+    var maxValue: AttributeValue? {
         switch self {
             
         case .sInt8: return Int8.maxValue
@@ -1607,7 +1607,7 @@ public extension DeviceProfile.AttributeDescriptor.DataType {
     }
     
     
-    public var minValue: AttributeValue? {
+    var minValue: AttributeValue? {
         switch self {
             
         case .sInt8: return Int8.minValue
@@ -1634,16 +1634,12 @@ public func ==(lhs: DeviceProfile.Presentation.Flags, rhs: DeviceProfile.Present
 
 extension DeviceProfile.Presentation.Control: Hashable {
     
-    public var hashValue: Int {
-        
-        var ret = id.hashValue ^ type.hashValue
-        
-        if let attributeMap = attributeMap {
-            ret = ret ^ attributeMap.count
-        }
-        
-        return ret
+    public func hash(into h: inout Hasher) {
+        h.combine(id)
+        h.combine(type)
+        h.combine(attributeMap)
     }
+
 }
 
 public func ==(lhs: DeviceProfile.Presentation.Control, rhs: DeviceProfile.Presentation.Control) -> Bool {
@@ -1674,25 +1670,14 @@ public func ==(lhs: DeviceProfile.Presentation.AttributeOption.RangeOptions, rhs
 // MARK: Group Extensions and Operators
 
 extension DeviceProfile.Presentation.Group: Hashable {
-    
-    public var hashValue: Int {
-        
-        var hv = gauge.hashValue
-        
-        if let label = label {
-            hv = hv ^ label.hashValue
-        }
-        
-        if let controlIds = controlIds {
-            hv = hv ^ controlIds.count
-        }
-        
-        if let groups = groups {
-            hv = hv ^ groups.count
-        }
-        
-        return hv
+
+    public func hash(into h: inout Hasher) {
+        h.combine(gauge)
+        h.combine(label)
+        h.combine(controlIds)
+        h.combine(groups)
     }
+    
 }
 
 public func ==(lhs: DeviceProfile.Presentation.Group, rhs: DeviceProfile.Presentation.Group) -> Bool {
@@ -1703,28 +1688,14 @@ public func ==(lhs: DeviceProfile.Presentation.Group, rhs: DeviceProfile.Present
 // MARK: Gauge Extension and Operators
 
 extension DeviceProfile.Presentation.Gauge: Hashable {
-    public var hashValue: Int {
-
-        var hv = 0
-        
-        if let foreground = foreground {
-            hv = hv ^ foreground.hashValue
-        }
-        
-        if let background = background {
-            hv = hv ^ background.hashValue
-        }
-        
-        if let label = label {
-            hv = hv ^ label.hashValue
-        }
-        
-        if let type = type {
-            hv = hv ^ type.hashValue
-        }
-        
-        return hv
+    
+    public func hash(into h: inout Hasher) {
+        h.combine(foreground)
+        h.combine(background)
+        h.combine(label)
+        h.combine(type)
     }
+    
 }
 
 public func ==(lhs: DeviceProfile.Presentation.Gauge, rhs: DeviceProfile.Presentation.Gauge) -> Bool {
@@ -1735,8 +1706,8 @@ public func ==(lhs: DeviceProfile.Presentation.Gauge, rhs: DeviceProfile.Present
 
 extension DeviceProfile.Presentation.Layer: Hashable {
     
-    public var hashValue: Int {
-        return images.count
+    public func hash(into h: inout Hasher) {
+        h.combine(images)
     }
 }
 
@@ -1748,9 +1719,10 @@ public func ==(lhs: DeviceProfile.Presentation.Layer, rhs: DeviceProfile.Present
 
 extension DeviceProfile.Presentation.LayerImage: Hashable {
 
-    public var hashValue: Int {
-        return URI.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(URI)
     }
+
 }
 
 public func ==(lhs: DeviceProfile.Presentation.LayerImage, rhs: DeviceProfile.Presentation.LayerImage) -> Bool {
@@ -1761,15 +1733,12 @@ public func ==(lhs: DeviceProfile.Presentation.LayerImage, rhs: DeviceProfile.Pr
 
 extension DeviceProfile.AttributeDescriptor: Hashable {
 
-    public var hashValue: Int {
-        var ret = id.hashValue ^ dataType.hashValue
-        
-        if let semanticType = semanticType {
-            ret = ret ^ semanticType.hashValue
-        }
-        
-        return ret
+    public func hash(into h: inout Hasher) {
+        h.combine(id)
+        h.combine(dataType)
+        h.combine(semanticType)
     }
+    
 }
 
 public func ==(lhs: DeviceProfile.AttributeDescriptor, rhs: DeviceProfile.AttributeDescriptor) -> Bool {
@@ -1780,9 +1749,11 @@ public func ==(lhs: DeviceProfile.AttributeDescriptor, rhs: DeviceProfile.Attrib
 
 extension DeviceProfile.Service: Hashable {
     
-    public var hashValue: Int {
-        return id.hashValue ^ attributes.count
+    public func hash(into h: inout Hasher) {
+        h.combine(id)
+        h.combine(attributes)
     }
+
 }
 
 public func ==(lhs: DeviceProfile.Service, rhs: DeviceProfile.Service) -> Bool {
@@ -1793,19 +1764,10 @@ public func ==(lhs: DeviceProfile.Service, rhs: DeviceProfile.Service) -> Bool {
 
 extension DeviceProfile.Presentation: Hashable {
     
-    public var hashValue: Int {
-        
-        var ret = gauge.hashValue
-        
-        if let groups = groups {
-            ret = ret ^ groups.count
-        }
-        
-        if let controls = controls {
-            ret = ret ^ controls.count
-        }
-        
-        return ret
+    public func hash(into h: inout Hasher) {
+        h.combine(gauge)
+        h.combine(groups)
+        h.combine(controls)
     }
 }
 
@@ -1815,20 +1777,12 @@ public func ==(lhs: DeviceProfile.Presentation, rhs: DeviceProfile.Presentation)
 
 extension DeviceProfile: Hashable {
 
-    public var hashValue: Int {
-        
-        var ret = services.count ^ attributes.count
-        
-        if let primaryOperationAttribute = primaryOperationAttribute {
-            ret = ret ^ primaryOperationAttribute.hashValue
-        }
-        
-        if let presentation = presentation {
-            ret = ret ^ presentation.hashValue
-        }
-        
-        return ret
+    public func hash(into h: inout Hasher) {
+        h.combine(services)
+        h.combine(primaryOperationAttribute)
+        h.combine(presentation)
     }
+    
 }
 
 public func ==(lhs: DeviceProfile, rhs: DeviceProfile) -> Bool {
@@ -2571,7 +2525,7 @@ extension RangeOptionsPresentable {
 
 public extension Array where Element: ValueOptionPresentable {
     
-    public var displayRules: DisplayRules {
+    var displayRules: DisplayRules {
         
         return self.compactMap {
             opt in
@@ -2598,7 +2552,7 @@ public extension Array where Element: ValueOptionPresentable {
         }
     }
     
-    public var valueOptionsMap: ValueOptionsMap {
+    var valueOptionsMap: ValueOptionsMap {
         
         return displayRules.reduce([:]) {
             curr, next in
@@ -2614,7 +2568,7 @@ public extension Array where Element: ValueOptionPresentable {
         
     }
     
-    public func displayRulesProcessor<
+    func displayRulesProcessor<
         C: Hashable & SafeSubscriptable>(_ attributeId: Int, initial: [String: Any]? = nil) -> ((C?)->[String: Any])
         where C.Value == AttributeValue, C.Key == Int
          {
@@ -2631,7 +2585,7 @@ public extension Array where Element: ValueOptionPresentable {
         )
     }
     
-    public func displayRulesProcessor(_ initial: [String: Any]? = [:]) -> ((AttributeValue?) -> [String: Any]) {
+    func displayRulesProcessor(_ initial: [String: Any]? = [:]) -> ((AttributeValue?) -> [String: Any]) {
         
         return DisplayRulesProcessor.MakeProcessor(
             initial ?? [:],
@@ -2738,11 +2692,11 @@ public struct RangeOptionsSubscriptor: OptionsSubscriptable {
 
 public extension DeviceProfile.Presentation.AttributeOption.RangeOptions {
     
-    public func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor {
+    func subscriptor(_ dataType: DeviceProfile.AttributeDescriptor.DataType) -> RangeOptionsSubscriptor {
         return RangeOptionsSubscriptor(rangeOptions: self, dataType: dataType)
     }
     
-    public var range: ClosedRange<AttributeValue> {
+    var range: ClosedRange<AttributeValue> {
         return min...max
     }
 

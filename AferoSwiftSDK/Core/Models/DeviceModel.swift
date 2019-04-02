@@ -239,7 +239,9 @@ public class BaseDeviceModel: DeviceModelableInternal, CustomStringConvertible, 
 
     // MARK: <Hashable>
     
-    public var hashValue: Int { return deviceId.hashValue }
+    public func hash(into h: inout Hasher) {
+        h.combine(deviceId)
+    }
     
     // MARK: <DeviceModelable>
     
@@ -1086,7 +1088,7 @@ extension RecordingDeviceModel: DeviceActionable {
 
 public extension RecordingDeviceModel {
     
-    public class func ModelsFromActions(_ models: [DeviceModel],  actions: [DeviceRuleAction]) -> [String : RecordingDeviceModel] {
+    class func ModelsFromActions(_ models: [DeviceModel],  actions: [DeviceRuleAction]) -> [String : RecordingDeviceModel] {
         
         var actionMap: [String: DeviceRuleAction] = [:]
         for action in actions {
@@ -1107,12 +1109,12 @@ public extension RecordingDeviceModel {
         return modelMap
     }
     
-    public var isAvailable: Bool {
+    var isAvailable: Bool {
         get { return currentState.isAvailable }
         set { currentState.isAvailable = newValue }
     }
     
-    public class func ModelsFromFilterCriteria(_ models: [DeviceModel], filterCriteria: [DeviceFilterCriterion]) -> [String: FilterCriteriaRecordingDeviceModel] {
+    class func ModelsFromFilterCriteria(_ models: [DeviceModel], filterCriteria: [DeviceFilterCriterion]) -> [String: FilterCriteriaRecordingDeviceModel] {
         
         var modelMap: [String: FilterCriteriaRecordingDeviceModel] = [:]
         for model in models {

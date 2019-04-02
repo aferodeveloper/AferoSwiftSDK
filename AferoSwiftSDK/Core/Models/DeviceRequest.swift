@@ -63,7 +63,7 @@ public struct DeviceBatchAction {
             /// request would 401 us. Including here for the
             /// sake of completeness.
             /// Associated with `HTTPStatusCode.unauthorized (401)`
-
+            
             case unauthorized(underlyingError: Swift.Error?)
             
             /// Something else happened that doesn't translate to one
@@ -125,7 +125,7 @@ public struct DeviceBatchAction {
                 case .other: return underlyingError?.httpStatusCodeValue
                 }
             }
-
+            
         }
         
         /// The request failed at the API level; none of the
@@ -170,9 +170,9 @@ public struct DeviceBatchAction {
         public var httpStatusCodeValue: HTTPStatusCode? {
             return reason?.httpStatusCode ?? underlyingError?.httpStatusCodeValue
         }
-
+        
     }
-
+    
     /// A structure that contains requests and responses from a batch operation.
     /// Use the `pairs` property to iterate through correlated values.
     
@@ -181,9 +181,9 @@ public struct DeviceBatchAction {
         public var debugDescription: String {
             return "<DeviceBatchAction.Results> \n" + requestResponsePairs.map {
                 "    \($0): \($1)"
-            }.joined(separator: "\n")
+                }.joined(separator: "\n")
         }
-    
+        
         /// The requests associated with this instance
         private(set) public var requests: [Request]
         
@@ -198,13 +198,13 @@ public struct DeviceBatchAction {
         public typealias RequestResponseSequence = Zip2Sequence<[Request], [Response]>
         
         /// A sequence of correlated `(Request, Response)` for this object
-
+        
         public var requestResponsePairs: LazySequence<RequestResponseSequence> {
             return zip(requests, responses).lazy
         }
         
         /// `(Request, Response)` pairs that were written successfully
-
+        
         public var successPairs: LazyFilterSequence<RequestResponseSequence> {
             return requestResponsePairs.filter {
                 request, response in
@@ -219,7 +219,7 @@ public struct DeviceBatchAction {
         
         /// `(Request, Response)` pairs that explicitly failed. There
         /// will only be one of these
-
+        
         public var failurePairs: LazyFilterSequence<RequestResponseSequence> {
             return requestResponsePairs.filter {
                 request, response in
@@ -272,7 +272,7 @@ public struct DeviceBatchAction {
                 if
                     case let .attributeWrite(id, _) = $0.0,
                     id == attributeId {
-                        return true
+                    return true
                 }
                 return false
             }
@@ -405,7 +405,7 @@ public struct DeviceBatchAction {
         }
         
     }
-
+    
 }
 
 extension DeviceBatchAction.Request: AferoJSONCoding {
@@ -466,8 +466,8 @@ extension DeviceBatchAction.Request: AferoJSONCoding {
             guard
                 let attrId = jsonDict[CodingKeys.attributeId.stringValue] as? Int,
                 let value = jsonDict[CodingKeys.value.stringValue] as? String else {
-                DDLogError("Attempt to create attributeWrite with nil attrId or nil value.")
-                return nil
+                    DDLogError("Attempt to create attributeWrite with nil attrId or nil value.")
+                    return nil
             }
             
             self = .attributeWrite(attributeId: attrId, value: value)
@@ -485,7 +485,7 @@ extension DeviceBatchAction.Request: AferoJSONCoding {
                 DDLogError("Attempt to create notifyViewing with nil interval.")
                 return nil
             }
-            self = .notifyViewing(interval: TimeInterval(intervalDouble))
+            self = .notifyViewing(interval: TimeInterval(truncating: intervalDouble))
             
         }
         
@@ -507,7 +507,7 @@ extension DeviceBatchAction.Response: AferoJSONCoding {
         switch self {
             
         case let .success(requestId, statusCode, timestampMs):
-
+            
             var ret: [String: Any] = [
                 type(of: self).CoderKeyStatus: type(of: self).SuccessName,
             ]
@@ -565,7 +565,7 @@ extension DeviceBatchAction.Response: AferoJSONCoding {
         switch statusName {
             
         case type(of: self).SuccessName:
-
+            
             self = .success(
                 requestId: jsonDict[type(of: self).CoderKeyRequestId] as? Int,
                 statusCode: statusCode,
@@ -573,7 +573,7 @@ extension DeviceBatchAction.Response: AferoJSONCoding {
             )
             
         case type(of: self).FailureName:
-
+            
             self = .failure(reason: DeviceBatchAction.Error.Reason(statusCode: statusCode))
             
         case type(of: self).NotAttemptedName:
@@ -607,7 +607,7 @@ public extension Sequence where Iterator.Element == AttributeInstance {
 
 public extension Sequence where Iterator.Element == DeviceBatchAction.Request {
     
-    public var successfulUnpostedResults: DeviceBatchAction.Results {
+    var successfulUnpostedResults: DeviceBatchAction.Results {
         return DeviceBatchAction.Results(requests: Array(self), responses: map { _ -> DeviceBatchAction.Response in return .success(requestId: nil, statusCode: nil, timestampMs: 0) })
     }
 }

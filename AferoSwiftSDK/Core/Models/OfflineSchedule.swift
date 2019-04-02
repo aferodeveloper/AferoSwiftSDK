@@ -80,7 +80,7 @@ extension DeviceModelable {
 
 public extension DeviceRule.Schedule {
     
-    public var firstDayOfWeek: DateTypes.DayOfWeek? {
+ var firstDayOfWeek: DateTypes.DayOfWeek? {
         return dayOfWeek.sorted().first
     }
 }
@@ -88,11 +88,11 @@ public extension DeviceRule.Schedule {
 public extension OfflineSchedule {
 
     /// See [the Afero attribute registry](http://wiki.afero.io/display/FIR/Device+Attribute+Registry).
-    public static var FlagsAttributeId: Int {
+ static var FlagsAttributeId: Int {
         return 59001
     }
     
-    public static let EventAttributeIds = Set(Array(59002...59999))
+ static let EventAttributeIds = Set(Array(59002...59999))
     
 }
 
@@ -758,7 +758,9 @@ open class OfflineSchedule: NSObject {
         
         public var TAG: String { return "ScheduleEvent" }
         
-        public var hashValue: Int { return timeSpecification.hashValue }
+        public func hash(into h: inout Hasher) {
+            h.combine(timeSpecification)
+        }
         
         public var flags: TimeSpecification.Flags {
             get { return timeSpecification.flags }
@@ -908,8 +910,11 @@ open class OfflineSchedule: NSObject {
                     && lhs.flags == rhs.flags
             }
             
-            public var hashValue: Int {
-                return dayOfWeek.hashValue | hour.hashValue | minute.hashValue ^ flags.hashValue
+            public func hash(into h: inout Hasher) {
+                h.combine(dayOfWeek)
+                h.combine(hour)
+                h.combine(minute)
+                h.combine(flags)
             }
             
             // MARK: Comparable
@@ -971,18 +976,18 @@ public extension OfflineSchedule.ScheduleEvent.TimeSpecification {
 public extension OfflineSchedule {
 
     /// The total number of events this device supports
-    public var numberOfSupportedEvents: Int { return attributeIds.count }
+ var numberOfSupportedEvents: Int { return attributeIds.count }
     
     /// The total number of events per day that this device supports
-    public var numberOfSupportedEventsPerDay: Int { return numberOfSupportedEvents / 7 }
+ var numberOfSupportedEventsPerDay: Int { return numberOfSupportedEvents / 7 }
     
     /// Local days in the schedule which which have maxed out their event count.
-    public var unavailableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
+ var unavailableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
         return Set(ScheduleEvent.TimeSpecification.DayOfWeek.allDays).subtracting(availableDays)
     }
     
     /// Local days in the schedule which which have *not* maxed out their event count.
-    public var availableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
+ var availableDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
         return Set(dayEventCounts.filter {
             $0.value < self.numberOfSupportedEventsPerDay
             }.map {
@@ -991,7 +996,7 @@ public extension OfflineSchedule {
     }
     
     /// A map of `DayOfWeek` to the number of events currently scheduled on that local day.
-    public var dayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
+ var dayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
         return ScheduleEvent.TimeSpecification.DayOfWeek.allDays.reduce([:]) {
             curr, next in
             var ret = curr
@@ -1003,7 +1008,7 @@ public extension OfflineSchedule {
     /// Return all events for a given local day of week
     /// - parameter localDayOfWeek: The local-timezone day of week for which to query.
     
-    public func events(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent] {
+ func events(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent] {
         return eventFilterResults(forDayOfWeek: dayOfWeek).map {
             (result: EventFilterResult) -> ScheduleEvent in result.event
         }
@@ -1012,7 +1017,7 @@ public extension OfflineSchedule {
     /// Return all events whose local day of week is in `localDaysOfWeek`
     /// - parameter localDaysOfWeek: The local days for which to filter
     
-    public func events<T: Sequence>(forDaysOfWeek daysOfWeek: T) -> [ScheduleEvent]
+ func events<T: Sequence>(forDaysOfWeek daysOfWeek: T) -> [ScheduleEvent]
         where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
             return events(matching: { $0.dayOfWeek ∈ daysOfWeek })
     }
@@ -1021,7 +1026,7 @@ public extension OfflineSchedule {
     /// - parameter predicate: The predicate which to evaluate each `ScheduleEvent` against.
     ///                        defaults to matching all.
     
-    public func events(matching predicate: ScheduleEventPredicate = { _ in return true }) -> [ScheduleEvent] {
+ func events(matching predicate: ScheduleEventPredicate = { _ in return true }) -> [ScheduleEvent] {
         return eventFilterResults(matching: predicate).map {
             (result: EventFilterResult) -> ScheduleEvent in result.event
         }
@@ -1085,27 +1090,27 @@ public extension OfflineSchedule {
 public extension OfflineSchedule {
     
     @available(*, deprecated, message: "Use unavailableDays instead.")
-    public var unavailableLocalDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
+ var unavailableLocalDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
         return unavailableDays
     }
     
     @available(*, deprecated, message: "Use availableDays instead.")
-    public var availableLocalDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
+ var availableLocalDays: Set<ScheduleEvent.TimeSpecification.DayOfWeek> {
         return availableDays
     }
     
     @available(*, deprecated, message: "Use dayEventCounts instead.")
-    public var localDayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
+ var localDayEventCounts: [ScheduleEvent.TimeSpecification.DayOfWeek: Int] {
         return dayEventCounts
     }
     
     @available(*, deprecated, message: "Use events(forDayOfWeek:) instead.")
-    public func events(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent] {
+ func events(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> [ScheduleEvent] {
         return events(forDayOfWeek: localDayOfWeek)
     }
     
     @available(*, deprecated, message: "Use events(forDaysOfWeek:) instead.")
-    public func events<T: Sequence>(forLocalDaysOfWeek localDaysOfWeek: T) -> [ScheduleEvent]
+ func events<T: Sequence>(forLocalDaysOfWeek localDaysOfWeek: T) -> [ScheduleEvent]
         where T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
             return events(forDaysOfWeek: localDaysOfWeek)
     }
@@ -1131,25 +1136,25 @@ public extension OfflineSchedule {
 public extension OfflineSchedule {
     
     /// Remove all events in the schedule.
-    public func removeAllEvents() -> Promise<Void> {
+ func removeAllEvents() -> Promise<Void> {
         return removeEvents { _ in true }
     }
     
     /// Remove all events for a given `localDayOfWeek`, and commit the removal.
     
-    public func removeEvents(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
+ func removeEvents(forDayOfWeek dayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
         return removeEvents(forDaysOfWeek: [dayOfWeek])
     }
 
     /// Remove all events for a given `localDayOfWeek`, and commit the removal.
     @available(*, deprecated, message: "Use `removeEvents(forDayOfWeek:) instead.")
-    public func removeEvents(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
+ func removeEvents(forLocalDayOfWeek localDayOfWeek: ScheduleEvent.TimeSpecification.DayOfWeek) -> Promise<Void> {
         return removeEvents(forLocalDaysOfWeek: [localDayOfWeek])
     }
     
     /// Remove all events with `localDayOfWeek` in the given sequence, and commit the removal.
     
-    public func removeEvents<T>(forDaysOfWeek daysOfWeek: T) -> Promise<Void>
+ func removeEvents<T>(forDaysOfWeek daysOfWeek: T) -> Promise<Void>
         where T: Sequence, T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
             return commitEvents(forAttributeIds: eventFilterResults(forDaysOfWeek: daysOfWeek).map {
                 (result: EventFilterResult) -> Int in
@@ -1160,7 +1165,7 @@ public extension OfflineSchedule {
 
     /// Remove all events with `localDayOfWeek` in the given sequence, and commit the removal.
     @available(*, deprecated, message: "Use `removeEvents(forDaysOfWeek:) instead.")
-    public func removeEvents<T>(forLocalDaysOfWeek localDaysOfWeek: T) -> Promise<Void>
+ func removeEvents<T>(forLocalDaysOfWeek localDaysOfWeek: T) -> Promise<Void>
         where T: Sequence, T.Iterator.Element == ScheduleEvent.TimeSpecification.DayOfWeek {
             return commitEvents(forAttributeIds: eventFilterResults(forDaysOfWeek: localDaysOfWeek).map {
                 (result: EventFilterResult) -> Int in
@@ -1174,7 +1179,7 @@ public extension OfflineSchedule {
     /// - note: Because of the destructive nature of this operation, there is no default
     ///         predicate.
     
-    public func removeEvents(matching predicate: ScheduleEventPredicate) -> Promise<Void> {
+ func removeEvents(matching predicate: ScheduleEventPredicate) -> Promise<Void> {
             return commitEvents(forAttributeIds: eventFilterResults(matching: predicate).map {
                 (result: EventFilterResult) -> Int in
                 removeEvent(result.attributeId)
@@ -1186,7 +1191,7 @@ public extension OfflineSchedule {
 
 public extension DateTypes.Time {
     
-    public init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
+ init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
         self.init(
             hour: Int(timeSpecification.hour),
             minute: Int(timeSpecification.minute),
@@ -1198,7 +1203,7 @@ public extension DateTypes.Time {
 
 public extension DeviceRule.Schedule {
     
-    public init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
+ init(timeSpecification: OfflineSchedule.ScheduleEvent.TimeSpecification, timeZone: TimeZone) {
         self.init(
             dayOfWeek: [timeSpecification.dayOfWeek],
             time: DateTypes.Time(timeSpecification: timeSpecification, timeZone: timeZone)
@@ -1209,7 +1214,7 @@ public extension DeviceRule.Schedule {
 
 public extension OfflineSchedule.ScheduleEvent {
     
-    public init(timeSpecification: TimeSpecification? = nil, attributeSpecifications: [AttributeInstance]) {
+ init(timeSpecification: TimeSpecification? = nil, attributeSpecifications: [AttributeInstance]) {
         self.timeSpecification = timeSpecification ?? TimeSpecification()
         self.attributes = attributeSpecifications.reduce([:]) {
             curr, next in
@@ -1223,7 +1228,7 @@ public extension OfflineSchedule.ScheduleEvent {
 
 public extension OfflineSchedule.ScheduleEvent {
     
-    public var schedule: DeviceRule.Schedule {
+ var schedule: DeviceRule.Schedule {
         
         get {
             return DeviceRule.Schedule(
@@ -1241,7 +1246,7 @@ public extension OfflineSchedule.ScheduleEvent {
     
     /// Initialize a device rule event with the current state of a device.
     
-    public init(device: DeviceModelable, repeats: Bool = false, schedule: DeviceRule.Schedule) {
+ init(device: DeviceModelable, repeats: Bool = false, schedule: DeviceRule.Schedule) {
         
         let attributes: [Int: AttributeValue] = device.writableAttributes.reduce([:]) {
             intermed, descriptor in
@@ -1551,7 +1556,7 @@ public protocol OfflineScheduleEventSerializable {
 
 public extension OfflineScheduleEventSerializable {
     
-    public static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> (event: Self?, consumed: Int) {
+    static func FromBytes(_ slice: ArraySlice<UInt8>, types: [Int: DeviceProfile.AttributeDescriptor.DataType]) throws -> (event: Self?, consumed: Int) {
         return try FromBytes(Array(slice), types: types)
     }
 
@@ -1559,7 +1564,7 @@ public extension OfflineScheduleEventSerializable {
 
 public extension Array where Element: OfflineScheduleEventSerializable {
     
-    public var serialized: (bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) {
+    var serialized: (bytes: [UInt8], types: [Int: DeviceProfile.AttributeDescriptor.DataType]) {
         return reduce((bytes: [], types: [:])) {
             curr, next in
             var ret = curr

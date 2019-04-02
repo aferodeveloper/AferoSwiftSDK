@@ -42,7 +42,7 @@ public enum HachiState: Int {
 
 public extension DeviceModelable {
     
-    public func valueForSystemAttribute(_ attribute: AferoSystemAttribute) -> AttributeValue? {
+    func valueForSystemAttribute(_ attribute: AferoSystemAttribute) -> AttributeValue? {
         return valueForAttributeId(attribute.rawValue)
     }
     

@@ -60,7 +60,7 @@ public enum DeviceModelEvent: CustomDebugStringConvertible {
             return "<DeviceModelevent.tagsUpdate> event: \(e)"
         }
     }
-
+    
     /// A device's profile has been updated. This can include any assets related to the
     /// devices's display, its controls, etc. The device view or anything showing its
     /// controls should probably be reloaded.
@@ -122,7 +122,7 @@ public typealias DeviceAttributes = Dictionary<Int, AttributeValue>
 // MARK: - Device State
 
 extension DeviceState {
-
+    
     /// Whether or not the device is available.
     ///
     /// - note: Calculation of `isAvailable` is based upon `isDirect`, `isVisible`,
@@ -200,14 +200,14 @@ extension DeviceState {
 // MARK: ExpressibleByDictionaryLiteral
 
 extension DeviceState:  ExpressibleByDictionaryLiteral {
-
+    
     public typealias Element = AttributeInstance
     
     public init(dictionaryLiteral elements: (Key, Value)...) {
         self.init(elements: elements)
     }
-
-
+    
+    
     public init(elements: [(Key, Value)]) {
         var d = [Key: Value]()
         for (k, v) in elements {
@@ -215,7 +215,7 @@ extension DeviceState:  ExpressibleByDictionaryLiteral {
         }
         self.init(attributes: d, profileId: nil, friendlyName: nil)
     }
-
+    
 }
 
 // MARK: SafeSubscriptable
@@ -239,7 +239,7 @@ extension DeviceState: SafeSubscriptable {
             }
         }
     }
-
+    
 }
 
 /// The set of attributes representing the current state of the device.
@@ -296,9 +296,9 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
             && lhs.timeZoneState == rhs.timeZoneState
             && lhs.profileId == rhs.profileId
     }
-
-    public var hashValue: Int {
-        return attributes.count
+    
+    public func hash(into h: inout Hasher) {
+        h.combine(attributes)
     }
     
     
@@ -315,7 +315,7 @@ public struct DeviceState: CustomDebugStringConvertible, Hashable {
         return attributes.map { AttributeInstance(id: $0, value: $1) }
     }
     
-
+    
 }
 
 extension DeviceState: AferoJSONCoding {
@@ -394,7 +394,7 @@ extension AttributeEvent: CustomStringConvertible, CustomDebugStringConvertible 
 }
 
 open class PipeHolder<Value: CustomStringConvertible & CustomDebugStringConvertible, Err: Error> {
-
+    
     var TAG: String {
         return "PipeHolder<\(Unmanaged.passUnretained(self).toOpaque())>"
     }
@@ -457,7 +457,7 @@ public extension AttributeEventSignaling {
     /// - returns: A signal merging signals for each of the attributes, or nil if the
     ///            set of component signals is empty.
     
-    public func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == Int {
+    func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == Int {
         
         guard let attributeIds = attributeIds else { return nil }
         
@@ -470,10 +470,10 @@ public extension AttributeEventSignaling {
         return AttributeEventSignal.merge(signals)
     }
     
-    public func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == NSNumber {
+    func eventSignalForAttributeIds<A: Sequence>(_ attributeIds: A?) -> AttributeEventSignal? where A.Iterator.Element == NSNumber {
         return eventSignalForAttributeIds(attributeIds?.compactMap { $0.intValue})
     }
-
+    
 }
 
 public enum DeviceModelCommand {
@@ -516,7 +516,7 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     
     /// The `DeviceProfile` for this device.
     var profile: DeviceProfile? { get }
-
+    
     /// The presentation profile for this device. Generally a convenience accessor
     /// for profile?.presentation
     var presentation: DeviceProfile.Presentation? { get }
@@ -550,17 +550,17 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     
     /// All tags associated with this instance.
     var deviceTags: Set<DeviceTag> { get }
-
+    
     /// Get a deviceTag for the given identifier.
     /// - parameter id: The `UUID` of the tag to fetch.
     /// - returns: The matching `DeviceTag`, if any.
     func deviceTag(forIdentifier id: DeviceTag.Id) -> DeviceTag?
-
+    
     /// Get all `deviceTag` for the given `key`.
     /// - parameter key: The `DeviceTag.Key` to match.
     /// - returns: All `DeviceTag`s whose key equals `key`
     func deviceTags(forKey key: DeviceTag.Key) -> Set<DeviceTag>
-
+    
     /// Get the last `deviceTag` for the given key.
     /// - parameter key: The key to fliter by.
     /// - returns: The last `DeviceTag` matching the key, if any.
@@ -570,10 +570,10 @@ public protocol DeviceModelable: DeviceEventSignaling, AttributeEventSignaling, 
     ///            keys is not supported by this API. If you would like to see
     ///            *all* keys that match the given key, use `deviceTags(forKey:)`.
     func getTag(for key: DeviceTag.Key) -> DeviceTag?
-
+    
     func addOrUpdate(tag: DeviceTagCollection.DeviceTag, onDone: @escaping DeviceTagCollection.AddOrUpdateTagOnDone)
     func deleteTag(identifiedBy id: DeviceTagCollection.DeviceTag.Id, onDone: @escaping DeviceTagCollection.DeleteTagOnDone)
-
+    
 }
 
 protocol DeviceModelableInternal: DeviceModelable {
@@ -581,7 +581,7 @@ protocol DeviceModelableInternal: DeviceModelable {
 }
 
 public extension DeviceModelable {
-
+    
     /// If false, this device doesn't have a presentation profile, and is therefore
     /// not expected to be visible to users in a consumer device (e.g., a softhub).
     /// In every other way it's treated as a regular device.
@@ -592,7 +592,7 @@ public extension DeviceModelable {
 public extension DeviceModelable {
     /// The unique ID of the device on the service.
     @available(*, deprecated, message: "DeviceModel.id is deprecated; use DeviceModel.deviceId.")
-    public var id: String {
+    var id: String {
         get { return deviceId }
     }
 }
@@ -614,7 +614,7 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    public var displayName: String {
+    var displayName: String {
         
         var name = NSLocalizedString("<unknown device>", comment: "Unknown device default displayName")
         
@@ -629,7 +629,7 @@ public extension DeviceModelable {
         }
         
         return name
-
+        
     }
 }
 
@@ -637,7 +637,7 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    public var friendlyName: String? {
+    var friendlyName: String? {
         get { return currentState.friendlyName }
         set { currentState.friendlyName = newValue }
     }
@@ -648,70 +648,70 @@ public extension DeviceModelable {
     ///         `isRebooted`, `isConnectablre`, `isConnected`, `isLinked`, and `isDirty`.
     ///         Generally, application developers only need be concerned with `isAvailable`
     
-    internal(set) public var isAvailable: Bool {
+    internal(set) var isAvailable: Bool {
         get { return currentState.isAvailable }
         set { currentState.isAvailable = newValue }
     }
     
     /// Whether or not a hub can see the device.
-    internal(set) public var isVisible: Bool {
+    internal(set) var isVisible: Bool {
         get { return currentState.isVisible }
         set { currentState.isVisible = newValue }
     }
     
     /// Whether or not the device rebooted recently.
-    internal(set) public var isRebooted: Bool {
+    internal(set) var isRebooted: Bool {
         get { return currentState.isRebooted }
         set { currentState.isRebooted = newValue }
     }
     
     /// Whether or not the device is connectable.
-    internal(set) public var isConnectable: Bool {
+    internal(set) var isConnectable: Bool {
         get { return currentState.isConnectable }
         set { currentState.isConnectable = newValue }
     }
     
     /// Whether or not the device is connected to the Afero cloud.
-    internal(set) public var isConnected: Bool {
+    internal(set) var isConnected: Bool {
         get { return currentState.isConnected }
         set { currentState.isConnected = newValue }
     }
     
     /// Whether or not the device is currently linked and communicating
     /// with the Afero cloud.
-    internal(set) public var isLinked: Bool {
+    internal(set) var isLinked: Bool {
         get { return currentState.isLinked }
         set { currentState.isLinked = newValue }
     }
     
     /// If true, the device is connected directly to the Afero cloud. If false,
     /// the device is connected via a hub.
-    internal(set) public var isDirect: Bool {
+    internal(set) var isDirect: Bool {
         get { return currentState.isDirect }
         set { currentState.isDirect = newValue }
     }
     
     /// The device has one or more attributes pending write to the Afero cloud.
-    internal(set) public var isDirty: Bool {
+    internal(set) var isDirty: Bool {
         get { return currentState.isDirty }
         set { currentState.isDirty = newValue }
     }
     
     /// The RSSI of the device's connection to its hub, or to the Afero cloud
     /// if direct.
-    internal(set) public var RSSI: Int {
+    internal(set) var RSSI: Int {
         get { return currentState.RSSI }
         set { currentState.RSSI = newValue }
     }
     
     /// The location state of the device.
-    internal(set) public var locationState: LocationState {
+    internal(set) var locationState: LocationState {
         get { return currentState.locationState }
         set { currentState.locationState = newValue }
     }
     
     /// the TimeZoneState of the device.
-    internal(set) public var timeZoneState: TimeZoneState {
+    internal(set) var timeZoneState: TimeZoneState {
         get { return currentState.timeZoneState }
         set {
             currentState.timeZoneState = newValue
@@ -722,24 +722,24 @@ public extension DeviceModelable {
     }
     
     /// The device's TimeZone, if set.
-    public var timeZone: TimeZone? {
+    var timeZone: TimeZone? {
         return timeZoneState.timeZone
     }
     
     /// The timestamp of the most recent update.
-    public var updatedTimestamp: Date {
+    var updatedTimestamp: Date {
         get { return currentState.updatedTimestamp }
     }
-
+    
 }
 
 extension DeviceModelableInternal {
-
+    
     /// Set this device's timezone. Upon success, the timeZone will be immediately set on this device
     /// (a conclave invalidation will also be handled), and a device state update will be signaled.
     
     func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
-
+        
         guard let deviceCloudSupporting = deviceCloudSupporting else {
             return Promise { _, reject in reject("No attribute writeable") }
         }
@@ -773,38 +773,38 @@ extension DeviceModelableInternal {
 }
 
 public extension DeviceModelable {
-
-    public func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
+    
+    func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool) -> Promise<SetTimeZoneResult> {
         return (self as? DeviceModelableInternal)?.setTimeZone(as: timeZone, isUserOverride: isUserOverride) ?? Promise {
             _, reject in reject("No actual setTimeZone implementation.")
         }
     }
-
+    
 }
 
 public extension DeviceModelable {
     
-    public var presentation: DeviceProfile.Presentation? {
+    var presentation: DeviceProfile.Presentation? {
         return profile?.presentation(deviceId)
     }
     
-    public var readableAttributes: Set<DeviceProfile.AttributeDescriptor> {
+    var readableAttributes: Set<DeviceProfile.AttributeDescriptor> {
         return profile?.readableAttributes ?? []
     }
-
+    
     var readableAttributeIds: Set<Int> {
         return profile?.readableAttributeIds ?? []
     }
-
-    public var hasReadableAttributes: Bool {
+    
+    var hasReadableAttributes: Bool {
         return readableAttributes.count > 0
     }
     
-    public var hasPresentableReadableAttributes: Bool {
+    var hasPresentableReadableAttributes: Bool {
         return profile?.hasPresentableReadableAttributes ?? false
     }
     
-    public var writableAttributes: Set<DeviceProfile.AttributeDescriptor> {
+    var writableAttributes: Set<DeviceProfile.AttributeDescriptor> {
         return profile?.writableAttributes ?? []
     }
     
@@ -812,33 +812,33 @@ public extension DeviceModelable {
         return profile?.writableAttributeIds ?? []
     }
     
-    public var hasWritableAttributes: Bool {
+    var hasWritableAttributes: Bool {
         return writableAttributes.count > 0
     }
     
-    public var hasPresentableWritableAttributes: Bool {
+    var hasPresentableWritableAttributes: Bool {
         return profile?.hasPresentableWritableAttributes ?? false
     }
     
-    public func groupIndicesForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [Int] {
+    func groupIndicesForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [Int] {
         return profile?.groupIndicesForOperation(operations) ?? []
     }
     
-    public func groupsForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [DeviceProfile.Presentation.Group] {
+    func groupsForOperation(_ operations: DeviceProfile.AttributeDescriptor.Operations) -> [DeviceProfile.Presentation.Group] {
         return profile?.groupsForOperation(operations) ?? []
     }
     
-    public var groupsWithWritableAttributes: [DeviceProfile.Presentation.Group] {
+    var groupsWithWritableAttributes: [DeviceProfile.Presentation.Group] {
         return profile?.groupsForOperation(.Write) ?? []
     }
     
-    public var groupsWithReadableAttributes: [DeviceProfile.Presentation.Group] {
+    var groupsWithReadableAttributes: [DeviceProfile.Presentation.Group] {
         return profile?.groupsForOperation(.Read) ?? []
     }
     
     /// Return all the controlIds for this device, optionally filtered per the given groupIndex.
     
-    public func controlIds(_ groupIndex: Int? = nil) -> [Int] {
+    func controlIds(_ groupIndex: Int? = nil) -> [Int] {
         
         guard let groupIndex = groupIndex else {
             return profile?.presentation(deviceId)?.controls?.map { $0.id } ?? []
@@ -851,61 +851,61 @@ public extension DeviceModelable {
         return groups[groupIndex].controlIds ?? []
     }
     
-    public var writeState: DeviceWriteState {
+    var writeState: DeviceWriteState {
         return .reconciled
     }
-
+    
     /// Fetch an attribute by id
     /// - parameter attributeId: The id of the attribute to fetch
     @available(*, deprecated, message: "Use value(for:) instead.")
-    public func valueForAttributeId(_ attributeId: Int) -> AttributeValue? {
+    func valueForAttributeId(_ attributeId: Int) -> AttributeValue? {
         return value(for: attributeId)
     }
     
     /// Fetch an attribute by id
     /// - parameter attributeId: The id of the attribute to fetch
-    public func value(for attributeId: Int) -> AttributeValue? {
+    func value(for attributeId: Int) -> AttributeValue? {
         return currentState[safe: attributeId]
     }
     
-    public func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
+    func value(for descriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
         return value(for: descriptor.id)
     }
     
-    public func value(for semanticType: String) -> AttributeValue? {
+    func value(for semanticType: String) -> AttributeValue? {
         guard let id = attributeId(for: semanticType) else {
             return nil
         }
         return value(for: id)
     }
     
-    public func value(for systemAttribute: AferoSystemAttribute) -> AttributeValue? {
+    func value(for systemAttribute: AferoSystemAttribute) -> AttributeValue? {
         return value(for: systemAttribute.rawValue)
     }
     
-    public func set(value: AttributeValue, forAttributeId attributeId: Int) -> Promise<DeviceBatchAction.Results> {
+    func set(value: AttributeValue, forAttributeId attributeId: Int) -> Promise<DeviceBatchAction.Results> {
         return set(value: value, forAttributeId: attributeId, localOnly: false)
     }
-
+    
     /// Set an attributeValue by id
     /// - parameter value: The `AttributeValue` to set
     /// - parameter forAttributeId: The attributeId which associated with the value
     /// - parameter localOnly: If true, the value is only written locally to the device state,
     ///                        and is not propogated through the service.and
     /// - returns: A `Promise<DeviceBatchAction.Results>` containing all request and response info.
-
-    public func set(value: AttributeValue, forAttributeId attributeId: Int, localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
+    
+    func set(value: AttributeValue, forAttributeId attributeId: Int, localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
         return set(attributes: [(attributeId, value)], localOnly: localOnly)
     }
-
-    public func set(attributes: [AttributeInstance]) -> Promise<DeviceBatchAction.Results> {
+    
+    func set(attributes: [AttributeInstance]) -> Promise<DeviceBatchAction.Results> {
         return set(attributes: attributes.map { ($0.id, $0.value) }, localOnly: false)
     }
-
-    public func set(attributes: [(Int, AttributeValue)]) -> Promise<DeviceBatchAction.Results> {
+    
+    func set(attributes: [(Int, AttributeValue)]) -> Promise<DeviceBatchAction.Results> {
         return set(attributes: attributes, localOnly: false)
     }
-
+    
     /// Given a sequence of `(Int, AttributeValue)` pairs, apply apply them to the device.apply
     /// If `localOnly`, then the changes are only applied locally, and may be overwritten by future
     /// incoming device updates.
@@ -913,15 +913,15 @@ public extension DeviceModelable {
     /// - parameter localOnly: If true, the value is only written locally to the device state,
     ///                        and is not propogated through the service.and
     /// - returns: A `Promise<DeviceBatchAction.Results>` containing all request and response info.
-
-    public func set(attributes: [(Int, AttributeValue)], localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
-
+    
+    func set(attributes: [(Int, AttributeValue)], localOnly: Bool) -> Promise<DeviceBatchAction.Results> {
+        
         return Promise {
             
             [weak self] fulfill, reject in
-
+            
             let instances = attributes.map { AttributeInstance(id: $0.0, value: $0.1) }
-
+            
             if localOnly {
                 self?.update(with: instances, accumulative: false)
                 fulfill((instances.batchActionRequests ?? []).successfulUnpostedResults)
@@ -947,41 +947,41 @@ public extension DeviceModelable {
                 fulfill(results)
             }
         }
-
+        
     }
-
+    
     @available(*, deprecated, message: "Use attributeConfig(for: Int) instead.")
-    public func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
+    func attributeConfig(forAttributeId attributeId: Int) -> DeviceProfile.AttributeConfig? {
         return attributeConfig(for: attributeId)
     }
     
-    public func attributeConfigs(isIncluded: @escaping (DeviceProfile.AttributeConfig)->Bool = { _ in true })
+    func attributeConfigs(isIncluded: @escaping (DeviceProfile.AttributeConfig)->Bool = { _ in true })
         -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
             return profile?.attributeConfigs(on: deviceId, isIncluded: isIncluded)
     }
     
-    public func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
+    func attributeConfigs(withIdsIn range: ClosedRange<Int>) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
         return profile?.attributeConfigs(on: deviceId, withIdsIn: range)
     }
     
-    public func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
+    func attributeConfigs(withIdsIn range: AferoPlatformAttributeRange) -> LazyFilterCollection<LazyMapCollection<[DeviceProfile.AttributeDescriptor], DeviceProfile.AttributeConfig>>? {
         return attributeConfigs(withIdsIn: range.range)
     }
     
-    public func attributeConfig(for attributeId: Int) -> DeviceProfile.AttributeConfig? {
+    func attributeConfig(for attributeId: Int) -> DeviceProfile.AttributeConfig? {
         return profile?.attributeConfig(for: attributeId, on: deviceId)
     }
     
     /// Comprises an attribute value and all type and presentation info.
-    public typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig, displayParams: [String: Any]?)
+    typealias Attribute = (value: AttributeValue, config: DeviceProfile.AttributeConfig, displayParams: [String: Any]?)
     
     
     /// Return all `Attribute` instances for this device, lazily filtered with the given predicate.
-    public func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
+    func attributes(isIncluded: (Attribute)->Bool = { _ in true}) -> LazyCollection<[Attribute]>? {
         return attributeConfigs()?
             .compactMap {
                 config -> Attribute? in
-
+                
                 guard let value = self.value(for: config.descriptor) else {
                     return nil
                 }
@@ -992,7 +992,7 @@ public extension DeviceModelable {
             }.lazy
     }
     
-    public func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
+    func attributes(in range: ClosedRange<Int>) -> LazyCollection<[Attribute]>? {
         return attributeConfigs(withIdsIn: range)?
             .compactMap {
                 config -> Attribute? in
@@ -1007,54 +1007,54 @@ public extension DeviceModelable {
             }.lazy
     }
     
-    public func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[Attribute]>? {
+    func attributes(in range: AferoPlatformAttributeRange) -> LazyCollection<[Attribute]>? {
         return attributes(in: range.range)
     }
     
     /// Get the value and all metadata associated with an `attributeId`, if any.
-    public func attribute(for attributeId: Int) -> Attribute? {
+    func attribute(for attributeId: Int) -> Attribute? {
         guard
             let value = value(for: attributeId),
             let config = attributeConfig(for: attributeId) else {
-            return nil
+                return nil
         }
-
+        
         let displayParams = profile?.valueOptionProcessor(for: config.descriptor.id)?(value)
         
         return (value: value, config: config, displayParams: displayParams)
     }
     
-    public func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
+    func descriptorForAttributeId(_ attributeId: Int) -> DeviceProfile.AttributeDescriptor? {
         return attributeConfig(for: attributeId)?.descriptor
     }
     
-    public func attributeOptionForAttributeId(_ attributeId: Int) -> DeviceProfile.Presentation.AttributeOption? {
+    func attributeOptionForAttributeId(_ attributeId: Int) -> DeviceProfile.Presentation.AttributeOption? {
         return attributeConfig(for: attributeId)?.presentation
     }
     
-    public func attributeConfig(for semanticType: String) -> DeviceProfile.AttributeConfig? {
+    func attributeConfig(for semanticType: String) -> DeviceProfile.AttributeConfig? {
         return attributeConfigs { $0.descriptor.semanticType == semanticType }?.first
     }
     
-    public func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {
+    func descriptor(for semanticType: String) -> DeviceProfile.AttributeDescriptor? {
         return attributeConfig(for: semanticType)?.descriptor
     }
     
-    public func attributeId(for semanticType: String) -> Int? {
+    func attributeId(for semanticType: String) -> Int? {
         return descriptor(for: semanticType)?.id
     }
     
-    public func attributeOption(for semanticType: String) -> DeviceProfile.Presentation.AttributeOption? {
+    func attributeOption(for semanticType: String) -> DeviceProfile.Presentation.AttributeOption? {
         return attributeConfig(for: semanticType)?.presentation
     }
     
-    public func defaultValueForAttributeId(_ id: Int) -> AttributeValue? {
+    func defaultValueForAttributeId(_ id: Int) -> AttributeValue? {
         guard let defaultString = descriptorForAttributeId(id)?.defaultValue else { return nil }
         return AttributeValue(stringLiteral: defaultString)
     }
     
     @available(*, deprecated, message: "Use value(for: Int) and set(value: AttributeValue, forAttributeId: Int) instead.")
-    public subscript(attributeId id: Int) -> AttributeValue? {
+    subscript(attributeId id: Int) -> AttributeValue? {
         
         get {
             return self.currentState[safe: id]
@@ -1073,7 +1073,7 @@ public extension DeviceModelable {
     }
     
     @available(*, deprecated, message: "Use value(for: DeviceProfile.AttributeDescriptor) instead")
-    public subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
+    subscript(attributeDescriptor: DeviceProfile.AttributeDescriptor) -> AttributeValue? {
         get {
             return self[attributeId: attributeDescriptor.id]
         }
@@ -1083,24 +1083,24 @@ public extension DeviceModelable {
 
 public extension DeviceModelable {
     
-    public static var CoderKeyId: String { return "id" }
-    public static var CoderKeyData: String { return "data" }
-    public static var CoderKeyValue: String { return "value" }
-    public static var CoderKeyAttributeId: String { return "attrId" }
-    public static var CoderKeyAttributes: String { return "attributes" }
-    public static var CoderKeyValues: String { return "values" }
-    public static var CoderKeyProfileId: String { return "profileId" }
-    public static var CoderKeyAvailable: String { return "available" }
-    public static var CoderKeyFriendlyName: String { return "friendlyName" }
+    static var CoderKeyId: String { return "id" }
+    static var CoderKeyData: String { return "data" }
+    static var CoderKeyValue: String { return "value" }
+    static var CoderKeyAttributeId: String { return "attrId" }
+    static var CoderKeyAttributes: String { return "attributes" }
+    static var CoderKeyValues: String { return "values" }
+    static var CoderKeyProfileId: String { return "profileId" }
+    static var CoderKeyAvailable: String { return "available" }
+    static var CoderKeyFriendlyName: String { return "friendlyName" }
     
     // MARK: - Update Methods: Handle external model updates
     
     func update(with peripheral: DeviceStreamEvent.Peripheral) {
-
+        
         profileId = peripheral.profileId
         
         var state = self.currentState
-
+        
         state.friendlyName = peripheral.friendlyName
         state.connectionState.update(with: peripheral.status)
         
@@ -1115,9 +1115,9 @@ public extension DeviceModelable {
     
     func update<S: Sequence> (with attributes: S)
         where S.Iterator.Element == DeviceStreamEvent.Peripheral.Attribute {
-        update(with: attributes.compactMap {
-            v in return (v.id, v.value)
-        })
+            update(with: attributes.compactMap {
+                v in return (v.id, v.value)
+            })
     }
     
     func update<S: Sequence> (with attributes: S)
@@ -1134,7 +1134,7 @@ public extension DeviceModelable {
     
     /// Update the modelable's state with the given data as provided in a `Conclave` payload.
     
-    public func update(_ deviceData: [String: Any], attrsOnly: Bool = true) {
+    func update(_ deviceData: [String: Any], attrsOnly: Bool = true) {
         
         DDLogDebug("Before state update: \(self)", tag: "DeviceModel")
         
@@ -1160,8 +1160,8 @@ public extension DeviceModelable {
                 if let
                     attrId = Int(key),
                     let attrData = value as? String {
-                        attributes[attrId] = attrData
-                        
+                    attributes[attrId] = attrData
+                    
                 }
             }
             
@@ -1171,8 +1171,8 @@ public extension DeviceModelable {
         if let
             attrId = deviceData[type(of: self).CoderKeyAttributeId] as? Int,
             let attrData = deviceData[type(of: self).CoderKeyValue] as? String {
-                let attributes: [Int: String] = [attrId: attrData]
-                update(attributes)
+            let attributes: [Int: String] = [attrId: attrData]
+            update(attributes)
         }
         
         DDLogDebug("After state update: \(self)", tag: "DeviceModel")
@@ -1184,8 +1184,8 @@ public extension DeviceModelable {
     /// - parameter attributes: The array of `AttributeInstance`s to apply
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
-
+    func update(with attributeInstances: [AttributeInstance], accumulative: Bool = true) {
+        
         defer {
             if (self as? BaseDeviceModel)?.shouldAttemptAutomaticUTCMigration ?? false {
                 _ = migrateUTCOfflineScheduleEvents()
@@ -1205,7 +1205,7 @@ public extension DeviceModelable {
         if state == currentState { return }
         
         currentState = state
-
+        
         attributeInstances.forEach {
             self.signalAttributeUpdate($0.id, value: $0.value)
         }
@@ -1215,11 +1215,11 @@ public extension DeviceModelable {
     /// Identical to calling `update(_: [AttributeInstance], accumulative: Bool)` with a single-element
     /// array of instances.
     
-    public func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) {
+    func update(with attributeInstance: AttributeInstance, accumulative: Bool = true) {
         update(with: [attributeInstance], accumulative: accumulative)
     }
     
-    public func update(with attributes: [[String: Any]], accumulative: Bool = true) {
+    func update(with attributes: [[String: Any]], accumulative: Bool = true) {
         
         let attrs: [Int: String] = attributes.reduce([:]) {
             curr, next in
@@ -1239,7 +1239,7 @@ public extension DeviceModelable {
     /// - parameter attributes: A set of attributes from which to draw device state.
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ attributes: [Int: String], accumulative: Bool = true) {
+    func update(_ attributes: [Int: String], accumulative: Bool = true) {
         
         let attributeInstances: [AttributeInstance] = attributes.compactMap {
             
@@ -1266,7 +1266,7 @@ public extension DeviceModelable {
     /// - parameter filterCriterion: The filterCriterion from which to pull attribute state
     /// - parameter accumulative: Whether or not to overlay the current device state. **Defaults to true**.
     
-    public func update(_ action: DeviceRuleAction, accumulative: Bool = true) {
+    func update(_ action: DeviceRuleAction, accumulative: Bool = true) {
         
         var attributes: [Int: String] = [:]
         for (key, value) in action.attributeDict {
@@ -1283,26 +1283,26 @@ public extension DeviceModelable {
     /// Successively send write commands for members of `attributes` to the commandSink (which in turn will
     /// invoke `completion` as per `.AttributeWrite` docs above.
     
-    public func write(_ attributes: [AttributeInstance?], completion: @escaping WriteAttributeOnDone = { _, _ in }) {
-
+    func write(_ attributes: [AttributeInstance?], completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+        
         guard let actions = attributes.compactMap({ $0 }).batchActionRequests else {
             DDLogError("Unable to convert \(attributes) to batchActionRequests; bailing on write.")
             completion(nil, "Unable to convert \(attributes) to batchActionRequests; bailing on write.")
             return
         }
-
+        
         let writeCommand: DeviceModelCommand = .postBatchActions(actions: actions, completion: completion)
         DDLogDebug("Sending write: \(writeCommand)")
         self.commandSink.send(value: writeCommand)
     }
     
     /// Send a write command for a single optional `AttributeInstance`
-    public func write(_ attribute: AttributeInstance?, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+    func write(_ attribute: AttributeInstance?, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
         write([attribute], completion: completion)
     }
     
     /// Send a write command for the given `attributeId` and `attributeValue`.
-    public func write(_ attributeId: Int, attributeValue: AttributeValue, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+    func write(_ attributeId: Int, attributeValue: AttributeValue, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
         write(AttributeInstance(id: attributeId, value: attributeValue), completion: completion)
     }
     
@@ -1310,12 +1310,12 @@ public extension DeviceModelable {
     /// are currently being done, so it's the responsiblity of the invoker to ensure that `Bool` is an appropriate
     /// type for the given `attributeId`.
     
-    public func write(_ attributeId: Int, value: Bool, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
+    func write(_ attributeId: Int, value: Bool, completion: @escaping WriteAttributeOnDone = { _, _ in }) {
         let attributeValue = AttributeValue(value)
         write(attributeId, attributeValue: attributeValue, completion: completion)
     }
     
-    public func notifyViewing(_ isViewing: Bool) {
+    func notifyViewing(_ isViewing: Bool) {
         DDLogDebug("DeviceModelable notifyViewing(\(isViewing))")
     }
 }

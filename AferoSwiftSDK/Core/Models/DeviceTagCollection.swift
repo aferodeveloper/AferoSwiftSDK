@@ -148,7 +148,7 @@ import Result
         return self.model == model
     }
     
-    override public var hashValue: Int {
+    override public var hash: Int {
         return model.hashValue
     }
     
@@ -461,16 +461,21 @@ internal protocol DeviceTagPersisting: class {
             }
         }
         
-        public var hashValue: Int {
-            
-            switch self {
-            case let .addedTag(t): return t.hashValue
-            case let .deletedTag(t): return t.hashValue
-            case let .updatedTag(o, n): return o.hashValue ^ n.hashValue
-            }
-            
-        }
         
+        public func hash(into h: inout Hasher) {
+            switch self {
+            
+            case let .addedTag(t):
+                h.combine(t)
+            
+            case let .deletedTag(t):
+                h.combine(t)
+                
+            case let .updatedTag(o, n):
+                h.combine(o)
+                h.combine(n)
+            }
+        }
         
     }
     

@@ -327,10 +327,10 @@ public struct UserAccount {
         
         // MARK: Hashable
         
-        public var hashValue: Int {
-            return userId.hashValue
+        public func hash(into h: inout Hasher) {
+            h.combine(userId)
         }
-        
+
         // MARK: Comparable
         
         public static func <(lhs: UserAccount.User, rhs: UserAccount.User) -> Bool {
@@ -360,8 +360,9 @@ public struct UserAccount {
                     lhs.owner == rhs.owner
             }
             
-            public var hashValue: Int {
-                return canWrite.hashValue ^ owner.hashValue
+            public func hash(into h: inout Hasher) {
+                h.combine(canWrite)
+                h.combine(owner)
             }
             
             // MARK: <Comparable>
@@ -419,22 +420,12 @@ public struct UserAccount {
             
             // MARK: <Hashable>
             
-            public var hashValue: Int {
-                var hv = privileges.hashValue ^ account.hashValue
-                
-                if let userId = userId {
-                    hv = hv ^ userId.hashValue
-                }
-                
-                if let startAccess = startAccess {
-                    hv = hv ^ startAccess.hashValue
-                }
-                
-                if let endAccess = endAccess {
-                    hv = hv ^ endAccess.hashValue
-                }
-                
-                return hv
+            public func hash(into h: inout Hasher) {
+                h.combine(privileges)
+                h.combine(account)
+                h.combine(userId)
+                h.combine(startAccess)
+                h.combine(endAccess)
             }
             
             // MARK: <Comparable>
@@ -466,8 +457,11 @@ public struct UserAccount {
                 
                 // MARK: <Hashable>
                 
-                public var hashValue: Int {
-                    return accountId.hashValue ^ type.hashValue ^ (accountDescription?.hashValue ?? 0) ^ created.hashValue
+                public func hash(into h: inout Hasher) {
+                    h.combine(accountId)
+                    h.combine(type)
+                    h.combine(accountDescription)
+                    h.combine(created)
                 }
                 
                 public static func ==(lhs: UserAccount.User.AccountAccess.Account, rhs: UserAccount.User.AccountAccess.Account) -> Bool {
@@ -508,23 +502,12 @@ public struct UserAccount {
                 return "<UserAccount.User.SharingAccountAccess> accountId: \(accountId) userId: \(String(reflecting: userId)) privileges: \(privileges) startAccess: \(String(reflecting: startAccess)) endAccess: \(String(reflecting: endAccess))"
             }
             
-            public var hashValue: Int {
-                
-                var hv = accountId.hashValue ^ privileges.hashValue
-                
-                if let userId = userId {
-                    hv = hv ^ userId.hashValue
-                }
-                
-                if let startAccess = startAccess {
-                    hv = hv ^ startAccess.hashValue
-                }
-                
-                if let endAccess = endAccess {
-                    hv = hv ^ endAccess.hashValue
-                }
-                
-                return hv
+            public func hash(into h: inout Hasher) {
+                h.combine(accountId)
+                h.combine(privileges)
+                h.combine(userId)
+                h.combine(startAccess)
+                h.combine(endAccess)
             }
             
             public var userId: String?

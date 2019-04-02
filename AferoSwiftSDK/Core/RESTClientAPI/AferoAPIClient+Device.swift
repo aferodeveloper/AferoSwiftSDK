@@ -60,11 +60,15 @@ public extension AferoAPIClientProto {
     ///
     ///  - returns: A `Promise<[String: Any]>`
     
-    @available(*, deprecated, message: "Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead")
-    public func associateDevice(_ accountId: String, associationId: String, location: CLLocation? = nil, verified: Bool = false) -> Promise<[String: Any]> {
-        
-        return associateDevice(with: associationId, to: accountId, locatedAt: location, ownershipTransferVerified: verified)
-        
+    @available(*, unavailable, message: "Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead")
+    func associateDevice(
+        _ accountId: String,
+        associationId: String,
+        location: CLLocation? = nil,
+        verified: Bool = false
+        ) -> Promise<[String: Any]> {
+        assert(false, "Use Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead")
+        return Promise { _, reject in reject ("Use Use associateDevice(with:to:locatedAt:ownershipTransferVerified) instead") }
     }
     
     /// Associate a device to an Afero account.
@@ -90,13 +94,13 @@ public extension AferoAPIClientProto {
     ///
     ///  - returns: A `Promise<[String: Any]>`
     
-    public func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false, expansions: Set<String> = [
+    func associateDevice(with associationId: String, to accountId: String, locatedAt location: CLLocation? = nil, ownershipTransferVerified verified: Bool = false, expansions: Set<String> = [
         "state", "tags", "attributes", "extendedData", "profile", "timezone",
         ]) -> Promise<[String: Any]> {
         
         var deviceData : [String: Any] = [
             "associationId": associationId,
-            ]
+        ]
         
         if let location = location {
             
@@ -122,38 +126,38 @@ public extension AferoAPIClientProto {
     /// - parameter deviceId: The UUID of the device.
     
     @available(*, deprecated, message: "Use getExtendedDeviceInfo(for deviceId: String, in accountId: String) instead)")
-    public func getExtendedDeviceInfo(_ accountId: String, deviceId: String) -> Promise<Any> {
+    func getExtendedDeviceInfo(_ accountId: String, deviceId: String) -> Promise<Any> {
         return getExtendedDeviceInfo(for: deviceId, in: accountId)
     }
-
+    
     /// Device Info With Extended Data
     ///
     /// - parameter deviceId: The UUID of the device.
     /// - parameter accountId: The accountId to which the device belongs.
     
-    public func getExtendedDeviceInfo(for deviceId: String, in accountId: String) -> Promise<Any> {
+    func getExtendedDeviceInfo(for deviceId: String, in accountId: String) -> Promise<Any> {
         return GET("/v1/accounts/\(accountId)/devices/\(deviceId)", expansions: ["extendedData"])
     }
-
+    
     /// Remove a device.
     ///
     /// - parameter accountId: The accountId to which the device belongs.
     /// - parameter deviceId: The UUID of the device to remove.
-
+    
     @available(*, deprecated, message: "Use removeDevice(with deviceId: String, in accountId: String) instead)")
-    public func removeDevice(_ accountId: String, deviceId: String) -> Promise<Void> {
+    func removeDevice(_ accountId: String, deviceId: String) -> Promise<Void> {
         return removeDevice(with: deviceId, in: accountId)
     }
-
+    
     /// Remove a device.
     ///
     /// - parameter deviceId: The UUID of the device to remove.
     /// - parameter accountId: The accountId to which the device belongs.
     
-    public func removeDevice(with deviceId: String, in accountId: String) -> Promise<Void> {
+    func removeDevice(with deviceId: String, in accountId: String) -> Promise<Void> {
         return DELETE("/v1/accounts/\(accountId)/devices/\(deviceId)")
     }
-
+    
 }
 
 // MARK: - Device Location -
@@ -161,7 +165,7 @@ public extension AferoAPIClientProto {
 public extension AferoAPIClientProto {
     
     @available(*, deprecated, message: "Use getLocation(for:in:) instead.")
-    public func getLocation(_ accountId: String, forDeviceId deviceId: String) -> Promise<LocationModel?> {
+    func getLocation(_ accountId: String, forDeviceId deviceId: String) -> Promise<LocationModel?> {
         return getLocation(for: deviceId, in: accountId)
     }
     
@@ -172,7 +176,7 @@ public extension AferoAPIClientProto {
     /// - returns: A Promise<DeviceLocation?>. Resolves to `.some(DeviceLocation)` if the device has
     ///            a set location, and `.none` if not.
     
-    public func getLocation(for deviceId: String, in accountId: String) -> Promise<DeviceLocation?> {
+    func getLocation(for deviceId: String, in accountId: String) -> Promise<DeviceLocation?> {
         
         guard
             let safeDeviceId = deviceId.pathAllowedURLEncodedString,
@@ -189,7 +193,7 @@ public extension AferoAPIClientProto {
     /// - parameter accountId: The id of the account to which the device is associated.
     /// - returns: A Promise<DeviceLocation?> that resolves to the given parameters upon success.
     
-    public func setLocation(
+    func setLocation(
         as location: DeviceLocation?,
         for deviceId: String,
         in accountId: String
@@ -211,7 +215,7 @@ public extension AferoAPIClientProto {
     }
     
     @available(*, unavailable, message: "Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
-    public func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
+    func setLocation(_ accountId: String, location: CLLocation, forDeviceId deviceId: String, locationSourceType: DeviceLocation.SourceType, formattedAddressLines: [String]? = nil) -> Promise<Void> {
         fatalError("Use setLocation(as:with:formattedAddressLines:for:in:) instead.")
     }
     
@@ -219,7 +223,7 @@ public extension AferoAPIClientProto {
 
 public extension AferoAPIClientProto {
     
-    public func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
+    func post(actions: [DeviceBatchAction.Request], forDeviceId deviceId: String, withAccountId accountId: String, onDone: @escaping WriteAttributeOnDone) {
         POST("/v1/accounts/\(accountId)/devices/\(deviceId)/requests", parameters: actions.JSONDict)
             .then {
                 (responses: [DeviceBatchAction.Response]) -> Void in
@@ -236,9 +240,9 @@ public extension AferoAPIClientProto {
     /// - parameter isUserOverride: If true, indicates the user has explicitly set the timezone
     ///                             on this device (rather than it being inferred by location).
     ///                             If false, timeZone is the default timeZone of the phone.
-
+    
     func setTimeZone(as timeZone: TimeZone, isUserOverride: Bool = false, for deviceId: String, in accountId: String) -> Promise<SetTimeZoneResult> {
-
+        
         guard
             let safeDeviceId = deviceId.pathAllowedURLEncodedString,
             let safeAccountId = accountId.pathAllowedURLEncodedString else {
@@ -246,7 +250,7 @@ public extension AferoAPIClientProto {
                 DDLogError(msg, tag: TAG)
                 return Promise { _, reject in reject(msg) }
         }
-
+        
         let parameters: Parameters = [
             "userOverride": isUserOverride,
             "timezone": timeZone.identifier
@@ -271,7 +275,7 @@ public extension AferoAPIClientProto {
     /// - returns: A Promise<TimeZoneState> which resolves to a timezone state.
     
     func getTimeZone(for deviceId: String, in accountId: String) -> Promise<TimeZoneState> {
-
+        
         guard
             let safeDeviceId = deviceId.pathAllowedURLEncodedString,
             let safeAccountId = accountId.pathAllowedURLEncodedString else {
@@ -296,7 +300,7 @@ extension AferoAPIClientProto {
     ///            any errors emitted by the cloud.
     
     func persistTag(tag: DeviceTagPersisting.DeviceTag, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag> {
-
+        
         guard
             let safeDeviceId = deviceId.pathAllowedURLEncodedString,
             let safeAccountId = accountId.pathAllowedURLEncodedString else {
@@ -304,14 +308,14 @@ extension AferoAPIClientProto {
                 DDLogError(msg, tag: TAG)
                 return Promise { _, reject in reject(msg) }
         }
-
+        
         guard let _ = tag.id else {
             return POST("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag", object: tag)
         }
         
         return PUT("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag", object: tag)
     }
-
+    
     /// Delete a tag with the given `id`, on the device identified by `deviceId` and `accountId`.
     /// - parameter id: The `id` of the tag to delete.
     /// - parameter deviceId: The `id` of the device from which to remove the tag.
@@ -322,7 +326,7 @@ extension AferoAPIClientProto {
     ///         returned in the promise upon success.
     
     func purgeTag(with id: DeviceTagPersisting.DeviceTag.Id, for deviceId: String, in accountId: String) -> Promise<DeviceTagPersisting.DeviceTag.Id> {
-
+        
         guard
             let safeDeviceId = deviceId.pathAllowedURLEncodedString,
             let safeAccountId = accountId.pathAllowedURLEncodedString,
@@ -331,11 +335,11 @@ extension AferoAPIClientProto {
                 DDLogError(msg, tag: TAG)
                 return Promise { _, reject in reject(msg) }
         }
-
+        
         return DELETE("/v1/accounts/\(safeAccountId)/devices/\(safeDeviceId)/deviceTag/\(safeTagId)")
             .then { safeTagId }
     }
-
+    
 }
 
 

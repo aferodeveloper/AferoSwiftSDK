@@ -24,18 +24,18 @@ public func asyncGlobalDefault(_ block: @escaping ()->()) {
 }
 
 open class Utils {
-
+    
     /**
-    Given a hex string, return a `[UInt8]` representation. If the string is empty, return an empty byte array;
-    if the string is nil, return nil.
-    */
+     Given a hex string, return a `[UInt8]` representation. If the string is empty, return an empty byte array;
+     if the string is nil, return nil.
+     */
     open class func bytesFromHexString(_ hexString: String?) -> [UInt8]? {
         return Data(hexEncoded: hexString)?.bytes
     }
-
+    
     /**
-    Given an optional byte array, return a hex-encoded string. If the array is nil, return nil.
-    */
+     Given an optional byte array, return a hex-encoded string. If the array is nil, return nil.
+     */
     open class func hexStringFromBytes(_ bytes: [UInt8]?) -> String? {
         guard let bytes = bytes else { return nil }
         return Data(bytes: bytes).hexEncoded
@@ -46,14 +46,14 @@ open class Utils {
 open class ResourceUtils: NSObject {
     
     /**
-    Read a JSON file from the given bundle, returning errors in the provided errorpointer.
-    
-    - parameter file: The JSON file's name, sans extension. For example, to read `rules.json`, the name should just be `rules`.
-    - parameter bundle: The bundle whence the file should be read. Defaults to `NSBundle.mainBundle()`
-    - parameter error: The optional erropointer to receive any errors reading the file.
-    
-    - returns: An optional object containint the results.
-    */
+     Read a JSON file from the given bundle, returning errors in the provided errorpointer.
+     
+     - parameter file: The JSON file's name, sans extension. For example, to read `rules.json`, the name should just be `rules`.
+     - parameter bundle: The bundle whence the file should be read. Defaults to `NSBundle.mainBundle()`
+     - parameter error: The optional erropointer to receive any errors reading the file.
+     
+     - returns: An optional object containint the results.
+     */
     
     open class func readJson(named name: String, bundle: Bundle? = Bundle(for: ResourceUtils.classForCoder())) throws -> Any? {
         
@@ -199,7 +199,7 @@ public func floatDenormalize<T>(_ min: T?, max: T?, current: Float?, t2f: (T?)->
 
 public extension Comparable {
     
-    public func clamp(_ min: Self, max: Self) -> Self {
+    func clamp(_ min: Self, max: Self) -> Self {
         if self < min { return min }
         if self > max { return max }
         return self
@@ -215,11 +215,11 @@ public func debounce( _ delay:TimeInterval, queue:DispatchQueue, action: @escapi
     return {
         lastFireTime = .now()
         queue.asyncAfter(deadline: .now() + delay) {
-                let now = DispatchTime.now()
-                let when = lastFireTime + delay
-                if now >= when {
-                    action()
-                }
+            let now = DispatchTime.now()
+            let when = lastFireTime + delay
+            if now >= when {
+                action()
+            }
         }
     }
 }
@@ -238,7 +238,7 @@ public func debounce( _ delay:TimeInterval, queue:DispatchQueue, action: @escapi
 public func fastDebounce( _ delay:TimeInterval, queue:DispatchQueue, action: @escaping (()->()) ) -> ()->() {
     
     var lastFireTime: DispatchTime = .zero
-//    let dispatchDelay = Int64(delay * Double(NSEC_PER_SEC))
+    //    let dispatchDelay = Int64(delay * Double(NSEC_PER_SEC))
     
     return {
         if lastFireTime == .zero {
@@ -246,25 +246,25 @@ public func fastDebounce( _ delay:TimeInterval, queue:DispatchQueue, action: @es
             lastFireTime = DispatchTime.now()
             action()
             queue.asyncAfter(
-                deadline: .now() + delay) {
-                    let now = DispatchTime.now()
-                    let when = lastFireTime + delay
-                    if now >= when {
-                        // No other events followed, rest fire time
-                        lastFireTime = .zero
-                    }
+            deadline: .now() + delay) {
+                let now = DispatchTime.now()
+                let when = lastFireTime + delay
+                if now >= when {
+                    // No other events followed, rest fire time
+                    lastFireTime = .zero
+                }
             }
         } else {
             lastFireTime = DispatchTime.now()
             queue.asyncAfter(
-                deadline: .now() + delay) {
-                    let now = DispatchTime.now()
-                    let when = lastFireTime + delay
-                    if now >= when {
-                        // Trigger action and reset fire time
-                        action()
-                        lastFireTime = .zero
-                    }
+            deadline: .now() + delay) {
+                let now = DispatchTime.now()
+                let when = lastFireTime + delay
+                if now >= when {
+                    // Trigger action and reset fire time
+                    action()
+                    lastFireTime = .zero
+                }
             }
         }
     }
@@ -407,7 +407,7 @@ func bytesFromHexString(_ hexString: String?) -> [UInt8]? {
         
         while(startIndex < hexString.endIndex) {
             let endIndex = hexString.index(startIndex, offsetBy: 2)
-            let byteString = hexString.substring(with: startIndex..<endIndex)
+            let byteString = hexString[startIndex..<endIndex]
             let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
             data.append(num)
             startIndex = endIndex

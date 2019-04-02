@@ -308,7 +308,7 @@ class ConclaveDeviceEventStream: DeviceEventStreamable, CustomDebugStringConvert
                     onDone(error)
                     
                 default:
-                    fatalError("Expected either conclaveAccess or an error; got \(maybeInfo, maybeError)")
+                    fatalError("Expected either conclaveAccess or an error; got info: \(maybeInfo?.debugDescription ?? "<empty>") error:\(maybeError ?? "<empty>")")
                     
                 }
             }

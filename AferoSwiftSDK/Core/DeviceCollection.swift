@@ -189,10 +189,9 @@ struct DeviceRequestId: Hashable {
     let deviceId: String
     let requestId: Int
     
-    var hashValue : Int {
-        get {
-            return requestId.hashValue ^ deviceId.hashValue
-        }
+    public func hash(into h: inout Hasher) {
+        h.combine(requestId)
+        h.combine(deviceId)
     }
     
     public static func ==(lhs: DeviceRequestId, rhs: DeviceRequestId) -> Bool {

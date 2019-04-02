@@ -21,23 +21,23 @@ public extension HTTPStatusCode {
 
 public extension Error {
 
-    public var httpResponseBody: Any? {
+ var httpResponseBody: Any? {
         return (self as NSError).httpResponseBody
     }
     
-    public var httpUrlResponse: Foundation.HTTPURLResponse? {
+ var httpUrlResponse: Foundation.HTTPURLResponse? {
         return (self as NSError).httpUrlResponse
     }
     
-    public var httpStatusCode: Int? {
+ var httpStatusCode: Int? {
         return (self as NSError).httpStatusCode
     }
     
-    public var failingURL: String? {
+ var failingURL: String? {
         return (self as NSError).failingURL
     }
     
-    public var httpStatusCodeValue: HTTPStatusCode? {
+ var httpStatusCodeValue: HTTPStatusCode? {
         return (self as NSError).httpStatusCodeValue
     }
 }
@@ -49,7 +49,7 @@ public extension NSError {
      into JSON, but will come back as NSData on failure.
      */
     
-    public var httpResponseBody: Any? {
+ var httpResponseBody: Any? {
         get {
             if let data = userInfo["com.alamofire.serialization.response.error.data"] as? Data {
                 do {
@@ -65,19 +65,19 @@ public extension NSError {
         }
     }
     
-    public var httpUrlResponse: Foundation.HTTPURLResponse? {
+ var httpUrlResponse: Foundation.HTTPURLResponse? {
         return userInfo["com.alamofire.serialization.response.error.response"] as? Foundation.HTTPURLResponse
     }
     
-    public var httpStatusCode: Int? {
+ var httpStatusCode: Int? {
         return httpUrlResponse?.statusCode ?? (userInfo["statusCode"] as? Int)
     }
     
-    public var failingURL: String? {
+ var failingURL: String? {
         return userInfo[NSURLErrorFailingURLErrorKey] as? String
     }
     
-    public var httpStatusCodeValue: HTTPStatusCode? {
+ var httpStatusCodeValue: HTTPStatusCode? {
         guard let statusCode = httpStatusCode else { return nil }
         return HTTPStatusCode(rawValue: statusCode)
     }
@@ -86,7 +86,7 @@ public extension NSError {
 
 public extension Locale {
     
-    public var uses12HrTime: Bool {
+ var uses12HrTime: Bool {
         let dateFormat = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: self)!
         
         // "HH" in 24 hr time (en_US)
@@ -100,7 +100,7 @@ public typealias LocalizedTimeComponents = (time: String, period: String, timeZo
 
 public extension Date {
     
-    public var localizedTimeComponents: LocalizedTimeComponents {
+ var localizedTimeComponents: LocalizedTimeComponents {
         
         var timeFormat = "HH:mm"
         var periodFormat = ""
@@ -137,7 +137,7 @@ public extension Date {
 }
 
 public extension TimeZone {
-    public static var UTC: TimeZone { return TimeZone(abbreviation: "UTC")! }
+ static var UTC: TimeZone { return TimeZone(abbreviation: "UTC")! }
 }
 
 extension DateComponents {
@@ -212,12 +212,12 @@ extension DateComponents {
 
 public extension Date {
     
-    public static func from(iso8601String: String?) -> Date? {
+ static func from(iso8601String: String?) -> Date? {
         guard let iso8601String = iso8601String else { return nil }
         return DateFormatter.ISO8601Formatter.date(from: iso8601String)
     }
     
-    public var iso8601String: String {
+ var iso8601String: String {
         return DateFormatter.ISO8601Formatter.string(from: self)
     }
     
@@ -238,7 +238,7 @@ public extension DateFormatter {
     /// iOS 9 Backward-compatible getter for a formatter
     /// that will handle ISO8601 encoding/decoding
     
-    public static var ISO8601Formatter: DateFormatting {
+ static var ISO8601Formatter: DateFormatting {
 
         if #available(iOS 10, macOS 10.12, *) {
             return ISO8601DateFormatter()
@@ -282,7 +282,7 @@ public extension Timer {
      
      - returns: The newly-created `NSTimer` instance.
      */
-    public class func schedule(_ delay: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
+ class func schedule(_ delay: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
         let fireDate = delay + CFAbsoluteTimeGetCurrent()
         let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, 0, 0, 0, handler)
         CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
@@ -298,7 +298,7 @@ public extension Timer {
      
      - returns: The newly-created `NSTimer` instance.
      */
-    public class func schedule(repeatInterval interval: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
+ class func schedule(repeatInterval interval: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
         let fireDate = interval + CFAbsoluteTimeGetCurrent()
         let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, interval, 0, 0, handler)
         CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
@@ -422,7 +422,7 @@ public struct ArrayDeltas {
 
 public extension Array where Element: Hashable {
     
-    public func deltasToProduce(_ other: [Element]) -> ArrayDeltas {
+ func deltasToProduce(_ other: [Element]) -> ArrayDeltas {
         
         let deletions = NSMutableIndexSet()
         
@@ -452,7 +452,7 @@ public extension Array where Element: Hashable {
 
 public extension IndexSet {
     
-    public func indexes() -> [Int] {
+ func indexes() -> [Int] {
         var ret: [Int] = [];
         self.forEach { ret.append($0) }
         return ret;
@@ -484,11 +484,11 @@ public extension Data {
 
 public extension Data {
 
-    public var stringValue: String? {
+ var stringValue: String? {
         return String(data: self, encoding: .utf8)
     }
     
-    public var md5String: String {
+ var md5String: String {
         return md5().hexEncoded
     }
     
@@ -496,11 +496,11 @@ public extension Data {
 
 public extension Data {
 
-    public var hexEncoded: String {
+ var hexEncoded: String {
         return bytes.map { String(format: "%02X", $0) }.joined(separator: "")
     }
     
-    public init?(hexEncoded: String?) {
+ init?(hexEncoded: String?) {
         
         guard var localHexEncoded = hexEncoded else { return nil }
         
@@ -514,7 +514,7 @@ public extension Data {
         
         while(startIndex < localHexEncoded.endIndex) {
             let endIndex = localHexEncoded.index(startIndex, offsetBy: 2)
-            let byteString = localHexEncoded.substring(with: startIndex..<endIndex)
+            let byteString = localHexEncoded[startIndex..<endIndex]
             let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
             byteArray.append(num)
             startIndex = endIndex
@@ -532,26 +532,26 @@ public protocol DataConvertible {
 
 public extension DataConvertible {
     
-    public init?(data: Data?) {
+ init?(data: Data?) {
         guard let data = data else { return nil }
         guard data.count == MemoryLayout<Self>.size else { return nil }
         self = data.withUnsafeBytes { $0.pointee }
     }
     
-    public var data: Data {
+ var data: Data {
         var value = self
         return Data(buffer: UnsafeBufferPointer(start: &value, count: 1))
     }
 
-    public init?(byteArray: ArraySlice<UInt8>) {
+ init?(byteArray: ArraySlice<UInt8>) {
         self.init(byteArray: Array(byteArray))
     }
     
-    public init?(byteArray: [UInt8]) {
+ init?(byteArray: [UInt8]) {
         self.init(data: Data(bytes: byteArray))
     }
     
-    public var bytes: [UInt8] {
+ var bytes: [UInt8] {
         return data.bytes
     }
     
@@ -559,11 +559,11 @@ public extension DataConvertible {
 
 public extension DataConvertible {
     
-    public init?(hexEncoded: String) {
+ init?(hexEncoded: String) {
         self.init(data: Data(hexEncoded: hexEncoded))
     }
     
-    public var hexEncoded: String {
+ var hexEncoded: String {
         return data.hexEncoded
     }
     
@@ -585,7 +585,7 @@ extension UInt64: DataConvertible { }
 extension Float32: DataConvertible { }
 extension Float64: DataConvertible { }
 
-#if (arch(i386) || arch(x86_64)) && os(iOS)
+#if targetEnvironment(simulator)
 extension Float80: DataConvertible { }
 #endif
 
@@ -604,7 +604,7 @@ extension String: DataConvertible {
 
 public extension CharacterSet {
     
-    public static var hexadecimalCharacters: CharacterSet {
+ static var hexadecimalCharacters: CharacterSet {
         return CharacterSet(charactersIn: "0123456789ABCDEFabcdef")
     }
     
@@ -612,7 +612,7 @@ public extension CharacterSet {
 
 public extension String {
     
-    public var characterSet: CharacterSet {
+ var characterSet: CharacterSet {
         return CharacterSet(charactersIn: self)
     }
 }

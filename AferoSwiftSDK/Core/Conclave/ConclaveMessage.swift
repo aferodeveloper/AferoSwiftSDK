@@ -23,11 +23,11 @@ public protocol ConclaveAuthable: class {
 
 public extension ConclaveAuthable {
     
-    public var conclaveClientVersion: String {
+    var conclaveClientVersion: String {
         return AferoAppEnvironment.appBundleName + "/" + (AferoAppEnvironment.appVersion ?? "<unknown>")
     }
     
-    public var conclaveClientType: String { return "ios" }
+    var conclaveClientType: String { return "ios" }
     
 }
 
@@ -115,7 +115,7 @@ public struct ConclaveHosts: CustomDebugStringConvertible {
         return "<ConcalveHosts> " +
                 registry.values
                     .flatMap { $0 }
-                    .flatMap { $0.debugDescription }
+                    .compactMap { $0.debugDescription }
                     .joined(separator: ", ")
     }
     
@@ -199,10 +199,9 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
                 }
             }
             
-            public var hashValue: Int {
-                switch self {
-                case let .user(userId):
-                    return "User".hashValue ^ userId.hashValue
+            public func hash(into h: inout Hasher) {
+                if case let .user(userId) = self {
+                    h.combine(userId)
                 }
             }
             
@@ -230,8 +229,11 @@ public struct ConclaveAccess: CustomDebugStringConvertible {
             return "<Token> token: \(token) channelId: \(channelId) expires: \(expires) client: \(client)"
         }
         
-        public var hashValue: Int {
-            return token.hashValue ^ channelId.hashValue ^ expires.hashValue ^ client.hashValue
+        public func hash(into h: inout Hasher) {
+            h.combine(token)
+            h.combine(channelId)
+            h.combine(expires)
+            h.combine(client)
         }
         
         public static func ==(lhs: ConclaveAccess.Token, rhs: ConclaveAccess.Token) -> Bool {

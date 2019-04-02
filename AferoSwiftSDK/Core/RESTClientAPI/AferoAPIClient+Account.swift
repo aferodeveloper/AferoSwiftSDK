@@ -16,7 +16,7 @@ public extension AferoAPIClientProto {
     
     /// Fetch a users's account info.
     
-    public func fetchAccountInfo() -> Promise<UserAccount.User> {
+    func fetchAccountInfo() -> Promise<UserAccount.User> {
         return GET("/v1/users/me")
     }
     
@@ -27,7 +27,7 @@ public extension AferoAPIClientProto {
      - returns: A `Promise<Void>` indicating success or failure.
      */
     
-    public func resetPassword(_ credentialId: String) -> Promise<Void> {
+    func resetPassword(_ credentialId: String) -> Promise<Void> {
         
         if let encodedCredential = credentialId.alphanumericURLEncodedString {
             return POST("/v1/credentials/\(encodedCredential)/passwordReset")
@@ -53,7 +53,16 @@ public extension AferoAPIClientProto {
      - returns: A `Promse<Any>` with the deserialized JSON results.
      */
     
-    public func createAccount(_ credentialId: String, password: String, firstName: String, lastName: String, credentialType: String = "email", verified: Bool = false, accountType: String = "CUSTOMER", accountDescription: String = "Primary Account") -> Promise<Any?>
+    func createAccount(
+        _ credentialId: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        credentialType: String = "email",
+        verified: Bool = false,
+        accountType: String = "CUSTOMER",
+        accountDescription: String = "Primary Account"
+        ) -> Promise<Any?>
     {
         let parameters = [
             "account": [
@@ -75,7 +84,7 @@ public extension AferoAPIClientProto {
         return POST("v1/accounts", parameters: parameters)
     }
     
-    public func setAccountDescription(_ accountId: String, description: String) -> Promise<Void> {
+    func setAccountDescription(_ accountId: String, description: String) -> Promise<Void> {
         
         let parameters = [
             "description": description
@@ -159,7 +168,7 @@ public extension AferoAPIClientProto {
     /// provided by the platform for any other purpose, such as
     /// `UDID` or advertising identifier.
 
-    public func disassociateMobileDeviceData(userId: String, mobileDeviceId: String, attemptOAuthRefresh: Bool = false) -> Promise<Void> {
+    func disassociateMobileDeviceData(userId: String, mobileDeviceId: String, attemptOAuthRefresh: Bool = false) -> Promise<Void> {
         
         return DELETE("/v1/users/\(userId)/mobileDevices/\(mobileDeviceId)", attemptOAuthRefresh: attemptOAuthRefresh)
     }

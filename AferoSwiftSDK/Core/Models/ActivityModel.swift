@@ -50,16 +50,16 @@ public struct HistoryFilter {
 }
 
 public struct HistoryActivity: Hashable, Comparable {
-
+    
     // These are improperly overloaded (filter and event).
     // TODO split out.
     
-    public var hashValue: Int {
-        return historyId.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(historyId)
     }
     
     public enum HistoryType: String {
-
+        
         case new = "NEW"
         case attribute = "ATTRIBUTE"
         case attributeWrite = "ACTION_ATTRIBUTE_WRITE"
@@ -95,7 +95,7 @@ public struct HistoryActivity: Hashable, Comparable {
     public var createdTimestamp: NSNumber
     
     // These are expensive to calculate, so do it lazily and cache.
-
+    
     /// Timestamp as an NSDate
     public var date: Date! {
         return Date.dateWithMillisSince1970(self.createdTimestamp)
@@ -130,7 +130,7 @@ public func ==(lhs: HistoryActivity, rhs: HistoryActivity) -> Bool {
 }
 
 public func <(lhs: HistoryActivity, rhs: HistoryActivity) -> Bool {
-
+    
     if lhs.createdTimestamp == rhs.createdTimestamp {
         if let ldfn = lhs.deviceFriendlyName, let rdfn = rhs.deviceFriendlyName {
             return ldfn < rdfn
@@ -170,7 +170,7 @@ extension HistoryActivity: AferoJSONCoding {
     static var CoderKeyDeviceFriendlyName = "deviceFriendlyName"
     static var CoderKeyAttributeId = "attributeId"
     static var CoderKeyAttributeValue = "attributeValue"
-
+    
     public var JSONDict: AferoJSONCodedType? {
         
         var ret: [String: Any] = [
@@ -179,11 +179,11 @@ extension HistoryActivity: AferoJSONCoding {
             type(of: self).CoderKeyMessage: message,
             type(of: self).CoderKeyDeviceHistoryType: historyType.rawValue,
         ]
-
+        
         if let icon = icon {
             ret[type(of: self).CoderKeyDeviceIcon] = icon.absoluteString
         }
-
+        
         if let deviceIcon = deviceIcon {
             ret[type(of: self).CoderKeyDeviceIcon] = deviceIcon.absoluteString
         }
@@ -191,15 +191,15 @@ extension HistoryActivity: AferoJSONCoding {
         if let controlIcon = controlIcon {
             ret[type(of: self).CoderKeyControlIcon] = controlIcon.absoluteString
         }
-
+        
         if let deviceFriendlyName = deviceFriendlyName {
             ret[type(of: self).CoderKeyDeviceFriendlyName] = deviceFriendlyName
         }
-
+        
         if let deviceId = deviceId {
             ret[type(of: self).CoderKeyDeviceId] = deviceId
         }
-
+        
         if let attributeId = attributeId {
             ret[type(of: self).CoderKeyAttributeId] = attributeId
         }
@@ -219,36 +219,36 @@ extension HistoryActivity: AferoJSONCoding {
             let timestamp = json[type(of: self).CoderKeyCreatedTimestamp] as? NSNumber,
             let message = json[type(of: self).CoderKeyMessage] as? String,
             let historyType: HistoryActivity.HistoryType = |<json[type(of: self).CoderKeyDeviceHistoryType] {
-
-                var icon: URL? = nil
-                if let iconURLString = json[type(of: self).CoderKeyIcon] as? String {
-                    icon = URL(string: iconURLString)
-                }
-                
-                var controlIcon: URL? = nil
-                if let controlIconURLString = json[type(of: self).CoderKeyControlIcon] as? String {
-                    controlIcon = URL(string: controlIconURLString)
-                }
-
-                var deviceIcon: URL? = nil
-                if let deviceIconURLString = json[type(of: self).CoderKeyDeviceIcon] as? String {
-                    deviceIcon = URL(string: deviceIconURLString)
-                }
-
-                self.init(
-                    historyId: historyId,
-                    createdTimestamp: timestamp,
-                    message: message,
-                    historyType: historyType,
-                    deviceIcon: deviceIcon,
-                    controlIcon: controlIcon,
-                    icon: icon,
-                    deviceId: json[type(of: self).CoderKeyDeviceId] as? String,
-                    deviceFriendlyName: json[type(of: self).CoderKeyDeviceFriendlyName] as? String,
-                    attributeId: json[type(of: self).CoderKeyAttributeId] as? Int,
-                    attributeValue: json[type(of: self).CoderKeyAttributeValue] as? String
-                )
-                
+            
+            var icon: URL? = nil
+            if let iconURLString = json[type(of: self).CoderKeyIcon] as? String {
+                icon = URL(string: iconURLString)
+            }
+            
+            var controlIcon: URL? = nil
+            if let controlIconURLString = json[type(of: self).CoderKeyControlIcon] as? String {
+                controlIcon = URL(string: controlIconURLString)
+            }
+            
+            var deviceIcon: URL? = nil
+            if let deviceIconURLString = json[type(of: self).CoderKeyDeviceIcon] as? String {
+                deviceIcon = URL(string: deviceIconURLString)
+            }
+            
+            self.init(
+                historyId: historyId,
+                createdTimestamp: timestamp,
+                message: message,
+                historyType: historyType,
+                deviceIcon: deviceIcon,
+                controlIcon: controlIcon,
+                icon: icon,
+                deviceId: json[type(of: self).CoderKeyDeviceId] as? String,
+                deviceFriendlyName: json[type(of: self).CoderKeyDeviceFriendlyName] as? String,
+                attributeId: json[type(of: self).CoderKeyAttributeId] as? Int,
+                attributeValue: json[type(of: self).CoderKeyAttributeValue] as? String
+            )
+            
         } else {
             DDLogError("Unable to decode HistoryActivity: \(String(reflecting: json))")
             return nil

@@ -711,8 +711,9 @@ public struct WifiNetwork: WifiNetworkProto {
         )
     }
     
-    public var hashValue: Int {
-        return ssid.hashValue ^ rssi.hashValue ^ rssiBars.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(ssid)
+        h.combine(rssi)
     }
     
     public static func ==(lhs: WifiNetwork, rhs: WifiNetwork) -> Bool {

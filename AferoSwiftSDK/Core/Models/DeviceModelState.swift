@@ -90,7 +90,7 @@ public struct DeviceModelState: CustomDebugStringConvertible, Hashable, AferoJSO
     }
     
     init(isAvailable: Bool = false, isVisible: Bool = false, isDirty: Bool = false, isRebooted: Bool = false, isConnectable: Bool = false, isConnected: Bool = false, isDirect: Bool = false, RSSI: Int = 0, locationState: LocationState = .notLocated, isLinked: Bool = false, updatedTimestamp: Date = Date(), deviceLocalityId: String? = nil) {
-
+        
         self.init(
             isAvailable: isAvailable,
             isVisible: isVisible,
@@ -131,15 +131,18 @@ public struct DeviceModelState: CustomDebugStringConvertible, Hashable, AferoJSO
             && lhs.deviceLocalityId == rhs.deviceLocalityId
     }
     
-    public var hashValue: Int {
-        return isAvailable.hashValue
-            ^ isVisible.hashValue
-            ^ isDirty.hashValue
-            ^ isRebooted.hashValue
-            ^ isConnectable.hashValue
-            ^ isConnected.hashValue
-            ^ RSSI.hashValue
-            ^ updatedTimestampMillis.hashValue
+    public func hash(into h: inout Hasher) {
+        h.combine(isAvailable)
+        h.combine(isVisible)
+        h.combine(isDirty)
+        h.combine(isRebooted)
+        h.combine(isConnected)
+        h.combine(isConnectable)
+        h.combine(isDirect)
+        h.combine(RSSI)
+        h.combine(isLinked)
+        h.combine(updatedTimestampMillis)
+        h.combine(deviceLocalityId)
     }
     
     // MARK: <AferoJSONCoding>
@@ -184,7 +187,7 @@ public struct DeviceModelState: CustomDebugStringConvertible, Hashable, AferoJSO
     }
     
     public init?(json: AferoJSONCodedType?) {
-
+        
         guard let jsonDict = json as? [String: Any] else {
             DDLogDebug("Not a dict, bailing: \(String(reflecting: json))")
             return nil
@@ -206,7 +209,7 @@ public struct DeviceModelState: CustomDebugStringConvertible, Hashable, AferoJSO
             let RSSI = jsonDict[type(of: self).CoderKeyRSSI] as? Int,
             let linked = jsonDict[type(of: self).CoderKeyLinked] as? Bool,
             let updatedTimestampMillis = jsonDict[type(of: self).CoderKeyUpdatedTimestamp] as? NSNumber
-        else {
+            else {
                 DDLogError("Invalid DeviceModelState (missing one of 'available', 'visible', 'dirty', 'rebooted', 'connectable', 'connected', 'direct', rssi: \(String(reflecting: jsonDict))", tag: DeviceModelState.TAG)
                 return nil
         }
@@ -233,7 +236,7 @@ public struct DeviceModelState: CustomDebugStringConvertible, Hashable, AferoJSO
 extension DeviceModelState {
     
     mutating func update(with status: DeviceStreamEvent.Peripheral.Status) {
-
+        
         if let isAvailable = status.isAvailable {
             self.isAvailable = isAvailable
         }
@@ -245,11 +248,11 @@ extension DeviceModelState {
         if let isDirty = status.isDirty {
             self.isDirty = isDirty
         }
-
+        
         if let isConnectable = status.isConnectable {
             self.isConnectable = isConnectable
         }
-
+        
         if let isConnected = status.isConnected {
             self.isConnected = isConnected
         }
@@ -257,15 +260,15 @@ extension DeviceModelState {
         if let isRebooted = status.isRebooted {
             self.isRebooted = isRebooted
         }
-
+        
         if let isDirect = status.isDirect {
             self.isDirect = isDirect
         }
-
+        
         if let RSSI = status.RSSI {
             self.RSSI = RSSI
         }
-
+        
     }
 }
 

@@ -10,11 +10,11 @@ import Foundation
 
 public extension Date {
     
-    public static func dateWithMillisSince1970(_ millis: NSNumber) -> Date {
+    static func dateWithMillisSince1970(_ millis: NSNumber) -> Date {
         return Date(timeIntervalSince1970: TimeInterval(millis.int64Value / 1000))
     }
     
-    public var millisSince1970: NSNumber {
+    var millisSince1970: NSNumber {
         let interval = timeIntervalSince1970
         let wholeValue = Int64(interval)
         let fracValue = interval - Float64(wholeValue)

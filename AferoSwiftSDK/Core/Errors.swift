@@ -12,7 +12,7 @@ extension String: Error { }
 
 public extension NSError {
     
-    public convenience init(domain: String, code: Int, userInfo: [String: Any]? = nil, localizedDescription: String, underlyingError: NSError? = nil) {
+    convenience init(domain: String, code: Int, userInfo: [String: Any]? = nil, localizedDescription: String, underlyingError: NSError? = nil) {
         var localUserInfo: [String: Any] = userInfo ?? [:]
         localUserInfo[NSLocalizedDescriptionKey] = localizedDescription
         if let underlyingError = underlyingError {
@@ -21,7 +21,7 @@ public extension NSError {
         self.init(domain: domain, code: code, userInfo: userInfo)
     }
     
-    public var underlyingError: NSError? {
+    var underlyingError: NSError? {
         return self.userInfo[NSUnderlyingErrorKey] as? NSError
     }
     

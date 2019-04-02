@@ -21,7 +21,7 @@ public protocol OptionSetJSONCoding: AferoJSONCoding, OptionSet {}
 
 public extension AferoJSONCoding {
     
-    public var prettyJSONValue: String? {
+    var prettyJSONValue: String? {
 
         guard let
             json = JSONDict,

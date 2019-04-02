@@ -472,12 +472,12 @@ open class DisplayRulesProcessor {
             
             if (match(value)) {
                 
-                DDLogVerbose("RULE (MATCHED): (\(V.self, T.self))->\(T.self) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
+                DDLogVerbose("RULE (MATCHED): (\((V.self, T.self)))->\(T.self) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
                 
                 return apply(target)
             }
             
-            DDLogVerbose("RULE (MISSED): (\(V.self, T.self))->\(T.self) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
+            DDLogVerbose("RULE (MISSED): (\((V.self, T.self)))->\(T.self) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
             
             return target
         }
@@ -517,14 +517,14 @@ open class DisplayRulesProcessor {
                 
                 if (match(value)) {
                     
-                    DDLogVerbose("RULE (MATCHED): (\(C.self, T.self))->\(T.self) source: \(String(reflecting: source)) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
+                    DDLogVerbose("RULE (MATCHED): (\((C.self, T.self)))->\(T.self) source: \(String(reflecting: source)) value: \(String(reflecting: value)) target: \(target)", tag: TAG)
                     let ret = apply(target)
                     //                        DDLogDebug("ret: \(ret)", tag: TAG)
                     return ret
                 }
             }
             
-            DDLogVerbose("RULE (MISSED): (\(C.self, T.self))->\(T.self) source: \(String(reflecting: source)) target: \(target)", tag: TAG)
+            DDLogVerbose("RULE (MISSED): (\((C.self, T.self)))->\(T.self) source: \(String(reflecting: source)) target: \(target)", tag: TAG)
             
             return target
         }
