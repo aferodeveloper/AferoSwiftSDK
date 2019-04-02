@@ -1,10 +1,10 @@
 PODS:
   - AferoSofthub (1.5.4)
-  - AferoSwiftSDK/AFNetworking (1.1.10):
+  - AferoSwiftSDK/AFNetworking (1.2.0):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.1.10):
+  - AferoSwiftSDK/Core (1.2.0):
     - AferoSofthub (~> 1.5.4)
     - CocoaLumberjack/Swift (~> 3.5)
     - CocoaZ (~> 1.4)
@@ -106,7 +106,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AferoSofthub: 631ebae49ff66cf8fad2079c756d1f8ed2bf0695
-  AferoSwiftSDK: 930dcd132b400d15e987d270e7a27fa17a2bee26
+  AferoSwiftSDK: f26d9c30f2b6cece797af75b93337c058dfe9e91
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
@@ -125,6 +125,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 8de7d2ec7d542cc061f8a2c3336bd22a98e66f78
+PODFILE CHECKSUM: aedaa481a55535bb64621e7a54d47dc33782cba4
 
 COCOAPODS: 1.6.1

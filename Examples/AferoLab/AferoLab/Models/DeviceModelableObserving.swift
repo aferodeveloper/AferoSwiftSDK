@@ -26,7 +26,7 @@ extension Tagged {
 
 protocol DeviceModelableObserving: Tagged {
 
-    weak var deviceModelable: DeviceModelable! { get set }
+    var deviceModelable: DeviceModelable! { get set }
     var deviceEventSignalDisposable: Disposable? { get set }
     func startObservingDeviceEvents()
     func stopObservingDeviceEvents()
@@ -232,7 +232,7 @@ protocol AttributeEventObserving: Tagged {
     var attributeId: Int? { get set }
     var attribute: DeviceModelable.Attribute? { get }
     
-    weak var attributeEventSignaling: AttributeEventSignaling! { get set }
+    var attributeEventSignaling: AttributeEventSignaling! { get set }
     var attributeEventDisposable: Disposable? { get set }
     
     func initializeAttributeObservation()
