@@ -1240,27 +1240,22 @@ class DeviceStreamEventTests: QuickSpec {
                     let start = State(0)
                     expect(start) == State.start
                     expect(start.rawValue) == 0
-                    expect(start.hashValue) == 0
                     
                     let inProgress = State(1)
                     expect(inProgress) == State.inProgress
                     expect(inProgress.rawValue) == 1
-                    expect(inProgress.hashValue) == 1
                     
                     let complete = State(2)
                     expect(complete) == State.complete
                     expect(complete.rawValue) == 2
-                    expect(complete.hashValue) == 2
 
                     let unknown1 = State(3)
                     expect(unknown1) == State.unknown(3)
                     expect(unknown1.rawValue) == 3
-                    expect(unknown1.hashValue) == 3
 
                     let unknown2 = State(-1)
                     expect(unknown2) == State.unknown(-1)
                     expect(unknown2.rawValue) == -1
-                    expect(unknown2.hashValue) == -1
                 }
             }
         }
