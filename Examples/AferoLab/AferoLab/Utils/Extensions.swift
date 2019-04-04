@@ -99,23 +99,23 @@ public extension HTTPStatusCode {
 
 public extension Error {
     
-    public var httpResponseBody: Any? {
+    var httpResponseBody: Any? {
         return (self as NSError).httpResponseBody
     }
     
-    public var httpUrlResponse: Foundation.HTTPURLResponse? {
+    var httpUrlResponse: Foundation.HTTPURLResponse? {
         return (self as NSError).httpUrlResponse
     }
     
-    public var httpStatusCode: Int? {
+    var httpStatusCode: Int? {
         return (self as NSError).httpStatusCode
     }
     
-    public var failingURL: String? {
+    var failingURL: String? {
         return (self as NSError).failingURL
     }
     
-    public var httpStatusCodeValue: HTTPStatusCode? {
+    var httpStatusCodeValue: HTTPStatusCode? {
         return (self as NSError).httpStatusCodeValue
     }
     
@@ -127,13 +127,13 @@ public extension Error {
 
 public extension NSError {
     
-    public convenience init(domain: String, code: Int, userInfo: [String: Any]? = nil, localizedDescription: String) {
+    convenience init(domain: String, code: Int, userInfo: [String: Any]? = nil, localizedDescription: String) {
         var localUserInfo: [String: Any] = userInfo ?? [:]
         localUserInfo[NSLocalizedDescriptionKey] = localizedDescription
         self.init(domain: domain, code: code, userInfo: userInfo)
     }
     
-    public var underlyingError: NSError? {
+    var underlyingError: NSError? {
         return self.userInfo[NSUnderlyingErrorKey] as? NSError
     }
     
@@ -193,7 +193,7 @@ public extension Dictionary {
 
 public extension Array where Element: Hashable {
     
-    public func deltasProducing(_ other: [Element]) -> IndexDeltas {
+    func deltasProducing(_ other: [Element]) -> IndexDeltas {
         
         let deletions = NSMutableIndexSet()
         
@@ -229,7 +229,7 @@ public struct IndexDeltas {
 
 public extension IndexSet {
     
-    public func indexes() -> [Int] { return self.map { $0 } }
+    func indexes() -> [Int] { return self.map { $0 } }
     
 }
 
@@ -251,17 +251,17 @@ public extension Data {
 
 public extension Data {
     
-    public var bytes: [UInt8] {
+    var bytes: [UInt8] {
         var ret = [UInt8](repeating: 0, count: count)
         copyBytes(to: &ret, count: count)
         return ret
     }
     
-    public var stringValue: String? {
+    var stringValue: String? {
         return String(data: self, encoding: .utf8)
     }
     
-    public var md5String: String {
+    var md5String: String {
         return md5().hexEncoded
     }
     
@@ -269,11 +269,11 @@ public extension Data {
 
 public extension Data {
     
-    public var hexEncoded: String {
+    var hexEncoded: String {
         return bytes.map { String(format: "%02X", $0) }.joined(separator: "")
     }
     
-    public init?(hexEncoded: String?) {
+    init?(hexEncoded: String?) {
         
         guard var localHexEncoded = hexEncoded else { return nil }
         
@@ -328,7 +328,7 @@ public func ∉<T: Equatable, S: Sequence> (lhs: T?, rhs: S?) -> Bool
 
 public extension Locale {
     
-    public var uses12HrTime: Bool {
+    var uses12HrTime: Bool {
         let dateFormat = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: self)!
         
         // "HH" in 24 hr time (en_US)
@@ -342,7 +342,7 @@ public typealias LocalizedTimeComponents = (time: String, period: String, timeZo
 
 public extension Date {
     
-    public var localizedTimeComponents: LocalizedTimeComponents {
+    var localizedTimeComponents: LocalizedTimeComponents {
         
         var timeFormat = "HH:mm"
         var periodFormat = ""
@@ -379,7 +379,7 @@ public extension Date {
 }
 
 public extension TimeZone {
-    public static var UTC: TimeZone { return TimeZone(abbreviation: "UTC")! }
+    static var UTC: TimeZone { return TimeZone(abbreviation: "UTC")! }
 }
 
 extension DateComponents {
@@ -492,7 +492,7 @@ public extension Timer {
      
      - returns: The newly-created `NSTimer` instance.
      */
-    public class func schedule(_ delay: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
+    class func schedule(_ delay: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
         let fireDate = delay + CFAbsoluteTimeGetCurrent()
         let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, 0, 0, 0, handler)
         CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
@@ -508,7 +508,7 @@ public extension Timer {
      
      - returns: The newly-created `NSTimer` instance.
      */
-    public class func schedule(repeatInterval interval: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
+    class func schedule(repeatInterval interval: TimeInterval, handler: @escaping (Timer?) -> Void) -> Timer? {
         let fireDate = interval + CFAbsoluteTimeGetCurrent()
         let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, interval, 0, 0, handler)
         CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
