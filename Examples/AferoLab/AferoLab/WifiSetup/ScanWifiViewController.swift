@@ -932,7 +932,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     // MARK: - <AferoWifiPasswordPromptViewDelegate> -
     
     func wifiPasswordPromptView(_ promptView: AferoWifiPasswordPromptView, attemptAssociateWith ssid: String, usingPassword password: String?, connectionStatusChangeHandler: @escaping (WifiSetupManaging.WifiState) -> Void) {
-        print("should attempt associate with \(ssid) using password \(password)")
+        print("should attempt associate with '\(ssid)' using password '\(password ?? "<empty>")'")
         promptView.passwordTextField.resignFirstResponder()
         attemptAssociate(to: ssid, with: password ?? "")
     }
