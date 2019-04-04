@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func configureLogging() {
         
-        defaultDebugLevel = DDLogLevel.debug
+        dynamicLogLevel = DDLogLevel.debug
         UserDefaults.standard.setValue(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
         
         #if DEBUG

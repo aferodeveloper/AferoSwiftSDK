@@ -99,7 +99,7 @@ class ConclaveMessageSpec: QuickSpec {
     
     override func spec() {
         
-        defaultDebugLevel = DDLogLevel.debug
+        dynamicLogLevel = DDLogLevel.debug
         
         DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
         DDLog.add(DDTTYLogger.sharedInstance)
