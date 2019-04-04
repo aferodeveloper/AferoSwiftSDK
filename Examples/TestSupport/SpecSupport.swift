@@ -103,8 +103,8 @@ struct AttributeMap: Hashable, SafeSubscriptable, CustomStringConvertible {
         return atts.debugDescription
     }
     
-    var hashValue: Int {
-        return atts.values.reduce(0) { $0 ^ $1.hashValue}
+    func hash(into h: inout Hasher) {
+        h.combine(atts)
     }
     
     typealias Key = Int

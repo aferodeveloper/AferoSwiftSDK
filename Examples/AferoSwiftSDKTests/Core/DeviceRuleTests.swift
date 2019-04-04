@@ -148,7 +148,7 @@ class DeviceRuleEncodeSpec: QuickSpec {
                 let attributes: [AttributeInstance] = [
                     AttributeInstance(id: 1, stringValue: "CCCC"),
                     AttributeInstance(id: 2, stringValue: "DDDD"),
-                    ].flatMap { $0 }
+                    ].compactMap { $0 }
                 
                 let action = DeviceRuleAction(deviceId: "I'm a device ID", attributes: attributes, durationSeconds: 9)
                 if let copied: DeviceRuleAction = |<action.JSONDict {

@@ -470,8 +470,8 @@ class OfflineScheduleSpec: QuickSpec {
                 // UTC-1 (e.g. Azores)
                 let utcMinus1 = TimeZone(secondsFromGMT: -3600)!
                 
-                let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
-                let sunday0000NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatUTCSpec, attributes: [0: false])
+//                let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
+//                let sunday0000NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatUTCSpec, attributes: [0: false])
                 
                 let sunday0000RepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .repeats)
                 let sunday0000RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatUTCSpec, attributes: [0: false])
@@ -482,8 +482,8 @@ class OfflineScheduleSpec: QuickSpec {
                 let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
                 let sunday0000RepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatLTSpec, attributes: [0: false])
                 
-                let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
-                let saturday2300NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatUTCSpec, attributes: [0: false])
+//                let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
+//                let saturday2300NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatUTCSpec, attributes: [0: false])
                 
                 let saturday2300RepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .repeats)
                 let saturday2300RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300RepeatUTCSpec, attributes: [0: false])
