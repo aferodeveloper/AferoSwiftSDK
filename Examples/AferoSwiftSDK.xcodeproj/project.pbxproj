@@ -482,10 +482,9 @@
 			};
 			buildConfigurationList = EAD47A7F1A1D47B800598B2A /* Build configuration list for PBXProject "AferoSwiftSDK" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				de,
