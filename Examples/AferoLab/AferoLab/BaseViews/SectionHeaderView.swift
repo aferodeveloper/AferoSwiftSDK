@@ -125,7 +125,7 @@ import UIKit
     
     func setupConstraints() {
         
-        let views: [String: Any] = [ "v": sectionHeaderView ]
+        let views: [String: Any] = [ "v": sectionHeaderView! ]
         let vfl: [String] = [ "H:|[v]|", "V:|[v]|", ]
         
         let constraints = vfl.flatMap {

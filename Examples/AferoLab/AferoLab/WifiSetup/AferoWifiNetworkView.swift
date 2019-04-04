@@ -151,7 +151,7 @@ extension AferoWifiNetworkView {
     
     func setupConstraints() {
         
-        let views: [String: Any] = [ "v": contentStackView ]
+        let views: [String: Any] = [ "v": contentStackView! ]
         let vfl: [String] = [ "H:|-[v]-|", "V:|-[v]-|", ]
         
         let constraints = vfl.flatMap {
@@ -280,7 +280,7 @@ extension AferoWifiNetworkView {
         super.setupConstraints()
         passwordPromptView.layoutMargins = .zero
         let indent = NSLayoutConstraint(
-            item: passwordPromptView.contentStack,
+            item: passwordPromptView.contentStack!,
             attribute: .leading,
             relatedBy: .equal,
             toItem: wifiNetworkView.ssidLabel,

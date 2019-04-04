@@ -41,7 +41,7 @@ import UIKit
     }
     
     func setupConstraints() {
-        let views: [String: Any] = [ "v": contentView ]
+        let views: [String: Any] = [ "v": contentView! ]
         let vfl: [String] = [ "H:|-[v]-|", "V:|-[v]-|", ]
         
         let constraints = vfl.flatMap {

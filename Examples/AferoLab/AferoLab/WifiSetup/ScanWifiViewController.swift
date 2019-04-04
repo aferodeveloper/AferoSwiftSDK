@@ -60,7 +60,7 @@ import SVProgressHUD
         
         headerContainerView.addSubview(headerStackView)
         
-        let views: [String: Any] = [ "v": headerStackView ]
+        let views: [String: Any] = [ "v": headerStackView! ]
         let vfl: [String] = [ "H:|-[v]-|", "V:|-[v]-|", ]
         
         let constraints = vfl.flatMap {

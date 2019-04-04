@@ -1483,13 +1483,23 @@ extension DateTypes.Time: AferoJSONCoding {
     
     public var JSONDict: AferoJSONCodedType? {
         
-        return [
-            type(of: self).CoderKeyHour: hour,
-            type(of: self).CoderKeyMinute: minute,
-            type(of: self).CoderKeySeconds: seconds,
+        var ret: [String: Any] = [
             type(of: self).CoderKeyTZ: timeZone.identifier,
         ]
         
+        if let hour = hour {
+            ret[type(of: self).CoderKeyHour] = hour
+        }
+        
+        if let minute = minute {
+            ret[type(of: self).CoderKeyMinute] = minute
+        }
+        
+        if let seconds = seconds {
+            ret[type(of: self).CoderKeySeconds] = seconds
+        }
+        
+        return ret
     }
     
     public init?(json: AferoJSONCodedType?) {
