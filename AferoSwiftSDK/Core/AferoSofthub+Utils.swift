@@ -16,6 +16,11 @@ extension AferoSofthubError:  Error {
         case .conclaveAccessEncoding: return "Conclave access token uses unrecognized encoding."
         case .invalidRSSIDecibelValue: return "Unrecognized RSSI decibel value"
         case .invalidStateForCmd: return "The softhub was asked to perform a command while in an invalid state. See AferoSofthub.state for current value."
+
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoSofthubError case \(rawValue)"
+        #endif
         }
     }
     
@@ -29,6 +34,11 @@ extension AferoSofthubState: CustomStringConvertible, CustomDebugStringConvertib
         case .started: return "Softhub started."
         case .stopping: return "Softhub stopping."
         case .stopped: return "Softhub stopped."
+
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoSofthubState case \(rawValue)"
+        #endif
         }
     }
     
@@ -49,6 +59,11 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
         case .unhandledService: return "Asked to start with an unrecognized Afero cloud."
         case .serviceIssue: return "There was a problem communicating with the Afero cloud."
         case .notSupported: return "The installed softhub is not compatible with the Afero cloud, and must be updated."
+            
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoSofthubCompleteReason case \(rawValue)"
+        #endif
         }
     }
     
@@ -64,6 +79,12 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         switch self {
         case .prod: return "Afero production cloud"
         case .dev: return "Afero development cloud"
+        
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoService case \(rawValue)"
+        #endif
+            
         }
     }
     

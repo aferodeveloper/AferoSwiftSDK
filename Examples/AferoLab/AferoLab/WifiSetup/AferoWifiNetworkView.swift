@@ -9,6 +9,7 @@
 import UIKit
 import AferoSofthub
 import Afero
+import CocoaLumberjack
 
 @IBDesignable class AferoWifiNetworkView: XibBasedView {
     
@@ -431,14 +432,19 @@ extension WifiSetupManaging.WifiState {
     
     public var localizedDescription: String {
         switch self {
-        case .notConnected: return NSLocalizedString("Not Connected", comment: "AferoSofthubWifiState .notConnected description")
-        case .pending: return NSLocalizedString("Connection Pending", comment: "AferoSofthubWifiState .pending description")
-        case .associationFailed: return NSLocalizedString("Association Failed", comment: "AferoSofthubWifiState .associationFailed description")
-        case .handshakeFailed: return NSLocalizedString("Handshake Failed", comment: "AferoSofthubWifiState .handshakeFailed description")
-        case .echoFailed: return NSLocalizedString("Echo Failed", comment: "AferoSofthubWifiState .echoFailed description")
-        case .connected: return NSLocalizedString("Connected", comment: "AferoSofthubWifiState .connected description")
-        case .ssidNotFound: return NSLocalizedString("SSID Not Found", comment: "AferoSofthubWifiState .ssidNotFound description")
-        case .unknownFailure: return NSLocalizedString("Unknown Failure", comment: "AferoSofthubWifiState .unknownFailure description")
+        case .notConnected: return NSLocalizedString("Not Connected", comment: "WifiSetupManaging.WifiState .notConnected description")
+        case .pending: return NSLocalizedString("Connection Pending", comment: "WifiSetupManaging.WifiState .pending description")
+        case .associationFailed: return NSLocalizedString("Association Failed", comment: "WifiSetupManaging.WifiState .associationFailed description")
+        case .handshakeFailed: return NSLocalizedString("Handshake Failed", comment: "WifiSetupManaging.WifiState .handshakeFailed description")
+        case .echoFailed: return NSLocalizedString("Echo Failed", comment: "WifiSetupManaging.WifiState .echoFailed description")
+        case .connected: return NSLocalizedString("Connected", comment: "WifiSetupManaging.WifiState .connected description")
+        case .ssidNotFound: return NSLocalizedString("SSID Not Found", comment: "WifiSetupManaging.WifiState .ssidNotFound description")
+        case .unknownFailure: return NSLocalizedString("Unknown Failure", comment: "WifiSetupManaging.WifiState .unknownFailure description")
+            
+        #if compiler(>=5)
+        @unknown default:
+            return NSLocalizedString("Unrecognized WifiSetupManaging.WifiState case \(rawValue)", comment: "WifiSetupManaging.WifiState unrecognized case description")
+        #endif
         }
     }
     

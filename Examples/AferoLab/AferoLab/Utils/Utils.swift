@@ -29,7 +29,12 @@ func bytesFromHexString(_ hexString: String?) -> [UInt8]? {
  */
 func hexStringFromBytes(_ bytes: [UInt8]?) -> String? {
     guard let bytes = bytes else { return nil }
+    #if compiler(>=5)
+    return Data(bytes).hexEncoded
+    #endif
+    #if compiler(<5)
     return Data(bytes: bytes).hexEncoded
+    #endif
 }
 
 public func ==<T>(lhs: T?, rhs: T?) -> Bool {

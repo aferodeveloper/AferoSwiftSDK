@@ -2789,7 +2789,17 @@ public struct ValueOptionsSubscriptor: OptionsSubscriptable {
             return nil
         }
         
-        guard let idx = values.index(of: v) else {
+        let maybeIdx: Int?
+        
+        #if compiler(<5)
+        maybeIdx = values.index(of: v)
+        #endif
+        
+        #if compiler(>=5)
+        maybeIdx = values.firstIndex(of: v)
+        #endif
+        
+        guard let idx = maybeIdx else {
             DDLogWarn("indexOf no index for value \(v) in \(values.debugDescription)", tag: tag)
             return nil
         }

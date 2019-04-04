@@ -551,7 +551,7 @@ class AccountViewController: UITableViewController {
     @IBOutlet weak var associateDeviceButtonItem: UIBarButtonItem!
 
     @IBAction func associateDeviceTapped(_ sender: UIBarButtonItem) {
-        #if (arch(i386) || arch(x86_64)) && os(iOS) // simulator
+        #if targetEnvironment(simulator) // simulator
             presentManualAssociationIdEntry()
         #else
             presentQRCodeReader()

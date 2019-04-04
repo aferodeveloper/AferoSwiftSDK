@@ -151,7 +151,12 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     }
     
     func indexForDeviceId(_ deviceId: String) -> Int? {
+        #if compiler(>=5)
+        return collatedDeviceIds.firstIndex(of: deviceId)
+        #endif
+        #if compiler(<5)
         return collatedDeviceIds.index(of: deviceId)
+        #endif
     }
     
     // MARK: <AccountAware>

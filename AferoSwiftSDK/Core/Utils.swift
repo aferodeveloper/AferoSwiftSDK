@@ -38,7 +38,12 @@ open class Utils {
      */
     open class func hexStringFromBytes(_ bytes: [UInt8]?) -> String? {
         guard let bytes = bytes else { return nil }
+        #if compiler(<5)
         return Data(bytes: bytes).hexEncoded
+        #endif
+        #if compiler(>=5)
+        return Data(bytes).hexEncoded
+        #endif
     }
     
 }

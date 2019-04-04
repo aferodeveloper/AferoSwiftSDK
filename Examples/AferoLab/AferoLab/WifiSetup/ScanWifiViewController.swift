@@ -346,7 +346,14 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     /// Translate a `WifiNetwork` entry into an indexPath.
     func indexPathForVisibleNetwork(_ entry: WifiNetwork?) -> IndexPath? {
         guard let entry = entry else { return nil }
+        
+        #if compiler(<5)
         guard let entryIndex = visibleNetworks.index(of: entry) else { return nil }
+        #endif
+        #if compiler(>=5)
+        guard let entryIndex = visibleNetworks.firstIndex(of: entry) else { return nil }
+        #endif
+        
         return indexPathForVisibleNetworksIndex(entryIndex)
     }
     
@@ -355,9 +362,19 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         
         guard let ssid = ssid else { return nil }
         
-        guard let entryIndex = visibleNetworks.index(where: { (entry: WifiNetwork) -> Bool in
+        let maybeEntryIndex: Int?
+        #if compiler(<5)
+        maybeEntryIndex = visibleNetworks.index(where: { (entry: WifiNetwork) -> Bool in
             return entry.ssid == ssid
-        }) else { return nil }
+        })
+        #endif
+        #if compiler(>=5)
+        maybeEntryIndex = visibleNetworks.firstIndex(where: { (entry: WifiNetwork) -> Bool in
+            return entry.ssid == ssid
+        })
+        #endif
+        
+        guard let entryIndex = maybeEntryIndex else { return nil }
         
         let ret = indexPathForVisibleNetworksIndex(entryIndex)
         return ret

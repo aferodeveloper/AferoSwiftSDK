@@ -171,7 +171,12 @@ extension OfflineSchedule {
     public var numberOfEvents: Int { return collatedEvents.count }
     
     public func eventIndex(for event: OfflineSchedule.ScheduleEvent) -> Int? {
+        #if compiler(>=5)
+        return collatedEvents.firstIndex(of: event)
+        #endif
+        #if compiler(<5)
         return collatedEvents.index(of: event)
+        #endif
     }
     
     func attributeId(for event: OfflineSchedule.ScheduleEvent) -> Int? {

@@ -293,7 +293,12 @@ public extension Data {
             startIndex = endIndex
         }
         
+        #if compiler(>=5)
+        self.init(byteArray)
+        #endif
+        #if compiler(<5)
         self.init(bytes: byteArray)
+        #endif
     }
     
 }

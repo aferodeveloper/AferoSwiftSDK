@@ -520,7 +520,12 @@ public extension Data {
             startIndex = endIndex
         }
 
+    #if compiler(<5)
         self.init(bytes: byteArray)
+    #endif
+    #if compiler(>=5)
+        self.init(byteArray)
+    #endif
     }
     
 }
@@ -533,9 +538,20 @@ public protocol DataConvertible {
 public extension DataConvertible {
     
  init?(data: Data?) {
-        guard let data = data else { return nil }
-        guard data.count == MemoryLayout<Self>.size else { return nil }
+
+    guard let data = data else { return nil }
+    guard data.count == MemoryLayout<Self>.size else { return nil }
+
+    #if compiler(<5)
         self = data.withUnsafeBytes { $0.pointee }
+    #endif
+    
+    #if compiler(>=5)
+    
+    // TODO: Correct replacement for data.withUnsafeBytes in swift 5
+    self = data.withUnsafeBytes { $0.pointee }
+    
+    #endif
     }
     
  var data: Data {
@@ -548,7 +564,13 @@ public extension DataConvertible {
     }
     
  init?(byteArray: [UInt8]) {
-        self.init(data: Data(bytes: byteArray))
+    #if compiler(<5)
+    self.init(data: Data(bytes: byteArray))
+    #endif
+    
+    #if compiler(>=5)
+    self.init(data: Data(byteArray))
+    #endif
     }
     
  var bytes: [UInt8] {

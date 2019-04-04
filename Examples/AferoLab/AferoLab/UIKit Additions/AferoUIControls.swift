@@ -684,9 +684,20 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
         
         isEnabled = (deviceModelable?.isAvailable ?? false) && attributeIsWritable
         
-        guard let index = attributeValueOptions?.index(where: {
+        let maybeIndex: Int?
+        
+        #if compiler(>=5)
+        maybeIndex = attributeValueOptions?.firstIndex(where: {
             valueOption in return valueOption.match == attribute.value.stringValue
-        }) else {
+        })
+        #endif
+        #if compiler(<5)
+        maybeIndex = attributeValueOptions?.index(where: {
+            valueOption in return valueOption.match == attribute.value.stringValue
+        })
+        #endif
+        
+        guard let index = maybeIndex else {
             DDLogError("Unrecognized value for segmentedControl (== \(String(describing: attribute)); bailing.", tag: TAG)
             return
         }
@@ -1133,7 +1144,7 @@ class AferoAttributeUIPickerView: UIPickerView, DeviceModelableObserving, Attrib
             return
         }
         
-        guard let index = attribute.config.presentation?.valueOptions.index(where: {
+        guard let index = attribute.config.presentation?.valueOptions.firstIndex(where: {
             valueOption in return valueOption.match == attribute.value.stringValue
         }) else {
             DDLogError("Unrecognized value for picker (== \(String(describing: attribute)); bailing.", tag: TAG)

@@ -749,7 +749,17 @@ func withExpansions(_ path: String, expansions: [String]?, additionalParams: [St
         return lpath
     }
     
-    if let _ = lpath.index(of: "?") {
+    let pathHasParams: Bool
+    
+    #if compiler(>=5)
+    pathHasParams = lpath.firstIndex(of: "?") != nil
+    #endif
+    
+    #if compiler(<5)
+    pathHasParams = lpath.index(of: "?") != nil
+    #endif
+    
+    if pathHasParams {
         lpath += "&" + additionalParamString
     } else {
         lpath += "?" + additionalParamString

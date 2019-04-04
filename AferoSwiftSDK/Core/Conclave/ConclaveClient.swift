@@ -1062,7 +1062,15 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
                 continue
             }
             
-            let data = Data(bytes: bytes)
+            let data: Data
+            
+            #if compiler(<5)
+            data = Data(bytes: bytes)
+            #endif
+
+            #if compiler(>=5)
+            data = Data(bytes)
+            #endif
 
             DDLogVerbose("line: \(NSString(data: data, encoding: String.Encoding.utf8.rawValue) ?? "<nil>")", tag: TAG)
             
@@ -1084,7 +1092,12 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         
         if (haveResidue) {
             let residueBytes = Array(lines.last!)
+            #if compiler(<5)
             parseBuffer = Data(bytes: residueBytes)
+            #endif
+            #if compiler(>=5)
+            parseBuffer = Data(residueBytes)
+            #endif
         } else {
             parseBuffer = nil
         }

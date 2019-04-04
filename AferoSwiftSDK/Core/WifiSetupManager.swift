@@ -30,7 +30,13 @@ extension AferoSofthubSetupWifiCommandState: CustomStringConvertible, CustomDebu
         case .timedOutConnect: return "AferoSofthubSetupWifiCommandState.TimedOutConnect"
         case .timedOutNotAvailable: return "AferoSofthubSetupWifiCommandState.TimedOutNotAvailable"
         case .failed: return "AferoSofthubSetupWifiCommandState.Failed"
+            
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoSofthubSetupWifiCommandState case \(rawValue)"
+        #endif
         }
+            
     }
     
     var isTerminal: Bool {
@@ -60,6 +66,12 @@ extension AferoSofthubWifiState: CustomStringConvertible, CustomDebugStringConve
         case .connected: return "AferoSofthubWifiState.Connected"
         case .ssidNotFound: return "AferoSofthubWifiState.SSIDNotFound"
         case .unknownFailure: return "AferoSofthubWifiState.UnknownFailure"
+            
+        #if compiler(>=5)
+        @unknown default:
+            return "Unknown AferoSofthubWifiState case \(rawValue)"
+        #endif
+
         }
     }
     
@@ -931,6 +943,14 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
                         }
                         
                         self?.emit(.wifiRSSIChanged(newRSSI: newRSSI))
+                        
+                    #if compiler(>=5)
+                    @unknown default:
+                        let msg = "Unknown wifi attribute ID \(wifiAttributeId) for event \(event)."
+                        assert(false, msg)
+                        DDLogError(msg, tag: TAG)
+                        return
+                    #endif
                     }
                     
                 }

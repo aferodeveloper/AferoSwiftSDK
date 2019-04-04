@@ -843,7 +843,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -861,7 +861,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -877,7 +877,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AferoLab.app/AferoLab";
 			};
 			name = Debug;
@@ -894,7 +894,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AferoLab.app/AferoLab";
 			};
 			name = Release;
@@ -910,7 +910,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = AferoLab;
 			};
 			name = Debug;
@@ -926,7 +926,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = AferoLab;
 			};
 			name = Release;

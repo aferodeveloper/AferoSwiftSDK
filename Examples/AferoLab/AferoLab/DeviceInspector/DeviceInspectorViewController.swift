@@ -827,7 +827,16 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             return nil
         }
         
-        guard let row = sectionAttributeConfigMap[section]?.index(where: { $0.descriptor.id == attributeId }) else {
+        let maybeRow: Int?
+        
+        #if compiler(<5)
+        maybeRow = sectionAttributeConfigMap[section]?.index(where: { $0.descriptor.id == attributeId })
+        #endif
+        #if compiler(>=5)
+        maybeRow = sectionAttributeConfigMap[section]?.firstIndex(where: { $0.descriptor.id == attributeId })
+        #endif
+        
+        guard let row = maybeRow else {
             let msg = "Attribute id \(attributeId) not found among known attrinutes."
             DDLogDebug(msg, tag: TAG)
             return nil
