@@ -1,9 +1,6 @@
 //
 //  Extensions.swift
-//  iTokui
-//
-//  Created by Steve Hales on 11/15/16.
-//  Copyright © 2016 Kiban Labs, Inc. All rights reserved.
+//  Copyright © 2016-2019 Afero, Inc. All rights reserved.
 //
 
 import CocoaLumberjack
