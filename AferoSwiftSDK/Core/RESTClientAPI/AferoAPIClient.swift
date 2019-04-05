@@ -755,7 +755,7 @@ func withExpansions(_ path: String, expansions: [String]?, additionalParams: [St
     pathHasParams = lpath.firstIndex(of: "?") != nil
     #endif
     
-    #if compiler(<5)
+    #if !compiler(>=5)
     pathHasParams = lpath.index(of: "?") != nil
     #endif
     

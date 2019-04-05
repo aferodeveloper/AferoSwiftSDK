@@ -106,7 +106,7 @@ class DeviceInspectorTagCollectionCell: UITableViewCell, UICollectionViewDataSou
         }
         
         let maybeItem: Int?
-        #if compiler(<5)
+        #if !compiler(>=5)
         maybeIitem = tags.index(where: { $0.id == tagId })
         #endif
         #if compiler(>=5)

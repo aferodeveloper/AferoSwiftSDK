@@ -829,7 +829,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         let maybeRow: Int?
         
-        #if compiler(<5)
+        #if !compiler(>=5)
         maybeRow = sectionAttributeConfigMap[section]?.index(where: { $0.descriptor.id == attributeId })
         #endif
         #if compiler(>=5)

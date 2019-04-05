@@ -1064,7 +1064,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
             
             let data: Data
             
-            #if compiler(<5)
+            #if !compiler(>=5)
             data = Data(bytes: bytes)
             #endif
 
@@ -1092,7 +1092,7 @@ class LineDelimitedJSONStreamReader: NSObject, StreamDelegate {
         
         if (haveResidue) {
             let residueBytes = Array(lines.last!)
-            #if compiler(<5)
+            #if !compiler(>=5)
             parseBuffer = Data(bytes: residueBytes)
             #endif
             #if compiler(>=5)

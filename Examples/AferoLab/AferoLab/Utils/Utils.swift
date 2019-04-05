@@ -32,7 +32,7 @@ func hexStringFromBytes(_ bytes: [UInt8]?) -> String? {
     #if compiler(>=5)
     return Data(bytes).hexEncoded
     #endif
-    #if compiler(<5)
+    #if !compiler(>=5)
     return Data(bytes: bytes).hexEncoded
     #endif
 }

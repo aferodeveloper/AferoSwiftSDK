@@ -796,7 +796,7 @@ public extension AttributeValue {
             #if compiler(>=5)
             return byteArray.firstIndex { $0 != 0 } != nil
             #endif
-            #if compiler(<5)
+            #if !compiler(>=5)
             return byteArray.index { $0 != 0 } != nil
             #endif
         case .utf8S(let v):

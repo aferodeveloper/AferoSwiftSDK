@@ -2791,7 +2791,7 @@ public struct ValueOptionsSubscriptor: OptionsSubscriptable {
         
         let maybeIdx: Int?
         
-        #if compiler(<5)
+        #if !compiler(>=5)
         maybeIdx = values.index(of: v)
         #endif
         

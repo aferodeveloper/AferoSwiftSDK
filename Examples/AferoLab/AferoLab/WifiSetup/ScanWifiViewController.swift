@@ -347,7 +347,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     func indexPathForVisibleNetwork(_ entry: WifiNetwork?) -> IndexPath? {
         guard let entry = entry else { return nil }
         
-        #if compiler(<5)
+        #if !compiler(>=5)
         guard let entryIndex = visibleNetworks.index(of: entry) else { return nil }
         #endif
         #if compiler(>=5)
@@ -363,7 +363,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
         guard let ssid = ssid else { return nil }
         
         let maybeEntryIndex: Int?
-        #if compiler(<5)
+        #if !compiler(>=5)
         maybeEntryIndex = visibleNetworks.index(where: { (entry: WifiNetwork) -> Bool in
             return entry.ssid == ssid
         })

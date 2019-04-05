@@ -154,7 +154,7 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
         #if compiler(>=5)
         return collatedDeviceIds.firstIndex(of: deviceId)
         #endif
-        #if compiler(<5)
+        #if !compiler(>=5)
         return collatedDeviceIds.index(of: deviceId)
         #endif
     }

@@ -691,7 +691,7 @@ class AferoAttributeUISegmentedControl: UISegmentedControl, DeviceModelableObser
             valueOption in return valueOption.match == attribute.value.stringValue
         })
         #endif
-        #if compiler(<5)
+        #if !compiler(>=5)
         maybeIndex = attributeValueOptions?.index(where: {
             valueOption in return valueOption.match == attribute.value.stringValue
         })

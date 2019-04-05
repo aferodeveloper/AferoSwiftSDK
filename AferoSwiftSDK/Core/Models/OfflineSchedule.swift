@@ -174,7 +174,7 @@ extension OfflineSchedule {
         #if compiler(>=5)
         return collatedEvents.firstIndex(of: event)
         #endif
-        #if compiler(<5)
+        #if !compiler(>=5)
         return collatedEvents.index(of: event)
         #endif
     }

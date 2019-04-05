@@ -517,7 +517,7 @@ public extension Data {
             startIndex = endIndex
         }
 
-    #if compiler(<5)
+    #if !compiler(>=5)
         self.init(bytes: byteArray)
     #endif
     #if compiler(>=5)
@@ -539,7 +539,7 @@ public extension DataConvertible {
     guard let data = data else { return nil }
     guard data.count == MemoryLayout<Self>.size else { return nil }
 
-    #if compiler(<5)
+    #if !compiler(>=5)
         self = data.withUnsafeBytes { $0.pointee }
     #endif
     
@@ -561,7 +561,7 @@ public extension DataConvertible {
     }
     
  init?(byteArray: [UInt8]) {
-    #if compiler(<5)
+    #if !compiler(>=5)
     self.init(data: Data(bytes: byteArray))
     #endif
     

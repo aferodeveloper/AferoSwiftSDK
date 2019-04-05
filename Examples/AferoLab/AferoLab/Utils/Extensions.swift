@@ -296,7 +296,7 @@ public extension Data {
         #if compiler(>=5)
         self.init(byteArray)
         #endif
-        #if compiler(<5)
+        #if !compiler(>=5)
         self.init(bytes: byteArray)
         #endif
     }
