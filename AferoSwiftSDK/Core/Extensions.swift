@@ -547,10 +547,10 @@ public extension DataConvertible {
     #endif
     
     #if compiler(>=5)
-    
-    // TODO: Correct replacement for data.withUnsafeBytes in swift 5
-    self = data.withUnsafeBytes { $0.pointee }
-    
+    self = data.withUnsafeBytes { bytes in
+        let buffer: UnsafePointer<Self> = bytes.baseAddress!.assumingMemoryBound(to: Self.self)
+        return buffer.pointee
+    }
     #endif
     }
     
