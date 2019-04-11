@@ -54,7 +54,8 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
         switch self {
         case .stopCalled: return "Softhub stopped as requested."
         case .missingSofthubSetupPath: return "Run was called without the ConfigName::SOFT_HUB_SETUP_PATH config value being set."
-        case .setupFailed: return "The setup process for the embedded softhub has failed. (no other reason given)."
+        case .setupFailedTransient: return "The setup process for the embedded softhub has failed due to a temporary issue."
+        case .setupFailedPermanent: return "The setup process for the embedded softhub has failed permanently."
         case .fileIOError: return "I/O Error reading config values."
         case .unhandledService: return "Asked to start with an unrecognized Afero cloud."
         case .serviceIssue: return "There was a problem communicating with the Afero cloud."
@@ -233,7 +234,8 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     case missingSetupPath
     case unhandledService
     case fileIOError
-    case setupFailed
+    case setupFailedTransient
+    case setupFailedPermanent
     case serviceIssue
     case notSupported
     
@@ -260,6 +262,9 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 public typealias SofthubAssociationHandler = (String) -> Void
+public typealias SofthubAssociationStatus = AferoSofthubAssociationStatus
+
+public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDeviceDetectedHandler
 
 /// A Swift wrapper around the Afero softhub software. This is the lowest-level
 /// interface available to non-Afero developers.
@@ -430,6 +435,7 @@ public typealias SofthubAssociationHandler = (String) -> Void
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler,
         completionHandler: @escaping (SofthubCompletionReason)->Void
         ) {
         
@@ -457,8 +463,10 @@ public typealias SofthubAssociationHandler = (String) -> Void
             logLevel: logLevel.aferoSofthubLogLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
+            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
             completionHandler: localCompletionHandler
         )
+        
     }
     
     /// Tell the softhub that association has been completed.
@@ -467,8 +475,8 @@ public typealias SofthubAssociationHandler = (String) -> Void
     /// on behalf of the softhub (notably in cases where the softhub performs a live
     /// reassociate if its cloud representation is deleted.
     
-    public func notifyAssociationCompleted() {
-        AferoSofthub.notifyAssociationCompleted();
+    public func notifyAssociationCompleted(with status: SofthubAssociationStatus) {
+        AferoSofthub.notifyAssociationCompleted(with: status);
     }
     
     /// Stop the Softhub. The Softub will terminate immediately,
