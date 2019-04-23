@@ -81,11 +81,11 @@ extension DeviceModelable {
         withAccountId accountId: String,
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
-        associationNeededHandler: @escaping SofthubAssociationHandler,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
             deviceId, associationId, profileVersion in
             DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
-            }
+            },
+        associationNeededHandler: @escaping SofthubAssociationHandler
         ) throws {
         
         otaStateObs = Softhub.shared.observe(\.activeOTACount) {
