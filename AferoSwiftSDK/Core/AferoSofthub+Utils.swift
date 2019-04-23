@@ -147,13 +147,11 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 @objc public enum SofthubType: Int, CustomStringConvertible, CustomDebugStringConvertible {
-    
-    case consumer
+
     case enterprise
     
     var aferoSofthubType: AferoSofthubType {
         switch self {
-        case .consumer: return .consumer
         case .enterprise: return .enterprise
         }
     }
@@ -166,6 +164,13 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         return "\(type(of: self)) (\(rawValue)): \(description)"
     }
     
+}
+
+extension SofthubType {
+    @available(*, deprecated, renamed: "enterprise")
+    public static var consumer: SofthubType {
+        return .enterprise
+    }
 }
 
 /// The level at which the Softhub should log.
@@ -431,7 +436,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     public func start(
         with accountId: String,
         using cloud: SofthubCloud = .prod,
-        behavingAs softhubType: SofthubType = .consumer,
+        behavingAs softhubType: SofthubType = .enterprise,
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
