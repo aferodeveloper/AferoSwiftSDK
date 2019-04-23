@@ -569,7 +569,8 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
                 style: .destructive,
                 title: NSLocalizedString("Disconnect", comment: "Scan wifi disconnect from network action title"),
                 handler: {
-                    [weak self] (action, path) in
+                    (_, _) in
+//                    [weak self] (action, path) in
 //                    self?.disconnectFromCurrentNetwork()
                 }
             )
