@@ -440,7 +440,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
-        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = { _, _, _ in },
         completionHandler: @escaping (SofthubCompletionReason)->Void
         ) {
         
