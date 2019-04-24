@@ -81,6 +81,10 @@ extension DeviceModelable {
         withAccountId accountId: String,
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
+            deviceId, associationId, profileVersion in
+            DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
+            },
         associationNeededHandler: @escaping SofthubAssociationHandler
         ) throws {
         
@@ -112,7 +116,7 @@ extension DeviceModelable {
                 [weak self] _ in
                 
                 if UserDefaults.standard.enableSofthub {
-                    self?.startAferoSofthub(withAccountId: accountId, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
+                    self?.startAferoSofthub(withAccountId: accountId, logLevel: logLevel, associationNeededHandler: associationNeededHandler, setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler)
                     return
                 }
                 self?.stopAferoSofthub()
@@ -123,7 +127,8 @@ extension DeviceModelable {
             withAccountId: accountId,
             logLevel: logLevel,
             hardwareIdentifier: hardwareIdentifier,
-            associationNeededHandler: associationNeededHandler
+            associationNeededHandler: associationNeededHandler,
+            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler
         )
 
     }
@@ -136,8 +141,8 @@ extension DeviceModelable {
     ///
     /// - note: This simply proxies the vended API on `Softhub`.
 
-    func notifyAssociationCompleted() {
-        Softhub.shared.notifyAssociationCompleted()
+    func notifyAssociationCompleted(with status: SofthubAssociationStatus) {
+        Softhub.shared.notifyAssociationCompleted(with: status)
     }
     
     func stop() {
@@ -154,8 +159,12 @@ extension DeviceModelable {
         withAccountId accountId: String,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
-        associationNeededHandler: @escaping SofthubAssociationHandler
-        ) {
+        associationNeededHandler: @escaping SofthubAssociationHandler,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
+            deviceId, associationId, profileVersion in
+            DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
+        }
+    ) {
         
         if hubbyStarted { return }
         
@@ -168,11 +177,13 @@ extension DeviceModelable {
             with: accountId,
             identifiedBy: hardwareIdentifier,
             logLevel: logLevel,
-            associationHandler: associationNeededHandler
-        ) {
+            associationHandler: associationNeededHandler,
+            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+            completionHandler: {
             completionReason in
-            DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
-        }
+                DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
+            }
+        )
         
     }
     

@@ -280,10 +280,11 @@ class AccountViewController: UITableViewController {
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {
                                 device -> Void in
-                                SofthubMinder.sharedInstance.notifyAssociationCompleted()
+                                SofthubMinder.sharedInstance.notifyAssociationCompleted(with: .success)
                                 DDLogDebug("Associated device: \(String(describing: device))", tag: self.TAG)
                             }.catch {
                                 err in
+                                SofthubMinder.sharedInstance.notifyAssociationCompleted(with: .permanentFailure)
                                 DDLogError("Unable to associate device: \(String(reflecting: err))", tag: self.TAG)
                         }
                     }
