@@ -148,10 +148,15 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 
 @objc public enum SofthubType: Int, CustomStringConvertible, CustomDebugStringConvertible {
 
+    /// NOTE: This is a deprecated case; unless explicitly instructed by Afero,
+    /// use `.enterprise`.
+    case consumer
+
     case enterprise
     
     var aferoSofthubType: AferoSofthubType {
         switch self {
+        case .consumer: return .consumer
         case .enterprise: return .enterprise
         }
     }
@@ -164,13 +169,6 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         return "\(type(of: self)) (\(rawValue)): \(description)"
     }
     
-}
-
-extension SofthubType {
-    @available(*, deprecated, renamed: "enterprise")
-    public static var consumer: SofthubType {
-        return .enterprise
-    }
 }
 
 /// The level at which the Softhub should log.
