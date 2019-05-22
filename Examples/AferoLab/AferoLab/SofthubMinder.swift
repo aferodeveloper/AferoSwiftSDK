@@ -77,8 +77,25 @@ extension DeviceModelable {
     
     var TAG: String { return "AferoSofthubMinder" }
     
+    /// Start the softhub.
+    ///
+    /// - parameter accountId: The `id` of the account to which to associate.
+    /// - parameter mode: How the softhub should behave. **NOTE: Unless explicitly instructed
+    ///   by Afero, this must be `.enterprise` (the default).
+    /// - parameter logLevel: The verbosity level of logging.
+    /// - parameter hardwareIdentifier: A UUID uniquely identifying this client. Note that
+    ///   this should be the same as the `clientIdentifier` used to log in to Conclave.
+    /// - parameter associationNeededHandler: A callback used by the softhub to associate
+    ///   the softhub to the account if needed.
+    ///
+    /// > **NOTE:**
+    /// >
+    /// > See `AccountViewController.softhubEnabled { didSet }` for an example of implementing
+    /// > the `associationNeededHandler`.
+    
     func start(
         withAccountId accountId: String,
+        mode: SofthubType = .enterprise,
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
@@ -109,7 +126,7 @@ extension DeviceModelable {
             
             [weak self] _ in
             
-            self?.startAferoSofthub(withAccountId: accountId, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
+            self?.startAferoSofthub(withAccountId: accountId, mode: mode, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
             
             self?.preferencesChangedObserver = NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) {
                 
@@ -125,6 +142,7 @@ extension DeviceModelable {
         
         startAferoSofthub(
             withAccountId: accountId,
+            mode: mode,
             logLevel: logLevel,
             hardwareIdentifier: hardwareIdentifier,
             associationNeededHandler: associationNeededHandler,
@@ -157,6 +175,7 @@ extension DeviceModelable {
     
     fileprivate func startAferoSofthub(
         withAccountId accountId: String,
+        mode behavingAs: SofthubType = .enterprise,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
         associationNeededHandler: @escaping SofthubAssociationHandler,
@@ -175,6 +194,7 @@ extension DeviceModelable {
         
         Softhub.shared.start(
             with: accountId,
+            behavingAs: behavingAs,
             identifiedBy: hardwareIdentifier,
             logLevel: logLevel,
             associationHandler: associationNeededHandler,
