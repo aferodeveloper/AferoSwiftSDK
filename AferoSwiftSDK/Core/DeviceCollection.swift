@@ -735,7 +735,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter onDone: The completion handler for the call.
     /// - note: sequence numbers are currently ignored.
     
-    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil, onDone: @escaping (DeviceModel?, Error?)->Void = { _ in }) {
+    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil, onDone: @escaping (DeviceModel?, Error?)->Void = { _, _ in }) {
         
         if !profileSource.containsProfile(for: peripheral.profileId),
             let profile = peripheral.profile {

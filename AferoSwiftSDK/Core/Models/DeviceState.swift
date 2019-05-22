@@ -1113,7 +1113,7 @@ extension DeviceModelable {
     func update<S: Sequence> (with attributes: S) throws
         where S.Element == DeviceStreamEvent.Peripheral.Attribute {
             try update(with: attributes.compactMap {
-                v in return (v.attributeId, v.stringValue)
+                v in return (v.attributeId, v.stringValue as String?) // TODO: the cast is a workaround
             })
     }
     
@@ -1425,7 +1425,7 @@ public extension DeviceModelable {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
+    func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         return try attributeCollection.observeAttribute(withId: id, on: keyPath, options: options, using: changeHandler)
     }
     
@@ -1437,7 +1437,7 @@ public extension DeviceModelable {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int {
+    func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int {
         return try attributeCollection.observeAttributes(withIds: ids, on: keyPath, options: options, using: changeHandler)
     }
     
@@ -1449,7 +1449,7 @@ public extension DeviceModelable {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttribute<Value>(withKey key: String, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
+    func observeAttribute<Value>(withKey key: String, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         return try attributeCollection.observeAttribute(withKey: key, on: keyPath, options: options, using: changeHandler)
     }
     
@@ -1461,7 +1461,7 @@ public extension DeviceModelable {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, using options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
+    func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, using options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
         return try attributeCollection.observeAttributes(withKeys: keys, on: keyPath, options: options, using: changeHandler)
     }
     

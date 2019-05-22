@@ -241,7 +241,7 @@ import Foundation
         return other.intersection(type(of: self).ReadWrite).rawValue == intersection(type(of: self).ReadWrite).rawValue
     }
     
-    @objc override public var hashValue: Int {
+    @objc override public var hash: Int {
         return rawValue
     }
     
@@ -330,10 +330,10 @@ import Foundation
             && other._length == _length
     }
     
-    public override var hashValue: Int {
-        return id.hashValue
+    public override var hash: Int {
+        return id.hashValue ^ dataType.hashValue ^ semanticType.hashValue
     }
-    
+
     // MARK: NSCopying
     
     public func copy(with zone: NSZone? = nil) -> Any {
@@ -433,7 +433,7 @@ extension AferoAttributeDataDescriptor {
 
 public extension AferoAttributeDataDescriptor {
     
-    public var isWritable: Bool { return operations.contains(.Write) }
+    var isWritable: Bool { return operations.contains(.Write) }
 }
 
 @objcMembers public final class AferoAttributeOptionFlags: NSObject, OptionSet, Codable, AferoJSONCoding {
@@ -923,7 +923,7 @@ public extension AferoAttributeDataDescriptor {
             && other.requestId == requestId
     }
     
-    public override var hashValue: Int {
+    public override var hash: Int {
         return stringValue.hashValue
     }
     
@@ -1205,7 +1205,7 @@ public extension AferoAttributeDataDescriptor {
     
     // MARK: NSObjectProtocol
     
-    public override var hashValue: Int { return dataDescriptor.hashValue }
+    public override var hash: Int { return dataDescriptor.hash }
     
     public override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? AferoAttribute else { return false }
@@ -1560,7 +1560,7 @@ public typealias AferoAttributePresentationParameters = [String: Any]
         emitWillChangeNotifications()
         defer { emitDidChangeNotifications() }
         
-        return attributeIds.flatMap {
+        return attributeIds.compactMap {
             unregister(attributeId: $0, notifyObservers: false)
         }
     }
@@ -1579,7 +1579,7 @@ public typealias AferoAttributePresentationParameters = [String: Any]
             var results = attributes.map {
                 (req: $0, resp: (success: true, reqId: reqIdGen.next()!, timestampMs: Date().millisSince1970))
             }
-            print("attributeCommitHandler: attributes:\(String(reflecting: attributes)) results:\(String(reflecting: results)) resultHandler:\(String(reflecting: resultHandler))")
+            print("attributeCommitHandler: attributes:\(String(reflecting: attributes)) results:\(String(reflecting: results)) )")
             resultHandler(results)
     }
     
@@ -1719,7 +1719,7 @@ extension AferoAttributeCollection {
     }
     
     func clearIntended(where isIncluded: (AferoAttribute)->Bool = { _ in true }) throws {
-        try intendedAttributes.filter(isIncluded).flatMap { $0.attributeId }.forEach {
+        try intendedAttributes.filter(isIncluded).compactMap { $0.attributeId }.forEach {
             try setIntended(valueState: nil, forAttributeWithId: $0)
         }
     }
@@ -1731,7 +1731,7 @@ extension AferoAttributeCollection {
 
     func commitIntended(where isIncluded: (AferoAttribute)->Bool = { _ in true }) {
         
-        let attrs = intendedAttributes.filter(isIncluded).flatMap {
+        let attrs = intendedAttributes.filter(isIncluded).compactMap {
             attr -> (Int, String)? in
             guard let stringValue = attr.intendedValueState?.stringValue else { return nil }
             return (attr.dataDescriptor.id, stringValue)
@@ -1784,28 +1784,28 @@ extension AferoAttributeCollection {
     
     /// A `Set` of all attributeIds in the collection.
     
-    @objc public dynamic var attributeIds: Set<Int> {
+    @objc dynamic var attributeIds: Set<Int> {
         return Set(attributeRegistry.keys)
     }
     
     /// A `Set` of all attributeKeys in the collection.
     
-    @objc public dynamic var attributeKeys: Set<String> {
+    @objc dynamic var attributeKeys: Set<String> {
         return Set(attributeKeyMap.keys)
     }
     
     /// A `Set` of all `AferoAttributes` in the collection.
-    @objc public dynamic var attributes: Set<AferoAttribute> {
+    @objc dynamic var attributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values)
     }
     
     /// A `Set` of all `AferoAttributes` in the collection which have pending values.
-    @objc public dynamic var pendingAttributes: Set<AferoAttribute> {
+    @objc dynamic var pendingAttributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values.filter { $0.pendingValueState != nil })
     }
     
     /// A `Set` of all `AferoAttributes` in the collection which have pending values.
-    @objc public dynamic var intendedAttributes: Set<AferoAttribute> {
+    @objc dynamic var intendedAttributes: Set<AferoAttribute> {
         return Set(attributeRegistry.values.filter { $0.intendedValueState != nil })
     }
     
@@ -1814,7 +1814,7 @@ extension AferoAttributeCollection {
     /// - returns: An `AferoAttribute`, if `id` is non-`nil` and the attribute exists.
     ///            Otherwise returns nil.
     
-    @objc public func attribute(forId id: Int) -> AferoAttribute? {
+    @objc func attribute(forId id: Int) -> AferoAttribute? {
         return attributeRegistry[id]
     }
 
@@ -1823,7 +1823,7 @@ extension AferoAttributeCollection {
     /// - returns: An `AferoAttribute`, if `key` is non-`nil` and an attribute exists
     ///            with that key. Otherwise returns nil.
     
-    @objc public func attribute(forKey key: String?) -> AferoAttribute? {
+    @objc func attribute(forKey key: String?) -> AferoAttribute? {
         guard let key = key else { return nil }
         guard let id = attributeKeyMap[key] else { return nil }
         return attribute(forId: id)
@@ -1897,7 +1897,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
+    func observeAttribute<Value>(withId id: Int, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         
         guard let attribute = attribute(forId: id) else {
             afLogError("Unrecognized attributeId: \(String(describing: id))")
@@ -1916,7 +1916,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
 
-    public func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int {
+    func observeAttributes<SequenceType,Value>(withIds ids: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(Int, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == Int {
         
         let ret: [(Int, NSKeyValueObservation)] = try ids.map {
             return ($0, try observeAttribute(withId: $0, on: keyPath, options: options, using: changeHandler))
@@ -1933,7 +1933,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
 
-    public func observeAttribute<Value>(withKey key: String, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
+    func observeAttribute<Value>(withKey key: String, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> NSKeyValueObservation {
         
         guard let attribute = attribute(forKey: key) else {
             afLogError("Unrecognized key: \(String(describing: key))")
@@ -1951,7 +1951,7 @@ public extension AferoAttributeCollection {
     /// - returns: An `NSKeyValueObservation` associated with the observation request.
     /// - throws: An `AferoAttributeCollectionError` if the attribute wasn't found.
     
-    public func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
+    func observeAttributes<SequenceType,Value>(withKeys keys: SequenceType, on keyPath: KeyPath<AferoAttribute, Value>, options: NSKeyValueObservingOptions = [], using changeHandler: @escaping (AferoAttribute, NSKeyValueObservedChange<Value>) -> Void) throws -> [(String, NSKeyValueObservation)] where SequenceType: Sequence, SequenceType.Element == String {
         
         let ret: [(String, NSKeyValueObservation)] = try keys.map {
             return ($0, try observeAttribute(withKey: $0, on: keyPath, options: options, using: changeHandler))
@@ -1971,13 +1971,13 @@ public extension DeviceProfile {
     // MARK: - DeviceProfile.AttributeDescriptor
     
     @available(*, deprecated, message: "Use AferoAttributeDataDescriptor instead.")
-    public typealias AttributeDescriptor = AferoAttributeDataDescriptor
+    typealias AttributeDescriptor = AferoAttributeDataDescriptor
 
     @available(*, deprecated, message: "Use AferoAttributeDataDescriptor and AferoAttributePresentationDescriptor instead.")
-    public typealias AttributeConfig = (dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor?)
+    typealias AttributeConfig = (dataDescriptor: AferoAttributeDataDescriptor, presentationDescriptor: AferoAttributePresentationDescriptor?)
 
     @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
-    public func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
+    func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
         return attributeConfig(for: id, on: deviceId)
     }
 
@@ -1986,12 +1986,12 @@ public extension DeviceProfile {
 public extension AferoAttribute {
     
     @available(*, deprecated, message: "Use .dataDescriptor and .presentationDescriptor instead.")
-    public var config: DeviceProfile.AttributeConfig {
+    var config: DeviceProfile.AttributeConfig {
         return (dataDescriptor: dataDescriptor, presentationDescriptor: presentationDescriptor)
     }
     
     @available(*, deprecated, message: "use .displayPresentationParameters, .intendedPresentationParameters, .pendingPresentationParameters, or .currentPresentationParameters.")
-    public var displayParams: AferoAttributePresentationParameters? {
+    var displayParams: AferoAttributePresentationParameters? {
         return displayPresentationParameters
     }
     
@@ -2032,6 +2032,6 @@ public extension DeviceModelable {
     
     /// Comprises an attribute value and all type and presentation info.
     @available(*, deprecated, message: "Use AferoAttribute instead.")
-    public typealias Attribute = AferoAttribute
+    typealias Attribute = AferoAttribute
     
 }

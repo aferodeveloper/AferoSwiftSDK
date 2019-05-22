@@ -476,12 +476,6 @@ extension AttributeValue: Hashable, Comparable {
         case .signedInt64(let value):
             h.combine(6)
             h.combine(value)
-        case .float32(let value):
-            h.combine(7)
-            h.combine(value)
-        case .float64(let value):
-            h.combine(8)
-            h.combine(value)
         case .q1516:
             h.combine(9)
             h.combine(byteArray)

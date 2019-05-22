@@ -962,13 +962,13 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
     
     // MARK: CustomDebugStringConvertible
     
-   override public var debugDescription: String {
+    override public var debugDescription: String {
         return "<RecordingDeviceModel @\(Unmanaged.passUnretained(self).toOpaque())> Device id: \(deviceId) profileId: \(String(reflecting: profileId)) currentState: \(currentState)"
     }
     
     // MARK: <DeviceModelable>
     
-    public func clearAttributes() {
+    func clearAttributes() {
         do {
             try attributeCollection.clearIntended()
         } catch {
@@ -1006,7 +1006,7 @@ public class RecordingDeviceModel: BaseDeviceModel, CustomDebugStringConvertible
         self.deviceCloudSupporting = self
     }
     
-    public convenience init(model: DeviceModelable, copyState: Bool = false) {
+    convenience init(model: DeviceModelable, copyState: Bool = false) {
         
         var state = model.currentState
         if !copyState {

@@ -254,13 +254,6 @@ public protocol ControlPresentable: CustomDebugStringConvertible {
 
 public extension DeviceProfile {
     
-    typealias AttributeConfig = (dataDescriptor: DeviceProfile.AttributeDescriptor, presentationDescriptor: DeviceProfile.Presentation.AttributeOption?)
-    
-    @available(*, deprecated, message: "Use attributeConfig(for:on:) instead.")
-    func attributeConfig(_ id: Int, deviceId: String? = nil) -> AttributeConfig? {
-        return attributeConfig(for: id, on: deviceId)
-    }
-    
     func attributeConfig(for attributeId: Int, on deviceId: String? = nil) -> AttributeConfig? {
 
         // Note that we don't use attributeConfigs(on:isIncluded:) here, because we
@@ -1209,20 +1202,6 @@ public func ==(lhs: DeviceProfile.Presentation.LayerImage, rhs: DeviceProfile.Pr
 }
 
 // MARK: AttributeDescriptor extension and operators
-
-extension DeviceProfile.AttributeDescriptor: Hashable {
-
-    public func hash(into h: inout Hasher) {
-        h.combine(id)
-        h.combine(dataType)
-        h.combine(semanticType)
-    }
-    
-}
-
-public func ==(lhs: DeviceProfile.AttributeDescriptor, rhs: DeviceProfile.AttributeDescriptor) -> Bool {
-    return lhs.id == rhs.id && lhs.dataType == rhs.dataType && lhs.semanticType == rhs.semanticType
-}
 
 // MARK: Service extension and operators
 

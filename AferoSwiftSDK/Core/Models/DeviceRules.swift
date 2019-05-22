@@ -40,7 +40,7 @@ public extension DeviceModelable where Self: DeviceActionSource {
         get {
             var ret: [DeviceRuleAction] = []
             if attributeCollection.intendedAttributes.count > 0 {
-                ret.append(DeviceRuleAction(deviceId: deviceId, attributes: attributeCollection.intendedAttributes.flatMap { $0.intendedValueState } ))
+                ret.append(DeviceRuleAction(deviceId: deviceId, attributes: attributeCollection.intendedAttributes.compactMap { $0.intendedValueState } ))
             }
             return ret
         }
@@ -354,8 +354,8 @@ public extension DeviceRule {
 
 public extension DeviceRuleAction {
     
-    var attributeDict: [Int: AttributeValue] {
-        return Dictionary(attributes.map { return ($0.id, $0.value) }.makeIterator())
+    var attributeDict: [Int: String] {
+        return Dictionary(attributes.map { return ($0.id, $0.stringValue) }.makeIterator())
     }
 
 }
