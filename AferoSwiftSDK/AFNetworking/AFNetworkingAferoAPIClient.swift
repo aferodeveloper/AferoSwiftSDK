@@ -102,32 +102,81 @@ public class AFNetworkingAferoAPIClient {
 
     // MARK: - Session Manager... management -
     
-    private var _sessionManager: AFHTTPSessionManager?
-    fileprivate var sessionManager: AFHTTPSessionManager! {
+    private var _defaultSessionManager: AFHTTPSessionManager?
+    fileprivate var defaultSessionManager: AFHTTPSessionManager! {
         
         get {
-            if let sessionManager = _sessionManager {
+            if let sessionManager = _defaultSessionManager {
                 return sessionManager
             }
+
+            _defaultSessionManager = type(of: self).createSessionManager(
+                baseURL: apiBaseURL,
+                oauthCredential: oauthCredential
+            )
             
-            let manager = AFHTTPSessionManager(baseURL: self.apiBaseURL)
-            
-            manager.responseSerializer = AferoAFJSONResponseSerializer()
-            manager.requestSerializer = AferoAFJSONRequestSerializer()
-            manager.requestSerializer.setValue("gzip", forHTTPHeaderField: "Accept-Encoding")
-            
-            if let credential = self.oauthCredential {
-                manager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
-            }
-            
-            _sessionManager = manager
-            return manager
+            return _defaultSessionManager
         }
         
-        set { _sessionManager = newValue }
+        set { _defaultSessionManager = newValue }
         
     }
+    
+    func sessionManager(with httpRequestHeaders: HTTPRequestHeaders? = nil) -> AFHTTPSessionManager {
+        
+        if httpRequestHeaders?.isEmpty ?? true {
+            return defaultSessionManager
+        }
+        
+        let ret = defaultSessionManager.copy() as! AFHTTPSessionManager
+        
+        httpRequestHeaders?.keys.forEach {
+            ret.requestSerializer.setValue(httpRequestHeaders![$0], forKey: $0)
+        }
+        
+        return ret
+    }
+    
+    /// Create an AFHTTPSessionManager whith the given parameters.
+    ///
+    /// - parameter baseURL: The base URL for requests made by this manager.
+    /// - parameter requestSerializer: The serializer to be used when forming requests.
+    ///   If `nil`, a default `AferoAFJSONRequestSerializer` will be used.
+    /// - parameter responseSerializer: The serializer to be used for deserializing
+    ///   responses. If `nil`, a default `AferoAFJSONResponseSerializer` will be used.
+    /// - parameter httpHeaders: Optionally a dictionary of HTTP headers to be associated
+    ///   with the manager.
+    ///
+    /// - note: If a non-`nil` `httpHeaders` dictionary is provided, then they will be added
+    ///   to the given serializer prior to any standard-required headers.
+    
+    class func createSessionManager(baseURL: URL? = nil,
+                                requestSerializer: AFHTTPRequestSerializer? = nil,
+                                responseSerializer: AFHTTPResponseSerializer? = nil,
+                                httpHeaders: HTTPRequestHeaders? = nil,
+                                oauthCredential maybeOauthCredential: AFOAuthCredential? = nil
+        ) -> AFHTTPSessionManager {
+        
+        let ret = AFHTTPSessionManager(baseURL: baseURL)
+        
+        ret.responseSerializer = responseSerializer ?? AferoAFJSONResponseSerializer()
+        ret.requestSerializer = requestSerializer ?? AferoAFJSONRequestSerializer()
+        
+        httpHeaders?.keys.forEach {
+            ret.requestSerializer.setValue(httpHeaders![$0], forHTTPHeaderField: $0)
+        }
+        
+        ret.requestSerializer.setValue("gzip", forHTTPHeaderField: "Accept-Encoding")
+        
+        if let oauthCredential = maybeOauthCredential {
+            ret.requestSerializer.setAuthorizationHeaderFieldWith(oauthCredential)
+        }
+        
+        return ret
 
+    }
+    
+    
 }
 
 // MARK: - OAuth -
@@ -187,7 +236,7 @@ public extension AFNetworkingAferoAPIClient {
                             withAccessibility: kSecAttrAccessibleAfterFirstUnlock
                         )
 
-                        self.sessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
+                        self.defaultSessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
                         fulfill(())
                     }
             },
@@ -210,7 +259,7 @@ public extension AFNetworkingAferoAPIClient {
 extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
 
     public func doSignOut(error: Error?, completion: @escaping ()->Void) {
-        sessionManager.requestSerializer.clearAuthorizationHeader()
+        defaultSessionManager.requestSerializer.clearAuthorizationHeader()
         AFOAuthCredential.delete(withIdentifier: oauthCredentialIdentifier)
         completion()
     }
@@ -244,7 +293,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                     withIdentifier: self.oauthCredentialIdentifier,
                     withAccessibility: kSecAttrAccessibleAfterFirstUnlock
                 )
-                self.sessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
+                self.defaultSessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
                 success()
         },
             failure: {
@@ -255,11 +304,12 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
         
     }
     
-    public func doGet(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+    public func doGet(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
 
         let TAG = self.TAG
         
-        return sessionManager.get(
+        
+        return sessionManager(with: httpRequestHeaders).get(
             urlString,
             parameters: parameters,
             progress: nil,
@@ -277,11 +327,11 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
 
     }
     
-    public func doPut(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+    public func doPut(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
 
         let TAG = self.TAG
 
-        return sessionManager.put(
+        return sessionManager(with: httpRequestHeaders).put(
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
@@ -298,11 +348,11 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
 
     }
     
-    public func doPost(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+    public func doPost(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
         
         let TAG = self.TAG
         
-        return sessionManager.post(
+        return sessionManager(with: httpRequestHeaders).post(
             urlString,
             parameters: parameters,
             progress: nil,
@@ -320,11 +370,11 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
 
     }
     
-    public func doDelete(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+    public func doDelete(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask? {
         
         let TAG = self.TAG
         
-        return sessionManager.delete(
+        return sessionManager(with: httpRequestHeaders).delete(
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
@@ -376,6 +426,6 @@ class AferoAFJSONRequestSerializer: AFJSONRequestSerializer {
         DDLogDebug("Request: <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
         return request
     }
-
+    
 }
 

@@ -20,34 +20,39 @@ public protocol AferoAPIClientProto: class, DeviceAccountProfilesSource {
     
     typealias AferoAPIClientProtoSuccess = ((URLSessionDataTask, Any?) -> Void)
     typealias AferoAPIClientProtoFailure = ((URLSessionDataTask?, Error) -> Void)
+    typealias HTTPRequestHeaders = Dictionary<String, String>
     
     /// Perform an `HTTP GET`.
     /// - parameter urlString: The fully-qualified URL string for the REST endpoint being invoked.
     /// - parameter parameters: Any parameters to include with the request.
+    /// - parameter httpRequestHeaders: Optional additional headers to include in the request.
     /// - parameter success: The closure to invoke upon successful `GET`.
     /// - parameter failure: The closure to invoke upon unsuccessful `GET`.
-    func doGet(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
+    func doGet(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
     
     /// Perform an `HTTP PUT`.
     /// - parameter urlString: The fully-qualified URL string for the REST endpoint being invoked.
     /// - parameter parameters: Any parameters to include with the request.
+    /// - parameter httpRequestHeaders: Optional additional headers to include in the request.
     /// - parameter success: The closure to invoke upon successful `PUT`.
     /// - parameter failure: The closure to invoke upon unsuccessful `PUT`.
-    func doPut(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
+    func doPut(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
     
     /// Perform an `HTTP POST`.
     /// - parameter urlString: The fully-qualified URL string for the REST endpoint being invoked.
     /// - parameter parameters: Any parameters to include with the request.
+    /// - parameter httpRequestHeaders: Optional additional headers to include in the request.
     /// - parameter success: The closure to invoke upon successful `POST`.
     /// - parameter failure: The closure to invoke upon unsuccessful `POST`.
-    func doPost(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
+    func doPost(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
     
     /// Perform an `HTTP DELETE`.
     /// - parameter urlString: The fully-qualified URL string for the REST endpoint being invoked.
     /// - parameter parameters: Any parameters to include with the request.
+    /// - parameter httpRequestHeaders: Optional additional headers to include in the request.
     /// - parameter success: The closure to invoke upon successful `DELETE`.
     /// - parameter failure: The closure to invoke upon unsuccessful `DELETE`.
-    func doDelete(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
+    func doDelete(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders?, success: @escaping AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProtoFailure) -> URLSessionDataTask?
     
     /// Refresh the OAuth2 credential.
     /// - parameter passthroughError: An error, if any, to pass through to the
@@ -75,7 +80,7 @@ extension AferoAPIClientProto {
 // MARK: - OAuth Refresh/Retry -
 
 extension AferoAPIClientProto {
-
+    
     /// Attempt to refresh OAuth (delegating to the underlying
     /// client implementation), and delegate signout to the
     /// underlying implementation if unsuccessful.
@@ -147,15 +152,15 @@ extension AferoAPIClientProto {
 
 public extension AferoAPIClientProto {
     
-    func POST<U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
-        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST<U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
+        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return result
         }
     }
     
-    func POST<U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
+    func POST<U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
         
-        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (_, result) throws -> [String: Any] in
             guard let ret = result as? [String: Any] else {
                 throw(NSError(code: .unexpectedResultType, localizedDescription: "Unexpected Result."))
@@ -164,20 +169,20 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
-        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) throws -> T? in
             return try marshall(result)
         }
     }
     
-    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
-        return POST(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
+    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+        return POST(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
     }
     
-    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
+    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
         
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: T?) throws -> T in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -185,12 +190,12 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
-        return POST(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
+    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
+        return POST(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
     }
     
-    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
-        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, objects: [U]! = [], expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
+        return POST(path, parameters: objects.map { $0.JSONDict! }, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) -> [T]? in
             return try marshall(result)
         }
@@ -210,9 +215,9 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<[T]>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
+    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
         
-        return POST(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return POST(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: [T]?) throws -> [T] in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -221,9 +226,9 @@ public extension AferoAPIClientProto {
     }
     
     
-    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
+    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
         
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) throws -> [String: Any] in
             guard let ret = result as? [String: Any] else {
                 throw(NSError(code: .unexpectedResultType, localizedDescription: "Unexpected Result."))
@@ -232,27 +237,27 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) -> Any? in return result
         }
     }
     
-    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, _ in return
         }
     }
     
-    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) -> T? in
             return try marshall(result)
         }
     }
     
-    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
-        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func POST<T: AferoJSONCoding>(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
+        return POST(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) -> [T]? in
             return try marshall(result)
         }
@@ -266,13 +271,15 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter additionalParams: Additional parameters to be added to the URL.
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
     /// - parameter expansions: fields to expand, if any, in the response.
     
-    internal func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func POST(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders?, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
@@ -285,6 +292,7 @@ public extension AferoAPIClientProto {
                 _ = self.doPost(
                     urlString: localPath,
                     parameters: parameters,
+                    httpRequestHeaders: httpRequestHeaders,
                     success: { (task, result) -> Void in
                         asyncGlobalDefault {
                             fulfill((task, result))
@@ -310,6 +318,7 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -317,8 +326,8 @@ public extension AferoAPIClientProto {
     ///
     /// - returns: A `Promise<Void>`
     
-    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
+    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
     }
     
     /// GET a path, and return the marshalled results (tolerating nil)
@@ -327,6 +336,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -334,8 +345,8 @@ public extension AferoAPIClientProto {
     ///
     /// - returns: A `Promise<T?>`
     
-    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return try marshall(result)
         }
     }
@@ -346,6 +357,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -354,9 +367,9 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<T>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
+    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
         
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: T?) throws -> T in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -370,6 +383,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -377,8 +392,8 @@ public extension AferoAPIClientProto {
     ///
     /// - returns: A `Promise<[T]?>`
     
-    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return try marshall(result)
         }
     }
@@ -389,6 +404,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -397,21 +414,23 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<[T]>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
+    func GET<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
         
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: [T]?) throws -> [T] in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
             return result
         }
     }
-
+    
     /// GET a path, and return the non-optional marshalled results.
     ///
     /// - parameter path: The path (relative to the service host) to GET.
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
+    ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
     ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
@@ -421,21 +440,23 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<[T]>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[[String: Any]]> {
+    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[[String: Any]]> {
         
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: Any?) throws -> [[String: Any]] in guard let result = maybeResult as? [[String: Any]] else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
             return result
         }
     }
-
+    
     /// GET a path, and return the optional raw results.
     ///
     /// - parameter path: The path (relative to the service host) to GET.
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
+    ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
     ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
@@ -445,8 +466,8 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<Any?>`
     
     
-    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return result
         }
     }
@@ -457,6 +478,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -465,9 +488,9 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<Any>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any> {
+    func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any> {
         
-        return GET(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return GET(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: Any?) throws -> Any in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -483,9 +506,11 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter expansions: fields to expand, if any, in the response.
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    internal func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func GET(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         
         let localPath = withExpansions(path, expansions: expansions)
@@ -499,6 +524,7 @@ public extension AferoAPIClientProto {
                 _ = self.doGet(
                     urlString: localPath,
                     parameters: parameters,
+                    httpRequestHeaders: httpRequestHeaders,
                     success: { (task, result) -> Void in
                         asyncGlobalDefault {
                             fulfill((task, result))
@@ -519,13 +545,13 @@ public extension AferoAPIClientProto {
 
 public extension AferoAPIClientProto {
     
-    func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
-        return DELETE(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return DELETE(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, _ in return
         }
     }
     
-    internal func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func DELETE(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
@@ -537,6 +563,7 @@ public extension AferoAPIClientProto {
                 _ = self.doDelete(
                     urlString: localPath,
                     parameters: parameters,
+                    httpRequestHeaders: httpRequestHeaders,
                     success: { (task, result) -> Void in
                         asyncGlobalDefault {
                             fulfill((task, result))
@@ -568,21 +595,23 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter additionalParams: Additional parameters to be added to the URL.
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return try marshall(result)
         }
     }
     
-    func PUT<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
+    func PUT<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T?> {
         return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
     }
     
-    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
+    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
         
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: T?) throws -> T in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -590,8 +619,8 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func PUT<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
-        return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
+    func PUT<T: AferoJSONCoding, U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<T> {
+        return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
     }
     
     /// PUT a path.
@@ -604,10 +633,12 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter additionalParams: Additional parameters to be added to the URL.
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]?> {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             _, result in return try marshall(result)
         }
     }
@@ -618,6 +649,8 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter parameters: Any parameters to pass along (will be appended as GET params)
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     ///
     /// - parameter errorDomain: The optional error domain to use when loggin/reporting errors.
@@ -626,9 +659,9 @@ public extension AferoAPIClientProto {
     /// - returns: A `Promise<[T]>`
     /// - note: Returned promise resolves with with an `NSError` if the result is nil.
     
-    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
+    func PUT<T: AferoJSONCoding>(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[T]> {
         
-        return PUT(path, parameters: parameters, expansions: expansions, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return PUT(path, parameters: parameters, expansions: expansions, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (maybeResult: [T]?) throws -> [T] in guard let result = maybeResult else {
                 throw(NSError(code: APIErrorCode.unexpectedResultType, localizedDescription: "Unable to unwrap expected non-nil value."))
             }
@@ -636,9 +669,9 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
+    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<[String: Any]> {
         
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) throws -> [String: Any] in
             guard let ret = result as? [String: Any] else {
                 throw(NSError(code: .unexpectedResultType, localizedDescription: "Unexpected Result."))
@@ -647,18 +680,18 @@ public extension AferoAPIClientProto {
         }
     }
     
-    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
+    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Any?> {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then {
             (task, result) -> Any? in return result
         }
     }
     
-    func PUT<U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+    func PUT<U: AferoJSONCoding>(_ path: String, object: U, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
         return PUT(path, parameters: object.JSONDict, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain)
     }
     
-    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
-        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
+    func PUT(_ path: String, parameters: Any! = Parameters(), expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> Promise<Void> {
+        return PUT(path, parameters: parameters, expansions: expansions, additionalParams: additionalParams, httpRequestHeaders: httpRequestHeaders, attemptOAuthRefresh: attemptOAuthRefresh, errorDomain: errorDomain).then { _, _ in return }
     }
     
     /// PUT a path.
@@ -671,9 +704,11 @@ public extension AferoAPIClientProto {
     ///
     /// - parameter additionalParams: Additional parameters to be added to the URL.
     ///
+    /// - parameter httpRequestHeaders: Additional headers to add to the request.
+    ///
     /// - parameter attemptOAuthRefresh: If true (the default), OAUTH refresh will be attempted prior to signing out upon a 401.
     
-    internal func PUT(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
+    internal func PUT(_ path: String, parameters: Any! = nil, expansions: [String]? = nil, additionalParams: [String: String]? = nil, httpRequestHeaders: HTTPRequestHeaders? = nil, attemptOAuthRefresh: Bool = true, errorDomain: String = #function) -> WrappableAPIPromise
     {
         let localPath = withExpansions(path, expansions: expansions, additionalParams: additionalParams)
         
@@ -686,6 +721,7 @@ public extension AferoAPIClientProto {
                 _ = self.doPut(
                     urlString: localPath,
                     parameters: parameters,
+                    httpRequestHeaders: httpRequestHeaders,
                     success: { (task, result) -> Void in
                         asyncGlobalDefault {
                             fulfill((task, result))
@@ -773,18 +809,18 @@ extension URLRequest {
     public var verboseDescription: String {
         
         #if INTERNAL
-            
-            let URLDescription = url?.debugDescription ?? "<none>"
-            let methodDescription = httpMethod?.debugDescription ?? "<none>"
-            let headerDescription = allHTTPHeaderFields?.debugDescription ?? "<none>"
-            let bodyDescription = httpBody?.stringValue ?? httpBody?.debugDescription ?? ""
-            
-            return "    URL: \(URLDescription)\n    METHOD: \(methodDescription)\n    HEADERS: \(headerDescription)\n    BODY:\n<begin body>\(bodyDescription)<end body>\n"
-            
+        
+        let URLDescription = url?.debugDescription ?? "<none>"
+        let methodDescription = httpMethod?.debugDescription ?? "<none>"
+        let headerDescription = allHTTPHeaderFields?.debugDescription ?? "<none>"
+        let bodyDescription = httpBody?.stringValue ?? httpBody?.debugDescription ?? ""
+        
+        return "    URL: \(URLDescription)\n    METHOD: \(methodDescription)\n    HEADERS: \(headerDescription)\n    BODY:\n<begin body>\(bodyDescription)<end body>\n"
+        
         #else
-            
-            return debugDescription
-            
+        
+        return debugDescription
+        
         #endif
     }
 }
@@ -794,11 +830,11 @@ extension URLResponse {
     @objc public var verboseDescription: String {
         
         #if INTERNAL
-            let URLDescription = url?.debugDescription ?? "<none>"
-            let textEncodingName = self.textEncodingName ?? "<none>"
-            return "    URL: \(URLDescription)\n    MIMEType: \(mimeType ?? "<nil>")\n    Text encoding: \(textEncodingName)"
+        let URLDescription = url?.debugDescription ?? "<none>"
+        let textEncodingName = self.textEncodingName ?? "<none>"
+        return "    URL: \(URLDescription)\n    MIMEType: \(mimeType ?? "<nil>")\n    Text encoding: \(textEncodingName)"
         #else
-            return debugDescription
+        return debugDescription
         #endif
     }
     
@@ -809,11 +845,11 @@ extension HTTPURLResponse {
     override public var verboseDescription: String {
         
         #if INTERNAL
-            let headerDescription = allHeaderFields.debugDescription
-            let statusCodeDesc = HTTPURLResponse.localizedString(forStatusCode: statusCode)
-            return super.verboseDescription + "\n    STATUS: \(statusCode) (\(statusCodeDesc)\n    HEADERS: \(headerDescription)"
+        let headerDescription = allHeaderFields.debugDescription
+        let statusCodeDesc = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+        return super.verboseDescription + "\n    STATUS: \(statusCode) (\(statusCodeDesc)\n    HEADERS: \(headerDescription)"
         #else
-            return debugDescription
+        return debugDescription
         #endif
     }
     
