@@ -84,6 +84,11 @@ public extension AferoAPIClientProto {
         return POST("v1/accounts", parameters: parameters)
     }
     
+    /// Set the human-readable description of the account identified by `accountId`.
+    ///
+    /// - parameter accountId: The id of the account whose description is to be set.
+    /// - parameter description: The new description.
+    
     func setAccountDescription(_ accountId: String, description: String) -> Promise<Void> {
         
         let parameters = [
@@ -91,6 +96,26 @@ public extension AferoAPIClientProto {
         ]
         
         return PUT("/v1/accounts/\(accountId)/description", parameters: parameters)
+    }
+    
+    /// Request a password recovery email.
+    ///
+    /// - parameter userId: The id of (for example, email) of the account
+    ///   for which to request a password reset.
+    ///
+    /// - parameter appId: The id of the app for which the email should be sent
+    ///   (e.g. bundleId).
+    
+    func sendPasswordRecoveryEmail(for userId: String, with appId: String, platformId: String = "IOS") -> Promise<Void> {
+        
+        var httpRequestHeaders = HTTPRequestHeaders()
+        
+        if let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64() {
+            httpRequestHeaders["x-afero-app"] = appIdHeaderValue
+        }
+        
+        let userIdValue = userId.pathAllowedURLEncodedString!;
+        return POST("/v1/credentials/\(userIdValue)/passwordReset", httpRequestHeaders: httpRequestHeaders)
     }
 
 }
@@ -112,7 +137,7 @@ public extension AferoAPIClientProto {
     ///
     /// `mobileDeviceId` is an identifier for the the device on which
     /// your app is running. It is used both to obtain authorization to communicate with
-    /// realtime Afero Cloud device state updates, iand to manage service-based
+    /// realtime Afero Cloud device state updates, and to manage service-based
     /// information related to state of the mobile device on the Afero cloud, such as
     /// push notification routing.
     ///

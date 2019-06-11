@@ -131,7 +131,7 @@ public class AFNetworkingAferoAPIClient {
         let ret = defaultSessionManager.copy() as! AFHTTPSessionManager
         
         httpRequestHeaders?.keys.forEach {
-            ret.requestSerializer.setValue(httpRequestHeaders![$0], forKey: $0)
+            ret.requestSerializer.setValue(httpRequestHeaders![$0], forHTTPHeaderField: $0)
         }
         
         return ret
@@ -423,7 +423,7 @@ class AferoAFJSONRequestSerializer: AFJSONRequestSerializer {
             bodyString = maybeBody
         }
 
-        DDLogDebug("Request: <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
+        DDLogDebug("Request: <headers>\(request?.allHTTPHeaderFields.debugDescription ?? "<empty>")</headers> <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
         return request
     }
     
