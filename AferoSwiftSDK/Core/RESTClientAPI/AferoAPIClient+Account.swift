@@ -58,7 +58,7 @@ public extension AferoAPIClientProto {
     /// - parameter appId: The id of the app for which the email should be sent
     ///   (e.g. bundleId).
     
-    func sendPasswordRecoveryEmail(for credentialId: String, with appId: String, platformId: String = "IOS") -> Promise<Void> {
+    func sendPasswordRecoveryEmail(for credentialId: String, appId: String, platformId: String = "IOS") -> Promise<Void> {
         let headers = type(of: self).httpRequestHeaders(appId: appId, platformId: platformId)
         let credentialIdValue = credentialId.pathAllowedURLEncodedString!
         return POST("/v1/credentials/\(credentialIdValue)/passwordReset", httpRequestHeaders: headers)
@@ -71,7 +71,7 @@ public extension AferoAPIClientProto {
     /// - parameter appId: The id of this app (e.g. bundlId)
     /// - parameter platformId: The platform on which this is being performed. Defaults to IOS.
     
-    func updatePassword(with password: String, shortCode: String, with appId: String, platformId: String = "IOS") -> Promise<Void> {
+    func updatePassword(with password: String, shortCode: String, appId: String, platformId: String = "IOS") -> Promise<Void> {
         let headers = type(of: self).httpRequestHeaders(appId: appId, platformId: platformId)
         let shortCodeValue = shortCode.pathAllowedURLEncodedString!
         let body = [

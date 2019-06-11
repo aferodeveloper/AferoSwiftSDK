@@ -182,7 +182,7 @@ class APIClientAccountSpec: QuickSpec {
                 }
             }
             
-            describe("when calling setPasswordRecoveryEmail()") {
+            describe("when calling sendPasswordRecoveryEmail(for:appId:platformId:)") {
                 
                 it("should POST the expected request") {
                     
@@ -200,7 +200,82 @@ class APIClientAccountSpec: QuickSpec {
                     var response: Any?
                     var error: Error?
                     
-                    _ = apiClient.sendPasswordRecoveryEmail(for: credentialId, with: appId)
+                    _ = apiClient.sendPasswordRecoveryEmail(for: credentialId, appId: appId)
+                        .then {
+                            response = $0
+                        }
+                        .catch {
+                            error = $0
+                    }
+                    
+                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
+                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    
+                }
+            }
+            
+            describe("when calling updatePassword(with:shortCode:appId:platformId:)") {
+                
+                it("should POST the expected request") {
+                    
+                    let shortCode = "31337".pathAllowedURLEncodedString!
+                    let appId = "my.sooper.app"
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    let password = "newPassword"
+
+                    let path = "/v1/shortvalues/\(shortCode)/passwordReset"
+                    
+                    stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId) && {
+                        req in
+                        let data = req.ohhttpStubs_httpBody
+                        let body = try? JSONSerialization.jsonObject(with: data!, options: [])
+                        return ((body as? [String: Any])?["password"] as? String) == password
+                    }) {
+                        _ in
+                        OHHTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
+                    }
+                    
+                    var response: Any?
+                    var error: Error?
+                    
+                    _ = apiClient.updatePassword(with: password, shortCode: shortCode, appId: appId)
+                        .then {
+                            response = $0
+                        }
+                        .catch {
+                            error = $0
+                    }
+                    
+                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
+                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    
+                }
+            }
+            
+            describe("when calling updatePassword(password:credentialId:accountId:)") {
+                
+                it("should POST the expected request") {
+                    
+                    let credentialId = "foo@bar.com".pathAllowedURLEncodedString!
+                    let accountId = "myAccountId"
+                    let password = "newPassword"
+                    
+                    let path = "/v1/accounts/\(accountId)/credentials/\(credentialId)/password"
+                    
+                    stub(condition: isPath(path) && isMethodPUT() && {
+                        req in
+                        let data = req.ohhttpStubs_httpBody
+                        let body = try? JSONSerialization.jsonObject(with: data!, options: [])
+                        return ((body as? [String: Any])?["password"] as? String) == password
+                    }) {
+                        _ in
+                        OHHTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
+                    }
+                    
+                    var response: Any?
+                    var error: Error?
+                    
+                    _ = apiClient.updatePassword(with: password, credentialId: credentialId, accountId: accountId)
                         .then {
                             response = $0
                         }
