@@ -167,7 +167,6 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="done" textContentType="email"/>
                                                 <connections>
-                                                    <action selector="emailChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="ffu-FZ-GQh"/>
                                                     <action selector="emailTextFieldChanged:" destination="pFf-bh-vqW" eventType="editingChanged" id="she-Ed-vFf"/>
                                                     <outlet property="delegate" destination="pFf-bh-vqW" id="bwl-pX-ZCq"/>
                                                 </connections>
@@ -235,6 +234,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.05000000074505806" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Startup" translatesAutoresizingMaskIntoConstraints="NO" id="tpX-NQ-0xR" userLabel="Background">
+                                <rect key="frame" x="0.0" y="116" width="375" height="551"/>
+                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="OSX-30-clx">
                                 <rect key="frame" x="16" y="124" width="343" height="355.5"/>
                                 <subviews>
@@ -253,13 +255,15 @@
                                                 <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="31337" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="QML-zO-g4J">
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="X1Y2Z3" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="QML-zO-g4J">
                                                 <rect key="frame" x="0.0" y="21.5" width="343" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 <connections>
                                                     <action selector="emailChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="6Vc-hN-Est"/>
+                                                    <action selector="resetCodeEditingChanged:" destination="LmT-pW-wz8" eventType="editingChanged" id="h8N-fs-Z29"/>
+                                                    <outlet property="delegate" destination="LmT-pW-wz8" id="JPK-Fr-6ZF"/>
                                                 </connections>
                                             </textField>
                                         </subviews>
@@ -271,24 +275,25 @@
                                         <rect key="frame" x="0.0" y="148.5" width="343" height="121"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="RKk-xY-Spu">
-                                                <rect key="frame" x="0.0" y="0.0" width="298" height="121"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="121"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="frR-6t-XMj">
-                                                        <rect key="frame" x="0.0" y="0.0" width="298" height="51.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="343" height="51.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cSp-2d-w8z">
-                                                                <rect key="frame" x="0.0" y="0.0" width="298" height="20.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="343" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="31337" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dFs-al-ed9">
-                                                                <rect key="frame" x="0.0" y="21.5" width="298" height="30"/>
+                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dFs-al-ed9">
+                                                                <rect key="frame" x="0.0" y="21.5" width="343" height="30"/>
                                                                 <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="new-password"/>
+                                                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                 <connections>
-                                                                    <action selector="emailChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="2NU-QY-BOt"/>
+                                                                    <action selector="newPasswordEditingChanged:" destination="LmT-pW-wz8" eventType="editingChanged" id="taw-uz-NBg"/>
+                                                                    <outlet property="delegate" destination="LmT-pW-wz8" id="IGZ-Dt-LMi"/>
                                                                 </connections>
                                                             </textField>
                                                         </subviews>
@@ -297,21 +302,22 @@
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="dOe-L5-V02">
-                                                        <rect key="frame" x="0.0" y="69.5" width="298" height="51.5"/>
+                                                        <rect key="frame" x="0.0" y="69.5" width="343" height="51.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Verify Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBd-lu-Qf9">
-                                                                <rect key="frame" x="0.0" y="0.0" width="298" height="20.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="343" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="31337" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="EU5-Br-wXC">
-                                                                <rect key="frame" x="0.0" y="21.5" width="298" height="30"/>
+                                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="EU5-Br-wXC">
+                                                                <rect key="frame" x="0.0" y="21.5" width="343" height="30"/>
                                                                 <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="new-password"/>
+                                                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                 <connections>
-                                                                    <action selector="emailChanged:" destination="cBT-gx-i5G" eventType="editingChanged" id="fvn-vS-LNQ"/>
+                                                                    <action selector="verifyPasswordEditingChanged:" destination="LmT-pW-wz8" eventType="editingChanged" id="KlF-uO-7Q7"/>
+                                                                    <outlet property="delegate" destination="LmT-pW-wz8" id="1Oo-DC-gUZ"/>
                                                                 </connections>
                                                             </textField>
                                                         </subviews>
@@ -321,8 +327,8 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qfW-X5-dKM">
-                                                <rect key="frame" x="306" y="42" width="37" height="37"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qfW-X5-dKM">
+                                                <rect key="frame" x="0.0" y="42" width="37" height="37"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="37" id="FUx-s3-Pgq"/>
                                                     <constraint firstAttribute="width" secondItem="qfW-X5-dKM" secondAttribute="height" multiplier="1:1" id="tJJ-wP-XUK"/>
@@ -338,21 +344,21 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zl2-hA-lX2">
                                                 <rect key="frame" x="110" y="0.0" width="123" height="30"/>
                                                 <state key="normal" title="Change Password"/>
+                                                <connections>
+                                                    <action selector="changePasswordTapped:" destination="LmT-pW-wz8" eventType="touchUpInside" id="5mU-uU-hWS"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHP-So-nQn">
                                                 <rect key="frame" x="147.5" y="38" width="48" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
-                                                    <segue destination="ySK-LE-jBq" kind="unwind" unwindAction="unwindFromResetPasswordWithSegue:" id="L4Q-4A-Z5z"/>
+                                                    <segue destination="ySK-LE-jBq" kind="unwind" identifier="unwindToSignInFromResetPassword" unwindAction="unwindFromResetPasswordWithSegue:" id="L4Q-4A-Z5z"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.05000000074505806" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Startup" translatesAutoresizingMaskIntoConstraints="NO" id="tpX-NQ-0xR">
-                                <rect key="frame" x="0.0" y="116" width="375" height="551"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -2697,7 +2703,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="0Ax-oZ-siA"/>
-        <segue reference="lHG-0u-qkB"/>
+        <segue reference="cdP-6b-q7e"/>
         <segue reference="LXO-5o-B3L"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99987393617630005" green="0.67495071887969971" blue="0.2409055233001709" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
