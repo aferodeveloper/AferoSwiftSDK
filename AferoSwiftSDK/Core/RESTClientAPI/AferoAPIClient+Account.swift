@@ -40,13 +40,36 @@ public extension AferoAPIClientProto {
         }
     }
     
-    private static func httpRequestHeaders(appId: String, platformId: String) -> HTTPRequestHeaders {
+    private static var platformId: String {
+
+        #if os(iOS)
+        return "IOS"
+        #endif
+
+        #if os(macOS)
+        return "macOS"
+        #endif
+
+        #if os(watchOS)
+        return "watchOS"
+        #endif
+
+        #if os(tvOS)
+        return "tvOS"
+        #endif
+
+        #if os(Linux)
+        return "Linux"
+        #endif
+    }
+    
+    private static func httpRequestHeaders(appId: String) -> HTTPRequestHeaders {
         var httpRequestHeaders = HTTPRequestHeaders()
         
         if let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64() {
             httpRequestHeaders["x-afero-app"] = appIdHeaderValue
         }
-
+        
         return httpRequestHeaders
     }
     
@@ -58,8 +81,8 @@ public extension AferoAPIClientProto {
     /// - parameter appId: The id of the app for which the email should be sent
     ///   (e.g. bundleId).
     
-    func sendPasswordRecoveryEmail(for credentialId: String, appId: String, platformId: String = "IOS") -> Promise<Void> {
-        let headers = type(of: self).httpRequestHeaders(appId: appId, platformId: platformId)
+    func sendPasswordRecoveryEmail(for credentialId: String, appId: String) -> Promise<Void> {
+        let headers = type(of: self).httpRequestHeaders(appId: appId)
         let credentialIdValue = credentialId.pathAllowedURLEncodedString!
         return POST("/v1/credentials/\(credentialIdValue)/passwordReset", httpRequestHeaders: headers)
     }
@@ -69,10 +92,9 @@ public extension AferoAPIClientProto {
     /// - parameter password: The new password.
     /// - parameter shortCode: The short code obtained separately (e.g. via recovery email)
     /// - parameter appId: The id of this app (e.g. bundlId)
-    /// - parameter platformId: The platform on which this is being performed. Defaults to IOS.
     
-    func updatePassword(with password: String, shortCode: String, appId: String, platformId: String = "IOS") -> Promise<Void> {
-        let headers = type(of: self).httpRequestHeaders(appId: appId, platformId: platformId)
+    func updatePassword(with password: String, shortCode: String, appId: String) -> Promise<Void> {
+        let headers = type(of: self).httpRequestHeaders(appId: appId)
         let shortCodeValue = shortCode.pathAllowedURLEncodedString!
         let body = [
             "password": password
