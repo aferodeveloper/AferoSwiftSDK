@@ -1,10 +1,11 @@
 PODS:
+  - 1PasswordExtension (1.8.5)
   - AferoSofthub (1.6.2)
-  - AferoSwiftSDK/AFNetworking (1.2.1):
+  - AferoSwiftSDK/AFNetworking (1.2.2):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.2.1):
+  - AferoSwiftSDK/Core (1.2.2):
     - AferoSofthub (~> 1.6.2)
     - CocoaLumberjack/Swift (~> 3.5)
     - CocoaZ (~> 1.4)
@@ -37,7 +38,7 @@ PODS:
   - CryptoSwift (1.0.0)
   - HTTPStatusCodes (3.3.1)
   - LKAlertController (1.12.2)
-  - Nimble (8.0.1)
+  - Nimble (8.0.2)
   - OHHTTPStubs/Core (8.0.0)
   - OHHTTPStubs/Default (8.0.0):
     - OHHTTPStubs/Core
@@ -62,6 +63,7 @@ PODS:
   - SVProgressHUD (1.1.3)
 
 DEPENDENCIES:
+  - 1PasswordExtension
   - AferoSwiftSDK/AFNetworking (from `..`)
   - AFNetworking
   - CocoaLumberjack/Swift (= 3.5.2)
@@ -82,6 +84,7 @@ SPEC REPOS:
   "git@github.com:aferodeveloper/Podspecs.git":
     - AferoSofthub
   https://github.com/cocoapods/specs.git:
+    - 1PasswordExtension
     - AFNetworking
     - AFOAuth2Manager
     - CocoaLumberjack
@@ -105,8 +108,9 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
+  1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   AferoSofthub: afeae4bc889166f8271386eec0f77fb639d439f8
-  AferoSwiftSDK: 7491e6f9b6d6e92ac5009e9768f696f5860aaccc
+  AferoSwiftSDK: 2de239209b696e57600eba298ff490bb205520b9
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
@@ -114,7 +118,7 @@ SPEC CHECKSUMS:
   CryptoSwift: d81eeaa59dc5a8d03720fe919a6fd07b51f7439f
   HTTPStatusCodes: a07dff597042a9f692cf4f979cb0fd91fc938835
   LKAlertController: 10c7e8627e5d4757d03b4f53469f35ded14c378f
-  Nimble: 45f786ae66faa9a709624227fae502db55a8bdd0
+  Nimble: 622629381bda1dd5678162f21f1368cec7cbba60
   OHHTTPStubs: 9cbce6364bec557cc3439aa6bb7514670d780881
   PromiseKit: 445dac9b2c3c3b4b31b5f842bc325700b848a8bd
   QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
@@ -125,6 +129,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 54c02bc5267ca6d685ca6d9e237a73c12d3006ea
+PODFILE CHECKSUM: fce46fe80873a4436dbc4fd1d041a6acefa7adb1
 
 COCOAPODS: 1.6.1

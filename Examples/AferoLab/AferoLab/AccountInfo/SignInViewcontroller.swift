@@ -81,18 +81,17 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
                 return
         }
         
-        activityIndicator.startAnimating()
+        SVProgressHUD.show(withStatus: "Signing in…")
+        
         AFNetworkingAferoAPIClient.default.signIn(username: email, password: password)
             .then {
                 ()->Void in
                 UserDefaults.standard.emailAddress = email
-                self.activityIndicator.stopAnimating()
+                SVProgressHUD.dismiss()
                 self.returnToAccountController(self)
             }.catch {
                 DDLogError("Error signinig in: \($0.localizedDescription)")
-                SVProgressHUD.showError(withStatus: "Unable to sign in (\($0.localizedDescription))")
-            }.always {
-                self.activityIndicator.stopAnimating()
+                SVProgressHUD.showError(withStatus: "Unable to sign in:  (\($0.localizedDescription))")
         }
     }
     
@@ -104,7 +103,17 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
 
     }
     
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBAction func unwindFromRequestResetCode(segue: UIStoryboardSegue) {
+        print("performed with segue: \(segue)")
+    }
+    
+    @IBAction func unwindFromResetPassword(segue: UIStoryboardSegue) {
+        print("performed with segue: \(segue)")
+    }
+    
+    
+    
+    
     
 }
 
