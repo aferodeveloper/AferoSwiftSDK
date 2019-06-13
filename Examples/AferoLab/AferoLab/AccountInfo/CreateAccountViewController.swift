@@ -12,6 +12,8 @@ import UIKit
 import Afero
 import SVProgressHUD
 import LKAlertController
+import CocoaLumberjack
+import PromiseKit
 
 import OnePasswordExtension
 
@@ -82,6 +84,62 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
         
     }
     
+    @IBAction func createTapped(_ sender: Any) {
+        
+        guard
+            let credentialId = emailTextField?.text,
+            let password = passwordTextField?.text,
+            let firstName = firstNameTextField?.text,
+            let lastName = lastNameTextField?.text else {
+                print("Missing email, password, firstname or lastname.")
+                return
+        }
+        
+        createAccount(credentialId: credentialId, password: password, firstName: firstName, lastName: lastName)
+    }
+    
+    func createAccount(credentialId: String, password: String, firstName: String = "", lastName: String = "") {
+        
+        guard !credentialId.isEmpty && !password.isEmpty else {
+            DDLogError("Neither credentialId nor password can be empty.")
+            return
+        }
+        
+        SVProgressHUD.show(
+            withStatus: NSLocalizedString(
+                "Creating account…",
+                comment: "Create account creating account status.")
+        )
+        
+        AFNetworkingAferoAPIClient.default.createAccount(credentialId, password: password, firstName: firstName, lastName: lastName)
+            .then {
+                _ -> Promise<Void> in
+                SVProgressHUD.show(
+                    withStatus: NSLocalizedString(
+                        "Signing in…",
+                        comment: "Create account creating account status.")
+                )
+                return AFNetworkingAferoAPIClient.default.signIn(
+                    username: credentialId,
+                    password: password
+                )
+            }.then {
+                SVProgressHUD.showSuccess(withStatus: NSLocalizedString("Done!", comment: "CreateAccount done"))
+        }.catch {
+                err in
+                SVProgressHUD.dismiss()
+                Alert(
+                    title: NSLocalizedString(
+                        "Error creating account",
+                        comment: "CreateAccount failure alert title"),
+                    message: String(
+                        format: NSLocalizedString(
+                            "There was an error creating account %@: %@",
+                            comment: "CreateAccount failure alert message template"), credentialId, String(describing: err))
+                    ).showOkay()
+                
+        }
+    }
     
     
 }

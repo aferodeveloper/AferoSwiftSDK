@@ -390,6 +390,9 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRl-As-73B">
                                                 <rect key="frame" x="159.5" y="0.0" width="128.5" height="30"/>
                                                 <state key="normal" title="Create"/>
+                                                <connections>
+                                                    <action selector="createTapped:" destination="2r3-ES-QVa" eventType="touchUpInside" id="lIP-Fa-4Qu"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
