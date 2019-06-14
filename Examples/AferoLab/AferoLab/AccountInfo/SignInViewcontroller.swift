@@ -111,13 +111,22 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
         print("performed with segue: \(segue)")
     }
     
-    @IBAction func unwindFromCreateAccount(segue: UIStoryboardSegue) {
+    @IBAction func cancelFromCreateAccount(segue: UIStoryboardSegue) {
         print("performed with segue: \(segue)")
     }
-    
-    
-    
-    
+
+    @IBAction func signInFromCreateAccount(segue: UIStoryboardSegue) {
+        assert(segue.source is CreateAccountViewController)
+        let cavc = segue.source as! CreateAccountViewController
+        guard let email = cavc.email, let password = cavc.password else {
+            DDLogError("Missing email or password.")
+            return
+        }
+        
+        emailTextField.text = email
+        passwordTextField.text = password
+        beginSignin()
+    }
     
 }
 

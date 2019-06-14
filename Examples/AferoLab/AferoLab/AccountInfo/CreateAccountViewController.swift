@@ -15,7 +15,7 @@ import LKAlertController
 import CocoaLumberjack
 import PromiseKit
 
-import OnePasswordExtension
+//import OnePasswordExtension
 
 class CreateAccountViewController: UIViewController, UITextFieldDelegate {
     
@@ -24,7 +24,12 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!
     
+    public var email: String? { return emailTextField?.text }
+    
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    public var password: String? { return passwordTextField?.text }
+    
     @IBOutlet weak var verifyPasswordTextField: UITextField!
     @IBOutlet weak var onePasswordButton: UIButton!
     
@@ -113,18 +118,9 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
         
         AFNetworkingAferoAPIClient.default.createAccount(credentialId, password: password, firstName: firstName, lastName: lastName)
             .then {
-                _ -> Promise<Void> in
-                SVProgressHUD.show(
-                    withStatus: NSLocalizedString(
-                        "Signing in…",
-                        comment: "Create account creating account status.")
-                )
-                return AFNetworkingAferoAPIClient.default.signIn(
-                    username: credentialId,
-                    password: password
-                )
-            }.then {
+                _ -> Void in
                 SVProgressHUD.showSuccess(withStatus: NSLocalizedString("Done!", comment: "CreateAccount done"))
+                self.performSegue(withIdentifier: "signInFromCreateAccount", sender: self)
         }.catch {
                 err in
                 SVProgressHUD.dismiss()

@@ -11,7 +11,7 @@ import Afero
 import SVProgressHUD
 import LKAlertController
 
-import OnePasswordExtension
+//import OnePasswordExtension
 
 class ResetPasswordWithCodeViewController: UIViewController, UITextFieldDelegate {
     
@@ -36,7 +36,7 @@ class ResetPasswordWithCodeViewController: UIViewController, UITextFieldDelegate
     
     func updateUI() {
         
-        onePasswordButton.isHidden = !OnePasswordExtension.shared().isAppExtensionAvailable()
+//        onePasswordButton.isHidden = !OnePasswordExtension.shared().isAppExtensionAvailable()
         
         let passwordsMatch = self.passwordsMatch
         let resetCodeComplete = self.resetCodeComplete

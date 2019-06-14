@@ -314,19 +314,19 @@
                                         <rect key="frame" x="0.0" y="190.5" width="288" height="108"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="De1-se-TmL">
-                                                <rect key="frame" x="0.0" y="0.0" width="235" height="108"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="108"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="aco-C4-Z4J">
-                                                        <rect key="frame" x="0.0" y="0.0" width="235" height="52.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="288" height="52.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cTk-9l-7oY">
-                                                                <rect key="frame" x="0.0" y="0.0" width="235" height="20.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="DTI-km-E1r">
-                                                                <rect key="frame" x="0.0" y="22.5" width="235" height="30"/>
+                                                                <rect key="frame" x="0.0" y="22.5" width="288" height="30"/>
                                                                 <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" textContentType="password"/>
@@ -338,16 +338,16 @@
                                                         </subviews>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="SC3-Zw-HrR">
-                                                        <rect key="frame" x="0.0" y="55.5" width="235" height="52.5"/>
+                                                        <rect key="frame" x="0.0" y="55.5" width="288" height="52.5"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Verify Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kbv-Uy-pTL">
-                                                                <rect key="frame" x="0.0" y="0.0" width="235" height="20.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                 <color key="textColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="CgL-dK-oh3">
-                                                                <rect key="frame" x="0.0" y="22.5" width="235" height="30"/>
+                                                                <rect key="frame" x="0.0" y="22.5" width="288" height="30"/>
                                                                 <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" textContentType="password"/>
@@ -360,8 +360,8 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hLr-TN-3jS">
-                                                <rect key="frame" x="251" y="35.5" width="37" height="37"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hLr-TN-3jS">
+                                                <rect key="frame" x="0.0" y="35.5" width="37" height="37"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="37" id="vc7-lU-ffr"/>
                                                     <constraint firstAttribute="width" secondItem="hLr-TN-3jS" secondAttribute="height" multiplier="1:1" id="w5I-5j-ywu"/>
@@ -384,7 +384,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="128.5" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
-                                                    <segue destination="y6M-Zc-XUx" kind="unwind" unwindAction="unwindFromCreateAccountWithSegue:" id="iTj-0e-M5p"/>
+                                                    <segue destination="y6M-Zc-XUx" kind="unwind" identifier="cancelCreateAccount" unwindAction="cancelFromCreateAccountWithSegue:" id="iTj-0e-M5p"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRl-As-73B">
@@ -422,6 +422,7 @@
                         <outlet property="onePasswordButton" destination="hLr-TN-3jS" id="lYH-mQ-jHO"/>
                         <outlet property="passwordTextField" destination="DTI-km-E1r" id="a9q-oW-meN"/>
                         <outlet property="verifyPasswordTextField" destination="CgL-dK-oh3" id="X8Z-vI-LXZ"/>
+                        <segue destination="y6M-Zc-XUx" kind="unwind" identifier="signInFromCreateAccount" unwindAction="signInFromCreateAccountWithSegue:" id="oDo-pU-ER3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CkQ-lA-tn5" userLabel="First Responder" sceneMemberID="firstResponder"/>

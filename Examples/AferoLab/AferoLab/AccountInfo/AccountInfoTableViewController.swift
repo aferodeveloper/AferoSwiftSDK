@@ -157,6 +157,10 @@ class AccountViewController: UITableViewController {
         refreshAccountAccess()
     }
     
+    @IBAction func unwindFromCreateAccount(segue: UIStoryboardSegue) {
+        print("performed with segue: \(segue)")
+    }
+    
     @IBAction func unwindFromDeviceInspector(segue: UIStoryboardSegue) {
         
     }
