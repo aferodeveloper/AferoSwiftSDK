@@ -72,7 +72,7 @@ class ResetPasswordWithCodeViewController: UIViewController, UITextFieldDelegate
     
     @IBAction func changePasswordTapped(_ sender: Any) {
         
-        let appId = "com.alphaguardian.safeguard"
+        let appId = "io.afero.AferoLab"
 
         guard
             let resetCode = resetCodeTextField?.text,

@@ -31,8 +31,8 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
         }
         
 //        let appId = Bundle.main.bundleIdentifier!
-        let appId = "com.alphaguardian.safeguard"
-        
+        let appId = "io.afero.AferoLab"
+
         SVProgressHUD.show(withStatus: NSLocalizedString("Requesting code…", comment: "Request password reset code in progress"))
         
         updateUI()
