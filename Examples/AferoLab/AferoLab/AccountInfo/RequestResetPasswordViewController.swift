@@ -30,8 +30,9 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
             return
         }
         
-//        let appId = Bundle.main.bundleIdentifier!
-        let appId = "io.afero.AferoLab"
+        guard let appId = Bundle.main.bundleIdentifier else {
+            fatalError("Unable to determine appId (bundleIdentifier")
+        }
 
         SVProgressHUD.show(withStatus: NSLocalizedString("Requesting code…", comment: "Request password reset code in progress"))
         

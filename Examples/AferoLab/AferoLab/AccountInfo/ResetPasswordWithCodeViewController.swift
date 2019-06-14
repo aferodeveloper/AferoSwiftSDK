@@ -72,7 +72,9 @@ class ResetPasswordWithCodeViewController: UIViewController, UITextFieldDelegate
     
     @IBAction func changePasswordTapped(_ sender: Any) {
         
-        let appId = "io.afero.AferoLab"
+        guard let appId = Bundle.main.bundleIdentifier else {
+            fatalError("Unable to determine appId (bundleIdentifier).")
+        }
 
         guard
             let resetCode = resetCodeTextField?.text,
