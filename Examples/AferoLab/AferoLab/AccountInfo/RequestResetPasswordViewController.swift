@@ -44,7 +44,20 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
             self?.updateUI()
             }.catch {
                 [weak self] err in
-                SVProgressHUD.showError(withStatus: "Error: \(String(describing: err))", maskType: .black)
+                SVProgressHUD.dismiss()
+                Alert(
+                    title: NSLocalizedString(
+                        "Error requesting reset code.",
+                        comment: "RequestCode PasswordChanged alert title"
+                    ),
+                    message: String(
+                        format: NSLocalizedString(
+                            "Reset code request failed with error %@.",
+                            comment:"ResetPassword PasswordChanged alert message"
+                        ),
+                        "\(err.httpStatusCode?.description ?? "-"): \(err.localizedDescription)")
+                    ).showOkay()
+
                 self?.updateUI()
         }
         

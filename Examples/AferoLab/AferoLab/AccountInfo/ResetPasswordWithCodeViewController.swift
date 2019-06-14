@@ -119,7 +119,7 @@ class ResetPasswordWithCodeViewController: UIViewController, UITextFieldDelegate
                             "Your password has not been changed due to an error: %@.",
                             comment:"ResetPassword PasswordChanged alert message"
                         ),
-                        String(describing: err))
+                        "\(err.httpStatusCode?.description ?? "-"): \(err.localizedDescription)")
                     ).showOkay()
         }
     }

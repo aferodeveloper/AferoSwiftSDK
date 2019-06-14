@@ -38,7 +38,7 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
     
     func updateUI() {
         
-        onePasswordButton.isHidden = !OnePasswordExtension.shared().isAppExtensionAvailable()
+//        onePasswordButton.isHidden = !OnePasswordExtension.shared().isAppExtensionAvailable()
         
         let passwordsMatch = self.passwordsMatch
         
@@ -131,8 +131,11 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                     message: String(
                         format: NSLocalizedString(
                             "There was an error creating account %@: %@",
-                            comment: "CreateAccount failure alert message template"), credentialId, String(describing: err))
+                            comment: "CreateAccount failure alert message template"),
+                        credentialId,
+                        "\(err.httpStatusCode?.description ?? "-"): \(err.localizedDescription)")
                     ).showOkay()
+
                 
         }
     }
