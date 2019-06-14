@@ -30,6 +30,7 @@
 		CB5641ED1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5641EC1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift */; };
 		CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */; };
 		CB72D8931F91750C000D8925 /* AferoUIControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB72D8921F91750C000D8925 /* AferoUIControls.swift */; };
+		CB79188622B1CB3E0072CA2F /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB79188522B1CB3E0072CA2F /* CreateAccountViewController.swift */; };
 		CB79624E1F830D26002E0C6C /* DeviceInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB79624D1F830D26002E0C6C /* DeviceInspectorViewController.swift */; };
 		CB82FED11E7CD7A30088CC0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED01E7CD7A30088CC0C /* Extensions.swift */; };
 		CB82FED31E7CD7DD0088CC0C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB82FED21E7CD7DD0088CC0C /* Utils.swift */; };
@@ -48,6 +49,8 @@
 		CBFC89F01FDE1FBE00924666 /* ScanWifiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */; };
 		CBFC89F21FDF08BF00924666 /* AferoWifiNetworkView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CBFC89F11FDF08BF00924666 /* AferoWifiNetworkView.xib */; };
 		CBFC89F41FDF097000924666 /* AferoWifiNetworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFC89F31FDF097000924666 /* AferoWifiNetworkView.swift */; };
+		CBFEE92522B0595E00DDF9CC /* RequestResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFEE92422B0595E00DDF9CC /* RequestResetPasswordViewController.swift */; };
+		CBFEE92722B062E500DDF9CC /* ResetPasswordWithCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFEE92622B062E400DDF9CC /* ResetPasswordWithCodeViewController.swift */; };
 		EB68573FBD1DAC92AAB39C71 /* Pods_AferoLabTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -116,6 +119,7 @@
 		CB5641EC1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoWifiPasswordPromptView.swift; sourceTree = "<group>"; };
 		CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountInfoZeroStateView.swift; sourceTree = "<group>"; };
 		CB72D8921F91750C000D8925 /* AferoUIControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoUIControls.swift; sourceTree = "<group>"; };
+		CB79188522B1CB3E0072CA2F /* CreateAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
 		CB79624D1F830D26002E0C6C /* DeviceInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInspectorViewController.swift; sourceTree = "<group>"; };
 		CB823D611F080D0B00C4F8F2 /* AferoLab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AferoLab.entitlements; sourceTree = "<group>"; };
 		CB82FED01E7CD7A30088CC0C /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 		CBFC89EF1FDE1FBE00924666 /* ScanWifiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanWifiViewController.swift; sourceTree = "<group>"; };
 		CBFC89F11FDF08BF00924666 /* AferoWifiNetworkView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AferoWifiNetworkView.xib; sourceTree = "<group>"; };
 		CBFC89F31FDF097000924666 /* AferoWifiNetworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AferoWifiNetworkView.swift; sourceTree = "<group>"; };
+		CBFEE92422B0595E00DDF9CC /* RequestResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestResetPasswordViewController.swift; sourceTree = "<group>"; };
+		CBFEE92622B062E400DDF9CC /* ResetPasswordWithCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordWithCodeViewController.swift; sourceTree = "<group>"; };
 		E1A873647E770BCF15D8D79C /* Pods-AferoLabUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAEF85CBA284535D7AE8B8E9 /* Pods-AferoLab.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -302,6 +308,9 @@
 				CB66AE271E7D9B69001A0F43 /* AccountInfoZeroStateView.swift */,
 				CB82FED41E7CD9CF0088CC0C /* AccountInfoTableViewController.swift */,
 				CB82FED61E7CDA4D0088CC0C /* SignInViewcontroller.swift */,
+				CBFEE92422B0595E00DDF9CC /* RequestResetPasswordViewController.swift */,
+				CBFEE92622B062E400DDF9CC /* ResetPasswordWithCodeViewController.swift */,
+				CB79188522B1CB3E0072CA2F /* CreateAccountViewController.swift */,
 			);
 			path = AccountInfo;
 			sourceTree = "<group>";
@@ -449,8 +458,20 @@
 						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.AutoFillCredentialProvider = {
+								enabled = 0;
+							};
 							com.apple.DataProtection = {
 								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+							com.apple.SafariKeychain = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 0;
 							};
 						};
 					};
@@ -600,6 +621,7 @@
 				"${BUILT_PRODUCTS_DIR}/RSEnvironment/RSEnvironment.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/LKAlertController/LKAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/QRCodeReader.swift/QRCodeReader.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
@@ -618,6 +640,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSEnvironment.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LKAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCodeReader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
@@ -645,6 +668,7 @@
 				CB5641ED1FE1C68E008DDB58 /* AferoWifiPasswordPromptView.swift in Sources */,
 				CB8F131C1FE44BC900B0791F /* WifiSetupAware.swift in Sources */,
 				CB1C82F31F9925C1004DD348 /* AferoViews.swift in Sources */,
+				CB79188622B1CB3E0072CA2F /* CreateAccountViewController.swift in Sources */,
 				CB34C3731E7C689700547FD9 /* AppDelegate.swift in Sources */,
 				CB241A311F8D6AD100480CCA /* AttributeInspectorViewController.swift in Sources */,
 				CB241A331F8D839F00480CCA /* DeviceModelableObserving.swift in Sources */,
@@ -652,7 +676,9 @@
 				CB79624E1F830D26002E0C6C /* DeviceInspectorViewController.swift in Sources */,
 				CB82FEF51E7D22760088CC0C /* DeviceCollectionCollator.swift in Sources */,
 				CB1CED9D1EF8AC1B00B86534 /* AferoLogFormatter.swift in Sources */,
+				CBFEE92522B0595E00DDF9CC /* RequestResetPasswordViewController.swift in Sources */,
 				CB66AE281E7D9B69001A0F43 /* AccountInfoZeroStateView.swift in Sources */,
+				CBFEE92722B062E500DDF9CC /* ResetPasswordWithCodeViewController.swift in Sources */,
 				CB82FED71E7CDA4D0088CC0C /* SignInViewcontroller.swift in Sources */,
 				CBFC89F01FDE1FBE00924666 /* ScanWifiViewController.swift in Sources */,
 				CB5641E91FE1ABEF008DDB58 /* DeviceInspectorTableViewCells.swift in Sources */,

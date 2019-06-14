@@ -334,20 +334,20 @@ class MockAPIClient: AferoAPIClientProto {
         realClient.doSignOut(error: error, completion: completion)
     }
     
-    func doPut(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
-        return realClient.doPut(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    func doPut(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doPut(urlString: urlString, parameters: parameters, httpRequestHeaders: httpRequestHeaders, success: success, failure: failure)
     }
     
-    func doPost(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
-        return realClient.doPost(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    func doPost(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doPost(urlString: urlString, parameters: parameters, httpRequestHeaders: httpRequestHeaders, success: success, failure: failure)
     }
     
-    func doGet(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
-        return realClient.doGet(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    func doGet(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doGet(urlString: urlString, parameters: parameters, httpRequestHeaders: httpRequestHeaders, success: success, failure: failure)
     }
     
-    func doDelete(urlString: String, parameters: Any?, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
-        return realClient.doDelete(urlString: urlString, parameters: parameters, success: success, failure: failure)
+    func doDelete(urlString: String, parameters: Any?, httpRequestHeaders: HTTPRequestHeaders? = nil, success: @escaping AferoAPIClientProto.AferoAPIClientProtoSuccess, failure: @escaping AferoAPIClientProto.AferoAPIClientProtoFailure) -> URLSessionDataTask? {
+        return realClient.doDelete(urlString: urlString, parameters: parameters, httpRequestHeaders: httpRequestHeaders, success: success, failure: failure)
     }
 }
 

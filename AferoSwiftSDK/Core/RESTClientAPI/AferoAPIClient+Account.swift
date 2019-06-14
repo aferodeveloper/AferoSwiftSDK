@@ -40,6 +40,87 @@ public extension AferoAPIClientProto {
         }
     }
     
+    private static var platformId: String {
+
+        #if os(iOS)
+        return "IOS"
+        #endif
+
+        #if os(macOS)
+        return "macOS"
+        #endif
+
+        #if os(watchOS)
+        return "watchOS"
+        #endif
+
+        #if os(tvOS)
+        return "tvOS"
+        #endif
+
+        #if os(Linux)
+        return "Linux"
+        #endif
+    }
+    
+    private static func httpRequestHeaders(appId: String) -> HTTPRequestHeaders {
+        var httpRequestHeaders = HTTPRequestHeaders()
+        
+        if let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64() {
+            httpRequestHeaders["x-afero-app"] = appIdHeaderValue
+        }
+        
+        return httpRequestHeaders
+    }
+    
+    /// Request a password recovery email.
+    ///
+    /// - parameter credentialId: The id of (for example, email) of the account
+    ///   for which to request a password reset.
+    ///
+    /// - parameter appId: The id of the app for which the email should be sent
+    ///   (e.g. bundleId).
+    
+    func sendPasswordRecoveryEmail(for credentialId: String, appId: String) -> Promise<Void> {
+        let headers = type(of: self).httpRequestHeaders(appId: appId)
+        let credentialIdValue = credentialId.pathAllowedURLEncodedString!
+        return POST("/v1/credentials/\(credentialIdValue)/passwordReset", httpRequestHeaders: headers)
+    }
+    
+    /// Update a password with a shortcode.
+    ///
+    /// - parameter password: The new password.
+    /// - parameter shortCode: The short code obtained separately (e.g. via recovery email)
+    /// - parameter appId: The id of this app (e.g. bundlId)
+    
+    func updatePassword(with password: String, shortCode: String, appId: String) -> Promise<Void> {
+        let headers = type(of: self).httpRequestHeaders(appId: appId)
+        let shortCodeValue = shortCode.pathAllowedURLEncodedString!
+        let body = [
+            "password": password
+        ];
+        
+        return POST("/v1/shortvalues/\(shortCodeValue)/passwordReset", parameters: body, httpRequestHeaders: headers)
+    }
+    
+    /// Update a password while authenticated.
+    ///
+    /// - parameter password: The new password.
+    /// - parameter credentialId: The id (e.g. email) of the user being updated.
+    /// - parameter accountId : The id of the account.
+    /// - parameter platformId: The platform on which this is being performed. Defaults to IOS.
+    
+    func updatePassword(with password: String, credentialId: String, accountId: String) -> Promise<Void> {
+        let credentialIdValue = credentialId.pathAllowedURLEncodedString!
+        let accountIdValue = accountId.pathAllowedURLEncodedString!
+        let body = [
+            "password": password
+        ];
+        
+        return PUT("/v1/accounts/\(accountIdValue)/credentials/\(credentialIdValue)/password", parameters: body)
+    }
+    
+    
     /**
      Create an account.
      - parameter credentialID: The user ID (i.e. email)
@@ -84,6 +165,11 @@ public extension AferoAPIClientProto {
         return POST("v1/accounts", parameters: parameters)
     }
     
+    /// Set the human-readable description of the account identified by `accountId`.
+    ///
+    /// - parameter accountId: The id of the account whose description is to be set.
+    /// - parameter description: The new description.
+    
     func setAccountDescription(_ accountId: String, description: String) -> Promise<Void> {
         
         let parameters = [
@@ -92,6 +178,7 @@ public extension AferoAPIClientProto {
         
         return PUT("/v1/accounts/\(accountId)/description", parameters: parameters)
     }
+    
 
 }
 
@@ -112,7 +199,7 @@ public extension AferoAPIClientProto {
     ///
     /// `mobileDeviceId` is an identifier for the the device on which
     /// your app is running. It is used both to obtain authorization to communicate with
-    /// realtime Afero Cloud device state updates, iand to manage service-based
+    /// realtime Afero Cloud device state updates, and to manage service-based
     /// information related to state of the mobile device on the Afero cloud, such as
     /// push notification routing.
     ///
