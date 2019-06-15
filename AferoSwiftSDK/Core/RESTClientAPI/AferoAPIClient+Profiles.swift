@@ -64,24 +64,41 @@ extension AferoAPIClientProto {
                 onDone(nil, err)
         }
     }
-
-}
-
-public extension AferoAPIClientProto {
     
-    // MARK: - Device Attributes
-
-    /// Set the "friendly" (display) name of a device.
-    /// - parameter accountId: The account ID of the device.
-    /// - parameter name: The new name of the device.
-    /// - parameter deviceId: The device's `id`
+    /// Fetch a profile based upon an `associationId` and `version`, as obtained
+    /// when a setup-mode device is detected by the softhub.
+    ///
+    /// - parameter associationId: The `associationId` obtained from the softhub.
+    /// - parameter version: The `version` identifier obtained from the softhub.
+    /// - returns: A `Promise<DeviceProfile>` which resolves to the indicated profile.
     
-    func setFriendlyName(_ accountId: String, name: String, forDeviceId deviceId: String) -> Promise<Void>  {
-        let body: [String: Any] = [
-            "friendlyName": name
-        ]
-        return PUT("/v1/accounts/\(accountId)/devices/\(deviceId)/friendlyName", parameters: body, expansions: nil)
+    public func fetchProfile(for associationId: String, with version: Int) -> Promise<DeviceProfile> {
+        
+        guard let associationId = associationId.pathAllowedURLEncodedString, !associationId.isEmpty else {
+            let error = "Empty associationId."
+            DDLogError(error)
+            return Promise { _, reject in reject(error) }
+        }
+        
+        return GET("/v1/devices/\(associationId)/deviceProfiles/versions/\(version)")
     }
     
+    /// Fetch a profile based upon an `associationId` and `version`, as obtained
+    /// when a setup-mode device is detected by the softhub.
+    ///
+    /// - parameter associationId: The `associationId` obtained from the softhub.
+    /// - parameter version: The `version` identifier obtained from the softhub.
+    /// - parameter onDone: A `(DeviceProfile, Error)->Void` to act as receiver
+    ///                     for the result or error.
+    
+    public func fetchProfile(for associationId: String, with version: Int, onDone: @escaping FetchProfileOnDone) {
+        fetchProfile(for: associationId, with: version)
+            .then { profile in onDone(profile, nil) }
+            .catch { err in onDone(nil, err)
+        }
+    }
+    
+    
+
 }
 

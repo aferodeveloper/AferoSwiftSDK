@@ -58,6 +58,7 @@
 		CB593CCA1D74F8050069F8A0 /* nest.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBD1D74F8050069F8A0 /* nest.json */; };
 		CB593CCB1D74F8050069F8A0 /* plasmacluster.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBE1D74F8050069F8A0 /* plasmacluster.json */; };
 		CB593CCC1D74F8050069F8A0 /* wetcheck.json in Resources */ = {isa = PBXBuildFile; fileRef = CB593CBF1D74F8050069F8A0 /* wetcheck.json */; };
+		CB79188922B4749A0072CA2F /* AferoAPIClient+ProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB79188822B474990072CA2F /* AferoAPIClient+ProfileTests.swift */; };
 		CB7962501F84590D002E0C6C /* AferoLogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB79624F1F84590C002E0C6C /* AferoLogFormatter.swift */; };
 		CB809A8D1F23F9AD0008DDD1 /* AferoAPIClient+AccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */; };
 		CB809A8F1F241A2C0008DDD1 /* DeviceCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1CED241EF8A5E500B86534 /* DeviceCollectionTests.swift */; };
@@ -149,6 +150,7 @@
 		CB593CBF1D74F8050069F8A0 /* wetcheck.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = wetcheck.json; sourceTree = "<group>"; };
 		CB5FCDA41B0A9FDC005B2964 /* Box.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Box.framework; path = Carthage/Build/iOS/Box.framework; sourceTree = "<group>"; };
 		CB5FCDA91B0AA07D005B2964 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		CB79188822B474990072CA2F /* AferoAPIClient+ProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AferoAPIClient+ProfileTests.swift"; sourceTree = "<group>"; };
 		CB79624F1F84590C002E0C6C /* AferoLogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AferoLogFormatter.swift; sourceTree = "<group>"; };
 		CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AferoAPIClient+AccountTests.swift"; sourceTree = "<group>"; };
 		CB809A901F24FB260008DDD1 /* DeviceModelStateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceModelStateTests.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 		CB809A8A1F2391110008DDD1 /* RESTClientAPI */ = {
 			isa = PBXGroup;
 			children = (
+				CB79188822B474990072CA2F /* AferoAPIClient+ProfileTests.swift */,
 				CB809A8B1F2391230008DDD1 /* AferoAPIClient+AccountTests.swift */,
 			);
 			path = RESTClientAPI;
@@ -645,6 +648,7 @@
 				CB1CED481EF8A5E500B86534 /* DeviceRuleTests.swift in Sources */,
 				CB1CED441EF8A5E500B86534 /* DebounceTests.swift in Sources */,
 				CB809A8F1F241A2C0008DDD1 /* DeviceCollectionTests.swift in Sources */,
+				CB79188922B4749A0072CA2F /* AferoAPIClient+ProfileTests.swift in Sources */,
 				CB809A911F24FB260008DDD1 /* DeviceModelStateTests.swift in Sources */,
 				CB1CED601EF8A5E500B86534 /* TypeTests.swift in Sources */,
 				CBA993731EE750F50066213B /* Mocks.swift in Sources */,
