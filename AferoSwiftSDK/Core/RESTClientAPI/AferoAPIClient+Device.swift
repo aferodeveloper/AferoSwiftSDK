@@ -160,6 +160,25 @@ public extension AferoAPIClientProto {
     
 }
 
+// MARK: - Friendly Name
+
+public extension AferoAPIClientProto {
+    
+    
+    /// Set the "friendly" (display) name of a device.
+    /// - parameter accountId: The account ID of the device.
+    /// - parameter name: The new name of the device.
+    /// - parameter deviceId: The device's `id`
+    
+    func setFriendlyName(_ accountId: String, name: String, forDeviceId deviceId: String) -> Promise<Void>  {
+        let body: [String: Any] = [
+            "friendlyName": name
+        ]
+        return PUT("/v1/accounts/\(accountId)/devices/\(deviceId)/friendlyName", parameters: body, expansions: nil)
+    }
+    
+}
+
 // MARK: - Device Location -
 
 public extension AferoAPIClientProto {
