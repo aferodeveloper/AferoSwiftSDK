@@ -269,7 +269,7 @@ class AccountViewController: UITableViewController {
     private var softhubEnabled: Bool = false {
         didSet {
             
-            defer { configureSofthubSwitch() }
+            defer { configureSofthubSwitch(softhubSwitch) }
             
             UserDefaults.standard.enableSofthub = softhubEnabled
             if softhubEnabled {
@@ -496,7 +496,7 @@ class AccountViewController: UITableViewController {
             
             accountCell.accountNameLabel.text = user?.credentialId
             accountCell.networkStatusLabel.text = String(describing: networkStatus)
-            configureSofthubSwitch()
+            configureSofthubSwitch(accountCell.softhubSwitch)
             
         case .devices:
             guard let device = self.device(at: indexPath) else {
@@ -524,7 +524,7 @@ class AccountViewController: UITableViewController {
         return (tableView.cellForRow(at: indexPath) as? AccountInfoCell)?.softhubSwitch
     }
     
-    func configureSofthubSwitch() {
+    func configureSofthubSwitch(_ softhubSwitch: UISwitch?) {
         softhubSwitch?.isOn = softhubEnabled
         softhubSwitch?.removeTarget(nil, action: nil, for: .valueChanged)
         softhubSwitch?.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
