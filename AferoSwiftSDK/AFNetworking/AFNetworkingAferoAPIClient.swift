@@ -209,7 +209,7 @@ public extension AFNetworkingAferoAPIClient {
 
             fulfill, reject in
 
-            DDLogInfo("Requesting oauth refresh", tag: TAG)
+            DDLogInfo("Authenticating...", tag: TAG)
             
             let oauthManager = AFOAuth2Manager(
                 baseURL: self.apiBaseURL,
