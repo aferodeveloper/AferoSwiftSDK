@@ -213,16 +213,48 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return "<\(TAG)> accountId: \(accountId) state: \(state) eventStream: \(eventStream.debugDescription)"
     }
 
-    /// Represents the state of the collection overall.
+    /// Represents the connection state of the DeviceCollection.
+    ///
+    /// The `DeviceCollection` aggregates data from a number of sources, including
+    /// the Afero Cloud API and the Conclave realtime service. `State` events represent
+    /// the connection state of the `DeviceCollection`, but do not reflect contents state.
+    ///
+    /// It is possible that the `DeviceCollection` will appear empty
+    /// even after a `loaded` is received; this event is more appropriate for
+    /// dismissing progress indicators, etc. Observe `contentsSignal` for content-
+    /// related events.
+    ///
+    /// Note that the `DeviceCollection` automatically manages its connection state,
+    /// so it is possible that `State` events will be emitted at anytime during the course
+    /// of app execution.
+    ///
+    /// ## Cases
+    ///
+    /// * `.unloaded`: The `DeviceCollection` is in an unloaded/unstarted state; no events
+    ///               are being received.
+    ///
+    /// * `.loading`: The `DeviceCollection` is starting attempting to connect to its sources.
+    ///
+    /// * `.loaded`: The `DeviceCollection` has has started and is handling events.
+    ///
+    /// * `.error(Error?)`: The `DeviceCollection` is in an error state.
+    ///
+    ///
     public enum State: Equatable {
 
-        /// The `DeviceCollection` is in an unloaded/unstarted state.
+        /// The `DeviceCollection` is in an unloaded/unstarted state; no events
+        /// are being received.
         case unloaded
         
-        /// The `DeviceCollection` is currently loading data.
+        /// The `DeviceCollection` is starting attempting to connect to its sources.
         case loading
         
-        /// The `DeviceCollection` has loaded and is ready to go.
+        /// The `DeviceCollection` has has started and is handling events.
+        ///  - note: It is possible that the `DeviceCollection` will appear empty
+        ///  even after a `loaded` is received; this event is more appropriate for
+        ///  dismissing progress indicators, etc. Observe `contentsSignal` for content-
+        ///  related events.
+        ///
         case loaded
         
         /// The `DeviceCollection` is in an error state.
@@ -251,6 +283,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return Array(_devices.values)
     }
     
+    public var devices: [DeviceModel] {
+        return allDevices.filter { $0.presentation != nil }
+    }
+    
     /// Whether or not this DeviceCollection's profile cache contains at least
     /// one profile with presentation.
     
@@ -258,9 +294,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return profileSource.hasVisibleDevices
     }
     
-    public var visibleDevices: [DeviceModel] {
-        return allDevices.filter { $0.presentation != nil }
-    }
+    @available(*, deprecated, renamed: "devices")
+    public var visibleDevices: [DeviceModel] { devices }
 
     public var accountId: String { return eventStream.accountId }
     
@@ -318,10 +353,44 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     // MARK: - Contents Messaging
     
+    /// Events related to the contents of a `DeviceCollection`.
+    ///
+    /// Any time one or more, events are emitted on the collection's `contentsSignal`.
+    /// Updates beging with a `.beginUpdates` event, and end with a `.endUpdates` event.
+    /// For example, four devices *A*, *B*, *C*, and *D* are being removed, and
+    /// two devices *X* and *Y* are being added, then the following events
+    /// would be sent:
+    ///
+    /// 1. `.beginUpdates`
+    /// 2. `.delete(A)`, … , `.delete(D)`
+    /// 3. `.add(X)`,`.add(Y)`
+    /// 4. `.endUpdates`
+    ///
+    /// ## Cases
+    ///
+    /// * `.beginUpdates`: The contents of the `DeviceCollection` are about to change.
+    /// * `.create(DeviceModel)`: The `DeviceCollection` added the given device.
+    /// * `.delete(DeviceModel)`: The `DeviceCollection` removed the given device.
+    /// * `.resetAll`: The `DeviceCollection` has been reset; all devices have been removed.
+    /// * `endUpdates`: The `DeviceCollection` has finished contents updates.
+    ///
     public enum ContentsChange {
+        
+        /// The contents of the `DeviceCollection` are about to change.
+        case beginUpdates
+        
+        /// The `DeviceCollection` added the given device.
         case create(DeviceModel)
+        
+        /// The `DeviceCollection` removed the given device.
         case delete(DeviceModel)
+        
+        /// The `DeviceCollection` has been reset; all devices have been removed.
         case resetAll
+        
+        /// The `DeviceCollection` has finished contents updates.
+        case endUpdates
+        
     }
 
     /// Observe this signal to get notifications of devices being added
@@ -1152,14 +1221,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
    
     // MARK: underlying store abstraction
-    
-    var devices: [DeviceModel] {
-        return Array(_devices.values.filter { $0.profile != nil })
-    }
-    
-    var deviceIds: [String] {
-        return devices.map { $0.deviceId }
-    }
     
     /// Get a peripheral for the given id, if available.
     public func peripheral(for id: String) -> DeviceModel? {
