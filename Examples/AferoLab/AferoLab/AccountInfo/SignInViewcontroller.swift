@@ -100,6 +100,10 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if let requestResetViewController = segue.destination as? RequestResetPasswordViewController {
+            requestResetViewController.email = self.emailTextField.text
+        }
 
     }
     

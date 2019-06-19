@@ -16,6 +16,10 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
     @IBOutlet weak var emailTitleLabel: UILabel!
     @IBOutlet weak var emailTextField: UITextField!
     
+    var email: String? {
+        didSet { emailTextField?.text = email }
+    }
+    
     @IBOutlet weak var requestResetCodeButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
     
@@ -66,6 +70,7 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
     
     func updateUI() {
         requestResetCodeButton.isEnabled = !(emailTextField.text?.isEmpty ?? true)
+        emailTextField.text = email
     }
     
     func showConfirmationAlert(for emailAddress: String) {
@@ -110,6 +115,7 @@ class RequestResetPasswordViewController: UIViewController, UITextFieldDelegate 
     }
     
     @IBAction func emailTextFieldChanged(_ sender: Any) {
+        email = emailTextField?.text
         updateUI()
     }
     
