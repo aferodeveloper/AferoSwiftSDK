@@ -27,79 +27,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
     public override var debugDescription: String {
         return "<\(TAG)> accountId: \(accountId) state: \(state) eventStream: \(eventStream.debugDescription)"
     }
-
-    /// Represents the connection state of the DeviceCollection.
-    ///
-    /// The `DeviceCollection` aggregates data from a number of sources, including
-    /// the Afero Cloud API and the Conclave realtime service. `State` events represent
-    /// the connection state of the `DeviceCollection`, but do not reflect contents state.
-    ///
-    /// It is possible that the `DeviceCollection` will appear empty
-    /// even after a `loaded` is received; this event is more appropriate for
-    /// dismissing progress indicators, etc. Observe `contentsSignal` for content-
-    /// related events.
-    ///
-    /// Note that the `DeviceCollection` automatically manages its connection state,
-    /// so it is possible that `State` events will be emitted at anytime during the course
-    /// of app execution.
-    ///
-    /// ## Cases
-    ///
-    /// * `.unloaded`: The `DeviceCollection` is in an unloaded/unstarted state; no events
-    ///               are being received.
-    ///
-    /// * `.loading`: The `DeviceCollection` is starting attempting to connect to its sources.
-    ///
-    /// * `.loaded`: The `DeviceCollection` has has started and is handling events.
-    ///
-    /// * `.error(Error?)`: The `DeviceCollection` is in an error state.
-    ///
-    ///
-    public enum State: Equatable {
-
-        /// The `DeviceCollection` is in an unloaded/unstarted state; no events
-        /// are being received.
-        case unloaded
-        
-        /// The `DeviceCollection` is starting attempting to connect to its sources.
-        case loading
-        
-        /// The `DeviceCollection` has has started and is handling events.
-        ///  - note: It is possible that the `DeviceCollection` will appear empty
-        ///  even after a `loaded` is received; this event is more appropriate for
-        ///  dismissing progress indicators, etc. Observe `contentsSignal` for content-
-        ///  related events.
-        ///
-        case loaded
-        
-        /// The `DeviceCollection` is in an error state.
-        case error(Error?)
-        
-        public static func ==(lhs: DeviceCollection.State, rhs: DeviceCollection.State) -> Bool {
-            
-            switch (lhs, rhs) {
-            case (.loading, .loading): fallthrough
-            case (.loaded, .loaded): fallthrough
-            case (.unloaded, .unloaded): fallthrough
-            case (.error, .error):
-                return true
-                
-            default:
-                return false
-            }
-            
-        }
-
-    }
     
-    fileprivate var _devices: [String:DeviceModel] = [:]
-    
-    public var allDevices: [DeviceModel] {
-        return Array(_devices.values)
-    }
-    
+    /// All visible devices in this account
     public var devices: [DeviceModel] {
-        return allDevices.filter { $0.presentation != nil }
+        return _allDevices.filter { $0.presentation != nil }
     }
     
     /// Whether or not this DeviceCollection's profile cache contains at least
@@ -109,11 +40,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return profileSource.hasVisibleDevices
     }
     
-    @available(*, deprecated, renamed: "devices")
-    public var visibleDevices: [DeviceModel] { devices }
-
+    /// The id of the account this `DeviceCollection`.
     public var accountId: String { return eventStream.accountId }
-    
+
+    /// If `true`, additional debugging is turned on for realtime connections.
+    /// Defaults to `false`.
     var isTraceEnabled: Bool = false {
         didSet {
             if oldValue != isTraceEnabled {
@@ -122,12 +53,18 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
     }
     
-    var apiClient: AferoAPIClientProto
+    private var _devices: [String:DeviceModel] = [:]
+    
+    private var _allDevices: [DeviceModel] {
+        return Array(_devices.values)
+    }
+    
+    internal var apiClient: AferoAPIClientProto
     
     internal let profileSource: CachedDeviceAccountProfilesSource
     internal var eventStream: DeviceEventStreamable
     
-    // MARK: Lifecycle
+    // MARK: - Lifecycle -
     
     /// Designated initializer
     /// - parameter apiClient: An AferoAPIClientProto instance
@@ -166,7 +103,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         eventSignalDisposable = nil
     }
     
-    // MARK: - Contents Messaging
+    // MARK: - Contents Change Observation -
     
     /// Events related to the contents of a `DeviceCollection`.
     ///
@@ -209,13 +146,78 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
 
     /// Observe this signal to get notifications of devices being added
-    /// and removed from the collection
+    /// and removed from the collection.
+    ///
+    /// See `ContentsChange` for a discussion of the events
+    /// emitted by this signal.
     
     fileprivate(set) public var contentsSignal: Signal<ContentsChange, NoError>! = nil
     fileprivate var contentsSink: Signal<ContentsChange, NoError>.Observer! = nil
-    
 
-    // MARK: State Observation
+    // MARK: - State Observation -
+    
+    /// Represents the connection state of the DeviceCollection.
+    ///
+    /// The `DeviceCollection` aggregates data from a number of sources, including
+    /// the Afero Cloud API and the Conclave realtime service. `State` events represent
+    /// the connection state of the `DeviceCollection`, but do not reflect contents state.
+    ///
+    /// It is possible that the `DeviceCollection` will appear empty
+    /// even after a `loaded` is received; this event is more appropriate for
+    /// dismissing progress indicators, etc. Observe `contentsSignal` for content-
+    /// related events.
+    ///
+    /// Note that the `DeviceCollection` automatically manages its connection state,
+    /// so it is possible that `State` events will be emitted at anytime during the course
+    /// of app execution.
+    ///
+    /// ## Cases
+    ///
+    /// * `.unloaded`: The `DeviceCollection` is in an unloaded/unstarted state; no events
+    ///               are being received.
+    ///
+    /// * `.loading`: The `DeviceCollection` is starting attempting to connect to its sources.
+    ///
+    /// * `.loaded`: The `DeviceCollection` has has started and is handling events.
+    ///
+    /// * `.error(Error?)`: The `DeviceCollection` is in an error state.
+    ///
+    public enum State: Equatable {
+        
+        /// The `DeviceCollection` is in an unloaded/unstarted state; no events
+        /// are being received.
+        case unloaded
+        
+        /// The `DeviceCollection` is starting attempting to connect to its sources.
+        case loading
+        
+        /// The `DeviceCollection` has has started and is handling events.
+        ///  - note: It is possible that the `DeviceCollection` will appear empty
+        ///  even after a `loaded` is received; this event is more appropriate for
+        ///  dismissing progress indicators, etc. Observe `contentsSignal` for content-
+        ///  related events.
+        ///
+        case loaded
+        
+        /// The `DeviceCollection` is in an error state.
+        case error(Error?)
+        
+        public static func ==(lhs: DeviceCollection.State, rhs: DeviceCollection.State) -> Bool {
+            
+            switch (lhs, rhs) {
+            case (.loading, .loading): fallthrough
+            case (.loaded, .loaded): fallthrough
+            case (.unloaded, .unloaded): fallthrough
+            case (.error, .error):
+                return true
+                
+            default:
+                return false
+            }
+            
+        }
+        
+    }
     
     fileprivate(set) public var stateSignal: Signal<State, NoError>! = nil
     fileprivate var stateSink: Signal<State, NoError>.Observer! = nil
@@ -268,9 +270,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
+    // MARK: - Metrics collection -
+    
     private var _metricHelper: MetricHelper?
     
-    var metricHelper: MetricHelper! {
+    private var metricHelper: MetricHelper! {
         get {
             if let metricHelper = _metricHelper {
                 return metricHelper
@@ -284,7 +288,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     }
     
 
-    // MARK: - Private stream controls
+    // MARK: - Private stream controls -
 
     private func startEventStream() {
 
@@ -1023,7 +1027,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         eventStream.stop()
 
         let sink = contentsSink
-        let devices = allDevices
+        let devices = _allDevices
 
         self._devices.removeAll(keepingCapacity: true)
         
@@ -1207,3 +1211,16 @@ extension DeviceStreamEvent.Peripheral {
         return tags.map { DeviceTagCollection.DeviceTag(model: $0) }
     }
 }
+
+// MARK: - Deprecations -
+
+extension DeviceCollection {
+
+    @available(*, deprecated, message: "Public access to `allDevices` is deprecated; use `devices` instead.")
+    public var allDevices: [DeviceModel] { _allDevices }
+    
+    @available(*, deprecated, renamed: "devices")
+    public var visibleDevices: [DeviceModel] { devices }
+
+}
+
