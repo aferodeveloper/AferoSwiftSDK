@@ -19,13 +19,50 @@ typealias DeviceEventHandler = (_ sender: String, _ event: String, _ data: [Stri
 // MARK: - DeviceCollection -
 
 /// A collection of Afero peripheral devices
-
+///
+/// The `DeviceCollection` provides a public interface for obtaining
+/// `DeviceModel` objects, and ensures that the objects it vends
+/// are kept up-to-date by sourcing changes to contents and individual
+/// device state from the Afero cloud.
+///
+/// # State Observation
+///
+/// `DeviceCollection` `connectionState` refers to the state of an individual collection's
+/// communication with its data sources on the Afero cloud, as distinct from
+/// its *contents*. Changes to `connectionState` can be observed on the
+/// `connectionStateSignal`.
+///
+/// `DeviceCollection` instances manage their own connections once started, attempting
+/// reconnection to the Afero cloud in cases of unexpected disconnection. For this reason,
+/// `connectionState` may change over the course of normal operation.
+///
+/// # Contents Observation
+///
+/// `DeviceCollection` contents changes are signaled separately from connection state,
+/// and can be observed on the `contentsSignal`. Events emitted here indicate when
+/// content changes begin and end, and which `DeviceModel`s are added and deleted.
+///
+/// # Lifecycle
+///
+/// `DeviceCollection` instance lifecycle can be managed with the following methods:
+///
+/// * `start()`: Ask the instance to start. The instance will attempt to connect
+///   to the Afero cloud, and to stay connected while your app is in the foreground.
+///
+/// * `stop()`: Ask the instance to stop. Connections to the Afero cloud will
+///   terminate immediately, and will not be resumed until `start()` is called.
+///
+/// * `reset()`: In addition to tasks carried out by `stop()`, `reset()` will also
+///   clear all content, sending events for deleted devices, and revert to an `unloaded`
+///   `connectionState`.
+///
+///
 public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate lazy var TAG: String = { return "\(type(of: self))@\(Unmanaged.passUnretained(self).toOpaque())" }()
     
     public override var debugDescription: String {
-        return "<\(TAG)> accountId: \(accountId) state: \(state) eventStream: \(eventStream.debugDescription)"
+        return "<\(TAG)> accountId: \(accountId) state: \(connectionState) eventStream: \(eventStream.debugDescription)"
     }
     
     /// All visible devices in this account
@@ -182,7 +219,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     ///
     /// * `.error(Error?)`: The `DeviceCollection` is in an error state.
     ///
-    public enum State: Equatable {
+    public enum ConnectionState: Equatable {
         
         /// The `DeviceCollection` is in an unloaded/unstarted state; no events
         /// are being received.
@@ -202,7 +239,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         /// The `DeviceCollection` is in an error state.
         case error(Error?)
         
-        public static func ==(lhs: DeviceCollection.State, rhs: DeviceCollection.State) -> Bool {
+        public static func ==(lhs: DeviceCollection.ConnectionState, rhs: DeviceCollection.ConnectionState) -> Bool {
             
             switch (lhs, rhs) {
             case (.loading, .loading): fallthrough
@@ -219,14 +256,14 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    fileprivate(set) public var stateSignal: Signal<State, NoError>! = nil
-    fileprivate var stateSink: Signal<State, NoError>.Observer! = nil
+    fileprivate(set) public var connectionStateSignal: Signal<ConnectionState, NoError>! = nil
+    fileprivate var connectionStateSink: Signal<ConnectionState, NoError>.Observer! = nil
     
     /// State of this device collection. For updates, observe `stateSignal`.
-    fileprivate(set) public var state: State = .unloaded {
+    fileprivate(set) public var connectionState: ConnectionState = .unloaded {
         didSet {
-            if oldValue == state { return }
-            stateSink.send(value: state)
+            if oldValue == connectionState { return }
+            connectionStateSink.send(value: connectionState)
         }
     }
     
@@ -239,11 +276,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
         self.contentsSink = localContentsSink
         
         // Set up the signal for state changes
-        var localStateSink: Signal<State, NoError>.Observer! = nil
-        self.stateSignal = Signal {
+        var localStateSink: Signal<ConnectionState, NoError>.Observer! = nil
+        self.connectionStateSignal = Signal {
             sink, _ in localStateSink = sink
         }
-        self.stateSink = localStateSink
+        self.connectionStateSink = localStateSink
     }
 
     
@@ -274,7 +311,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     private var _metricHelper: MetricHelper?
     
-    private var metricHelper: MetricHelper! {
+    internal var metricHelper: MetricHelper! {
         get {
             if let metricHelper = _metricHelper {
                 return metricHelper
@@ -296,7 +333,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         metricHelper.resetWakeUpTime()
 
-        if state == .loaded {
+        if connectionState == .loaded {
             DDLogDebug("EventStream already started; bailing.", tag: TAG)
             return
         }
@@ -305,7 +342,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         startObservingEventStream()
         
-        state = .loading
+        connectionState = .loading
         
         let trace = isTraceEnabled
         
@@ -315,12 +352,12 @@ public class DeviceCollection: NSObject, MetricsReportable {
             }.then {
                 devicesJson -> Void in
                 self.createOrUpdateDevices(with: devicesJson)
-                self.state = .loaded
+                self.connectionState = .loaded
             }.then {
                 self.eventStream.start(trace) {
                     maybeError in if let error = maybeError {
                         DDLogError(String(format: "ERROR starting device stream: %@", error.localizedDescription), tag: TAG)
-                        self.state = .error(error)
+                        self.connectionState = .error(error)
                         return
                     }
                 }
@@ -334,7 +371,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     private func stopEventStream() {
         metricHelper = nil
         eventStream.stop()
-        state = .unloaded
+        connectionState = .unloaded
         for entry in _devices {
             var state = entry.1.currentState
             state.isAvailable = false
@@ -1036,7 +1073,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
 
         profileSource.reset()
-        self.state = .unloaded
+        self.connectionState = .unloaded
     }
    
     // MARK: underlying store abstraction
@@ -1215,6 +1252,15 @@ extension DeviceStreamEvent.Peripheral {
 // MARK: - Deprecations -
 
 extension DeviceCollection {
+    
+    @available(*, deprecated, renamed: "ConnectionState")
+    public typealias State = ConnectionState
+    
+    @available(*, deprecated, renamed: "connectionStateSignal")
+    public var stateSignal: Signal<ConnectionState, NoError>! { connectionStateSignal }
+
+    @available(*, deprecated, renamed: "connectionState")
+    public var state: ConnectionState { connectionState }
 
     @available(*, deprecated, message: "Public access to `allDevices` is deprecated; use `devices` instead.")
     public var allDevices: [DeviceModel] { _allDevices }
