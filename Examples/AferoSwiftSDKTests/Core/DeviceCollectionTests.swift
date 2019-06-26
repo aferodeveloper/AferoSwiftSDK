@@ -104,23 +104,23 @@ class DeviceCollectionSpec: QuickSpec {
                     }
                 }
                 
-                typealias State = DeviceCollection.State
+                typealias State = DeviceCollection.ConnectionState
 
                 // MARK: • should start if the delegate tells it to
 
                 it("should start if the delegate tells it to") {
-                    expect(deviceCollection.state) == State.unloaded
+                    expect(deviceCollection.connectionState) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollection.state) == State.loading
+                    expect(deviceCollection.connectionState) == State.loading
                 }
                 
                 // MARK: • should transition from loading to loaded when it gets a peripheralList
                 
                 it("should transition from loading to loaded when it gets a peripheralList") {
                     
-                    expect(deviceCollection.state) == State.unloaded
+                    expect(deviceCollection.connectionState) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollection.state) == State.loading
+                    expect(deviceCollection.connectionState) == State.loading
                     
                 }
                 
@@ -128,11 +128,11 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 it("should attempt to fetch profiles for the peripherals when it gets a peripheralList") {
                     
-                    expect(deviceCollection.state) == State.unloaded
+                    expect(deviceCollection.connectionState) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollection.state) == State.loading
+                    expect(deviceCollection.connectionState) == State.loading
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    expect(deviceCollection.state).toEventually(equal(State.loaded))
+                    expect(deviceCollection.connectionState).toEventually(equal(State.loaded))
                     
                 }
                 
@@ -140,13 +140,13 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 it("should have the expected number of devices after getting a peripheralList") {
                     
-                    expect(deviceCollection.state) == State.unloaded
+                    expect(deviceCollection.connectionState) == State.unloaded
                     deviceCollection.start()
-                    expect(deviceCollection.state) == State.loading
+                    expect(deviceCollection.connectionState) == State.loading
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
                     expect(deviceCollection.devices.filter { $0.isDirect }.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.25)
-                    expect(deviceCollection.state).toEventually(equal(State.loaded))
+                    expect(deviceCollection.connectionState).toEventually(equal(State.loaded))
                     
                 }
                 
@@ -184,22 +184,22 @@ class DeviceCollectionSpec: QuickSpec {
 
                     expect(addCount).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
                     expect(deleteCount).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
-                    expect(deviceCollection.visibleDevices.count).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
                 }
 
                 // MARK: • should fire the expected state events
                 
                 it("should fire the expected state events") {
                     
-                    var stateEvents: [DeviceCollection.State] = []
+                    var stateEvents: [DeviceCollection.ConnectionState] = []
                     
-                    stateEventDisposable = deviceCollection.stateSignal
+                    stateEventDisposable = deviceCollection.connectionStateSignal
                         .observe(on: QueueScheduler.main)
                         .observeValues {
                             stateEvents.append($0)
                     }
                     
-                    stateEvents.append(deviceCollection.state)
+                    stateEvents.append(deviceCollection.connectionState)
                     
                     expect(stateEvents) == [.unloaded]
                     deviceCollection.start()
@@ -262,7 +262,7 @@ class DeviceCollectionSpec: QuickSpec {
                         }
                     }
                     
-                    typealias State = DeviceCollection.State
+                    typealias State = DeviceCollection.ConnectionState
 
                 }
                 

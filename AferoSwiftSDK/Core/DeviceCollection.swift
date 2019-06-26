@@ -554,7 +554,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
             }
         }
         
-        self.state = .loaded
+        self.connectionState = .loaded
         
         //let coldStartupTime = MetricHelper.sharedInstance.coldStartUpTime
         if let wakeupTime = metricHelper.wakeUpTime {
