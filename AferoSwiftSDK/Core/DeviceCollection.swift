@@ -9,6 +9,7 @@
 
 import Foundation
 import ReactiveSwift
+import PromiseKit
 import Result
 import CoreLocation
 
@@ -79,7 +80,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     /// The id of the account this `DeviceCollection`.
     public var accountId: String { return eventStream.accountId }
-
+    
     /// If `true`, additional debugging is turned on for realtime connections.
     /// Defaults to `false`.
     var isTraceEnabled: Bool = false {
@@ -122,7 +123,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter accountId: The `AccountId` that will be assigned to the eventStream.
     
     public convenience init(apiClient: AferoAPIClientProto, conclaveAuthable: ConclaveAuthable, accountId: String, userId: String, mobileDeviceId: String) {
-
+        
         let eventStream = ConclaveDeviceEventStream(
             authable: conclaveAuthable,
             accountId: accountId,
@@ -181,7 +182,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         case endUpdates
         
     }
-
+    
     /// Observe this signal to get notifications of devices being added
     /// and removed from the collection.
     ///
@@ -190,7 +191,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate(set) public var contentsSignal: Signal<ContentsChange, NoError>! = nil
     fileprivate var contentsSink: Signal<ContentsChange, NoError>.Observer! = nil
-
+    
     // MARK: - State Observation -
     
     /// Represents the connection state of the DeviceCollection.
@@ -282,10 +283,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
         self.connectionStateSink = localStateSink
     }
-
+    
     
     static let NonemptyNotification = "DeviceCollectionNonemptyNotification"
-
+    
     fileprivate func postNonemptyNotification() {
         
         NotificationCenter.default.post(
@@ -324,20 +325,20 @@ public class DeviceCollection: NSObject, MetricsReportable {
         set { _metricHelper = newValue }
     }
     
-
+    
     // MARK: - Private stream controls -
-
+    
     private func startEventStream() {
-
+        
         let TAG = self.TAG
         
         metricHelper.resetWakeUpTime()
-
+        
         if connectionState == .loaded {
             DDLogDebug("EventStream already started; bailing.", tag: TAG)
             return
         }
-
+        
         DDLogInfo("Starting eventStream.", tag: TAG)
         
         startObservingEventStream()
@@ -365,7 +366,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 err in
                 DDLogError("Unable to fetch devices: \(String(reflecting: err))")
         }
-
+        
     }
     
     private func stopEventStream() {
@@ -388,18 +389,18 @@ public class DeviceCollection: NSObject, MetricsReportable {
     // MARK: - Model
     
     /**
-    Asynchronously update a device, and pass it to the optional onDone handler.
-    The handler is guaranteed not to be called if either the profileId or the deviceId
-    is nil on the device.
+     Asynchronously update a device, and pass it to the optional onDone handler.
+     The handler is guaranteed not to be called if either the profileId or the deviceId
+     is nil on the device.
+     
+     - parameter device: The device to update
+     - parameter onDone: An optional ``(DeviceModel)->Void`` to receive the updated device. It
+     will never receive a nil device.
+     */
     
-    - parameter device: The device to update
-    - parameter onDone: An optional ``(DeviceModel)->Void`` to receive the updated device. It
-    will never receive a nil device.
-    */
-    
-    fileprivate func registerDevice(_ device: DeviceModel, onDone: ((DeviceModel)->Void)?) {
+    fileprivate func registerDevice(_ device: DeviceModel) -> Promise<DeviceModel> {
         addOrReplace(peripheral: device)
-        onDone?(device)
+        return Promise(value: device)
     }
     
     fileprivate func removeDevice(_ deviceId: String?) {
@@ -457,10 +458,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         DDLogVerbose(String(format: "DeviceCollection got event: %@", String(reflecting: event)), tag: TAG)
         
         switch (event) {
-
+            
         case let .peripheralList(peripherals, currentSeq):
             onPeripheralList(peripherals: peripherals, seq: currentSeq)
-
+            
         case let .attributeChange(seq, peripheralId, requestId, state, reason, attribute, sourceHubId):
             onAttributeChange(peripheralId: peripheralId, attribute: attribute, requestId: requestId, seq: seq, state: state, reason: reason, sourceHubId: sourceHubId)
             
@@ -497,11 +498,11 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter error: The `DeviceStreamEvent.DeviceError` that was emitted.
     /// - parameter seq: The sequence number for the eventStream message.
     /// - note: Sequence numbers are currently ignored.
-
+    
     fileprivate func onDeviceError(error: DeviceStreamEvent.DeviceError, seq: DeviceStreamEventSeq?) {
-
+        
         DDLogDebug("error:\(String(describing: error)) seq: \(String(describing: seq))", tag: TAG)
-
+        
         guard let device = peripheral(for: error.peripheralId) else {
             return
         }
@@ -512,13 +513,13 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         device.error(error)
     }
-
+    
     /// Handle a DeviceMuted event.
     /// - parameter peripheralId: The id of the peripheral device that was muted.
     /// - parameter timeout: The duration for the mute action.
     /// - parameter seq: The sequence number for the eventStream message.
     /// - note: Sequence numbers are currently ignored.
-
+    
     func onDeviceMuted(peripheralId: String, timeout: TimeInterval, seq: DeviceStreamEventSeq?) {
         // TODO: Implement onDeviceMuted.
         DDLogDebug("TODO: mute device \(peripheralId) for \(timeout)s.")
@@ -534,23 +535,26 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - note: Sequence numbers are currently ignored.
     
     fileprivate func onPeripheralList(peripherals: [DeviceStreamEvent.Peripheral], seq: DeviceStreamEventSeq) {
-
+        
         let currentDeviceIds = Set(Array(_devices.keys))
         
         let deviceIdsToKeep = Set(peripherals.map { $0.id })
         let deviceIdsToRemove = currentDeviceIds.subtracting(deviceIdsToKeep)
-
+        
         deviceIdsToRemove.forEach {
             [weak self] deviceId in asyncMain {
                 self?.removeDevice(deviceId)
             }
         }
-
+        
         let peripheralsToKeep = peripherals.filter { deviceIdsToKeep.contains($0.id) }
         peripheralsToKeep.forEach {
             [weak self] peripheral in
             asyncMain {
-                self?.createOrUpdateDevice(with: peripheral, seq: seq)
+                self?.createOrUpdateDevice(with: peripheral, seq: seq).then {
+                    maybeDevice, created in
+                    self?.handleCreateOrUpdateDeviceResult(maybeDevice, created)
+                }
             }
         }
         
@@ -574,16 +578,31 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
+    fileprivate func handleCreateOrUpdateDeviceResult(_ maybeDevice: DeviceModel?, _ created: Bool) {
+        
+        if created {
+            guard let device = maybeDevice else {
+                let msg = "Expected a device, since we created it."
+                assert(false, msg)
+                DDLogError(msg)
+                return
+            }
+            postAddedVisibleDeviceNotification()
+            contentsSink?.send(value: .create(device))
+        }
+        
+    }
+    
     /// If necessary, create a device with the given deviceId and profileId.
     ///
     /// - parameter deviceId: The `id` of the device.
     /// - parameter profileId: The `id` of the device's profile.
     /// - returns: `true` if the device was created, `false` if not (device already existed)
     
-    fileprivate func createDevice(with deviceId: String, profileId: String) -> Bool {
+    fileprivate func createDeviceIfNecessary(with deviceId: String, profileId: String) -> Promise<(device: DeviceModel, created: Bool)> {
         
-        if let _ = _devices[deviceId] {
-            return false
+        if let ret = _devices[deviceId] {
+            return Promise(value: (ret, false))
         }
         
         let ret = DeviceModel(
@@ -594,30 +613,37 @@ public class DeviceCollection: NSObject, MetricsReportable {
             attributes: [:],
             deviceCloudSupporting: self,
             profileSource: profileSource
-            )
+        )
         
         ret.shouldAttemptAutomaticUTCMigration = true
-        registerDevice(ret, onDone: nil)
-        return true
+        return registerDevice(ret).then {
+            (device: $0, created: true)
+        }
+        
     }
     
     fileprivate func createOrUpdateDevices(with json: [[String: Any]]) {
         json.forEach {
-            elem in
+            [weak self] elem in
             asyncMain {
-                self.createOrUpdateDevice(with: elem)
+                self?.createOrUpdateDevice(with: elem).then {
+                    maybeDevice, created in
+                    self?.handleCreateOrUpdateDeviceResult(maybeDevice, created)
+                }
             }
         }
     }
     
-    fileprivate func createOrUpdateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void = { _ in }) {
+    typealias CreateOrUpdateDeviceResultValue = (device: DeviceModel?, created: Bool)
+    typealias CreateOrUpdateDeviceResult = Promise<CreateOrUpdateDeviceResultValue>
+    
+    fileprivate func createOrUpdateDevice(with json: [String: Any]) -> CreateOrUpdateDeviceResult {
         
         guard
             let deviceId = json["deviceId"] as? String,
             let profileId = json["profileId"] as? String else {
                 DDLogError("No deviceId in json; bailing create.", tag: TAG)
-                onDone(nil)
-                return
+                return Promise(value: (nil, false))
         }
         
         if !profileSource.containsProfile(for: profileId),
@@ -625,20 +651,27 @@ public class DeviceCollection: NSObject, MetricsReportable {
             profileSource.add(profile: profile)
         }
         
-        let created = createDevice(with: deviceId, profileId: profileId)
-        
-        updateDevice(with: json) {
-            [weak self] maybeDevice in
-            guard let device = maybeDevice else {
-                onDone(nil)
-                return
-            }
-            onDone(device)
-            guard created else { return }
-            
-            self?.postAddedVisibleDeviceNotification()
-            self?.contentsSink?.send(value: .create(device))
+        return createDeviceIfNecessary(with: deviceId, profileId: profileId)
+            .then {
+                maybeDevice, created in
+                
+                self.updateDevice(with: json)
+                    .then {
+                        maybeDevice -> CreateOrUpdateDeviceResultValue in
+                        
+                        assert(maybeDevice != nil, "Expected maybeDevice not to be nil, since we just created it.")
+                        
+                        guard let device = maybeDevice else {
+                            let msg = "Expected maybeDevice not to be nil, since we just created it."
+                            DDLogError(msg, tag: self.TAG)
+                            throw msg
+                        }
+                        
+                        return (device, created)
+                }
+                
         }
+        
         
     }
     
@@ -648,48 +681,59 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter seq: The sequence number of the event stream message, if any.
     /// - note: sequence numbers are currently ignored.
     
-    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil) {
+    fileprivate func createOrUpdateDevice(with peripheral: DeviceStreamEvent.Peripheral, seq: DeviceStreamEventSeq? = nil) -> CreateOrUpdateDeviceResult {
         
         let deviceId = peripheral.id
         
-        let created = createDevice(with: deviceId, profileId: peripheral.profileId)
-        
-        updateDevice(with: peripheral) {
-            [weak self] maybeDevice in
-            guard let device = maybeDevice else {
-                return
-            }
-            guard created else { return }
-            self?.postAddedVisibleDeviceNotification()
-            self?.contentsSink?.send(value: .create(device))
+        return createDeviceIfNecessary(with: deviceId, profileId: peripheral.profileId)
+            .then {
+                maybeDevice, created in
+                
+                self.updateDevice(with: peripheral)
+                    .then {
+                        maybeDevice -> CreateOrUpdateDeviceResultValue in
+                        assert(maybeDevice != nil, "Expected maybeDevice not to be nil, since we just created it.")
+                        
+                        guard let device = maybeDevice else {
+                            let msg = "Expected maybeDevice not to be nil, since we just created it."
+                            DDLogError(msg, tag: self.TAG)
+                            throw msg
+                        }
+                        
+                        return (device, created)
+                }
+                
         }
+        
         
     }
     
-    fileprivate func updateDevice(with json: [String: Any], onDone: @escaping (DeviceModel?)->Void) {
+    typealias UpdateDeviceResult = Promise<DeviceModel?>
+    
+    fileprivate func updateDevice(with json: [String: Any]) -> UpdateDeviceResult {
         
         let tag = TAG
-
+        
         guard
             let deviceId = json["deviceId"] as? String,
             let device = _devices[deviceId] else {
                 DDLogWarn("No deviceId or device; bailing", tag: tag)
-                return
+                return Promise(value: nil)
         }
-
+        
         guard
             let profileId = json["profileId"] as? String,
             let modelState: DeviceModelState = |<(json["deviceState"] as? [String: Any]),
             let attributes = json["attributes"] as? [[String: Any]] else {
-                DDLogError("Cannot decode device from \(String(reflecting: json)); bailing", tag: tag)
-                onDone(nil)
-                return
+                let msg = "Cannot decode device from \(String(reflecting: json)); bailing"
+                DDLogError(msg, tag: tag)
+                return Promise(error: msg)
         }
         
         if let timeZoneState: TimeZoneState = |<(json["timezone"] as? [String: Any]) {
             device.timeZoneState = timeZoneState
         }
-
+        
         device.associationId = json["associationId"] as? String
         device.friendlyName = json["friendlyName"] as? String
         device.currentState.connectionState = modelState
@@ -699,47 +743,70 @@ public class DeviceCollection: NSObject, MetricsReportable {
             device.deviceTags = Set(tags.map { return DeviceTagCollection.DeviceTag(model: $0) } )
         }
         
-        device.updateProfile {
+        return Promise {
             
-            [weak device] updateProfileSuccess, maybeError in
+            fulfill, reject in
             
-            if updateProfileSuccess {
+            device.updateProfile {
+                
+                [weak device] updateProfileSuccess, maybeError in
+                
+                guard updateProfileSuccess else {
+                    var msg = "Unable to update profile for device."
+                    
+                    if let error = maybeError {
+                        msg = "\(msg) Error: \(String(reflecting: error))"
+                    }
+                    
+                    DDLogError(msg, tag: tag)
+                    reject(msg)
+                    return
+                }
                 
                 guard let device = device else {
                     DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", deviceId), tag: tag)
+                    fulfill(nil)
                     return
                 }
                 
                 device.update(with: attributes)
-                onDone(device)
+                fulfill(device)
             }
-            
-            if let error = maybeError {
-                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
-            }
-            
         }
+        
         
         
     }
     
-    fileprivate func updateDevice(with peripheral: DeviceStreamEvent.Peripheral, onDone: @escaping (DeviceModel?)->Void) {
-
+    fileprivate func updateDevice(with peripheral: DeviceStreamEvent.Peripheral) -> UpdateDeviceResult {
+        
         let tag = TAG
         
         guard let device = _devices[peripheral.id] else {
             DDLogWarn("No device \(peripheral.id); bailing", tag: tag)
-            onDone(nil)
-            return
+            return Promise(value: nil)
         }
         
         device.deviceTags = Set(peripheral.deviceTags)
         
-        device.updateProfile {
+        return Promise {
+            fulfill, reject in
             
-            [weak device] updateProfileSuccess, maybeError in
-            
-            if updateProfileSuccess {
+            device.updateProfile {
+                
+                [weak device] updateProfileSuccess, maybeError in
+                
+                guard updateProfileSuccess else {
+                    var msg = "Unable to update profile for device."
+                    
+                    if let error = maybeError {
+                        msg = "\(msg) Error: \(String(reflecting: error))"
+                    }
+                    
+                    DDLogError(msg, tag: tag)
+                    reject(msg)
+                    return
+                }
                 
                 guard let device = device else {
                     DDLogDebug(String(format: "Device %@ has already been reaped; bailing.", peripheral.id), tag: tag)
@@ -747,11 +814,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 }
                 
                 device.update(with: peripheral)
-                onDone(device)
-            }
-            
-            if let error = maybeError {
-                DDLogError("Unable to update profile for device: \(String(reflecting: error))", tag: tag)
+                fulfill(device)
+                
             }
             
         }
@@ -796,7 +860,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     fileprivate func onStatusChange(peripheralId: String, status: DeviceStreamEvent.Peripheral.Status, seq: DeviceStreamEventSeq?) {
         
         DDLogDebug("peripheralId:\(peripheralId) status:\(String(reflecting: status)) seq:\(String(describing: seq))", tag: TAG)
-
+        
         guard let device = peripheral(for: peripheralId) else {
             DDLogInfo("No device with id \(peripheralId); ignoring.", tag: TAG)
             return
@@ -805,7 +869,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         var state = device.currentState
         state.connectionState.update(with: status)
         device.currentState = state
-
+        
     }
     
     /// Handle a `DeviceStreamEvent.deviceOTA` message
@@ -821,7 +885,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         guard
             let device = peripheral(for: peripheralId) else {
-            return
+                return
         }
         
         packageInfo.forEach {
@@ -843,7 +907,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         DDLogDebug("peripheralId:\(peripheralId) otaProgress:\(String(describing: progress)) seq:\(String(describing: seq))", tag: TAG)
         
         guard let device = peripheral(for: peripheralId) else {
-                return
+            return
         }
         
         device.otaProgress = progress.progress
@@ -861,7 +925,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     ///         For this reason, we only forward the name and the raw daa.
     
     fileprivate func onInvalidate(maybePeripheralId: String?, event: InvalidationEvent, seq: DeviceStreamEventSeq?) {
-
+        
         guard
             let peripheralId = maybePeripheralId,
             let device = peripheral(for: peripheralId) else { return }
@@ -943,7 +1007,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 [weak peripheral] in
                 DDLogDebug("After locationState update of \(peripheralId): \(String(reflecting: peripheral))", tag: self.TAG)
         }
-
+        
     }
     
     /// Update the timeZoneState for the given peripheral id, optionally retrying upon failure.
@@ -952,7 +1016,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// - parameter retryInterval: If non-`nil`, retry upon failure after `retryInterval` seconds.
     ///                            If `nil`, do not retry.
     func updateTimeZoneState(for peripheralId: String, retryInterval: TimeInterval? = nil) {
-
+        
         guard let peripheral = peripheral(for: peripheralId) else { return }
         
         guard peripheral.timeZoneState != .pendingUpdate else {
@@ -987,7 +1051,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
                 [weak peripheral] in
                 DDLogDebug("After timeZoneState update of \(peripheralId): \(String(reflecting: peripheral))", tag: self.TAG)
         }
-
+        
     }
     
     func applyTagUpdate(for peripheralId: String, info: InvalidationEvent.EventInfo) {
@@ -1030,16 +1094,16 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
         
     }
-
+    
     // MARK: - Public Stream Controls
-
+    
     public func refresh() {
         stop()
         start()
     }
-
+    
     // MARK: - Public stream controls
-
+    
     private var shouldBeRunning: Bool = false {
         didSet {
             if shouldBeRunning {
@@ -1062,20 +1126,20 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     public func reset() {
         eventStream.stop()
-
+        
         let sink = contentsSink
         let devices = _allDevices
-
+        
         self._devices.removeAll(keepingCapacity: true)
         
         for device in devices {
             sink?.send(value: .delete(device))
         }
-
+        
         profileSource.reset()
         self.connectionState = .unloaded
     }
-   
+    
     // MARK: underlying store abstraction
     
     /// Get a peripheral for the given id, if available.
@@ -1101,24 +1165,24 @@ public class DeviceCollection: NSObject, MetricsReportable {
     // MARK: App State Observation
     
     func registerForAppStateNotifications() {
-
+        
         #if os(iOS) || os(tvOS)
-            
-            NotificationCenter.default.addObserver(
-                self, selector: #selector(handleEnteredBackgroundNotification),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
-            
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(handleEnteredForegroundNotification),
-                name: UIApplication.didBecomeActiveNotification,
-                object: nil
-            )
+        
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(handleEnteredBackgroundNotification),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleEnteredForegroundNotification),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
         
         #endif
-
+        
     }
     
     func unregisterFromAppStateNotifications() {
@@ -1192,12 +1256,12 @@ public extension DeviceCollection {
             ownershipTransferVerified: isOwnershipChangeVerified
             ).then {
                 
-                deviceJson in
+                (deviceJson: [String: Any]) -> Void in
                 
-                self.createOrUpdateDevice(with: deviceJson) {
+                self.createOrUpdateDevice(with: deviceJson).then {
                     
-                    deviceModel in
-                    guard let deviceModel = deviceModel else {
+                    maybeDevice, created -> Void in
+                    guard let deviceModel = maybeDevice else {
                         onDone(nil, "No deviceModel returned.")
                         return
                     }
@@ -1209,7 +1273,8 @@ public extension DeviceCollection {
                             for: deviceModel.deviceId,
                             in: self.accountId
                         ).then {
-                            _ in
+                            _ -> Void in
+                            self.handleCreateOrUpdateDeviceResult(maybeDevice, created)
                             onDone(deviceModel, nil)
                         }.catch {
                             err in
@@ -1223,7 +1288,7 @@ public extension DeviceCollection {
     }
     
     typealias RemoveDeviceOnDone = (String?, Error?) -> Void
-
+    
     /// Remove a device from the collection.
     ///
     /// This call results in a disassociate being called against the Afero service.
@@ -1258,15 +1323,15 @@ extension DeviceCollection {
     
     @available(*, deprecated, renamed: "connectionStateSignal")
     public var stateSignal: Signal<ConnectionState, NoError>! { connectionStateSignal }
-
+    
     @available(*, deprecated, renamed: "connectionState")
     public var state: ConnectionState { connectionState }
-
+    
     @available(*, deprecated, message: "Public access to `allDevices` is deprecated; use `devices` instead.")
     public var allDevices: [DeviceModel] { _allDevices }
     
     @available(*, deprecated, renamed: "devices")
     public var visibleDevices: [DeviceModel] { devices }
-
+    
 }
 
