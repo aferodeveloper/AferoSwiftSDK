@@ -311,7 +311,7 @@ class AccountViewController: UITableViewController {
     }
 
     func subscribeToDeviceCollectionStateUpdates() {
-        deviceCollectionStateDisposable = model?.deviceCollection?.stateSignal.observeValues {
+        deviceCollectionStateDisposable = model?.deviceCollection?.connectionStateSignal.observeValues {
             [weak self] event in self?.updateLoadingProgressForState(event)
         }
     }
@@ -320,7 +320,7 @@ class AccountViewController: UITableViewController {
         deviceCollectionStateDisposable = nil
     }
     
-    func updateLoadingProgressForState(_ state: DeviceCollection.State?) {
+    func updateLoadingProgressForState(_ state: DeviceCollection.ConnectionState?) {
         
         guard let state = state else { return }
         
