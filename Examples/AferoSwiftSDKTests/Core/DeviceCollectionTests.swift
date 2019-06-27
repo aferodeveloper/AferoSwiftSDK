@@ -154,16 +154,20 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 it("should fire two device add events") {
                     
+                    var beginCount: Int = 0
                     var addCount: Int = 0
                     var deleteCount: Int = 0
+                    var endCount: Int = 0
                     
                     contentEventDisposable = deviceCollection.contentsSignal
                         .observe(on: QueueScheduler.main)
                         .observeValues {
                             contentEvent in
                             switch contentEvent {
+                            case .beginUpdates: beginCount += 1
                             case .create: addCount += 1
                             case .delete: deleteCount += 1
+                            case .endUpdates: endCount += 1
                             default: break
                             }
                     }
@@ -182,8 +186,12 @@ class DeviceCollectionSpec: QuickSpec {
                         deviceEventStreamable.eventSink.send(value: peripheralListFixtureTruncated)
                     }
 
+                    expect(beginCount).toEventually(equal(2), timeout: 5.0, pollInterval: 0.25)
+                    expect(beginCount).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.25)
                     expect(addCount).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
                     expect(deleteCount).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
+                    expect(endCount).toEventually(equal(2), timeout: 5.0, pollInterval: 0.25)
+                    expect(endCount).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.25)
                     expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
                 }
 
