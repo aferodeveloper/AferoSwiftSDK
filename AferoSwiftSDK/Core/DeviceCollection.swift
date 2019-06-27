@@ -351,9 +351,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
             .then {
                 _ in return self.apiClient.fetchDevices(for: self.accountId)
             }.then {
-                devicesJson -> Void in
+                devicesJson in
                 self.createOrUpdateDevices(with: devicesJson)
-                self.connectionState = .loaded
+            }.then {
+                _ in self.connectionState = .loaded
             }.then {
                 self.eventStream.start(trace) {
                     maybeError in if let error = maybeError {
@@ -541,39 +542,38 @@ public class DeviceCollection: NSObject, MetricsReportable {
         let deviceIdsToKeep = Set(peripherals.map { $0.id })
         let deviceIdsToRemove = currentDeviceIds.subtracting(deviceIdsToKeep)
         
-        deviceIdsToRemove.forEach {
-            [weak self] deviceId in asyncMain {
-                self?.removeDevice(deviceId)
-            }
-        }
-        
-        let peripheralsToKeep = peripherals.filter { deviceIdsToKeep.contains($0.id) }
-        peripheralsToKeep.forEach {
-            [weak self] peripheral in
-            asyncMain {
-                self?.createOrUpdateDevice(with: peripheral, seq: seq).then {
-                    maybeDevice, created in
-                    self?.handleCreateOrUpdateDeviceResult(maybeDevice, created)
+        notifyBeginUpdates()
+            .then {
+                () -> BulkCreateOrUpdateDeviceResult in
+                
+                deviceIdsToRemove.forEach {
+                    [weak self] deviceId in asyncMain {
+                        self?.removeDevice(deviceId)
+                    }
                 }
-            }
-        }
-        
-        self.connectionState = .loaded
-        
-        //let coldStartupTime = MetricHelper.sharedInstance.coldStartUpTime
-        if let wakeupTime = metricHelper.wakeUpTime {
-            DDLogInfo("wakup complete in \(wakeupTime)ms")
-            
-            let metric: DeviceEventStreamable.Metrics = [
-                "name": "WakeupTime",
-                "platform": "ios",
-                "deviceId": eventStream.clientId,
-                "elapsed": wakeupTime,
-                "success": true
-            ]
-            
-            metricHelper.addMetric(metric, forMetricType: "application")
-            metricHelper.reportMetrics()
+                let peripheralsToKeep = peripherals.filter { deviceIdsToKeep.contains($0.id) }
+                return self.createOrUpdateDevices(with: peripheralsToKeep, notifyBegin: false, notifyEnd: true)
+                
+            }.then {
+                _ -> Void in
+                
+                self.connectionState = .loaded
+                
+                //let coldStartupTime = MetricHelper.sharedInstance.coldStartUpTime
+                if let wakeupTime = self.metricHelper.wakeUpTime {
+                    DDLogInfo("wakup complete in \(wakeupTime)ms")
+                    
+                    let metric: DeviceEventStreamable.Metrics = [
+                        "name": "WakeupTime",
+                        "platform": "ios",
+                        "deviceId": self.eventStream.clientId,
+                        "elapsed": wakeupTime,
+                        "success": true
+                    ]
+                    
+                    self.metricHelper.addMetric(metric, forMetricType: "application")
+                    self.metricHelper.reportMetrics()
+                }
         }
         
     }
@@ -622,16 +622,75 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    fileprivate func createOrUpdateDevices(with json: [[String: Any]]) {
-        json.forEach {
-            [weak self] elem in
-            asyncMain {
-                self?.createOrUpdateDevice(with: elem).then {
-                    maybeDevice, created in
-                    self?.handleCreateOrUpdateDeviceResult(maybeDevice, created)
-                }
-            }
+    func notifyBeginUpdates() -> Promise<Void> {
+        return Promise()
+    }
+    
+    func notifyEndUpdates(results: [BulkCreateOrUpdateDeviceResultValue]) -> BulkCreateOrUpdateDeviceResult {
+        return Promise(value: results)
+    }
+    
+    typealias BulkCreateOrUpdateDeviceResultValue = PromiseKit.Result<CreateOrUpdateDeviceResultValue>
+    typealias BulkCreateOrUpdateDeviceResult = Promise<[BulkCreateOrUpdateDeviceResultValue]>
+    
+    fileprivate func createOrUpdateDevices<P: Sequence>(
+        with peripherals: P,
+        notifyBegin: Bool = false,
+        notifyEnd: Bool = true
+        ) -> BulkCreateOrUpdateDeviceResult
+        where
+        P.Element == DeviceStreamEvent.Peripheral
+    {
+        (notifyBegin ?
+            notifyBeginUpdates()
+            : Promise()
+            ).then {
+                when(resolved: peripherals.map {
+                    self.createOrUpdateDevice(with: $0)
+                        .then {
+                            result -> CreateOrUpdateDeviceResultValue in
+                            self.handleCreateOrUpdateDeviceResult(result.device, result.created)
+                            return result
+                    }
+                })
+            }.then {
+                results -> BulkCreateOrUpdateDeviceResult in
+                return notifyEnd ?
+                    self.notifyEndUpdates(results: results)
+                    : Promise(value: results)
         }
+    }
+
+    
+    fileprivate func createOrUpdateDevices<J: Sequence>(
+        with jsonElements: J,
+        notifyBegin: Bool = true,
+        notifyEnd: Bool = true
+        ) -> BulkCreateOrUpdateDeviceResult
+        where
+        J.Element == [String: Any]
+    {
+        
+        (notifyBegin ?
+            notifyBeginUpdates()
+            : Promise()
+            ).then {
+                when(resolved: jsonElements.map {
+                    self.createOrUpdateDevice(with: $0)
+                        .then {
+                            result -> CreateOrUpdateDeviceResultValue in
+                            self.handleCreateOrUpdateDeviceResult(result.device, result.created)
+                            return result
+                    }
+                })
+            }.then {
+                results -> BulkCreateOrUpdateDeviceResult in
+                return notifyEnd ?
+                    self.notifyEndUpdates(results: results)
+                    : Promise(value: results)
+        }
+
+        
     }
     
     typealias CreateOrUpdateDeviceResultValue = (device: DeviceModel?, created: Bool)
