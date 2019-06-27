@@ -66,18 +66,6 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return "<\(TAG)> accountId: \(accountId) state: \(connectionState) eventStream: \(eventStream.debugDescription)"
     }
     
-    /// All visible devices in this account
-    public var devices: [DeviceModel] {
-        return _allDevices.filter { $0.presentation != nil }
-    }
-    
-    /// Whether or not this DeviceCollection's profile cache contains at least
-    /// one profile with presentation.
-    
-    public var hasVisibleDevices: Bool {
-        return profileSource.hasVisibleDevices
-    }
-    
     /// The id of the account this `DeviceCollection`.
     public var accountId: String { return eventStream.accountId }
     
@@ -91,10 +79,10 @@ public class DeviceCollection: NSObject, MetricsReportable {
         }
     }
     
-    private var _devices: [String:DeviceModel] = [:]
+    private var _deviceRegistry: [String:DeviceModel] = [:]
     
     private var _allDevices: [DeviceModel] {
-        return Array(_devices.values)
+        return Array(_deviceRegistry.values)
     }
     
     internal var apiClient: AferoAPIClientProto
@@ -102,6 +90,18 @@ public class DeviceCollection: NSObject, MetricsReportable {
     internal let profileSource: CachedDeviceAccountProfilesSource
     internal var eventStream: DeviceEventStreamable
     
+    /// All visible devices in this account
+    public var devices: [DeviceModel] {
+        return _allDevices.filter { $0.presentation != nil }
+    }
+    
+    /// Whether or not this DeviceCollection's profile cache contains at least
+    /// one profile with presentation.
+    
+    public var hasVisibleDevices: Bool {
+        return profileSource.hasVisibleDevices
+    }
+
     // MARK: - Lifecycle -
     
     /// Designated initializer
@@ -164,7 +164,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// * `.resetAll`: The `DeviceCollection` has been reset; all devices have been removed.
     /// * `endUpdates`: The `DeviceCollection` has finished contents updates.
     ///
-    public enum ContentsChange {
+    public enum ContentEvent {
         
         /// The contents of the `DeviceCollection` are about to change.
         case beginUpdates
@@ -189,8 +189,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// See `ContentsChange` for a discussion of the events
     /// emitted by this signal.
     
-    fileprivate(set) public var contentsSignal: Signal<ContentsChange, NoError>! = nil
-    fileprivate var contentsSink: Signal<ContentsChange, NoError>.Observer! = nil
+    fileprivate(set) public var contentsSignal: Signal<ContentEvent, NoError>! = nil
+    fileprivate var contentsSink: Signal<ContentEvent, NoError>.Observer! = nil
     
     // MARK: - State Observation -
     
@@ -270,7 +270,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func setupSinks() {
         // Set up the signal for contents changes
-        var localContentsSink: Signal<ContentsChange, NoError>.Observer! = nil
+        var localContentsSink: Signal<ContentEvent, NoError>.Observer! = nil
         self.contentsSignal = Signal {
             sink, _ in localContentsSink = sink
         }
@@ -374,7 +374,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         metricHelper = nil
         eventStream.stop()
         connectionState = .unloaded
-        for entry in _devices {
+        for entry in _deviceRegistry {
             var state = entry.1.currentState
             state.isAvailable = false
             entry.1.currentState = state
@@ -408,7 +408,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         guard let deviceId = deviceId else { return }
         
-        if let d = _devices.removeValue(forKey: deviceId) {
+        if let d = _deviceRegistry.removeValue(forKey: deviceId) {
             d.deleted = true
             contentsSink.send(value: .delete(d))
         }
@@ -537,7 +537,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func onPeripheralList(peripherals: [DeviceStreamEvent.Peripheral], seq: DeviceStreamEventSeq) {
         
-        let currentDeviceIds = Set(Array(_devices.keys))
+        let currentDeviceIds = Set(_deviceRegistry.keys)
         
         let deviceIdsToKeep = Set(peripherals.map { $0.id })
         let deviceIdsToRemove = currentDeviceIds.subtracting(deviceIdsToKeep)
@@ -601,7 +601,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func createDeviceIfNecessary(with deviceId: String, profileId: String) -> Promise<(device: DeviceModel, created: Bool)> {
         
-        if let ret = _devices[deviceId] {
+        if let ret = _deviceRegistry[deviceId] {
             return Promise(value: (ret, false))
         }
         
@@ -622,11 +622,13 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    func notifyBeginUpdates() -> Promise<Void> {
+    fileprivate func notifyBeginUpdates() -> Promise<Void> {
+        contentsSink.send(value: .beginUpdates)
         return Promise()
     }
     
-    func notifyEndUpdates(results: [BulkCreateOrUpdateDeviceResultValue]) -> BulkCreateOrUpdateDeviceResult {
+    fileprivate func notifyEndUpdates(results: [BulkCreateOrUpdateDeviceResultValue]) -> BulkCreateOrUpdateDeviceResult {
+        contentsSink.send(value: .endUpdates)
         return Promise(value: results)
     }
     
@@ -775,7 +777,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         guard
             let deviceId = json["deviceId"] as? String,
-            let device = _devices[deviceId] else {
+            let device = _deviceRegistry[deviceId] else {
                 DDLogWarn("No deviceId or device; bailing", tag: tag)
                 return Promise(value: nil)
         }
@@ -841,7 +843,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
         let tag = TAG
         
-        guard let device = _devices[peripheral.id] else {
+        guard let device = _deviceRegistry[peripheral.id] else {
             DDLogWarn("No device \(peripheral.id); bailing", tag: tag)
             return Promise(value: nil)
         }
@@ -1189,7 +1191,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         let sink = contentsSink
         let devices = _allDevices
         
-        self._devices.removeAll(keepingCapacity: true)
+        _deviceRegistry.removeAll(keepingCapacity: true)
         
         for device in devices {
             sink?.send(value: .delete(device))
@@ -1203,22 +1205,22 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     /// Get a peripheral for the given id, if available.
     public func peripheral(for id: String) -> DeviceModel? {
-        guard let device = _devices[id], let _ = device.profile else {
+        guard let device = _deviceRegistry[id], let _ = device.profile else {
             return nil
         }
         return device
     }
     
     func addOrReplace(peripheral: DeviceModel) {
-        let shouldPostNonemptyNotification = _devices.count == 0
-        _devices[peripheral.deviceId] = peripheral
+        let shouldPostNonemptyNotification = _deviceRegistry.count == 0
+        _deviceRegistry[peripheral.deviceId] = peripheral
         if shouldPostNonemptyNotification {
             postNonemptyNotification()
         }
     }
     
     func removePeripheral(for id: String) {
-        _devices.removeValue(forKey: id)
+        _deviceRegistry.removeValue(forKey: id)
     }
     
     // MARK: App State Observation
@@ -1376,6 +1378,9 @@ extension DeviceStreamEvent.Peripheral {
 // MARK: - Deprecations -
 
 extension DeviceCollection {
+    
+    @available(*, renamed: "ContentEvent")
+    public typealias ContentsChange = ContentEvent
     
     @available(*, deprecated, renamed: "ConnectionState")
     public typealias State = ConnectionState
