@@ -43,9 +43,11 @@ protocol DeviceCollectionObserving: class {
     
     var deviceCollection: DeviceCollection? { get }
     var deviceCollectionDisposable: Disposable? { get set }
+    func deviceCollectionBeganUpdates()
     func deviceCollectionAddedDevice(_ device: DeviceModel)
     func deviceCollectionRemovedDevice(_ device: DeviceModel)
     func deviceCollectionReset()
+    func deviceCollectionEndedUpdates()
     
 }
 
@@ -55,23 +57,28 @@ extension DeviceCollectionObserving {
         
         deviceCollectionDisposable = deviceCollection?.contentsSignal
             .observe(on: QueueScheduler.main)
-            .observe {
-                [weak self] event in switch event {
-                case .value(let change):
-                    switch change {
-                    case .create(let device):
-                        self?.deviceCollectionAddedDevice(device)
-                        
-                    case .delete(let device):
-                        self?.deviceCollectionRemovedDevice(device)
-                        
-                    case .resetAll:
-                        self?.deviceCollectionReset()
-                    }
-                default:
-                    break
+            .observeValues {
+                [weak self] change in
+                switch change {
+                    
+                case .beginUpdates:
+                    self?.deviceCollectionBeganUpdates()
+                    
+                case .create(let device):
+                    self?.deviceCollectionAddedDevice(device)
+                    
+                case .delete(let device):
+                    self?.deviceCollectionRemovedDevice(device)
+                    
+                case .resetAll:
+                    self?.deviceCollectionReset()
+                    
+                case .endUpdates:
+                    self?.deviceCollectionEndedUpdates()
+                    
                 }
         }
+        
         
     }
     
@@ -178,12 +185,16 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     
     func updateCollatedIds() {
         collatedDeviceIds = deviceCollection?
-            .allDevices
+            .devices
             .filter {
                 $0.isPresentable || $0.isLocalSofthub
             }
             .sorted(by: isOrderedBefore)
             .map { $0.deviceId } ?? []
+    }
+    
+    func deviceCollectionBeganUpdates() {
+        DDLogInfo("DeviceCollection updates began.")
     }
     
     func deviceCollectionAddedDevice(_ device: DeviceModel) {
@@ -196,6 +207,10 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     
     func deviceCollectionReset() {
         updateCollatedIds()
+    }
+    
+    func deviceCollectionEndedUpdates() {
+        DDLogInfo("DeviceCollectionUpdatesEnded.")
     }
     
 }

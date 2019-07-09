@@ -13,65 +13,6 @@ import Result
 import CocoaLumberjack
 
 
-public typealias FetchProfileOnDone = (DeviceProfile?, Error?)->Void
-
-public protocol DeviceProfileSource {
-    
-    /// Fetch an individual profile, by `accountId` and `profileId`.
-    /// - parameter accountId: The `id` of the account whence to fetch the profile.
-    /// - parameter profileId: The `id` of the profiles to fetch
-    /// - parameter onDone: Result handler for the call.
-    
-    func fetchProfile(accountId: String, profileId: String, onDone:  @escaping FetchProfileOnDone)
-
-    /// Fetch an individual profile, by `accountId` and `profileId`.
-    /// - parameter accountId: The `id` of the account whence to fetch the profile.
-    /// - parameter deviceId: The `id` of the profiles to fetch
-    /// - parameter onDone: Result handler for the call.
-    
-    func fetchProfile(accountId: String, deviceId: String, onDone: @escaping FetchProfileOnDone)
-
-}
-
-public typealias FetchProfilesOnDone = ([DeviceProfile]?, Error?)->Void
-
-public protocol DeviceAccountProfilesSource: DeviceProfileSource {
-    
-    /// Fetch all current profiles for a given account.
-    /// - parameter accountId: The `id` of the account whence to fetch the profiles.
-    /// - parameter onDone: Result handler for the call.
-    
-    func fetchProfiles(accountId: String, onDone: @escaping FetchProfilesOnDone)
-
-}
-
-extension DeviceAccountProfilesSource {
-    
-    func fetchProfiles(for accountId: String) -> Promise<[DeviceProfile]> {
-        
-        return Promise {
-            
-            fulfill, reject in
-            
-            fetchProfiles(accountId: accountId) {
-                maybeProfiles, maybeError in
-                
-                if let error = maybeError {
-                    reject(error)
-                    return
-                }
-                
-                guard let profiles = maybeProfiles else {
-                    reject("No profiles returned.")
-                    return
-                }
-                
-                fulfill(profiles)
-            }
-        }
-    }
-}
-
 extension NSError {
 
     convenience init(code: DeviceModel.ErrorCode, localizedDescription: String) {
