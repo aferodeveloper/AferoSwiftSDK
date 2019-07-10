@@ -27,10 +27,14 @@ typealias APIClient = AFNetworkingAferoAPIClient
 class AccountInfoCell: UITableViewCell {
     
     @IBOutlet weak var accountNameLabel: UILabel!
-    @IBOutlet weak var networkStatusLabel: UILabel!
+    @IBOutlet weak var verificationNeededAnnunciator: UIButton!
+    @IBAction func verificationNeededAnnunciatorTapped(_ sender: Any) {
+    }
+    @IBOutlet weak var connectionStatusLabel: UILabel!
     @IBOutlet weak var softhubSwitch: UISwitch!
     @IBAction func softhubSwitchValueChanged(_ sender: Any) {
     }
+    
     
 }
 
@@ -495,8 +499,9 @@ class AccountViewController: UITableViewController {
             }
             
             accountCell.accountNameLabel.text = user?.credentialId
-            accountCell.networkStatusLabel.text = String(describing: networkStatus)
+            accountCell.connectionStatusLabel.text = String(describing: networkStatus)
             configureSofthubSwitch(accountCell.softhubSwitch)
+            configureVerificationNeededAnnunciator(accountCell.verificationNeededAnnunciator)
             
         case .devices:
             guard let device = self.device(at: indexPath) else {
@@ -518,6 +523,15 @@ class AccountViewController: UITableViewController {
         
     }
     
+    func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
+//        annunciator?.isHidden = user?.credential?.verified ?? true
+        annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
+        annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
+    }
+    
+    @objc func verificationNeededAnnunciatorTapped(_ annunciator: UIButton?) {
+        DDLogInfo("Annunciator tapped!")
+    }
     
     var softhubSwitch: UISwitch? {
         let indexPath = IndexPath(row: 0, section: AccountInfoSection.accountInfo.rawValue)
