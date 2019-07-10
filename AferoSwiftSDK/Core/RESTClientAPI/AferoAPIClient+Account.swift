@@ -165,6 +165,24 @@ public extension AferoAPIClientProto {
         return POST("v1/accounts", parameters: parameters)
     }
     
+    /// Resend a verification email/token for an account.
+    ///
+    /// When a user creates an account, they are sent a verification token. If
+    /// this endpoint is called prior to the verification token being redeemed,
+    /// then a new token will be generated and sent.
+    ///
+    func resendVerificationToken(for credentialId: String) -> Promise<Void> {
+
+        guard let credentialParam = credentialId.pathAllowedURLEncodedString else {
+            let msg = "Invalid credentialId."
+            DDLogError(msg, tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+        
+        return POST("/v1/accounts/\(credentialParam)/verify")
+        
+    }
+    
     /// Set the human-readable description of the account identified by `accountId`.
     ///
     /// - parameter accountId: The id of the account whose description is to be set.
