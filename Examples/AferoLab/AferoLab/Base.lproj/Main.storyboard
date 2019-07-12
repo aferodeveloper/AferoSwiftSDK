@@ -24,7 +24,7 @@
                                 <rect key="frame" x="0.0" y="91" width="320" height="477"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="55L-gC-dmv">
-                                <rect key="frame" x="16" y="108" width="288" height="314"/>
+                                <rect key="frame" x="16" y="108" width="288" height="276"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="gAk-xt-yze">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="56.5"/>
@@ -105,13 +105,6 @@
                                             <segue destination="2r3-ES-QVa" kind="show" id="fx7-Qe-89Q"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8mQ-ee-ggi">
-                                        <rect key="frame" x="0.0" y="284" width="288" height="30"/>
-                                        <state key="normal" title="Resend Verification Email"/>
-                                        <connections>
-                                            <action selector="resendVerificationTapped:" destination="cBT-gx-i5G" eventType="touchUpInside" id="InF-hS-CpR"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -131,7 +124,6 @@
                     <connections>
                         <outlet property="emailTextField" destination="2Qw-31-uH3" id="qHd-f4-xQ8"/>
                         <outlet property="passwordTextField" destination="qGh-wl-a1Q" id="4ce-D0-1pU"/>
-                        <outlet property="resendVerificationEmailButton" destination="8mQ-ee-ggi" id="4BO-fI-zB0"/>
                         <outlet property="signInButton" destination="IxR-GU-dgX" id="ufC-L1-XLU"/>
                         <segue destination="LAd-iY-1cp" kind="unwind" identifier="unwindToAccountController" unwindAction="unwindFromSignInSegue:" id="JEi-SK-css"/>
                     </connections>
@@ -764,7 +756,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="signOutButton" destination="pYM-Km-9YV" id="i6D-eA-6ut"/>
-                        <segue destination="taP-RM-A2x" kind="show" identifier="ShowModuloViewController" id="G5F-Ne-TdL"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YBM-zI-17X" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2190,41 +2181,6 @@
             </objects>
             <point key="canvasLocation" x="6204" y="-484"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="ZiJ-cj-p85">
-            <objects>
-                <viewController id="taP-RM-A2x" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="6pg-d1-i8F"/>
-                        <viewControllerLayoutGuide type="bottom" id="BIM-sI-jjR"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="k64-KB-0tr">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WuI-JE-4cH" customClass="AferoClimateControl" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="124.5" y="290" width="126.5" height="87.5"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="title" value="My Titlle"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="temperatureValueText" value="34°F"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isTitleHidden" value="NO"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedMaximumTrackImage" value="Info.png"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="maximumValueImage" value="QRCode"/>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="WuI-JE-4cH" firstAttribute="centerY" secondItem="k64-KB-0tr" secondAttribute="centerY" id="L82-q9-CFH"/>
-                            <constraint firstItem="WuI-JE-4cH" firstAttribute="centerX" secondItem="k64-KB-0tr" secondAttribute="centerX" id="arw-JM-kli"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="wYN-SJ-sSh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1361" y="1672"/>
-        </scene>
         <!--Stepper Attribute Inspector View Controller-->
         <scene sceneID="lpu-gB-7Nw">
             <objects>
@@ -2942,8 +2898,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Info.png" width="16" height="16"/>
-        <image name="QRCode" width="44" height="44"/>
         <image name="Startup" width="200" height="246"/>
         <image name="Underline" width="3" height="4"/>
         <image name="onepassword-button" width="27" height="27"/>
