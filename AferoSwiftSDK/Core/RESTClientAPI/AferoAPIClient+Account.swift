@@ -171,15 +171,34 @@ public extension AferoAPIClientProto {
     /// this endpoint is called prior to the verification token being redeemed,
     /// then a new token will be generated and sent.
     ///
-    func resendVerificationToken(for credentialId: String) -> Promise<Void> {
+    /// - parameter credentialId: The credential identifier (email) to which the
+    ///   verification email should be sent.
+    ///
+    /// - parameter accountId: The accountId associated with the given email address.
+    ///
+    /// - parameter appId: The id of the app for which the email should be sent
+    ///   (e.g. bundleId).
 
-        guard let credentialParam = credentialId.pathAllowedURLEncodedString else {
+    func resendVerificationToken(for credentialId: String, accountId: String, appId: String) -> Promise<Void> {
+
+        guard let credentialIdParam = credentialId.pathAllowedURLEncodedString else {
             let msg = "Invalid credentialId."
             DDLogError(msg, tag: TAG)
             return Promise { _, reject in reject(msg) }
         }
+
+        guard let accountIdParam = accountId.pathAllowedURLEncodedString else {
+            let msg = "Invalid accountId."
+            DDLogError(msg, tag: TAG)
+            return Promise { _, reject in reject(msg) }
+        }
+
+        let headers = type(of: self).httpRequestHeaders(appId: appId)
         
-        return POST("/v1/accounts/\(credentialParam)/verify")
+        return POST("/v1/accounts/\(accountIdParam)/credentials/\(credentialIdParam)/resendVerification",
+            parameters: ["credentialId": credentialIdParam,],
+            httpRequestHeaders: headers
+        )
         
     }
     

@@ -292,11 +292,20 @@ class APIClientAccountSpec: QuickSpec {
             describe("when calling resendVerificationToken") {
                 it("should POST the expected request.") {
                     
+                    let accountId = "jarjar"
                     let credentialId = "foo@bar.com".pathAllowedURLEncodedString!
+                    let appId = "my.sooper.app"
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+
                     
-                    let path = "/v1/accounts/\(credentialId)/verify"
+                    let path = "/v1/accounts/\(accountId)/credentials/\(credentialId)/resendVerification"
                     
-                    stub(condition: isPath(path) && isMethodPOST()) {
+                    stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId) && {
+                        req in
+                        let data = req.ohhttpStubs_httpBody
+                        let body = try? JSONSerialization.jsonObject(with: data!, options: [])
+                        return ((body as? [String: Any])?["credentialId"] as? String) == credentialId
+                    }) {
                         _ in
                         OHHTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
                     }
@@ -304,7 +313,7 @@ class APIClientAccountSpec: QuickSpec {
                     var response: Any?
                     var error: Error?
                     
-                    _ = apiClient.resendVerificationToken(for: credentialId)
+                    _ = apiClient.resendVerificationToken(for: credentialId, accountId: accountId, appId: appId)
                         .then {
                             response = $0
                     }
