@@ -643,7 +643,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         where
         P.Element == DeviceStreamEvent.Peripheral
     {
-        (notifyBegin ?
+        return (notifyBegin ?
             notifyBeginUpdates()
             : Promise()
             ).then {
@@ -673,7 +673,7 @@ public class DeviceCollection: NSObject, MetricsReportable {
         J.Element == [String: Any]
     {
         
-        (notifyBegin ?
+        return (notifyBegin ?
             notifyBeginUpdates()
             : Promise()
             ).then {
@@ -1386,16 +1386,16 @@ extension DeviceCollection {
     public typealias State = ConnectionState
     
     @available(*, deprecated, renamed: "connectionStateSignal")
-    public var stateSignal: Signal<ConnectionState, NoError>! { connectionStateSignal }
+    public var stateSignal: Signal<ConnectionState, NoError>! { return connectionStateSignal }
     
     @available(*, deprecated, renamed: "connectionState")
-    public var state: ConnectionState { connectionState }
+    public var state: ConnectionState { return connectionState }
     
     @available(*, deprecated, message: "Public access to `allDevices` is deprecated; use `devices` instead.")
-    public var allDevices: [DeviceModel] { _allDevices }
+    public var allDevices: [DeviceModel] { return _allDevices }
     
     @available(*, deprecated, renamed: "devices")
-    public var visibleDevices: [DeviceModel] { devices }
+    public var visibleDevices: [DeviceModel] { return devices }
     
 }
 
