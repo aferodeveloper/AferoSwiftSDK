@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
     s.name         = "AferoSwiftSDK"
     s.module_name  = "Afero"
-    s.version      = "1.2.2"
+    s.version      = "1.2.3"
     s.summary      = "Library for interacting with Afero devices"
 
     s.description  = <<-DESC
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
 
     s.homepage           = "http://developer.afero.io"
     s.license            = { :type => "PROPRIETARY", :file => "LICENSE" }
-    s.author             = { "Justin Middleton" => "jrmiddle@afero.io" }
+    s.author             = { "Cora Middleton" => "cora@afero.io" }
     s.social_media_url   = "http://twitter.com/aferodev"
     s.ios.deployment_target = "9.3"
     #s.osx.deployment_target = "10.11"
