@@ -13,8 +13,10 @@ import Result
 import PromiseKit
 import CocoaLumberjack
 import SVProgressHUD
+import LKAlertController
 
 // MARK: - SignIn -
+
 
 class SignInViewController: UIViewController, UITextFieldDelegate {
 
@@ -23,17 +25,17 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
         emailTextField.text = UserDefaults.standard.emailAddress
         emailTextField.delegate = self
         passwordTextField.delegate = self
-        updateSignInButtonEnabledState()
+        updateUI()
     }
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBAction func emailChanged(_ sender: Any) {
-        updateSignInButtonEnabledState()
+        updateUI()
     }
     
     @IBOutlet weak var passwordTextField: UITextField!
     @IBAction func passwordChanged(_ sender: Any) {
-        updateSignInButtonEnabledState()
+        updateUI()
     }
     
     // MARK: <UITextFieldDelegate>
@@ -54,16 +56,11 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
     }
     
     var canAttemptSignin: Bool {
-        guard !(emailTextField.text?.isEmpty ?? true),
-        !(passwordTextField.text?.isEmpty ?? true) else {
-            return false
-        }
-        return true
+        !(emailTextField.text.isEmpty || passwordTextField.text.isEmpty)
     }
     
-    func updateSignInButtonEnabledState() {
+    func updateUI() {
         signInButton.isEnabled = canAttemptSignin
-        passwordTextField.enablesReturnKeyAutomatically = true
     }
     
     @IBOutlet weak var signInButton: UIButton!

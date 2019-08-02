@@ -19,6 +19,14 @@ extension AFNetworkingAferoAPIClient {
     
 }
 
+extension Optional where Wrapped == String {
+    
+    var isEmpty: Bool {
+        self?.isEmpty ?? true
+    }
+    
+}
+
 extension String {
     
     // MARK: Crypto/Hashing

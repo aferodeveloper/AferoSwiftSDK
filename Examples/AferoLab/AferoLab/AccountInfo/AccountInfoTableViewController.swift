@@ -27,10 +27,14 @@ typealias APIClient = AFNetworkingAferoAPIClient
 class AccountInfoCell: UITableViewCell {
     
     @IBOutlet weak var accountNameLabel: UILabel!
-    @IBOutlet weak var networkStatusLabel: UILabel!
+    @IBOutlet weak var verificationNeededAnnunciator: UIButton!
+    @IBAction func verificationNeededAnnunciatorTapped(_ sender: Any) {
+    }
+    @IBOutlet weak var connectionStatusLabel: UILabel!
     @IBOutlet weak var softhubSwitch: UISwitch!
     @IBAction func softhubSwitchValueChanged(_ sender: Any) {
     }
+    
     
 }
 
@@ -495,8 +499,9 @@ class AccountViewController: UITableViewController {
             }
             
             accountCell.accountNameLabel.text = user?.credentialId
-            accountCell.networkStatusLabel.text = String(describing: networkStatus)
+            accountCell.connectionStatusLabel.text = String(describing: networkStatus)
             configureSofthubSwitch(accountCell.softhubSwitch)
+            configureVerificationNeededAnnunciator(accountCell.verificationNeededAnnunciator)
             
         case .devices:
             guard let device = self.device(at: indexPath) else {
@@ -518,6 +523,84 @@ class AccountViewController: UITableViewController {
         
     }
     
+    func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
+        annunciator?.isHidden = user?.credential?.verified ?? true
+        annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
+        annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
+    }
+    
+    @objc func verificationNeededAnnunciatorTapped(_ annunciator: UIButton?) {
+        DDLogInfo("Annunciator tapped!")
+        
+        guard let credentialId = user?.credentialId else {
+            fatalError("Expected a user, and accompanying credentialId")
+        }
+        
+        guard let accountId = accountId else {
+            fatalError("Expected an accountId.")
+        }
+        
+        ActionSheet(
+            title: NSLocalizedString(
+                "Unverified Address",
+                comment: "unverified account action sheet title"),
+            message: String(
+                format: NSLocalizedString(
+                    "%@ is an unverified email address. If desired, a new verification email can be sent by tapping below.",
+                    comment: "unverified account action sheet message template"),
+                credentialId)
+        ).addAction(
+            NSLocalizedString(
+                "Resend verification",
+                comment: "unverified account action sheet resend verification action title"
+            ),
+            style: .default,
+            handler: {
+                _ in
+                
+                SVProgressHUD.show(
+                    withStatus: NSLocalizedString(
+                        "Sending…",
+                        comment: "unverified account resend verification sending")
+                )
+                
+                APIClient.default.resendVerificationToken(for: credentialId, accountId: accountId, appId: Bundle.main.bundleIdentifier!)
+                    .then {
+                        () -> Void in
+                        Alert(
+                            title: NSLocalizedString(
+                                "Email Sent",
+                                comment: "unverified account resend success title"),
+                            message: String(
+                                format: NSLocalizedString(
+                                    "A verification email has been sent to %@.",
+                                    comment: "unverified account resend success message template"),
+                                credentialId
+                        )).showOkay()
+                        
+                }.catch {
+                    err in
+                    Alert(
+                        title: NSLocalizedString(
+                            "Unable to Send",
+                            comment: "unverified account resend error title"),
+                        message: String(
+                            format: NSLocalizedString(
+                                "The following error was encountered when resending a verification: %@",
+                                comment: "unverified account resend error message template"),
+                            String(describing: err)
+                    )).showOkay()
+                }.always {
+                    SVProgressHUD.dismiss()
+                }
+        }
+        ).addAction(
+            NSLocalizedString(
+                "Cancel",
+                comment: "unverified account action sheet cancel action title")
+            , style: .cancel
+        ).show()
+    }
     
     var softhubSwitch: UISwitch? {
         let indexPath = IndexPath(row: 0, section: AccountInfoSection.accountInfo.rawValue)

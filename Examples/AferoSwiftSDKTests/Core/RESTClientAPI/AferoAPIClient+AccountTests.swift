@@ -60,9 +60,9 @@ class APIClientAccountSpec: QuickSpec {
                         .then {
                             user -> Void in
                             fetchedUser = user
-                        }.catch {
-                            err in
-                            error = err
+                    }.catch {
+                        err in
+                        error = err
                     }
                     
                     expect(error).to(beNil())
@@ -86,9 +86,9 @@ class APIClientAccountSpec: QuickSpec {
                         .then {
                             user -> Void in
                             fetchedUser = user
-                        }.catch {
-                            err in
-                            error  = err
+                    }.catch {
+                        err in
+                        error  = err
                     }
                     
                     expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
@@ -112,9 +112,9 @@ class APIClientAccountSpec: QuickSpec {
                         .then {
                             user -> Void in
                             fetchedUser = user
-                        }.catch {
-                            err in
-                            error  = err
+                    }.catch {
+                        err in
+                        error  = err
                     }
                     
                     expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
@@ -140,9 +140,9 @@ class APIClientAccountSpec: QuickSpec {
                         .then {
                             resp -> Void in
                             response = resp
-                        }.catch {
-                            err in
-                            error = err
+                    }.catch {
+                        err in
+                        error = err
                     }
                     
                     expect(response != nil).toNotEventually(beTrue(), timeout: 5.0)
@@ -169,9 +169,9 @@ class APIClientAccountSpec: QuickSpec {
                         .then {
                             resp -> Void in
                             response = resp
-                        }.catch {
-                            err in
-                            error = err
+                    }.catch {
+                        err in
+                        error = err
                     }
                     
                     expect(response != nil).toNotEventually(beTrue(), timeout: 5.0)
@@ -203,9 +203,9 @@ class APIClientAccountSpec: QuickSpec {
                     _ = apiClient.sendPasswordRecoveryEmail(for: credentialId, appId: appId)
                         .then {
                             response = $0
-                        }
-                        .catch {
-                            error = $0
+                    }
+                    .catch {
+                        error = $0
                     }
                     
                     expect(response).toEventuallyNot(beNil(), timeout: 5.0)
@@ -222,7 +222,7 @@ class APIClientAccountSpec: QuickSpec {
                     let appId = "my.sooper.app"
                     let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
                     let password = "newPassword"
-
+                    
                     let path = "/v1/shortvalues/\(shortCode)/passwordReset"
                     
                     stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId) && {
@@ -241,9 +241,9 @@ class APIClientAccountSpec: QuickSpec {
                     _ = apiClient.updatePassword(with: password, shortCode: shortCode, appId: appId)
                         .then {
                             response = $0
-                        }
-                        .catch {
-                            error = $0
+                    }
+                    .catch {
+                        error = $0
                     }
                     
                     expect(response).toEventuallyNot(beNil(), timeout: 5.0)
@@ -278,9 +278,9 @@ class APIClientAccountSpec: QuickSpec {
                     _ = apiClient.updatePassword(with: password, credentialId: credentialId, accountId: accountId)
                         .then {
                             response = $0
-                        }
-                        .catch {
-                            error = $0
+                    }
+                    .catch {
+                        error = $0
                     }
                     
                     expect(response).toEventuallyNot(beNil(), timeout: 5.0)
@@ -288,6 +288,45 @@ class APIClientAccountSpec: QuickSpec {
                     
                 }
             }
+            
+            describe("when calling resendVerificationToken") {
+                it("should POST the expected request.") {
+                    
+                    let accountId = "jarjar"
+                    let credentialId = "foo@bar.com".pathAllowedURLEncodedString!
+                    let appId = "my.sooper.app"
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+
+                    
+                    let path = "/v1/accounts/\(accountId)/credentials/\(credentialId)/resendVerification"
+                    
+                    stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId) && {
+                        req in
+                        let data = req.ohhttpStubs_httpBody
+                        let body = try? JSONSerialization.jsonObject(with: data!, options: [])
+                        return ((body as? [String: Any])?["credentialId"] as? String) == credentialId
+                    }) {
+                        _ in
+                        OHHTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
+                    }
+                    
+                    var response: Any?
+                    var error: Error?
+                    
+                    _ = apiClient.resendVerificationToken(for: credentialId, accountId: accountId, appId: appId)
+                        .then {
+                            response = $0
+                    }
+                    .catch {
+                        error = $0
+                    }
+                    
+                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
+                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    
+                }
+            }
+            
         }
     }
 }
