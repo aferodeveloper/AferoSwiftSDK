@@ -56,7 +56,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
     }
     
     var canAttemptSignin: Bool {
-        !(emailTextField.text.isEmpty || passwordTextField.text.isEmpty)
+        return !(emailTextField.text.isEmpty || passwordTextField.text.isEmpty)
     }
     
     func updateUI() {
