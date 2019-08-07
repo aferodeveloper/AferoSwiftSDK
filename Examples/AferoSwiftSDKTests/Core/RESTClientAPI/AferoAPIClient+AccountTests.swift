@@ -327,6 +327,109 @@ class APIClientAccountSpec: QuickSpec {
                 }
             }
             
+            describe("when calling createAccount") {
+                it("should POST the expected request.") {
+                    
+                    let credentialId = "foo@bar.com".pathAllowedURLEncodedString!
+                    let password = "password"
+                    let firstName = "Robbie"
+                    let lastName = "Robot"
+                    let credentialType = "email"
+                    let verified = true
+                    let accountType = "PARTNER"
+                    let accountDescription = "My Special Account"
+
+                    let appId = "my.sooper.app"
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    
+                    
+                    let path = "/v1/accounts"
+                    
+                    stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId) && {
+                        req in
+                        let data = req.ohhttpStubs_httpBody
+                        guard let body = (try? JSONSerialization.jsonObject(with: data!, options: [])) as? [String: Any] else {
+                            return false
+                        }
+                        
+                        guard let credential = body["credential"] as? [String: Any] else {
+                            return false
+                        }
+                        
+                        guard credential["credentialId"] as! String == credentialId else {
+                            return false
+                        }
+                        
+                        guard credential["password"] as! String == password else {
+                            return false
+                        }
+                        
+                        guard credential["type"] as! String == credentialType else {
+                            return false
+                        }
+                        
+                        guard credential["verified"] as! Bool == verified else {
+                            return false
+                        }
+                        
+                        guard let user = body["user"] as? [String: String] else {
+                            return false
+                        }
+                        
+                        guard user["firstName"] == firstName else {
+                            return false
+                        }
+                        
+                        guard user["lastName"] == lastName else {
+                            return false
+                        }
+
+                        guard let account = body["account"] as? [String: String] else {
+                            return false
+                        }
+                        
+                        guard account["type"] == accountType else {
+                            return false
+                        }
+                        
+                        guard account["description"] == accountDescription else {
+                            return false
+                        }
+                        
+                        return true
+                        
+                    }) {
+                        _ in
+                        OHHTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
+                    }
+                    
+                    var response: Any?
+                    var error: Error?
+                    
+                    _ = apiClient.createAccount(
+                        credentialId,
+                        password: password,
+                        firstName: firstName,
+                        lastName: lastName,
+                        credentialType: credentialType,
+                        verified: verified,
+                        accountType: accountType,
+                        accountDescription: accountDescription,
+                        appId: appId
+                        ).then {
+                            response = $0
+                        }
+                        .catch {
+                            error = $0
+                    }
+                    
+                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
+                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    
+                }
+            }
+
+            
         }
     }
 }

@@ -63,10 +63,13 @@ public extension AferoAPIClientProto {
         #endif
     }
     
-    private static func httpRequestHeaders(appId: String) -> HTTPRequestHeaders {
+    private static func httpRequestHeaders(appId: String? = nil) -> HTTPRequestHeaders {
+        
         var httpRequestHeaders = HTTPRequestHeaders()
         
-        if let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64() {
+        if let appId = appId,
+            let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64()
+        {
             httpRequestHeaders["x-afero-app"] = appIdHeaderValue
         }
         
@@ -131,7 +134,12 @@ public extension AferoAPIClientProto {
      - parameter verified: Whether or not the account should be created with a verified stated. Defaults to false.
      - parameter accountType: Defaults to "CUSTOMER"
      - parameter accountDescription: Defaults to "Primary Account"
-     - returns: A `Promse<Any>` with the deserialized JSON results.
+     - parameter appId: If provided, `appId` is used to provide the bundle id of
+                        the app creating the account to the afero cloud, for
+                        verification email customization. Defaults to `nil`,
+                        in practice, this should usually be given as
+                        `Bundle.main.bundleIdentifier`.
+     - returns: A `Promise<Any>` with the deserialized JSON results.
      */
     
     func createAccount(
@@ -142,7 +150,8 @@ public extension AferoAPIClientProto {
         credentialType: String = "email",
         verified: Bool = false,
         accountType: String = "CUSTOMER",
-        accountDescription: String = "Primary Account"
+        accountDescription: String = "Primary Account",
+        appId: String? = nil
         ) -> Promise<Any?>
     {
         let parameters = [
@@ -162,7 +171,11 @@ public extension AferoAPIClientProto {
             ]
             ] as [String : Any]
         
-        return POST("v1/accounts", parameters: parameters)
+        
+        return POST("v1/accounts",
+                    parameters: parameters,
+                    httpRequestHeaders: type(of: self).httpRequestHeaders(appId: appId)
+        )
     }
     
     /// Resend a verification email/token for an account.

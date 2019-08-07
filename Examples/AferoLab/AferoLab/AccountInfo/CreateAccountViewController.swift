@@ -100,7 +100,12 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                 return
         }
         
-        createAccount(credentialId: credentialId, password: password, firstName: firstName, lastName: lastName)
+        createAccount(
+            credentialId: credentialId,
+            password: password,
+            firstName: firstName,
+            lastName: lastName
+        )
     }
     
     func createAccount(credentialId: String, password: String, firstName: String = "", lastName: String = "") {
@@ -116,12 +121,17 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                 comment: "Create account creating account status.")
         )
         
-        AFNetworkingAferoAPIClient.default.createAccount(credentialId, password: password, firstName: firstName, lastName: lastName)
-            .then {
+        AFNetworkingAferoAPIClient.default.createAccount(
+            credentialId,
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+            appId: Bundle.main.bundleIdentifier
+            ).then {
                 _ -> Void in
                 SVProgressHUD.showSuccess(withStatus: NSLocalizedString("Done!", comment: "CreateAccount done"))
                 self.performSegue(withIdentifier: "signInFromCreateAccount", sender: self)
-        }.catch {
+            }.catch {
                 err in
                 SVProgressHUD.dismiss()
                 Alert(
@@ -135,7 +145,7 @@ class CreateAccountViewController: UIViewController, UITextFieldDelegate {
                         credentialId,
                         "\(err.httpStatusCode?.description ?? "-"): \(err.localizedDescription)")
                     ).showOkay()
-
+                
                 
         }
     }
