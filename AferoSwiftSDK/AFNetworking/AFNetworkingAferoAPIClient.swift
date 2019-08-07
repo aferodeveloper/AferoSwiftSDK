@@ -227,17 +227,9 @@ public extension AFNetworkingAferoAPIClient {
                     credential in
 
                     DDLogInfo("Successfully acquired OAuth2 token.", tag: TAG)
-
-                    DispatchQueue.main.async {
-
-                        AFOAuthCredential.store(
-                            credential,
-                            withIdentifier: self.oauthCredentialIdentifier,
-                            withAccessibility: kSecAttrAccessibleAfterFirstUnlock
-                        )
-
-                        self.defaultSessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
-                        fulfill(())
+                    
+                    self.signIn(credential: credential).then {
+                        _ in fulfill(())
                     }
             },
 
@@ -249,6 +241,40 @@ public extension AFNetworkingAferoAPIClient {
             )
         }
     }
+
+    /// Given an authToken, tokentTyp, and refreshToken, store, initialized the session manager,
+    /// and resolve.
+    ///
+    /// - parameter oAuthToken: The token acquired from the Afero cloud.
+    /// - parameter tokenType: The type of the token. Defaults to "Bearer".
+    /// - parameter refreshToken: If available, the refresh token to store.
+    ///
+    /// - returns: A Promise<Void> which resolves after storage is complete.
+    
+    func signIn(oAuthToken: String, tokenType: String = "Bearer", refreshToken: String? = nil) -> Promise<Void> {
+        let credential = AFOAuthCredential(oAuthToken: oAuthToken, tokenType: tokenType)
+        if let refreshToken = refreshToken {
+            credential.setRefreshToken(refreshToken)
+        }
+        
+        return signIn(credential: credential)
+    }
+    
+    func signIn(credential: AFOAuthCredential) -> Promise<Void> {
+        
+        AFOAuthCredential.store(
+            credential,
+            withIdentifier: self.oauthCredentialIdentifier,
+            withAccessibility: kSecAttrAccessibleAfterFirstUnlock
+        )
+        
+        self.defaultSessionManager.requestSerializer.setAuthorizationHeaderFieldWith(credential)
+        
+        return Promise()
+        
+    }
+    
+    
 
     func signOut(_ error: Error? = nil) -> Promise<Void> {
         return Promise { fulfill, _ in self.doSignOut(error: error) { fulfill(()) } }
