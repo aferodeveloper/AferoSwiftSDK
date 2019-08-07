@@ -22,7 +22,7 @@ extension AFNetworkingAferoAPIClient {
 extension Optional where Wrapped == String {
     
     var isEmpty: Bool {
-        self?.isEmpty ?? true
+        return self?.isEmpty ?? true
     }
     
 }
