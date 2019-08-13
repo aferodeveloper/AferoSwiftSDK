@@ -46,7 +46,7 @@ An SDK for interacting with the Afero service and peripheral platform.
 AferoSwiftSDK supports Swift versions 4.2+, and Xcode versions 10 and 11 Beta, and iOS 9.3+.
 ### GitHub
 AferoSwiftSDK is hosted in source format on GitHub; partners are provided read-only access. In addition, for compatibility with CocoaPods installation, the user must configure their GitHub account for password-less authentication at the command line. GitHub provides a number of methods for accomplishing this, including [SSH Keys](https://help.github.com/en/articles/adding-a-new-ssh-key-to-your-github-account) and [Personal Access Tokens](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line).
-## Cocoapods
+### Cocoapods
 **AferoSwiftSDK** and **AferoIOSSofthub** are provided as CocoaPods, and have been tested with CocoaPods version 1.7.4 and earlier.
 
 ## Getting Started
