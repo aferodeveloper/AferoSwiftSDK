@@ -41,17 +41,57 @@ An SDK for interacting with the Afero service and peripheral platform.
   Computer Software--Restricted Rights at 48 CFR 52.227-19, as
   applicable.
 
+## Required Environment
+### XCode 10 or 11
+AferoSwiftSDK supports Swift versions 4.2+, and Xcode versions 10 and 11 Beta, and iOS 9.3+.
+### GitHub
+AferoSwiftSDK is hosted in source format on GitHub; partners are provided read-only access. In addition, for compatibility with CocoaPods installation, the user must configure their GitHub account for password-less authentication at the command line. GitHub provides a number of methods for accomplishing this, including [SSH Keys](https://help.github.com/en/articles/adding-a-new-ssh-key-to-your-github-account) and [Personal Access Tokens](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line).
+## Cocoapods
+**AferoSwiftSDK** and **AferoIOSSofthub** are provided as CocoaPods, and have been tested with CocoaPods version 1.7.4 and earlier.
 
 ## Getting Started
-
 ### Configure your Podfile
-
+Before developing with **AferoSwiftSDK**, a workspace's Podfile must be configured to integrate it:
 ```ruby
-source 'git@github.com:aferodeveloper/Podspecs.git'
-source 'https://github.com/CocoaPods/Specs.git'
+# Reference the Afero SDK
+    source 'git@github.com:aferodeveloper/Podspecs.git'
 
-pod `AferoSwiftSDK`
+    # Explicitly reference the master CocoaPods repo.
+    source 'https://github.com/CocoaPods/Specs.git'
+
+    platform :ios, '9.3'
+    use_frameworks!
+
+    ...
+
+    pod 'AferoSwiftSDK/AFNetworking', '1.2.2' 
 ```
+### Update/Install Pods
+Once configured, the developer may run pod update, which will integrate **AferoSwiftSDK** and any prerequisite packages into their project.
+### Import Afero
+Once integrated, **AferoSwiftSDK** introduces the Afero module into a workspace. Each file which requires access to **AferoSwiftSDK** symbols will need to import the module, as such:
+```
+    //
+    //  ViewController.swift
+    //  MyApp
+    //
+    //  Created by Joe Britt on 3/17/19.
+    //  Copyright © 2019 Afero, Inc. All rights reserved.
+    // 
+    import UIKit
+    import Afero // Minimum requirement
+
+    // Optional (but often necessary)
+    import ReactiveSwift // Necessary for referring to Reactive symbols (signals, sinks)
+    import PromiseKit // Necessary for referring to Promises (Futures)
+```
+### Example App
+Included with **AferoSwiftSDK** is the **AferoLab** example app, in //AferoSwiftSDK/Examples. The app provides an Afero client that allows a user to:
+  * Create accounts, sign in, sign out, and change/reset passwords.
+  * List, add, and remove devices.
+  * Interact with device attributes.
+  * Run the Afero Softhub.
+  * Configure Wi-Fi on Wi-Fi-capable devices. 
 
 ## See Also
 
