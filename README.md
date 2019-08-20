@@ -1,5 +1,5 @@
 ---
-author: Justin Middleton
+author: Cora Middleton
 title: "AferoSwiftSDK"
 date: 2017-Jul-09 09:29:0
 status: 1.0
