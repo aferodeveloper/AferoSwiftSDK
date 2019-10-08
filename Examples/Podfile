@@ -21,7 +21,7 @@ def base_pods
     pod 'ReactiveSwift', '5.0.0', :inhibit_warnings => true
     pod 'PromiseKit/CorePromise', '4.5.1'
     pod 'HTTPStatusCodes', '~> 3.2'
-    pod 'AFNetworking', :inhibit_warnings => true
+    pod 'AFNetworking/NSURLSession', :inhibit_warnings => true
     pod 'AferoSwiftSDK/AFNetworking', :path => '..'
 end
 

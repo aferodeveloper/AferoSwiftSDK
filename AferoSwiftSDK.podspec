@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
     s.name         = "AferoSwiftSDK"
     s.module_name  = "Afero"
-    s.version      = "1.2.6"
+    s.version      = "1.2.8"
     s.summary      = "Library for interacting with Afero devices"
 
     s.description  = <<-DESC
@@ -33,7 +33,7 @@ Pod::Spec.new do |s|
   
     s.subspec 'AFNetworking' do |ss|
         ss.dependency 'AferoSwiftSDK/Core'
-        ss.dependency 'AFNetworking', '~> 3.1'
+        ss.dependency 'AFNetworking/NSURLSession', '~> 3.1'
         ss.dependency 'AFOAuth2Manager', '~> 3.0'
         ss.source_files = 'AferoSwiftSDK/AFNetworking/**/*'
     end
