@@ -283,7 +283,7 @@ class AccountViewController: UITableViewController {
                 }
                 
                 do {
-                    try SofthubMinder.sharedInstance.start(withAccountId: accountId) {
+                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, apiHost: APIClient.default.apiHostname) {
                         associationId in
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {

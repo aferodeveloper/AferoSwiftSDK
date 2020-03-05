@@ -18,17 +18,25 @@ public class AFNetworkingAferoAPIClient {
 
         let oauthClientId: String
         let oauthClientSecret: String
-        let apiBaseURL: URL
+        let apiHostname: String
         
-        public init(apiBaseURL: URL = URL(string: "https://api.afero.io/")!, oauthClientId: String, oauthClientSecret: String) {
-            self.apiBaseURL = apiBaseURL
+        var apiBaseURL: URL {
+            URL(string: "https://\(apiHostname)")!
+        }
+        
+        let softhubProfileType: SofthubProfileType
+        
+        public init(apiHostname: String = "api.afero.io", softhubProfileType:SofthubProfileType = .prod, oauthClientId: String, oauthClientSecret: String) {
+            self.apiHostname = apiHostname
+            self.softhubProfileType = softhubProfileType
             self.oauthClientId = oauthClientId
             self.oauthClientSecret = oauthClientSecret
         }
         
         static let OAuthClientIdKey = "OAuthClientId"
         static let OAuthClientSecretKey = "OAuthClientSecret"
-        static let APIBaseURLKey = "APIBaseURL"
+        static let APIHostnameKey = "APIHostname"
+        static let SofthubProfileTypeKey = "SofthubProfileType"
         
         init(with plistData: Data) {
             
@@ -55,18 +63,24 @@ public class AFNetworkingAferoAPIClient {
                 fatalError("No string keyed by \(clientSecretKey) found in \(String(describing: plistDict))")
             }
             
-            var apiBaseURL: URL = URL(string: "https://api.afero.io/")!
-            if let maybeApiBaseURLString = plistDict[type(of: self).APIBaseURLKey] as? String {
-                
-                guard let overrideURL = URL(string: maybeApiBaseURLString) else {
-                    fatalError("Invalid url: \(maybeApiBaseURLString)")
-                }
-                
-                apiBaseURL = overrideURL
-                DDLogWarn("Overriding apiBaseUrl with \(apiBaseURL)", tag: "AFNetworkingAferoAPIClient.Config")
+            var apiHostname = "api.afero.io/"
+            
+            if let maybeApiHostnameString = plistDict[type(of: self).APIHostnameKey] as? String {
+                apiHostname = maybeApiHostnameString
+                DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
-            self.init(apiBaseURL: apiBaseURL, oauthClientId: oauthClientId, oauthClientSecret: oauthClientSecret)
+            var softhubProfileType = SofthubProfileType.prod
+            
+            if let maybeSofthubProfileTypeString = plistDict[type(of: self).SofthubProfileTypeKey] as? String,
+                let maybeSofthubProfileType = SofthubProfileType(stringIdentifier: maybeSofthubProfileTypeString) {
+                softhubProfileType = maybeSofthubProfileType
+            }
+            
+            self.init(apiHostname: apiHostname,
+                      softhubProfileType: softhubProfileType,
+                      oauthClientId: oauthClientId,
+                      oauthClientSecret: oauthClientSecret)
         }
         
         init(withPlistNamed plistName: String) {
@@ -86,7 +100,9 @@ public class AFNetworkingAferoAPIClient {
 
     public var TAG: String { return "AFNetworkingAferoAPIClient" }
 
-    var apiBaseURL: URL { return config.apiBaseURL }
+    public var softhubProfileType: SofthubProfileType { return config.softhubProfileType }
+    public var apiHostname: String { return config.apiHostname }
+    public var apiBaseURL: URL { return config.apiBaseURL }
     var oauthClientId: String { return config.oauthClientId }
     var oauthClientSecret: String { return config.oauthClientSecret }
     

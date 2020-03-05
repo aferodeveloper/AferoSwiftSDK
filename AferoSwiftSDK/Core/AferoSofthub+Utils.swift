@@ -74,7 +74,7 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
     
 }
 
-extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
+extension AferoSofthubProfileType: CustomStringConvertible, CustomDebugStringConvertible {
     
     public var description: String {
         switch self {
@@ -95,6 +95,9 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     
 }
 
+@available(*, deprecated, renamed: "SofthubProfileType")
+public typealias SofthubCloud = SofthubProfileType
+
 /// The Afero cloud to which a softhub should attempt to connect.
 /// For production applications, this should always be `.prod`.
 ///
@@ -103,7 +106,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
 /// * `.prod`: The Afero production cloud. Third parties should always use this.
 /// * `.dev`: The Afero development cloud. Production apps and third parties should never use this.
 
-@objc public enum SofthubCloud: Int, CustomStringConvertible, CustomDebugStringConvertible {
+@objc public enum SofthubProfileType: Int, CustomStringConvertible, CustomDebugStringConvertible {
     
     /// The Afero production cloud. Third parties should always use this.
     case prod = 0
@@ -124,14 +127,14 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
     public init?(stringIdentifier: String?) {
         guard let stringIdentifier = stringIdentifier else { return nil }
         switch stringIdentifier {
-        case SofthubCloud.prod.stringIdentifier: self = .prod
-        case SofthubCloud.dev.stringIdentifier: self = .dev
+        case SofthubProfileType.prod.stringIdentifier: self = .prod
+        case SofthubProfileType.dev.stringIdentifier: self = .dev
         default: return nil
         }
     }
     
-    var aferoService: AferoService {
-        return AferoService(rawValue: rawValue)!
+    var aferoService: AferoSofthubProfileType {
+        return AferoSofthubProfileType(rawValue: rawValue)!
     }
     
     public var description: String {
@@ -142,7 +145,7 @@ extension AferoService: CustomStringConvertible, CustomDebugStringConvertible {
         return "\(type(of: self)) \(rawValue): \(description)"
     }
     
-    public static let allValues: [SofthubCloud] = [.prod, .dev]
+    public static let allValues: [SofthubProfileType] = [.prod, .dev]
     
 }
 
@@ -365,8 +368,10 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     ///             softhub will be associated. An actual Afero account id is sufficient,
     ///             but any string unique to a given account will do. See **Associating**.
     ///
-    /// - parameter cloud: The cloud to which to connect. Defaults to `.prod`, and should not
-    ///             be changed for production applications.
+    /// - parameter apiHost: The hostname of the Afero ClientAPI.
+    ///
+    /// - parameter profileType: The type of profile to use. Unless otherwise stated, this should
+    ///             always be `.prod` (the default).
     ///
     /// - parameter softhubType: Identifies the behavior a softhub should declar when it associates
     ///             with the service. Unless otherwise instructed by Afero, this should be
@@ -433,7 +438,8 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     
     public func start(
         with accountId: String,
-        using cloud: SofthubCloud = .prod,
+        apiHost: String,
+        using profileType: SofthubProfileType = .prod,
         behavingAs softhubType: SofthubType = .enterprise,
         identifiedBy identifier: String? = nil,
         logLevel: SofthubLogLevel,
@@ -461,8 +467,8 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         
         AferoSofthub.start(
             withAccountId: accountId,
-            cloud: cloud.aferoService,
-            softhubType: softhubType.aferoSofthubType,
+            apiHost: "",
+            profileType: profileType.aferoService,
             logLevel: logLevel.aferoSofthubLogLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
