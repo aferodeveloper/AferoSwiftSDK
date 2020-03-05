@@ -1,5 +1,5 @@
 PODS:
-  - AferoSofthub (1.7.0)
+  - AferoSofthub (1.7.1)
   - AferoSwiftSDK/AFNetworking (1.2.8):
     - AferoSwiftSDK/Core
     - AFNetworking/NSURLSession (~> 3.1)
@@ -97,7 +97,7 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
-  AferoSofthub: efb04548fdd4363fb0cfd83cbaedfc4592d31e90
+  AferoSofthub: 60a2e587128333e7cd5fd267680f75c3401302c9
   AferoSwiftSDK: cc6a5d4f1fcaf0e03964afbd46043cb4e620201f
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
@@ -117,6 +117,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: c7bd4755ad8f95122781352776e14ecf38cf3e7f
+PODFILE CHECKSUM: cea1ccd9d0485186f014b8d869818759a64e0f15
 
 COCOAPODS: 1.8.4
