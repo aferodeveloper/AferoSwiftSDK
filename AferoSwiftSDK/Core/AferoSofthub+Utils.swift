@@ -126,19 +126,19 @@ public typealias SofthubCloud = SofthubProfileType
     /// or does not match a known `SofthubCloud.stringIdentifier`, fail initialization.
     public init?(stringIdentifier: String?) {
         guard let stringIdentifier = stringIdentifier else { return nil }
-        switch stringIdentifier {
-        case SofthubProfileType.prod.stringIdentifier: self = .prod
-        case SofthubProfileType.dev.stringIdentifier: self = .dev
+        switch stringIdentifier.lowercased() {
+        case SofthubProfileType.prod.stringIdentifier.lowercased(): self = .prod
+        case SofthubProfileType.dev.stringIdentifier.lowercased(): self = .dev
         default: return nil
         }
     }
     
-    var aferoService: AferoSofthubProfileType {
+    var aferoProfileType: AferoSofthubProfileType {
         return AferoSofthubProfileType(rawValue: rawValue)!
     }
     
     public var description: String {
-        return aferoService.description
+        return aferoProfileType.description
     }
     
     public var debugDescription: String {
@@ -467,8 +467,8 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         
         AferoSofthub.start(
             withAccountId: accountId,
-            apiHost: "",
-            profileType: profileType.aferoService,
+            apiHost: apiHost,
+            profileType: profileType.aferoProfileType,
             logLevel: logLevel.aferoSofthubLogLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,

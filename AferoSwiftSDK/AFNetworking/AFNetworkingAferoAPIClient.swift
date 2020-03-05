@@ -63,7 +63,7 @@ public class AFNetworkingAferoAPIClient {
                 fatalError("No string keyed by \(clientSecretKey) found in \(String(describing: plistDict))")
             }
             
-            var apiHostname = "api.afero.io/"
+            var apiHostname = "api.afero.io"
             
             if let maybeApiHostnameString = plistDict[type(of: self).APIHostnameKey] as? String {
                 apiHostname = maybeApiHostnameString
