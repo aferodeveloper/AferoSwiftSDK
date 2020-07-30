@@ -11,6 +11,7 @@ import ReactiveSwift
 import Result
 import CocoaLumberjack
 import Afero
+import AferoSofthub
 
 protocol DeviceCollator {
     
@@ -43,6 +44,7 @@ protocol DeviceCollectionObserving: class {
     
     var deviceCollection: DeviceCollection? { get }
     var deviceCollectionDisposable: Disposable? { get set }
+    var softhubDeviceIdObs: NSKeyValueObservation? { get set }
     func deviceCollectionBeganUpdates()
     func deviceCollectionAddedDevice(_ device: DeviceModel)
     func deviceCollectionRemovedDevice(_ device: DeviceModel)
@@ -79,7 +81,6 @@ extension DeviceCollectionObserving {
                 }
         }
         
-        
     }
     
     func stopObservingDeviceCollection() {
@@ -87,15 +88,34 @@ extension DeviceCollectionObserving {
         deviceCollectionDisposable = nil
     }
     
+    func startObservingSofthub() {
+        softhubDeviceIdObs = AferoSofthub.sharedInstance().observe(\.deviceId) {
+            [weak self] _, _ in asyncMain { self?.deviceCollectionReset() }
+        }
+    }
+    
+    func stopObserviceSofthub() {
+        softhubDeviceIdObs = nil
+    }
+    
 }
 
+
 class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator {
+    
+    var softhubDeviceIdObs: NSKeyValueObservation?
     
     typealias Model = DeviceModel
     
     init(deviceCollection: DeviceCollection) {
         self.deviceCollection = deviceCollection
         startObservingDeviceCollection()
+        startObservingSofthub()
+    }
+    
+    deinit {
+        stopObserviceSofthub()
+        stopObservingDeviceCollection()
     }
     
     var collatedDeviceIds: [String] = [] {
@@ -185,7 +205,7 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     
     func updateCollatedIds() {
         collatedDeviceIds = deviceCollection?
-            .devices
+            .allDevices
             .filter {
                 $0.isPresentable || $0.isLocalSofthub
             }
