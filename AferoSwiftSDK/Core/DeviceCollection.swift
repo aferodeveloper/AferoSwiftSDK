@@ -85,6 +85,9 @@ public class DeviceCollection: NSObject, MetricsReportable {
         return Array(_deviceRegistry.values)
     }
     
+    /// All devices in this account, whether "visible" or not.
+    public var allDevices: [DeviceModel] { _allDevices }
+    
     internal var apiClient: AferoAPIClientProto
     
     internal let profileSource: CachedDeviceAccountProfilesSource
@@ -1390,9 +1393,6 @@ extension DeviceCollection {
     
     @available(*, deprecated, renamed: "connectionState")
     public var state: ConnectionState { return connectionState }
-    
-    @available(*, deprecated, message: "Public access to `allDevices` is deprecated; use `devices` instead.")
-    public var allDevices: [DeviceModel] { return _allDevices }
     
     @available(*, deprecated, renamed: "devices")
     public var visibleDevices: [DeviceModel] { return devices }
