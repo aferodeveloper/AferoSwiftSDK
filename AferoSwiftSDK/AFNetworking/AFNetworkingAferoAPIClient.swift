@@ -86,7 +86,7 @@ public class AFNetworkingAferoAPIClient {
 
     public var TAG: String { return "AFNetworkingAferoAPIClient" }
 
-    var apiBaseURL: URL { return config.apiBaseURL }
+    public var apiBaseURL: URL { return config.apiBaseURL }
     var oauthClientId: String { return config.oauthClientId }
     var oauthClientSecret: String { return config.oauthClientSecret }
     
@@ -340,12 +340,14 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             parameters: parameters,
             progress: nil,
             success: { (task, result) -> Void in
-                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
+                DDLogDebug("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+                DDLogVerbose("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -361,12 +363,14 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
-                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
+                DDLogDebug("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+                DDLogVerbose("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -383,12 +387,14 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             parameters: parameters,
             progress: nil,
             success: { (task, result) -> Void in
-                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
+                DDLogDebug("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+                DDLogVerbose("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -404,12 +410,14 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             urlString,
             parameters: parameters,
             success: { (task, result) -> Void in
-                DDLogDebug("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
+                DDLogDebug("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+                DDLogVerbose("SUCCESS task: \(String(reflecting: task)) result: \(String(reflecting: result))", tag: TAG)
                 asyncGlobalDefault {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogDebug("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
+            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -432,7 +440,7 @@ class AferoAFJSONResponseSerializer: AFJSONResponseSerializer {
             bodyString = prettyJson
         }
 
-        DDLogDebug("Response: <body>\(bodyString)</body>", tag: "AferoAFJSONResponseSerializer")
+        DDLogVerbose("Response: <body>\(bodyString)</body>", tag: "AferoAFJSONResponseSerializer")
         return super.responseObject(for: response, data: data, error: error) as AnyObject?
     }
 
@@ -449,7 +457,7 @@ class AferoAFJSONRequestSerializer: AFJSONRequestSerializer {
             bodyString = maybeBody
         }
 
-        DDLogDebug("Request: <headers>\(request?.allHTTPHeaderFields.debugDescription ?? "<empty>")</headers> <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
+        DDLogVerbose("Request: <headers>\(request?.allHTTPHeaderFields.debugDescription ?? "<empty>")</headers> <body>\(bodyString)</body>", tag: "AferoAFJSONRequestSerializer")
         return request
     }
     

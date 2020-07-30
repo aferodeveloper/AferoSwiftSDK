@@ -22,6 +22,13 @@ import LKAlertController
 
 typealias APIClient = AFNetworkingAferoAPIClient
 
+extension AFNetworkingAferoAPIClient {
+    
+    var softhubCloud: SofthubCloud {
+        (apiBaseURL.host?.contains("dev") ?? false) ? .dev : .prod
+    }
+}
+
 // MARK: - AccountViewController -
 
 class AccountInfoCell: UITableViewCell {
@@ -283,7 +290,7 @@ class AccountViewController: UITableViewController {
                 }
                 
                 do {
-                    try SofthubMinder.sharedInstance.start(withAccountId: accountId) {
+                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, cloud: APIClient.default.softhubCloud) {
                         associationId in
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {
