@@ -25,7 +25,8 @@ typealias APIClient = AFNetworkingAferoAPIClient
 extension AFNetworkingAferoAPIClient {
     
     var softhubCloud: SofthubCloud {
-        (apiBaseURL.host?.contains("dev") ?? false) ? .dev : .prod
+        let ret = (apiBaseURL.host?.contains("dev") ?? false) ? SofthubCloud.dev : SofthubCloud.prod
+        return ret
     }
 }
 

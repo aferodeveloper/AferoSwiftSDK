@@ -95,8 +95,9 @@ extension DeviceModelable {
     
     func start(
         withAccountId accountId: String,
+        cloud: SofthubCloud = .prod,
         mode: SofthubType = .enterprise,
-        logLevel: SofthubLogLevel = .info,
+        logLevel: SofthubLogLevel = .verbose,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
             deviceId, associationId, profileVersion in
@@ -142,6 +143,7 @@ extension DeviceModelable {
         
         startAferoSofthub(
             withAccountId: accountId,
+            using: cloud,
             mode: mode,
             logLevel: logLevel,
             hardwareIdentifier: hardwareIdentifier,
@@ -175,6 +177,7 @@ extension DeviceModelable {
     
     fileprivate func startAferoSofthub(
         withAccountId accountId: String,
+        using cloud: SofthubCloud = .prod,
         mode behavingAs: SofthubType = .enterprise,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
@@ -194,6 +197,7 @@ extension DeviceModelable {
         
         Softhub.shared.start(
             with: accountId,
+            using: cloud,
             behavingAs: behavingAs,
             identifiedBy: hardwareIdentifier,
             logLevel: logLevel,
