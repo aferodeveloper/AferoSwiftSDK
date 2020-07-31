@@ -1,11 +1,11 @@
 PODS:
-  - AferoSofthub (1.6.7)
-  - AferoSwiftSDK/AFNetworking (1.2.6):
+  - "AferoSofthub (1.6.4+1)"
+  - AferoSwiftSDK/AFNetworking (1.2.9):
     - AferoSwiftSDK/Core
     - AFNetworking (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.2.6):
-    - AferoSofthub (~> 1.6.7)
+  - AferoSwiftSDK/Core (1.2.9):
+    - "AferoSofthub (= 1.6.4+1)"
     - CocoaLumberjack/Swift (~> 3.5)
     - CocoaZ (~> 1.4)
     - CryptoSwift
@@ -37,24 +37,24 @@ PODS:
   - CryptoSwift (1.0.0)
   - HTTPStatusCodes (3.3.1)
   - LKAlertController (1.12.2)
-  - Nimble (8.0.2)
-  - OHHTTPStubs/Core (8.0.0)
-  - OHHTTPStubs/Default (8.0.0):
+  - Nimble (8.1.1)
+  - OHHTTPStubs/Core (9.0.0)
+  - OHHTTPStubs/Default (9.0.0):
     - OHHTTPStubs/Core
     - OHHTTPStubs/JSON
     - OHHTTPStubs/NSURLSession
     - OHHTTPStubs/OHPathHelpers
-  - OHHTTPStubs/JSON (8.0.0):
+  - OHHTTPStubs/JSON (9.0.0):
     - OHHTTPStubs/Core
-  - OHHTTPStubs/NSURLSession (8.0.0):
+  - OHHTTPStubs/NSURLSession (9.0.0):
     - OHHTTPStubs/Core
-  - OHHTTPStubs/OHPathHelpers (8.0.0)
-  - OHHTTPStubs/Swift (8.0.0):
+  - OHHTTPStubs/OHPathHelpers (9.0.0)
+  - OHHTTPStubs/Swift (9.0.0):
     - OHHTTPStubs/Default
   - PromiseKit/CorePromise (4.5.1)
   - QRCode (2.0)
   - QRCodeReader.swift (10.0.0)
-  - Quick (2.1.0)
+  - Quick (3.0.0)
   - ReactiveSwift (5.0.0):
     - Result (~> 4.1)
   - Result (4.1.0)
@@ -105,8 +105,8 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
-  AferoSofthub: 4de582d9f08ba2c6051d30ce950e1fe40b9b4e40
-  AferoSwiftSDK: ba6568a666f49c7d6653352b569d21a3baf8ab52
+  AferoSofthub: 8ba046cc41b20e81d8e99cd32565c51b02c4a828
+  AferoSwiftSDK: 87ed58c1f1ab0c3802842419594e3de52df2cbc8
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
@@ -114,12 +114,12 @@ SPEC CHECKSUMS:
   CryptoSwift: d81eeaa59dc5a8d03720fe919a6fd07b51f7439f
   HTTPStatusCodes: a07dff597042a9f692cf4f979cb0fd91fc938835
   LKAlertController: 10c7e8627e5d4757d03b4f53469f35ded14c378f
-  Nimble: 622629381bda1dd5678162f21f1368cec7cbba60
-  OHHTTPStubs: 9cbce6364bec557cc3439aa6bb7514670d780881
+  Nimble: 5f8a2fb6fa343a7242dfdd9d42f7267419d464b2
+  OHHTTPStubs: cb29d2a9d09a828ecb93349a2b0c64f99e0db89f
   PromiseKit: 445dac9b2c3c3b4b31b5f842bc325700b848a8bd
   QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
   QRCodeReader.swift: 74d0378eb0c7807828552b49626bbc8307495aee
-  Quick: 4be43f6634acfa727dd106bdf3929ce125ffa79d
+  Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
   ReactiveSwift: bd4c122943593e67cb441409370c5c1e3cb32791
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
