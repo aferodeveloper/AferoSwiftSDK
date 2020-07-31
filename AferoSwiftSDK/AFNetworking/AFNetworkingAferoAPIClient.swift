@@ -346,8 +346,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
-            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -369,8 +368,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
-            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -393,8 +391,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
-            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
@@ -416,8 +413,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
                     success(task, result)
                 }
         }) { (task, error) -> Void in
-            DDLogError("SUCCESS \(#function) \(urlString), parameters:\(String(reflecting: parameters))");
-            DDLogVerbose("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
+            DDLogError("FAILURE task: \(String(reflecting: task)) result: \(String(reflecting: error))", tag: TAG)
             asyncGlobalDefault {
                 failure(task, error)
             }
