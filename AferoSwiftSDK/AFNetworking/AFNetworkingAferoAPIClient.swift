@@ -258,7 +258,7 @@ public extension AFNetworkingAferoAPIClient {
         }
     }
 
-    /// Given an authToken, tokentTyp, and refreshToken, store, initialized the session manager,
+    /// Given an accessToken, tokentType, and refreshToken, store, initialized the session manager,
     /// and resolve.
     ///
     /// - parameter oAuthToken: The token acquired from the Afero cloud.
