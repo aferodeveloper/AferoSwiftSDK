@@ -80,7 +80,7 @@ extension AferoSofthubProfileType: CustomStringConvertible, CustomDebugStringCon
         switch self {
         case .prod: return "Afero production cloud"
         case .dev: return "Afero development cloud"
-        
+        case .GKEHD: return "THD"
         #if compiler(>=5)
         @unknown default:
             return "Unknown AferoService case \(rawValue)"
@@ -157,12 +157,7 @@ public typealias SofthubCloud = SofthubProfileType
 
     case enterprise
     
-    var aferoSofthubType: AferoSofthubType {
-        switch self {
-        case .consumer: return .consumer
-        case .enterprise: return .enterprise
-        }
-    }
+    var aferoSofthubType: AferoSofthubType { .enterprise }
     
     public var description: String {
         return aferoSofthubType.rawValue
@@ -176,33 +171,7 @@ public typealias SofthubCloud = SofthubProfileType
 
 /// The level at which the Softhub should log.
 
-@objc public enum SofthubLogLevel: Int, CustomStringConvertible, CustomDebugStringConvertible {
-    
-    case none = 0
-    case error
-    case warning
-    case info
-    case debug
-    case verbose
-    case trace
-    
-    var aferoSofthubLogLevel: AferoSofthubLogLevel {
-        return AferoSofthubLogLevel(rawValue: rawValue)!
-    }
-    
-    init(_ level: AferoSofthubLogLevel) {
-        self.init(rawValue: level.rawValue)!
-    }
-    
-    public var description: String {
-        return "\(self)"
-    }
-    
-    public var debugDescription: String {
-        return "\(type(of: self)) \(rawValue): \(description)"
-    }
-    
-}
+public typealias SofthubLogLevel = AferoSofthubLogLevel
 
 /// The current state of the softhub.
 
@@ -442,7 +411,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         using profileType: SofthubProfileType = .prod,
         behavingAs softhubType: SofthubType = .enterprise,
         identifiedBy identifier: String? = nil,
-        logLevel: SofthubLogLevel,
+        logLevel: AferoSofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = { _, _, _ in },
         completionHandler: @escaping (SofthubCompletionReason)->Void
@@ -469,7 +438,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
             withAccountId: accountId,
             apiHost: apiHost,
             profileType: profileType.aferoProfileType,
-            logLevel: logLevel.aferoSofthubLogLevel,
+            logLevelName: logLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
             setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
