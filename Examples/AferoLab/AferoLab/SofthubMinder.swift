@@ -76,6 +76,33 @@ extension DeviceModelable {
     fileprivate var otaStateObs: NSKeyValueObservation?
     
     var TAG: String { return "AferoSofthubMinder" }
+
+    @available(*, deprecated, message: "Use start(withAccountId:apiHost:mode:logLevel:hardwareIdentifier:setupModeDeviceDetectedHandler) instead.")
+    // TODO: When removing this, remove the below extension on SofthubProfileType as well.
+    func start(
+        withAccountId accountId: String,
+        cloud: SofthubProfileType = .prod,
+        mode: SofthubType = .enterprise,
+        logLevel: SofthubLogLevel = .verbose,
+        hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
+            deviceId, associationId, profileVersion in
+            DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
+            },
+        associationNeededHandler: @escaping SofthubAssociationHandler
+        ) throws {
+        
+        try start(
+            withAccountId: accountId,
+            apiHost: cloud.apiHost,
+            mode: mode,
+            profileType: cloud,
+            logLevel: logLevel,
+            hardwareIdentifier: hardwareIdentifier,
+            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+            associationNeededHandler: associationNeededHandler
+        )
+    }
     
     /// Start the softhub.
     ///
@@ -219,5 +246,14 @@ extension DeviceModelable {
         Softhub.shared.stop()
     }
     
+}
+
+extension SofthubProfileType {
+    public var apiHost: String {
+        switch self {
+        case .prod: return "api.afero.io"
+        case .dev: return "api.dev.afero.io"
+        }
+    }
 }
 
