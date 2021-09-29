@@ -1,10 +1,10 @@
 PODS:
   - AferoSofthub (1.7.12)
-  - AferoSwiftSDK/AFNetworking (1.2.8):
+  - AferoSwiftSDK/AFNetworking (1.3.0):
     - AferoSwiftSDK/Core
     - AFNetworking/NSURLSession (~> 3.1)
     - AFOAuth2Manager (~> 3.0)
-  - AferoSwiftSDK/Core (1.2.8):
+  - AferoSwiftSDK/Core (1.3.0):
     - AferoSofthub (~> 1.7)
     - CocoaLumberjack/Swift (~> 3.5)
     - CocoaZ (~> 1.4)
@@ -26,10 +26,10 @@ PODS:
   - CocoaLumberjack/Swift (3.5.2):
     - CocoaLumberjack/Core
   - CocoaZ (1.4.2)
-  - CryptoSwift (1.4.0)
+  - CryptoSwift (1.4.2)
   - HTTPStatusCodes (3.3.1)
   - LKAlertController (1.12.2)
-  - Nimble (9.2.0)
+  - Nimble (9.2.1)
   - OHHTTPStubs/Core (9.1.0)
   - OHHTTPStubs/Default (9.1.0):
     - OHHTTPStubs/Core
@@ -57,7 +57,6 @@ DEPENDENCIES:
   - AferoSwiftSDK/AFNetworking (from `..`)
   - AFNetworking/NSURLSession
   - CocoaLumberjack/Swift (= 3.5.2)
-  - CryptoSwift (= 1.4.0)
   - HTTPStatusCodes (~> 3.2)
   - LKAlertController (= 1.12.2)
   - Nimble
@@ -98,15 +97,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AferoSofthub: 60ca19294dd42c925123b2e15b64d1b5c8b65a8b
-  AferoSwiftSDK: cc6a5d4f1fcaf0e03964afbd46043cb4e620201f
+  AferoSwiftSDK: c2cc0cc5a3b7cbbad1500cb01ba7d66a98d3d36f
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: 7cc902df1784de3b389a387756c7d710f197730c
+  CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
   HTTPStatusCodes: a07dff597042a9f692cf4f979cb0fd91fc938835
   LKAlertController: 10c7e8627e5d4757d03b4f53469f35ded14c378f
-  Nimble: 4f4a345c80b503b3ea13606a4f98405974ee4d0b
+  Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   PromiseKit: 445dac9b2c3c3b4b31b5f842bc325700b848a8bd
   QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
@@ -117,6 +116,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 56646a73515d71f7f755f0b057e55737940cb6aa
+PODFILE CHECKSUM: 19e96ae84caf6c6489b3ce045b7c037443130418
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
