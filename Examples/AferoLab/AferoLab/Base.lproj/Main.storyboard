@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14835.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YYV-1Q-Ilk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YYV-1Q-Ilk">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14790.5"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -37,7 +38,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="customer@afero.io" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Qw-31-uH3">
                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                                                 <connections>
@@ -57,7 +57,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="qGh-wl-a1Q">
                                                 <rect key="frame" x="0.0" y="21.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                                                 <connections>
@@ -69,14 +68,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="uwR-aw-fk0">
                                         <rect key="frame" x="0.0" y="128" width="288" height="110"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IxR-GU-dgX">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IxR-GU-dgX">
                                                 <rect key="frame" x="120.5" y="0.0" width="47" height="30"/>
                                                 <state key="normal" title="Sign In"/>
                                                 <connections>
                                                     <action selector="signInTapped:" destination="cBT-gx-i5G" eventType="touchUpInside" id="mtG-cW-9in"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="se0-6x-e3w">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="se0-6x-e3w">
                                                 <rect key="frame" x="117.5" y="40" width="53" height="30"/>
                                                 <state key="normal" title="Forgot?"/>
                                                 <connections>
@@ -86,7 +85,7 @@
                                                     </segue>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MA9-UP-acY">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MA9-UP-acY">
                                                 <rect key="frame" x="75" y="80" width="138" height="30"/>
                                                 <state key="normal" title="Have a Reset Code?"/>
                                                 <connections>
@@ -98,7 +97,7 @@
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eQ7-fe-LL0">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eQ7-fe-LL0">
                                         <rect key="frame" x="0.0" y="246" width="288" height="30"/>
                                         <state key="normal" title="Create An Account"/>
                                         <connections>
@@ -132,6 +131,50 @@
                 <exit id="LAd-iY-1cp" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1360" y="2974.8125937031487"/>
+        </scene>
+        <!--Start View Controller-->
+        <scene sceneID="ms5-jq-kJ6">
+            <objects>
+                <viewController id="s6k-sp-gwS" customClass="StartViewController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="62Q-5b-hQI"/>
+                        <viewControllerLayoutGuide type="bottom" id="Vrb-YC-t08"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="uvD-t2-fuk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="brs-KW-nG0">
+                                <rect key="frame" x="137" y="392" width="47" height="30"/>
+                                <state key="normal" title="Sign In"/>
+                                <connections>
+                                    <action selector="signInTapped:" destination="s6k-sp-gwS" eventType="touchUpInside" id="95C-aq-eyb"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.05000000074505806" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Startup" translatesAutoresizingMaskIntoConstraints="NO" id="EN5-Yc-j0J">
+                                <rect key="frame" x="0.0" y="102" width="320" height="246"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="EN5-Yc-j0J" firstAttribute="leading" secondItem="uvD-t2-fuk" secondAttribute="leading" id="2EO-Lf-PTs"/>
+                            <constraint firstItem="Vrb-YC-t08" firstAttribute="top" secondItem="brs-KW-nG0" secondAttribute="bottom" constant="126" id="9Td-gO-dm8"/>
+                            <constraint firstItem="brs-KW-nG0" firstAttribute="leading" secondItem="uvD-t2-fuk" secondAttribute="leadingMargin" constant="121" id="DpW-yK-fQq"/>
+                            <constraint firstAttribute="trailing" secondItem="EN5-Yc-j0J" secondAttribute="trailing" id="QgK-60-6jR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="brs-KW-nG0" secondAttribute="trailing" constant="120" id="iNr-F8-F7M"/>
+                            <constraint firstItem="Vrb-YC-t08" firstAttribute="top" secondItem="EN5-Yc-j0J" secondAttribute="bottom" constant="200" id="iiM-mQ-YVI"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="qjv-SF-mPc"/>
+                    <connections>
+                        <outlet property="signInButton" destination="brs-KW-nG0" id="HiG-qL-wZv"/>
+                        <segue destination="XZ6-3I-RgR" kind="unwind" identifier="unwindToAccountController2" unwindAction="unwindFromSignInSegue:" id="3OO-YV-1Ia"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uJi-Nx-dmw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="XZ6-3I-RgR" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="984" y="1683"/>
         </scene>
         <!--RequestResetPasswordViewController-->
         <scene sceneID="C6v-xz-MlO">
@@ -168,7 +211,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="customer@afero.io" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="le2-ST-609">
                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="done" textContentType="email"/>
                                                 <connections>
@@ -184,14 +226,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8Sv-Jl-1Uf">
                                         <rect key="frame" x="0.0" y="169.5" width="288" height="68"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5nC-NV-koM">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5nC-NV-koM">
                                                 <rect key="frame" x="39" y="0.0" width="210" height="30"/>
                                                 <state key="normal" title="Request Password Reset Code"/>
                                                 <connections>
                                                     <action selector="requestResetCodeTapped:" destination="pFf-bh-vqW" eventType="touchUpInside" id="2Ka-io-wpn"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tct-EQ-zFP">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tct-EQ-zFP">
                                                 <rect key="frame" x="120" y="38" width="48" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
@@ -214,6 +256,7 @@
                             <constraint firstItem="Dns-RT-Br9" firstAttribute="leading" secondItem="NBa-jp-Uin" secondAttribute="leadingMargin" id="z4A-lF-mth"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="sAd-Wl-KmS"/>
                     <connections>
                         <outlet property="cancelButton" destination="tct-EQ-zFP" id="EGq-fG-bcW"/>
                         <outlet property="emailTextField" destination="le2-ST-609" id="MNO-ae-Im1"/>
@@ -256,7 +299,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Robbie" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="TMS-MF-a0h">
                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" textContentType="given-name"/>
                                                 <connections>
@@ -277,7 +319,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Robinson" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3xF-B6-9MU">
                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" textContentType="family-name"/>
                                                 <connections>
@@ -298,7 +339,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="customer@afero.io" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="KnC-in-qGw">
                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" textContentType="email"/>
                                                 <connections>
@@ -325,7 +365,6 @@
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="DTI-km-E1r">
                                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                                <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" textContentType="password"/>
                                                                 <connections>
@@ -346,7 +385,6 @@
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="CgL-dK-oh3">
                                                                 <rect key="frame" x="0.0" y="22.5" width="288" height="34"/>
-                                                                <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" textContentType="password"/>
                                                                 <connections>
@@ -378,14 +416,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="31" translatesAutoresizingMaskIntoConstraints="NO" id="MzH-5G-oEl">
                                         <rect key="frame" x="0.0" y="370.5" width="288" height="30"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LAw-A4-Z6W">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LAw-A4-Z6W">
                                                 <rect key="frame" x="0.0" y="0.0" width="128.5" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
                                                     <segue destination="y6M-Zc-XUx" kind="unwind" identifier="cancelCreateAccount" unwindAction="cancelFromCreateAccountWithSegue:" id="iTj-0e-M5p"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRl-As-73B">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRl-As-73B">
                                                 <rect key="frame" x="159.5" y="0.0" width="128.5" height="30"/>
                                                 <state key="normal" title="Create"/>
                                                 <connections>
@@ -411,6 +449,7 @@
                             <constraint firstItem="iP7-eD-HHw" firstAttribute="top" secondItem="duK-dy-Kpb" secondAttribute="bottom" constant="16" id="zEZ-pa-umk"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="JNK-yp-ycT"/>
                     <connections>
                         <outlet property="cancelButton" destination="LAw-A4-Z6W" id="SI5-SG-pfq"/>
                         <outlet property="createButton" destination="TRl-As-73B" id="W7J-AS-uHy"/>
@@ -463,7 +502,6 @@
                                             </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="X1Y2Z3" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="QML-zO-g4J">
                                                 <rect key="frame" x="0.0" y="21.5" width="288" height="34"/>
-                                                <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 <connections>
@@ -494,7 +532,6 @@
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dFs-al-ed9">
                                                                 <rect key="frame" x="0.0" y="21.5" width="288" height="34"/>
-                                                                <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                 <connections>
@@ -518,7 +555,6 @@
                                                             </label>
                                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="P@$$304D" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="EU5-Br-wXC">
                                                                 <rect key="frame" x="0.0" y="21.5" width="288" height="34"/>
-                                                                <nil key="textColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                                 <connections>
@@ -547,14 +583,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="CWD-mk-v2Z">
                                         <rect key="frame" x="0.0" y="299.5" width="288" height="68"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zl2-hA-lX2">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zl2-hA-lX2">
                                                 <rect key="frame" x="82.5" y="0.0" width="123" height="30"/>
                                                 <state key="normal" title="Change Password"/>
                                                 <connections>
                                                     <action selector="changePasswordTapped:" destination="LmT-pW-wz8" eventType="touchUpInside" id="5mU-uU-hWS"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHP-So-nQn">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHP-So-nQn">
                                                 <rect key="frame" x="120" y="38" width="48" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
@@ -577,6 +613,7 @@
                             <constraint firstItem="tpX-NQ-0xR" firstAttribute="leading" secondItem="aO5-lA-79Y" secondAttribute="leading" id="yVQ-yk-WBf"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="nFU-rp-DsQ"/>
                     <connections>
                         <outlet property="cancelButton" destination="aHP-So-nQn" id="Ywc-5S-X6r"/>
                         <outlet property="changePasswordButton" destination="zl2-hA-lX2" id="vec-m6-aeS"/>
@@ -604,7 +641,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AccountInfo" rowHeight="197" id="0bM-Rc-fyz" userLabel="AccountInfoCell" customClass="AccountInfoCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="197"/>
+                                <rect key="frame" x="0.0" y="44.5" width="320" height="197"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0bM-Rc-fyz" id="SNr-MM-PA5">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="197"/>
@@ -614,28 +651,28 @@
                                             <rect key="frame" x="16" y="11" width="287.5" height="175"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dqp-sv-pwW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="45"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="51.5"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utp-Gi-l02">
-                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="45"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="51.5"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zdJ-7Q-UQd">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="30.5"/>
                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                    <color key="textColor" systemColor="darkTextColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-Xe-jBJ">
-                                                                    <rect key="frame" x="0.0" y="21" width="287.5" height="24"/>
+                                                                    <rect key="frame" x="0.0" y="30.5" width="287.5" height="21"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="AccountNameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWG-lA-CQM">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="254.5" height="24"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="258.5" height="21"/>
                                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                                             <nil key="highlightedColor"/>
                                                                         </label>
                                                                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoDark" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x64-jD-a0d">
-                                                                            <rect key="frame" x="262.5" y="0.0" width="25" height="24"/>
+                                                                            <rect key="frame" x="266.5" y="0.0" width="21" height="21"/>
                                                                             <connections>
                                                                                 <action selector="verificationNeededAnnunciatorTapped:" destination="0bM-Rc-fyz" eventType="touchUpInside" id="UHh-eL-wBg"/>
                                                                             </connections>
@@ -647,36 +684,36 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oqh-tm-OYC">
-                                                    <rect key="frame" x="0.0" y="53" width="287.5" height="40.5"/>
+                                                    <rect key="frame" x="0.0" y="59.5" width="287.5" height="33"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Connection Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lpp-Yr-GLK">
-                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="17"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="ConnectionStatusLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7V-1m-RXK">
-                                                            <rect key="frame" x="0.0" y="21" width="287.5" height="19.5"/>
+                                                            <rect key="frame" x="0.0" y="17" width="287.5" height="16"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Nd-Iw-iQK">
-                                                    <rect key="frame" x="0.0" y="101.5" width="287.5" height="73.5"/>
+                                                    <rect key="frame" x="0.0" y="100.5" width="287.5" height="74.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SoftHub" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lf0-Ze-wi8">
-                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="17"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ccQ-4H-2db">
-                                                            <rect key="frame" x="0.0" y="28.5" width="287.5" height="45"/>
+                                                            <rect key="frame" x="0.0" y="24.5" width="287.5" height="50"/>
                                                             <subviews>
                                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="right" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zcz-gR-67K" userLabel="HubStatusSwitch">
-                                                                    <rect key="frame" x="238.5" y="0.0" width="51" height="45"/>
+                                                                    <rect key="frame" x="238.5" y="0.0" width="51" height="50"/>
                                                                     <color key="onTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <connections>
@@ -684,7 +721,7 @@
                                                                     </connections>
                                                                 </switch>
                                                             </subviews>
-                                                            <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="bottom" secondItem="Zcz-gR-67K" secondAttribute="bottom" id="4Ag-vS-LhP"/>
                                                                 <constraint firstItem="Zcz-gR-67K" firstAttribute="top" secondItem="ccQ-4H-2db" secondAttribute="top" id="I8g-4v-tVg"/>
@@ -711,24 +748,24 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Device" textLabel="wGe-0l-NzX" detailTextLabel="MGy-sw-2XO" style="IBUITableViewCellStyleSubtitle" id="oax-B1-aDz" userLabel="DeviceCell">
-                                <rect key="frame" x="0.0" y="225" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="241.5" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oax-B1-aDz" id="KLC-2Q-Rmt">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Device Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wGe-0l-NzX">
-                                            <rect key="frame" x="16" y="5" width="102" height="20.5"/>
+                                            <rect key="frame" x="16" y="5" width="101.5" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" systemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MGy-sw-2XO">
                                             <rect key="frame" x="16" y="25.5" width="33" height="14.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" systemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -772,7 +809,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorDeviceCharacteristicCell" rowHeight="43" id="H9O-Wi-OzE" customClass="DeviceInspectorDeviceCharacteristicCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="43"/>
+                                <rect key="frame" x="0.0" y="44.5" width="320" height="43"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H9O-Wi-OzE" id="Hkh-18-IDq">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -810,7 +847,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorWifiNetworkCell" rowHeight="55" id="5lD-gA-lCs" customClass="AferoWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="71" width="320" height="55"/>
+                                <rect key="frame" x="0.0" y="87.5" width="320" height="55"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5lD-gA-lCs" id="GvR-1c-Gu8">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="55"/>
@@ -833,7 +870,7 @@
                                 </userDefinedRuntimeAttributes>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorTagCollectionCell" rowHeight="66" id="aRE-4x-lEx" customClass="DeviceInspectorTagCollectionCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="126" width="320" height="66"/>
+                                <rect key="frame" x="0.0" y="142.5" width="320" height="66"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aRE-4x-lEx" id="hEu-hs-YT3">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="66"/>
@@ -870,7 +907,7 @@
                                                             <real key="value" value="10"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="color" keyPath="textColor">
-                                                            <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="value" systemColor="darkTextColor"/>
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="key" value="someKey"/>
                                                         <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
@@ -897,7 +934,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeviceInspectorGenericAttributeCell" rowHeight="62" id="LPr-zE-DlN" customClass="DeviceInspectorGenericAttributeCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="192" width="320" height="62"/>
+                                <rect key="frame" x="0.0" y="208.5" width="320" height="62"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LPr-zE-DlN" id="yXM-Sy-5HH">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="62"/>
@@ -907,30 +944,30 @@
                                             <rect key="frame" x="32" y="0.0" width="268" height="62"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="254" verticalCompressionResistancePriority="1000" text="Attribute Name" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q4K-iu-ZMe">
-                                                    <rect key="frame" x="0.0" y="16" width="122" height="19.5"/>
+                                                    <rect key="frame" x="0.0" y="16" width="103" height="17"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" systemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GcV-09-CNI">
-                                                    <rect key="frame" x="0.0" y="39.5" width="77.5" height="14.5"/>
+                                                    <rect key="frame" x="0.0" y="39" width="71.5" height="15"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="66666" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvg-Je-cIw">
-                                                            <rect key="frame" x="0.0" y="0.0" width="38.5" height="14.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="35.5" height="15"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="/" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HbC-bU-XSF">
-                                                            <rect key="frame" x="38.5" y="0.0" width="4" height="14.5"/>
+                                                            <rect key="frame" x="35.5" y="0.0" width="3.5" height="15"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="INT64" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ukB-TU-NrM">
-                                                            <rect key="frame" x="42.5" y="0.0" width="35" height="14.5"/>
+                                                            <rect key="frame" x="39" y="0.0" width="32.5" height="15"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -940,9 +977,9 @@
                                                     </constraints>
                                                 </stackView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="01234567891011" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c0d-cs-fWH">
-                                                    <rect key="frame" x="135.5" y="16" width="132.5" height="20.5"/>
+                                                    <rect key="frame" x="157" y="16" width="111" height="17"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" systemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1025,6 +1062,7 @@
                     <connections>
                         <segue destination="nFc-5S-3DK" kind="relationship" relationship="rootViewController" id="8Sn-pa-IaX"/>
                         <segue destination="IHv-Cj-XgG" kind="presentation" identifier="PresentSignin" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="Cgn-8t-aOa"/>
+                        <segue destination="s6k-sp-gwS" kind="presentation" identifier="PresentStart" id="tVo-ka-V5J"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nrB-Bl-gK5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1044,15 +1082,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ie3-Yj-A1A">
-                                <rect key="frame" x="16" y="199" width="288" height="170.5"/>
+                                <rect key="frame" x="16" y="219" width="288" height="130.5"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBt-bk-Lgo" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="170.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="130.5"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ac-9q-5uL">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="170.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="130.5"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KLt-gs-eeQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="170.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="130.5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -1080,7 +1118,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fa-t7-7Hm" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1089,7 +1127,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qEr-De-wZ8" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="96" y="20" width="172" height="64.5"/>
+                                        <rect key="frame" x="81" y="20" width="187" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1098,20 +1136,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X0L-F6-9VO" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="87.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="59" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="2Sf-1d-8aA"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KP4-EL-vdH">
-                                        <rect key="frame" x="20" y="92.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="64" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="UTF8" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGY-bA-6uw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="230" y="92.5" width="38" height="18"/>
+                                        <rect key="frame" x="237" y="64" width="31" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1119,14 +1157,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5c7-Fn-dan">
-                                        <rect key="frame" x="20" y="112.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5c7-Fn-dan">
+                                        <rect key="frame" x="20" y="80" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fxs-yG-bcw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="112.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fxs-yG-bcw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="80" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1135,13 +1173,13 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="800" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X38-c1-JXq">
-                                        <rect key="frame" x="20" y="132.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="96" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" text="Some Value Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hJW-aI-06s" userLabel="ValueTextView" customClass="AferoAttributeUITextView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="132.5" width="198" height="18"/>
+                                        <rect key="frame" x="63" y="96" width="205" height="14.5"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" identifier="valueTextViewHeight" id="cYh-Ju-ueK"/>
                                         </constraints>
@@ -1271,15 +1309,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xyH-Lm-4mA">
-                                <rect key="frame" x="16" y="164" width="288" height="240.5"/>
+                                <rect key="frame" x="16" y="183.5" width="288" height="201"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0jF-2W-QVJ" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="240.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="201"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lm6-sM-9ON">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="240.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="201"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="I6M-mv-yf8">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="240.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="201"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -1307,7 +1345,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UfL-Hz-LIb" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1316,7 +1354,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Udd-m1-CMi" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="96" y="20" width="172" height="64.5"/>
+                                        <rect key="frame" x="81" y="20" width="187" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1325,20 +1363,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwT-RL-wOh" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="87.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="59" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="A7r-gR-HgT"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Hh-Wn-tCZ">
-                                        <rect key="frame" x="20" y="92.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="64" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="SINT64" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fu9-YA-7yr" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="216" y="92.5" width="52" height="18"/>
+                                        <rect key="frame" x="225.5" y="64" width="42.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1346,14 +1384,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xaq-Z3-hla">
-                                        <rect key="frame" x="20" y="112.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xaq-Z3-hla">
+                                        <rect key="frame" x="20" y="80" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYb-up-Kdt" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="112.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYb-up-Kdt" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="80" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1362,19 +1400,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0fa-e1-TYe">
-                                        <rect key="frame" x="20" y="146.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="114" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="2,000,000" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OON-Ky-72L" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="144.5" width="198" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="63" y="112" width="205" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -1382,10 +1419,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="art-02-IUW" userLabel="Attribute Value Slider" customClass="AferoAttributeUISlider" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="18" y="174.5" width="252" height="31"/>
+                                        <rect key="frame" x="18" y="138.5" width="252" height="31"/>
                                     </slider>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y78-wf-SfH" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="212.5" width="248" height="18"/>
+                                        <rect key="frame" x="20" y="176.5" width="248" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1507,15 +1544,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="muB-Td-cLW">
-                                <rect key="frame" x="16" y="181" width="288" height="206.5"/>
+                                <rect key="frame" x="16" y="200" width="288" height="168"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tdD-tx-V49" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="206.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="168"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nsm-n9-4Sa">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="206.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="168"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="hWr-tG-40a">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="206.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="168"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -1543,7 +1580,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="97v-dc-CSa" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1552,7 +1589,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jXW-0Z-u8j" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="96" y="20" width="172" height="64.5"/>
+                                        <rect key="frame" x="81" y="20" width="187" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1561,20 +1598,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P7K-DH-V3T" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="87.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="59" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="Swl-5e-AGE"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gN-12-5RE">
-                                        <rect key="frame" x="20" y="92.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="64" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ni-kh-jWf" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="227" y="92.5" width="41" height="18"/>
+                                        <rect key="frame" x="234.5" y="64" width="33.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1582,14 +1619,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Enq-d2-gEK">
-                                        <rect key="frame" x="20" y="112.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Enq-d2-gEK">
+                                        <rect key="frame" x="20" y="80" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y1f-tN-sJw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="112.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y1f-tN-sJw" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="80" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1598,19 +1635,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dgi-Id-B3t">
-                                        <rect key="frame" x="20" y="146.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="114" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="false" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoP-Qa-1VA" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="172" y="144.5" width="39" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="178" y="112" width="33" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -1618,10 +1654,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uXp-nI-GZi" customClass="AferoAttributeUISwitch" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="219" y="140" width="51" height="31"/>
+                                        <rect key="frame" x="219" y="105.5" width="51" height="31"/>
                                     </switch>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZNm-rs-MSA" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="178.5" width="248" height="18"/>
+                                        <rect key="frame" x="20" y="143.5" width="248" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1742,15 +1778,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="icM-VQ-A2j">
-                                <rect key="frame" x="16" y="135.5" width="288" height="297.5"/>
+                                <rect key="frame" x="16" y="141" width="288" height="286.5"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lbh-Rl-7Bb" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="297.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="286.5"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yDp-w5-wms">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="297.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="286.5"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="6fa-Y3-EO0">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="297.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="286.5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -1778,7 +1814,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3rB-O7-Lxy" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1787,7 +1823,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="City" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82Q-Bw-Cdg" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="235.5" y="20" width="32.5" height="20.5"/>
+                                        <rect key="frame" x="240.5" y="20" width="27.5" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1796,20 +1832,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hTz-W6-Uhm" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="43.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="40" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="WCh-eq-1WK"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nE7-ag-rWX">
-                                        <rect key="frame" x="20" y="48.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="45" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="UTF8S" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNr-zh-HNh" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="221" y="48.5" width="47" height="18"/>
+                                        <rect key="frame" x="229.5" y="45" width="38.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1817,14 +1853,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lks-l3-cD0">
-                                        <rect key="frame" x="20" y="68.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lks-l3-cD0">
+                                        <rect key="frame" x="20" y="61" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJu-JV-Xb3" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="68.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJu-JV-Xb3" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="61" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -1833,19 +1869,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOA-rC-od4">
-                                        <rect key="frame" x="20" y="102.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="95" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="Cupertino" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f4Z-NW-nLf" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="188" y="100.5" width="80" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="201" y="93" width="67" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -1853,7 +1888,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L1U-ZM-2CB" customClass="AferoAttributeUIPickerView" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="122.5" width="248" height="175"/>
+                                        <rect key="frame" x="20" y="111.5" width="248" height="175"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="175" id="YzF-6z-rT4"/>
                                         </constraints>
@@ -1968,15 +2003,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tuA-r2-bNb">
-                                <rect key="frame" x="16" y="194.5" width="288" height="179.5"/>
+                                <rect key="frame" x="16" y="200" width="288" height="168.5"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Edt-bQ-E7K" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="179.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="168.5"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rHo-91-ouQ">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="179.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="168.5"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="E7f-YR-Bqb">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="179.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="168.5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -2004,7 +2039,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a6w-Ar-fKD" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2013,7 +2048,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Is Awesome?" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dtg-dB-hBU" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="20" width="104" height="20.5"/>
+                                        <rect key="frame" x="180.5" y="20" width="87.5" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2022,20 +2057,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uLf-2E-6P2" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="43.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="40" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="K0K-ST-rRF"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXs-Ao-Sdz">
-                                        <rect key="frame" x="20" y="48.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="45" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="16k-td-NWm" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="227" y="48.5" width="41" height="18"/>
+                                        <rect key="frame" x="234.5" y="45" width="33.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2043,14 +2078,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IbB-dG-cdR">
-                                        <rect key="frame" x="20" y="68.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IbB-dG-cdR">
+                                        <rect key="frame" x="20" y="61" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5lC-V2-rxe" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="68.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5lC-V2-rxe" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="61" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2059,19 +2094,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lW8-4Q-7ql">
-                                        <rect key="frame" x="20" y="102.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="95" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="false" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Dn9-ui-heW" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="229" y="100.5" width="39" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="235" y="93" width="33" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -2079,7 +2113,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="9QZ-Wc-hac" customClass="AferoAttributeUISegmentedControl" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="130.5" width="248" height="32"/>
+                                        <rect key="frame" x="20" y="119.5" width="248" height="32"/>
                                         <segments>
                                             <segment title="Not Awesome"/>
                                             <segment title="Totally Awesome"/>
@@ -2194,15 +2228,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lRk-QR-4ce">
-                                <rect key="frame" x="16" y="180.5" width="288" height="207.5"/>
+                                <rect key="frame" x="16" y="199" width="288" height="170"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IdY-y8-5XM" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="207.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="170"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pyS-Xn-Irm">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="207.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="170"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="cqb-hJ-cyY">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="207.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="170"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -2230,7 +2264,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jqf-UE-kik" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2239,7 +2273,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JXG-aF-t2F" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="96" y="20" width="172" height="64.5"/>
+                                        <rect key="frame" x="81" y="20" width="187" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2248,20 +2282,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nRl-Mc-nNA" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="87.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="59" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="PrE-37-4Dx"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h7B-4T-3vW">
-                                        <rect key="frame" x="20" y="92.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="64" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="BOOL" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmN-yL-ndi" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="227" y="92.5" width="41" height="18"/>
+                                        <rect key="frame" x="234.5" y="64" width="33.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2269,14 +2303,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XT2-FL-yBb">
-                                        <rect key="frame" x="20" y="112.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XT2-FL-yBb">
+                                        <rect key="frame" x="20" y="80" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zts-44-ZCC" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="112.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zts-44-ZCC" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="80" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2285,19 +2319,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mOc-Bv-7Xh">
-                                        <rect key="frame" x="20" y="146.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="114" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="0" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S1v-fx-Vpj" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="155" y="144.5" width="11" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="156" y="112" width="10" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -2305,7 +2338,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1cS-Cs-fpD" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="179.5" width="248" height="18"/>
+                                        <rect key="frame" x="20" y="145.5" width="248" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2314,7 +2347,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="yau-RW-XIS" customClass="AferoAttributeUIStepper" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="174" y="139.5" width="94" height="32"/>
+                                        <rect key="frame" x="174" y="105.5" width="94" height="32"/>
                                     </stepper>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2429,28 +2462,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uWh-Gq-qOq">
-                                <rect key="frame" x="12.5" y="12.5" width="250" height="125"/>
+                                <rect key="frame" x="12.5" y="13" width="250" height="124"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NVj-PR-S0L">
-                                        <rect key="frame" x="8" y="87" width="45" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NVj-PR-S0L">
+                                        <rect key="frame" x="8" y="86" width="45" height="30"/>
                                         <state key="normal" title="Delete"/>
                                         <connections>
                                             <action selector="deleteTapped:" destination="Tcx-6j-HB3" eventType="touchUpInside" id="w9V-w9-c8T"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Edit Tag" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ez-gc-ccl">
-                                        <rect key="frame" x="8" y="8" width="234" height="21"/>
+                                        <rect key="frame" x="8" y="8" width="234" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Underline" translatesAutoresizingMaskIntoConstraints="NO" id="mXT-fR-LZe">
-                                        <rect key="frame" x="15" y="37" width="220" height="20"/>
+                                        <rect key="frame" x="15" y="33" width="220" height="21.5"/>
                                         <color key="tintColor" white="0.85106798859999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Key (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WHv-jp-PwB">
-                                        <rect key="frame" x="18" y="37" width="214" height="17"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="18" y="33" width="214" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
@@ -2459,12 +2491,11 @@
                                         </connections>
                                     </textField>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Underline" translatesAutoresizingMaskIntoConstraints="NO" id="pph-N0-BfF">
-                                        <rect key="frame" x="15" y="62" width="220" height="20"/>
+                                        <rect key="frame" x="15" y="59.5" width="220" height="21.5"/>
                                         <color key="tintColor" white="0.85106798859999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                     <textField opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Value" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gjr-Ee-pb0">
-                                        <rect key="frame" x="18" y="62" width="214" height="17"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="18" y="59.5" width="214" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
@@ -2472,15 +2503,15 @@
                                             <outlet property="delegate" destination="Tcx-6j-HB3" id="pTY-p1-WE6"/>
                                         </connections>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Unc-P1-bhz">
-                                        <rect key="frame" x="208" y="87" width="34" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Unc-P1-bhz">
+                                        <rect key="frame" x="208" y="86" width="34" height="30"/>
                                         <state key="normal" title="Save"/>
                                         <connections>
                                             <action selector="saveTapped:" destination="Tcx-6j-HB3" eventType="touchUpInside" id="eQz-z1-AOK"/>
                                         </connections>
                                     </button>
                                     <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="9gT-Yf-417">
-                                        <rect key="frame" x="115" y="97" width="20" height="20"/>
+                                        <rect key="frame" x="115" y="96" width="20" height="20"/>
                                     </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2552,7 +2583,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WifiNetworkCell" rowHeight="61" id="uNX-c4-71s" customClass="AferoAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="61"/>
+                                <rect key="frame" x="0.0" y="44.5" width="320" height="61"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uNX-c4-71s" id="c4v-oM-LPv">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="61"/>
@@ -2574,7 +2605,7 @@
                                 </userDefinedRuntimeAttributes>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomSSIDWifiNetworkCell" rowHeight="53" id="IUb-dX-oK5" customClass="AferoCustomSSIDAssociatingWifiNetworkTableViewCell" customModule="AferoLab" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="89" width="320" height="53"/>
+                                <rect key="frame" x="0.0" y="105.5" width="320" height="53"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IUb-dX-oK5" id="hGX-Qg-Iyq">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
@@ -2629,15 +2660,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hQF-pc-YSM">
-                                <rect key="frame" x="16" y="178" width="288" height="212.5"/>
+                                <rect key="frame" x="16" y="196.5" width="288" height="175"/>
                                 <subviews>
                                     <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-gx-m7a" userLabel="VisualEffectViewContainer">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="212.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="175"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3tN-lQ-Clt">
-                                                <rect key="frame" x="0.0" y="0.0" width="288" height="212.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="288" height="175"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="kYz-ka-pqW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="212.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="288" height="175"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                                 <blurEffect style="extraLight"/>
@@ -2665,7 +2696,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="66666" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jDb-62-eju" userLabel="AttributeId" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="20" width="55" height="21"/>
+                                        <rect key="frame" x="20" y="20" width="46" height="17"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2674,7 +2705,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Attribute Value Explanation For Great Success" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQR-vB-ELa" userLabel="AttributeName" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="96" y="20" width="172" height="64.5"/>
+                                        <rect key="frame" x="81" y="20" width="187" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2683,20 +2714,20 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OqZ-32-8M3" userLabel="BottomRule">
-                                        <rect key="frame" x="0.0" y="87.5" width="288" height="1"/>
+                                        <rect key="frame" x="0.0" y="59" width="288" height="1"/>
                                         <color key="backgroundColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="JWu-8D-m60"/>
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Type:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O0x-Vt-Iek">
-                                        <rect key="frame" x="20" y="92.5" width="74" height="18"/>
+                                        <rect key="frame" x="20" y="64" width="61" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="SINT64" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BRM-d5-hQp" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="216" y="92.5" width="52" height="18"/>
+                                        <rect key="frame" x="225.5" y="64" width="42.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2704,14 +2735,14 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="attributeTextSourceName" value="attributeType"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z09-DO-Z7X">
-                                        <rect key="frame" x="20" y="112.5" width="97" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Updated:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z09-DO-Z7X">
+                                        <rect key="frame" x="20" y="80" width="80" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" ambiguous="YES" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsV-IO-HC9" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="164" y="112.5" width="159" height="18"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="19720128T03:43:00+6" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsV-IO-HC9" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
+                                        <rect key="frame" x="137.5" y="80" width="130.5" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2720,19 +2751,18 @@
                                         </userDefinedRuntimeAttributes>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2U8-eA-HMP">
-                                        <rect key="frame" x="20" y="146.5" width="42" height="18"/>
+                                        <rect key="frame" x="20" y="114" width="35" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" text="2,000,000" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pEs-v6-bh5" userLabel="Attribute Value Text Field" customClass="AferoAttributeUITextField" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="70" y="144.5" width="198" height="22"/>
-                                        <nil key="textColor"/>
+                                        <rect key="frame" x="63" y="112" width="205" height="18.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="standardTextColor">
-                                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="value" systemColor="darkTextColor"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="color" keyPath="invalidValueTextColor">
                                                 <color key="value" red="0.90552616119999996" green="0.5154441595" blue="0.34058737750000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -2740,10 +2770,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </textField>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="R9x-aL-59P">
-                                        <rect key="frame" x="20" y="174.5" width="248" height="2"/>
+                                        <rect key="frame" x="20" y="138.5" width="248" height="4"/>
                                     </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm not on!" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K64-V9-twz" customClass="AferoAttributeUILabel" customModule="AferoLab" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="184.5" width="248" height="18"/>
+                                        <rect key="frame" x="20" y="150.5" width="248" height="14.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -2889,7 +2919,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="cBT-gx-i5G" kind="relationship" relationship="rootViewController" id="cph-sN-zLg"/>
+                        <segue destination="cBT-gx-i5G" kind="relationship" relationship="rootViewController" id="Jjw-a3-Rpe"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lUk-0k-U3d" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2897,15 +2927,137 @@
             <point key="canvasLocation" x="420" y="2974.362818590705"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Startup" width="200" height="246"/>
-        <image name="Underline" width="3" height="4"/>
-        <image name="onepassword-button" width="27" height="27"/>
-    </resources>
+    <designables>
+        <designable name="0Fa-t7-7Hm">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="16k-td-NWm">
+            <size key="intrinsicContentSize" width="33.5" height="14.5"/>
+        </designable>
+        <designable name="1cS-Cs-fpD">
+            <size key="intrinsicContentSize" width="60.5" height="14.5"/>
+        </designable>
+        <designable name="3rB-O7-Lxy">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="5lC-V2-rxe">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="7ni-kh-jWf">
+            <size key="intrinsicContentSize" width="33.5" height="14.5"/>
+        </designable>
+        <designable name="82Q-Bw-Cdg">
+            <size key="intrinsicContentSize" width="27.5" height="17"/>
+        </designable>
+        <designable name="97v-dc-CSa">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="BJu-JV-Xb3">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="BRM-d5-hQp">
+            <size key="intrinsicContentSize" width="42.5" height="14.5"/>
+        </designable>
+        <designable name="Dn9-ui-heW">
+            <size key="intrinsicContentSize" width="33" height="18.5"/>
+        </designable>
+        <designable name="Fu9-YA-7yr">
+            <size key="intrinsicContentSize" width="42.5" height="14.5"/>
+        </designable>
+        <designable name="Fxs-yG-bcw">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="JXG-aF-t2F">
+            <size key="intrinsicContentSize" width="310" height="17"/>
+        </designable>
+        <designable name="JmN-yL-ndi">
+            <size key="intrinsicContentSize" width="33.5" height="14.5"/>
+        </designable>
+        <designable name="K64-V9-twz">
+            <size key="intrinsicContentSize" width="60.5" height="14.5"/>
+        </designable>
+        <designable name="OON-Ky-72L">
+            <size key="intrinsicContentSize" width="71" height="18.5"/>
+        </designable>
+        <designable name="QoP-Qa-1VA">
+            <size key="intrinsicContentSize" width="33" height="18.5"/>
+        </designable>
+        <designable name="S1v-fx-Vpj">
+            <size key="intrinsicContentSize" width="10" height="18.5"/>
+        </designable>
+        <designable name="Udd-m1-CMi">
+            <size key="intrinsicContentSize" width="310" height="17"/>
+        </designable>
+        <designable name="UfL-Hz-LIb">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="Y1f-tN-sJw">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="ZNm-rs-MSA">
+            <size key="intrinsicContentSize" width="60.5" height="14.5"/>
+        </designable>
+        <designable name="Zts-44-ZCC">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="a6w-Ar-fKD">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="aQR-vB-ELa">
+            <size key="intrinsicContentSize" width="310" height="17"/>
+        </designable>
+        <designable name="bsV-IO-HC9">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="dYb-up-Kdt">
+            <size key="intrinsicContentSize" width="130.5" height="14.5"/>
+        </designable>
+        <designable name="dtg-dB-hBU">
+            <size key="intrinsicContentSize" width="87.5" height="17"/>
+        </designable>
+        <designable name="f4Z-NW-nLf">
+            <size key="intrinsicContentSize" width="67" height="18.5"/>
+        </designable>
+        <designable name="jDb-62-eju">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="jXW-0Z-u8j">
+            <size key="intrinsicContentSize" width="310" height="17"/>
+        </designable>
+        <designable name="jqf-UE-kik">
+            <size key="intrinsicContentSize" width="46" height="17"/>
+        </designable>
+        <designable name="nNr-zh-HNh">
+            <size key="intrinsicContentSize" width="38.5" height="14.5"/>
+        </designable>
+        <designable name="pEs-v6-bh5">
+            <size key="intrinsicContentSize" width="71" height="18.5"/>
+        </designable>
+        <designable name="qEr-De-wZ8">
+            <size key="intrinsicContentSize" width="310" height="17"/>
+        </designable>
+        <designable name="wGY-bA-6uw">
+            <size key="intrinsicContentSize" width="31" height="14.5"/>
+        </designable>
+        <designable name="y78-wf-SfH">
+            <size key="intrinsicContentSize" width="60.5" height="14.5"/>
+        </designable>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="0Ax-oZ-siA"/>
         <segue reference="lHG-0u-qkB"/>
         <segue reference="iph-Rf-zkF"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99987393617630005" green="0.67495071887969971" blue="0.2409055233001709" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <resources>
+        <image name="Startup" width="200" height="246"/>
+        <image name="Underline" width="3" height="4"/>
+        <image name="onepassword-button" width="27" height="27"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

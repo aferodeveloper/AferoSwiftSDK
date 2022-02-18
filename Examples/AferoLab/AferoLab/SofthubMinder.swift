@@ -77,32 +77,6 @@ extension DeviceModelable {
     
     var TAG: String { return "AferoSofthubMinder" }
 
-    @available(*, deprecated, message: "Use start(withAccountId:apiHost:mode:logLevel:hardwareIdentifier:setupModeDeviceDetectedHandler) instead.")
-    // TODO: When removing this, remove the below extension on SofthubProfileType as well.
-    func start(
-        withAccountId accountId: String,
-        cloud: SofthubProfileType = .prod,
-        mode: SofthubType = .enterprise,
-        logLevel: SofthubLogLevel = .verbose,
-        hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
-        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
-            deviceId, associationId, profileVersion in
-            DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
-            },
-        associationNeededHandler: @escaping SofthubAssociationHandler
-        ) throws {
-        
-        try start(
-            withAccountId: accountId,
-            apiHost: cloud.apiHost,
-            mode: mode,
-            profileType: cloud,
-            logLevel: logLevel,
-            hardwareIdentifier: hardwareIdentifier,
-            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
-            associationNeededHandler: associationNeededHandler
-        )
-    }
     
     /// Start the softhub.
     ///
@@ -124,7 +98,7 @@ extension DeviceModelable {
         withAccountId accountId: String,
         apiHost: String,
         mode: SofthubType = .enterprise,
-        profileType: SofthubProfileType = .prod,
+        service: String = "prod",
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
@@ -155,14 +129,14 @@ extension DeviceModelable {
             
             [weak self] _ in
             
-            self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: profileType, mode: mode, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
+            self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, mode: mode, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
             
             self?.preferencesChangedObserver = NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) {
                 
                 [weak self] _ in
                 
                 if UserDefaults.standard.enableSofthub {
-                    self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: profileType, logLevel: logLevel, associationNeededHandler: associationNeededHandler, setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler)
+                    self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, logLevel: logLevel, associationNeededHandler: associationNeededHandler, setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler)
                     return
                 }
                 self?.stopAferoSofthub()
@@ -172,7 +146,7 @@ extension DeviceModelable {
         startAferoSofthub(
             withAccountId: accountId,
             apiHost: apiHost,
-            using: profileType,
+            using: service,
             mode: mode,
             logLevel: logLevel,
             hardwareIdentifier: hardwareIdentifier,
@@ -207,7 +181,7 @@ extension DeviceModelable {
     fileprivate func startAferoSofthub(
         withAccountId accountId: String,
         apiHost: String,
-        using profileType: SofthubProfileType = .prod,
+        using service: String = "prod",
         mode behavingAs: SofthubType = .enterprise,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
@@ -228,7 +202,7 @@ extension DeviceModelable {
         Softhub.shared.start(
             with: accountId,
             apiHost: apiHost,
-            using: profileType,
+            using: service,
             behavingAs: behavingAs,
             identifiedBy: hardwareIdentifier,
             logLevel: logLevel,
@@ -246,14 +220,5 @@ extension DeviceModelable {
         Softhub.shared.stop()
     }
     
-}
-
-extension SofthubProfileType {
-    public var apiHost: String {
-        switch self {
-        case .prod: return "api.afero.io"
-        case .dev: return "api.dev.afero.io"
-        }
-    }
 }
 

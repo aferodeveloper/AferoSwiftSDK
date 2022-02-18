@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OAuthClientSecret</key>
+	<string>mobile123</string>
+	<key>OAuthClientId</key>
+	<string>mobileClients</string>
+	<key>OAuthTokenURL</key>
+	<string>https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/token</string>
+	<key>APIHostname</key>
+	<string>api.afero.io</string>
+	<key>SofthubService</key>
+	<string>prod</string>
+</dict>
+</plist>
