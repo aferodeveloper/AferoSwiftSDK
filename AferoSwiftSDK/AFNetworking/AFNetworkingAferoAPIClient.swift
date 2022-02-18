@@ -17,7 +17,7 @@ public class AFNetworkingAferoAPIClient {
     public struct Config {
 
         let oauthClientId: String
-        let oauthClientSecret: String
+        let oauthClientSecret: String?
         let apiHostname: String
         
         var apiBaseURL: URL {
@@ -25,10 +25,12 @@ public class AFNetworkingAferoAPIClient {
         }
         
         let softhubProfileType: SofthubProfileType
+        let oAuthTokenURL: URL?
         
         public init(apiHostname: String = "api.afero.io", softhubProfileType:SofthubProfileType = .prod, oauthClientId: String, oauthClientSecret: String) {
             self.apiHostname = apiHostname
             self.softhubProfileType = softhubProfileType
+            self.oAuthTokenURL = oAuthTokenURL != nil ? URL(string: oAuthTokenURL!) : nil
             self.oauthClientId = oauthClientId
             self.oauthClientSecret = oauthClientSecret
         }
@@ -37,6 +39,8 @@ public class AFNetworkingAferoAPIClient {
         static let OAuthClientSecretKey = "OAuthClientSecret"
         static let APIHostnameKey = "APIHostname"
         static let SofthubProfileTypeKey = "SofthubProfileType"
+        static let OAuthTokenUrlKey = "OAuthTokenURL"
+
         
         init(with plistData: Data) {
             
@@ -59,9 +63,7 @@ public class AFNetworkingAferoAPIClient {
                 fatalError("No string keyed by \(clientIdKey) found in \(String(describing: plistDict))")
             }
             
-            guard let oauthClientSecret = plistDict[clientSecretKey] as? String else {
-                fatalError("No string keyed by \(clientSecretKey) found in \(String(describing: plistDict))")
-            }
+            let oauthClientSecret = plistDict[clientSecretKey] as? String
             
             var apiHostname = "api.afero.io"
             
@@ -71,6 +73,12 @@ public class AFNetworkingAferoAPIClient {
             }
             
             var softhubProfileType = SofthubProfileType.prod
+            var oAuthTokenURL: String? = nil
+            if let maybeOAuthTokenUrlString = plistDict[type(of: self).OAuthTokenUrlKey] as? String {
+                oAuthTokenURL = maybeOAuthTokenUrlString
+                DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
+            }
+            
             
             if let maybeSofthubProfileTypeString = plistDict[type(of: self).SofthubProfileTypeKey] as? String,
                 let maybeSofthubProfileType = SofthubProfileType(stringIdentifier: maybeSofthubProfileTypeString) {
@@ -79,6 +87,7 @@ public class AFNetworkingAferoAPIClient {
             
             self.init(apiHostname: apiHostname,
                       softhubProfileType: softhubProfileType,
+                      oAuthTokenURL: oAuthTokenURL,
                       oauthClientId: oauthClientId,
                       oauthClientSecret: oauthClientSecret)
         }
@@ -103,6 +112,8 @@ public class AFNetworkingAferoAPIClient {
     public var softhubProfileType: SofthubProfileType { return config.softhubProfileType }
     public var apiHostname: String { return config.apiHostname }
     public var apiBaseURL: URL { return config.apiBaseURL }
+    public var oAuthTokenURL: URL? { return config.oAuthTokenURL }
+    
     var oauthClientId: String { return config.oauthClientId }
     var oauthClientSecret: String { return config.oauthClientSecret }
     
@@ -317,15 +328,20 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             asyncMain { failure(passthroughError ?? "No credential.") }
             return
         }
+
+        var oAuthBaseUrl: URL?
+        if let scheme = oAuthTokenURL?.scheme,let host = oAuthTokenURL?.host {
+            oAuthBaseUrl = URL(string: "\(scheme)://\(host)");
+        }
         
         let oauthManager = AFOAuth2Manager(
-            baseURL: apiBaseURL,
+            baseURL: oAuthBaseUrl ?? apiBaseURL,
             clientID: oauthClientId,
             secret: oauthClientSecret
         )
-        
+
         oauthManager.authenticateUsingOAuth(
-            withURLString: type(of: self).OAUTH_TOKEN_PATH,
+            withURLString: oAuthTokenURL?.path ?? type(of: self).OAUTH_TOKEN_PATH,
             refreshToken: credential.refreshToken,
             success: {
                 credential in

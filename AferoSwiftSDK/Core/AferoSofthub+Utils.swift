@@ -436,8 +436,8 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         
         AferoSofthub.start(
             withAccountId: accountId,
-            apiHost: apiHost,
             profileType: profileType.aferoProfileType,
+//            apiHost: apiHost,
             logLevelName: logLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
