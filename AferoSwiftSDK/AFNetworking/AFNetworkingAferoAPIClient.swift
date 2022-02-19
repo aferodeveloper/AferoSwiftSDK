@@ -12,6 +12,7 @@ import AFOAuth2Manager
 import PromiseKit
 import CocoaLumberjack
 
+
 public class AFNetworkingAferoAPIClient {
 
     public struct Config {
@@ -24,12 +25,15 @@ public class AFNetworkingAferoAPIClient {
             URL(string: "https://\(apiHostname)")!
         }
         
-        let softhubProfileType: SofthubProfileType
         let oAuthTokenURL: URL?
         
-        public init(apiHostname: String = "api.afero.io", softhubProfileType:SofthubProfileType = .prod, oauthClientId: String, oauthClientSecret: String) {
+        let softhubService: String
+        
+        public init(apiHostname: String = "api.afero.io", softhubService:String = "prod",
+                    oAuthTokenURL: String? = nil,
+                    oauthClientId: String, oauthClientSecret: String?) {
             self.apiHostname = apiHostname
-            self.softhubProfileType = softhubProfileType
+            self.softhubService = softhubService
             self.oAuthTokenURL = oAuthTokenURL != nil ? URL(string: oAuthTokenURL!) : nil
             self.oauthClientId = oauthClientId
             self.oauthClientSecret = oauthClientSecret
@@ -38,7 +42,7 @@ public class AFNetworkingAferoAPIClient {
         static let OAuthClientIdKey = "OAuthClientId"
         static let OAuthClientSecretKey = "OAuthClientSecret"
         static let APIHostnameKey = "APIHostname"
-        static let SofthubProfileTypeKey = "SofthubProfileType"
+        static let SofthubServiceKey = "SofthubService"
         static let OAuthTokenUrlKey = "OAuthTokenURL"
 
         
@@ -72,21 +76,20 @@ public class AFNetworkingAferoAPIClient {
                 DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
-            var softhubProfileType = SofthubProfileType.prod
             var oAuthTokenURL: String? = nil
             if let maybeOAuthTokenUrlString = plistDict[type(of: self).OAuthTokenUrlKey] as? String {
                 oAuthTokenURL = maybeOAuthTokenUrlString
                 DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
+            var softhubService = "prod"
             
-            if let maybeSofthubProfileTypeString = plistDict[type(of: self).SofthubProfileTypeKey] as? String,
-                let maybeSofthubProfileType = SofthubProfileType(stringIdentifier: maybeSofthubProfileTypeString) {
-                softhubProfileType = maybeSofthubProfileType
+            if let maybesofthubServiceString = plistDict[type(of: self).SofthubServiceKey] as? String {
+                softhubService = maybesofthubServiceString
             }
             
             self.init(apiHostname: apiHostname,
-                      softhubProfileType: softhubProfileType,
+                      softhubService: softhubService,
                       oAuthTokenURL: oAuthTokenURL,
                       oauthClientId: oauthClientId,
                       oauthClientSecret: oauthClientSecret)
@@ -109,13 +112,13 @@ public class AFNetworkingAferoAPIClient {
 
     public var TAG: String { return "AFNetworkingAferoAPIClient" }
 
-    public var softhubProfileType: SofthubProfileType { return config.softhubProfileType }
+    public var softhubService: String { return config.softhubService }
     public var apiHostname: String { return config.apiHostname }
     public var apiBaseURL: URL { return config.apiBaseURL }
     public var oAuthTokenURL: URL? { return config.oAuthTokenURL }
     
     var oauthClientId: String { return config.oauthClientId }
-    var oauthClientSecret: String { return config.oauthClientSecret }
+    var oauthClientSecret: String { return config.oauthClientSecret ?? "" }
     
     let config: Config
     

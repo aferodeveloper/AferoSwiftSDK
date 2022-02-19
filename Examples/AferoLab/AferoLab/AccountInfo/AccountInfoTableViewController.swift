@@ -281,9 +281,10 @@ class AccountViewController: UITableViewController {
                     DDLogWarn("No accountId; bailing on softhub start.")
                     return
                 }
+                print("Start softhub with \(APIClient.default.apiHostname) and service \(APIClient.default.softhubService)")
                 
                 do {
-                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, apiHost: APIClient.default.apiHostname, profileType: APIClient.default.softhubProfileType) {
+                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, apiHost: APIClient.default.apiHostname, service: APIClient.default.softhubService, logLevel: .trace ) {
                         associationId in
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {

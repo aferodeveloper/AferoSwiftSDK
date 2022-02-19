@@ -95,8 +95,8 @@ extension AferoSofthubProfileType: CustomStringConvertible, CustomDebugStringCon
     
 }
 
-@available(*, deprecated, renamed: "SofthubProfileType")
-public typealias SofthubCloud = SofthubProfileType
+//@available(*, deprecated, renamed: "SofthubProfileType")
+//public typealias SofthubCloud = SofthubProfileType
 
 /// The Afero cloud to which a softhub should attempt to connect.
 /// For production applications, this should always be `.prod`.
@@ -114,11 +114,14 @@ public typealias SofthubCloud = SofthubProfileType
     /// The Afero development cloud. Production apps and third parties should never use this.
     case dev = 1
     
+    case gke_hd = 2
+
     /// A unique identifier to use to identify the cloud setting (for, say, storage in UserDefaults).
     public var stringIdentifier: String {
         switch self {
         case .prod: return "prod"
         case .dev: return "dev"
+        case .gke_hd: return "gke_hd"
         }
     }
     
@@ -129,6 +132,7 @@ public typealias SofthubCloud = SofthubProfileType
         switch stringIdentifier.lowercased() {
         case SofthubProfileType.prod.stringIdentifier.lowercased(): self = .prod
         case SofthubProfileType.dev.stringIdentifier.lowercased(): self = .dev
+        case SofthubProfileType.gke_hd.stringIdentifier.lowercased(): self = .gke_hd
         default: return nil
         }
     }
@@ -136,7 +140,7 @@ public typealias SofthubCloud = SofthubProfileType
     var aferoProfileType: AferoSofthubProfileType {
         return AferoSofthubProfileType(rawValue: rawValue)!
     }
-    
+
     public var description: String {
         return aferoProfileType.description
     }
@@ -145,7 +149,7 @@ public typealias SofthubCloud = SofthubProfileType
         return "\(type(of: self)) \(rawValue): \(description)"
     }
     
-    public static let allValues: [SofthubProfileType] = [.prod, .dev]
+    public static let allValues: [SofthubProfileType] = [.prod, .dev, .gke_hd]
     
 }
 
@@ -408,7 +412,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     public func start(
         with accountId: String,
         apiHost: String,
-        using profileType: SofthubProfileType = .prod,
+        using service: String = "prod",
         behavingAs softhubType: SofthubType = .enterprise,
         identifiedBy identifier: String? = nil,
         logLevel: AferoSofthubLogLevel,
@@ -436,8 +440,8 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         
         AferoSofthub.start(
             withAccountId: accountId,
-            profileType: profileType.aferoProfileType,
-//            apiHost: apiHost,
+            profileType: SofthubProfileType(stringIdentifier: service)!.aferoProfileType,
+            //            apiHost: apiHost,
             logLevelName: logLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
