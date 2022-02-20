@@ -28,14 +28,18 @@ public class AFNetworkingAferoAPIClient {
         let oAuthAuthURL: URL?
         let oAuthTokenURL: URL?
         
-        let softhubService: String
+        let softhubService: String?
+        let authenticatorCert: String?
         
-        public init(apiHostname: String = "api.afero.io", softhubService:String = "prod",
-                    oAuthAuthURL: String? = nil,
-                    oAuthTokenURL: String? = nil,
-                    oauthClientId: String, oauthClientSecret: String?) {
+        public init(apiHostname: String = "api.afero.io", softhubService:String?,
+                    authenticatorCert:String?,
+                    oAuthAuthURL: String?,
+                    oAuthTokenURL: String?,
+                    oauthClientId: String,
+                    oauthClientSecret: String?) {
             self.apiHostname = apiHostname
             self.softhubService = softhubService
+            self.authenticatorCert = authenticatorCert
             self.oAuthAuthURL = oAuthAuthURL != nil ? URL(string: oAuthAuthURL!) : nil
             self.oAuthTokenURL = oAuthTokenURL != nil ? URL(string: oAuthTokenURL!) : nil
             self.oauthClientId = oauthClientId
@@ -46,6 +50,7 @@ public class AFNetworkingAferoAPIClient {
         static let OAuthClientSecretKey = "OAuthClientSecret"
         static let APIHostnameKey = "APIHostname"
         static let SofthubServiceKey = "SofthubService"
+        static let AuthenticatorCertKey = "AuthenticatorCert"
         static let OAuthAuthUrlKey = "OAuthAuthURL"
         static let OAuthTokenUrlKey = "OAuthTokenURL"
 
@@ -80,24 +85,18 @@ public class AFNetworkingAferoAPIClient {
                 DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
-            var oAuthTokenURL: String? = nil
-            if let maybeOAuthTokenUrlString = plistDict[type(of: self).OAuthTokenUrlKey] as? String {
-                oAuthTokenURL = maybeOAuthTokenUrlString
-            }
+            let oAuthTokenURL: String? = plistDict[type(of: self).OAuthTokenUrlKey] as? String
             
-            var oAuthAuthURL: String? = nil
-            if let maybeOAuthAuthUrlString = plistDict[type(of: self).OAuthAuthUrlKey] as? String {
-                oAuthAuthURL = maybeOAuthAuthUrlString
-            }
+            let oAuthAuthURL: String? = plistDict[type(of: self).OAuthAuthUrlKey] as? String
             
-            var softhubService = "prod"
+            let softhubService = plistDict[type(of: self).SofthubServiceKey] as? String
             
-            if let maybesofthubServiceString = plistDict[type(of: self).SofthubServiceKey] as? String {
-                softhubService = maybesofthubServiceString
-            }
+            let authenticatorCert = plistDict[type(of: self).AuthenticatorCertKey] as? String
+     
             
             self.init(apiHostname: apiHostname,
                       softhubService: softhubService,
+                      authenticatorCert: authenticatorCert,
                       oAuthAuthURL: oAuthAuthURL,
                       oAuthTokenURL: oAuthTokenURL,
                       oauthClientId: oauthClientId,
@@ -121,7 +120,8 @@ public class AFNetworkingAferoAPIClient {
 
     public var TAG: String { return "AFNetworkingAferoAPIClient" }
 
-    public var softhubService: String { return config.softhubService }
+    public var softhubService: String? { return config.softhubService }
+    public var authenticatorCert: String? { return config.authenticatorCert }
     public var apiHostname: String { return config.apiHostname }
     public var apiBaseURL: URL { return config.apiBaseURL }
     public var oAuthAuthURL: URL? { return config.oAuthAuthURL }

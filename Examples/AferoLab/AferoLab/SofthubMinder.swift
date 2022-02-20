@@ -98,7 +98,8 @@ extension DeviceModelable {
         withAccountId accountId: String,
         apiHost: String,
         mode: SofthubType = .enterprise,
-        service: String = "prod",
+        service: String? = nil,
+        authenticatorCert: String? = nil,
         logLevel: SofthubLogLevel = .info,
         hardwareIdentifier: String? = UserDefaults.standard.clientIdentifier,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
@@ -129,14 +130,14 @@ extension DeviceModelable {
             
             [weak self] _ in
             
-            self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, mode: mode, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
+            self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, authenticatorCert: authenticatorCert, mode: mode, logLevel: logLevel, associationNeededHandler: associationNeededHandler)
             
             self?.preferencesChangedObserver = NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) {
                 
                 [weak self] _ in
                 
                 if UserDefaults.standard.enableSofthub {
-                    self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, logLevel: logLevel, associationNeededHandler: associationNeededHandler, setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler)
+                    self?.startAferoSofthub(withAccountId: accountId, apiHost: apiHost, using: service, authenticatorCert: authenticatorCert, logLevel: logLevel, associationNeededHandler: associationNeededHandler, setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler)
                     return
                 }
                 self?.stopAferoSofthub()
@@ -147,6 +148,7 @@ extension DeviceModelable {
             withAccountId: accountId,
             apiHost: apiHost,
             using: service,
+            authenticatorCert: authenticatorCert,
             mode: mode,
             logLevel: logLevel,
             hardwareIdentifier: hardwareIdentifier,
@@ -181,7 +183,8 @@ extension DeviceModelable {
     fileprivate func startAferoSofthub(
         withAccountId accountId: String,
         apiHost: String,
-        using service: String = "prod",
+        using service: String? = nil,
+        authenticatorCert cert: String? = nil,
         mode behavingAs: SofthubType = .enterprise,
         logLevel: SofthubLogLevel,
         hardwareIdentifier: String? = nil,
@@ -199,22 +202,43 @@ extension DeviceModelable {
             return
         }
         
-        
-        Softhub.shared.start(
-            with: accountId,
-            apiHost: apiHost,
-            using: service,
-            behavingAs: behavingAs,
-            identifiedBy: hardwareIdentifier,
-            logLevel: logLevel,
-            associationHandler: associationNeededHandler,
-            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
-            completionHandler: {
-            completionReason in
-                DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
-            }
-        )
-        
+        if (service != nil) {
+            Softhub.shared.start(
+                with: accountId,
+                apiHost: apiHost,
+                using: service!,
+                behavingAs: behavingAs,
+                identifiedBy: hardwareIdentifier,
+                logLevel: logLevel,
+                associationHandler: associationNeededHandler,
+                setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+                completionHandler: {
+                completionReason in
+                    DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
+                }
+            )
+            return
+        }
+        if (cert != nil) {
+            Softhub.shared.start(
+                with: accountId,
+                apiHost: apiHost,
+                authenticatorCert: cert!,
+                behavingAs: behavingAs,
+                identifiedBy: hardwareIdentifier,
+                logLevel: logLevel,
+                associationHandler: associationNeededHandler,
+                setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+                completionHandler: {
+                completionReason in
+                    DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
+                }
+            )
+            return
+        }
+    
+        fatalError("Unable to start hubby because both service and authenticatorCert are nil")
+
     }
     
     fileprivate func stopAferoSofthub() {
