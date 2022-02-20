@@ -24,22 +24,26 @@ class AferoLabNavigationController: UINavigationController {
     
     func presentSignin() {
         
-        guard let _ = presentedViewController else {
-            performSegue(withIdentifier: "PresentStart", sender: self)
-            return
-        }
+        if (AFNetworkingAferoAPIClient.default.oAuthAuthURL != nil) {
+            guard let _ = presentedViewController else {
+                performSegue(withIdentifier: "PresentStart", sender: self)
+                return
+            }
 
-        dismiss(animated: true) {
-            [weak self] in self?.performSegue(withIdentifier: "PresentStart", sender: self)
+            dismiss(animated: true) {
+                [weak self] in self?.performSegue(withIdentifier: "PresentStart", sender: self)
+            }
+            
+        } else {
+            guard let _ = presentedViewController else {
+                performSegue(withIdentifier: "PresentSignin", sender: self)
+                return
+            }
+
+            dismiss(animated: true) {
+                [weak self] in self?.performSegue(withIdentifier: "PresentSignin", sender: self)
+            }
         }
-//        guard let _ = presentedViewController else {
-//            performSegue(withIdentifier: "PresentSignin", sender: self)
-//            return
-//        }
-//
-//        dismiss(animated: true) {
-//            [weak self] in self?.performSegue(withIdentifier: "PresentSignin", sender: self)
-//        }
         
     }
     

@@ -284,7 +284,7 @@ class AccountViewController: UITableViewController {
                 print("Start softhub with \(APIClient.default.apiHostname) and service \(APIClient.default.softhubService)")
                 
                 do {
-                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, apiHost: APIClient.default.apiHostname, service: APIClient.default.softhubService, logLevel: .trace ) {
+                    try SofthubMinder.sharedInstance.start(withAccountId: accountId, apiHost: APIClient.default.apiHostname, service: APIClient.default.softhubService ) {
                         associationId in
                         _ = APIClient.default.associateDevice(with: associationId, to: accountId)
                             .then {

@@ -25,15 +25,18 @@ public class AFNetworkingAferoAPIClient {
             URL(string: "https://\(apiHostname)")!
         }
         
+        let oAuthAuthURL: URL?
         let oAuthTokenURL: URL?
         
         let softhubService: String
         
         public init(apiHostname: String = "api.afero.io", softhubService:String = "prod",
+                    oAuthAuthURL: String? = nil,
                     oAuthTokenURL: String? = nil,
                     oauthClientId: String, oauthClientSecret: String?) {
             self.apiHostname = apiHostname
             self.softhubService = softhubService
+            self.oAuthAuthURL = oAuthAuthURL != nil ? URL(string: oAuthAuthURL!) : nil
             self.oAuthTokenURL = oAuthTokenURL != nil ? URL(string: oAuthTokenURL!) : nil
             self.oauthClientId = oauthClientId
             self.oauthClientSecret = oauthClientSecret
@@ -43,6 +46,7 @@ public class AFNetworkingAferoAPIClient {
         static let OAuthClientSecretKey = "OAuthClientSecret"
         static let APIHostnameKey = "APIHostname"
         static let SofthubServiceKey = "SofthubService"
+        static let OAuthAuthUrlKey = "OAuthAuthURL"
         static let OAuthTokenUrlKey = "OAuthTokenURL"
 
         
@@ -79,7 +83,11 @@ public class AFNetworkingAferoAPIClient {
             var oAuthTokenURL: String? = nil
             if let maybeOAuthTokenUrlString = plistDict[type(of: self).OAuthTokenUrlKey] as? String {
                 oAuthTokenURL = maybeOAuthTokenUrlString
-                DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
+            }
+            
+            var oAuthAuthURL: String? = nil
+            if let maybeOAuthAuthUrlString = plistDict[type(of: self).OAuthAuthUrlKey] as? String {
+                oAuthAuthURL = maybeOAuthAuthUrlString
             }
             
             var softhubService = "prod"
@@ -90,6 +98,7 @@ public class AFNetworkingAferoAPIClient {
             
             self.init(apiHostname: apiHostname,
                       softhubService: softhubService,
+                      oAuthAuthURL: oAuthAuthURL,
                       oAuthTokenURL: oAuthTokenURL,
                       oauthClientId: oauthClientId,
                       oauthClientSecret: oauthClientSecret)
@@ -115,6 +124,7 @@ public class AFNetworkingAferoAPIClient {
     public var softhubService: String { return config.softhubService }
     public var apiHostname: String { return config.apiHostname }
     public var apiBaseURL: URL { return config.apiBaseURL }
+    public var oAuthAuthURL: URL? { return config.oAuthAuthURL }
     public var oAuthTokenURL: URL? { return config.oAuthTokenURL }
     
     var oauthClientId: String { return config.oauthClientId }

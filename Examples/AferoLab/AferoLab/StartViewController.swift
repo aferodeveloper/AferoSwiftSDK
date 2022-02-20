@@ -26,8 +26,6 @@ import LKAlertController
 
 class StartViewController: UIViewController, ASWebAuthenticationPresentationContextProviding {
 
-    
-    
     @IBOutlet weak var signInButton: UIButton!
     
     @IBAction func signInTapped(_ sender: Any) {
@@ -40,26 +38,69 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
     }
     
     
-    
+    func getPlist() -> [String: Any] {
+        guard let plist = Bundle.main.path(forResource: AFNetworkingAferoAPIClient.DefaultAFNetworkingAPIClientConfig, ofType: "plist") else {
+            fatalError("Unable to find plist '\(AFNetworkingAferoAPIClient.DefaultAFNetworkingAPIClientConfig).plist' in main bundle; can't create API client.")
+        }
+        
+        guard let plistData = FileManager.default.contents(atPath: plist) else {
+            fatalError("Unable to read plist '\(AFNetworkingAferoAPIClient.DefaultAFNetworkingAPIClientConfig).plist' in main bundle.")
+        }
+        let plistDict: [String: Any]
+        
+        do {
+            guard let maybePlistDict = try PropertyListSerialization.propertyList(from: plistData, options: .mutableContainersAndLeaves, format: nil) as? [String: Any] else {
+                fatalError("plist data is not a dict.")
+            }
+            plistDict = maybePlistDict
+            
+        } catch {
+            fatalError("Unable to read dictionary from plistData: \(String(reflecting: error))")
+        }
+        return plistDict
+    }
     
     func beginSignin() {
-//        let oAuthTokenURL = AFNetworkingAferoAPIClient.default.oAuthTokenURL
-//        var oAuthBaseUrl: URL?
-//        if let scheme = oAuthTokenURL?.scheme,let host = oAuthTokenURL?.host {
-//            oAuthBaseUrl = URL(string: "\(scheme)://\(host)");
-//        }
-//        print ("path \(oAuthBaseUrl?.description)")
-//
-//        return
+        
+        let plist = getPlist()
+        var maybeTokenEndpoint: URL? = nil
+        if let maybeOAuthTokenUrlString = plist["OAuthTokenURL"] as? String {
+            maybeTokenEndpoint = URL(string:maybeOAuthTokenUrlString)
+        }
+        
+        var maybeAuthorizationEndpoint: URL? = nil
+        if let maybeOAuthAuthUrlString = plist["OAuthAuthURL"] as? String {
+            maybeAuthorizationEndpoint = URL(string:maybeOAuthAuthUrlString)
+        }
+        
+        var maybeRedirectURI: URL? = nil
+        if let maybeRedirectURIString = plist["OAuthRedirectURL"] as? String {
+            maybeRedirectURI = URL(string:maybeRedirectURIString)
+        }
         
         
-        let authorizationEndpoint = URL(string: "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/auth")!
-        let tokenEndpoint = URL(string: "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/token")!
+        guard let authorizationEndpoint = maybeAuthorizationEndpoint else {
+            fatalError("Missing AuthorizationEndpoint")
+        }
+        
+        
+        guard let tokenEndpoint = maybeTokenEndpoint else {
+            fatalError("Missing TokenEndpoint")
+        }
+        
+        
+        guard let clientID = plist["OAuthClientId"] as? String else {
+            fatalError("Missing OAuthClientId")
+        }
+        
+        
+        guard let redirectURI = maybeRedirectURI else {
+            fatalError("Missing OAuthRedirectURL")
+        }
+        
         let configuration = OIDServiceConfiguration(authorizationEndpoint: authorizationEndpoint,
                                                     tokenEndpoint: tokenEndpoint)
-        let clientID = "hubspace_ios"
-        let redirectURI = URL(string: "hubspace-internal://loginredirect")!
-
+  
         
         // builds authentication request
         let request = OIDAuthorizationRequest(configuration: configuration,
@@ -77,7 +118,6 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
         appDelegate.currentAuthorizationFlow =
             OIDAuthState.authState(byPresenting: request, presenting: self) { authState, error in
           if let authState = authState {
-//            self.setAuthState(authState)
             print("Got authorization tokens. Access token: " +
                   "\(authState.lastTokenResponse?.accessToken ?? "nil")")
               guard let accessToken = authState.lastTokenResponse?.accessToken else {
@@ -100,7 +140,6 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
               
           } else {
             print("Authorization error: \(error?.localizedDescription ?? "Unknown error")")
-//            self.setAuthState(nil)
           }
         }
         

@@ -74,84 +74,6 @@ extension AferoSofthubCompleteReason: CustomStringConvertible, CustomDebugString
     
 }
 
-extension AferoSofthubProfileType: CustomStringConvertible, CustomDebugStringConvertible {
-    
-    public var description: String {
-        switch self {
-        case .prod: return "Afero production cloud"
-        case .dev: return "Afero development cloud"
-        case .GKEHD: return "THD"
-        #if compiler(>=5)
-        @unknown default:
-            return "Unknown AferoService case \(rawValue)"
-        #endif
-            
-        }
-    }
-    
-    public var debugDescription: String {
-        return "<AferoService> \(rawValue): \(description)"
-    }
-    
-}
-
-//@available(*, deprecated, renamed: "SofthubProfileType")
-//public typealias SofthubCloud = SofthubProfileType
-
-/// The Afero cloud to which a softhub should attempt to connect.
-/// For production applications, this should always be `.prod`.
-///
-/// # Cases
-///
-/// * `.prod`: The Afero production cloud. Third parties should always use this.
-/// * `.dev`: The Afero development cloud. Production apps and third parties should never use this.
-
-@objc public enum SofthubProfileType: Int, CustomStringConvertible, CustomDebugStringConvertible {
-    
-    /// The Afero production cloud. Third parties should always use this.
-    case prod = 0
-    
-    /// The Afero development cloud. Production apps and third parties should never use this.
-    case dev = 1
-    
-    case gke_hd = 2
-
-    /// A unique identifier to use to identify the cloud setting (for, say, storage in UserDefaults).
-    public var stringIdentifier: String {
-        switch self {
-        case .prod: return "prod"
-        case .dev: return "dev"
-        case .gke_hd: return "gke_hd"
-        }
-    }
-    
-    /// Initialize with an optional StringIdentifier. If the `stringIdentifier` is nil,
-    /// or does not match a known `SofthubCloud.stringIdentifier`, fail initialization.
-    public init?(stringIdentifier: String?) {
-        guard let stringIdentifier = stringIdentifier else { return nil }
-        switch stringIdentifier.lowercased() {
-        case SofthubProfileType.prod.stringIdentifier.lowercased(): self = .prod
-        case SofthubProfileType.dev.stringIdentifier.lowercased(): self = .dev
-        case SofthubProfileType.gke_hd.stringIdentifier.lowercased(): self = .gke_hd
-        default: return nil
-        }
-    }
-    
-    var aferoProfileType: AferoSofthubProfileType {
-        return AferoSofthubProfileType(rawValue: rawValue)!
-    }
-
-    public var description: String {
-        return aferoProfileType.description
-    }
-    
-    public var debugDescription: String {
-        return "\(type(of: self)) \(rawValue): \(description)"
-    }
-    
-    public static let allValues: [SofthubProfileType] = [.prod, .dev, .gke_hd]
-    
-}
 
 @objc public enum SofthubType: Int, CustomStringConvertible, CustomDebugStringConvertible {
 
@@ -340,11 +262,9 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     /// - parameter accountId: A string that is unique to the account to which the
     ///             softhub will be associated. An actual Afero account id is sufficient,
     ///             but any string unique to a given account will do. See **Associating**.
-    ///
-    /// - parameter apiHost: The hostname of the Afero ClientAPI.
-    ///
-    /// - parameter profileType: The type of profile to use. Unless otherwise stated, this should
-    ///             always be `.prod` (the default).
+    ///    ///
+    /// - parameter service: The type of service to use. Unless otherwise stated, this should
+    ///             be `prod`.
     ///
     /// - parameter softhubType: Identifies the behavior a softhub should declar when it associates
     ///             with the service. Unless otherwise instructed by Afero, this should be
@@ -412,7 +332,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
     public func start(
         with accountId: String,
         apiHost: String,
-        using service: String = "prod",
+        using service: String,
         behavingAs softhubType: SofthubType = .enterprise,
         identifiedBy identifier: String? = nil,
         logLevel: AferoSofthubLogLevel,
@@ -438,10 +358,125 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         
         completionReason = .none
         
-        AferoSofthub.start(
+            AferoSofthub.start(
             withAccountId: accountId,
-            profileType: SofthubProfileType(stringIdentifier: service)!.aferoProfileType,
-            //            apiHost: apiHost,
+            service: service,
+            logLevelName: logLevel,
+            hardwareIdentifier: identifier,
+            associationHandler: localAssociationHandler,
+            setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+            completionHandler: localCompletionHandler
+        )
+        
+    }
+    
+    
+    /// Ask the softhub to start.
+    ///
+    /// - parameter accountId: A string that is unique to the account to which the
+    ///             softhub will be associated. An actual Afero account id is sufficient,
+    ///             but any string unique to a given account will do. See **Associating**.
+    ///
+    /// - parameter apiHost: The hostname of the Afero ClientAPI.
+    ///
+    /// - parameter authenticatorCert: The certificate given by Afero to connect to the given host
+    ///
+    /// - parameter softhubType: Identifies the behavior a softhub should declar when it associates
+    ///             with the service. Unless otherwise instructed by Afero, this should be
+    ///             `.consumer`, the default. **This cannot be changed after a hub has been
+    ///             associated**.
+    ///
+    /// - parameter identifier: A string which, if present, is added to the HUBBY_HARDWARE_INFO
+    ///             attribute of the softhub's device representation. It can be used to distinguish
+    ///             the local softhub from others.
+    ///
+    /// - parameter associationHandler: A callback in the form `(String associationId, ()->Void onDone) -> Void`.
+    ///             * The `associationId` is to be used in a call to the
+    ///             appropriate Afero REST API to associate a device.
+    ///             * **AFTER** that has completed with a 2XX response from the
+    ///             Afero REST API, the provided `onDone` must be called
+    ///             to complete association.
+    ///
+    /// - parameter completionHandler: A callback called when the softhub stops. The reason
+    ///             for stopping is provided as the sole parameter.
+    ///
+    /// # Overview
+    ///
+    /// The Afero Softhub runs on its own queue and provides a means for Afero peripheral devices
+    /// to communicate with the Afero cloud using a mobile device's network connection
+    /// (WiFi or cellular). It operates independent of other Afero SDK components,
+    /// and the implementor need only start and stop the Softhub as appropriate.
+    ///
+    /// # Lifecycle
+    ///
+    /// The Afero Softhub attaches to an Afero account by acting as another device, and therefor
+    /// must be associated with an account before it is able to communicate with
+    /// physical Afero peripheral devices. Once associated, it saves its configuration
+    /// so that subsequent starts against the same account do not require an association step.
+    ///
+    /// To accomplish association, the Softhub delegates device association to the caller
+    /// of `start(with:using:identifiedBy:loglevel:associationHandler:completionHandler)`,
+    /// via the `associationHandler: @escaping (String)->Void` parameter. It is expected
+    /// that this invocation will result in a POST to the Afero client API:
+    ///
+    ///
+    /// ```
+    ///     POST https://api.afero.io/v1/accounts/$accountId$/devices
+    /// ```
+    ///
+    /// The body of this request should be JSON-formatted, as such:
+    /// ```
+    /// { associationId: "ASSOCIATION_ID" }
+    /// ```
+    ///
+    /// If an `AferoAPIClient` implementor is being used, such as `AFNetworkingAferoAPIClient`,
+    /// then `associateDevice(with:to:locatedAt:ownershipTransferVerified:expansions)` can be used
+    /// for this purpose. See `AferoAPIClient+Device.swift` for more info.
+    ///
+    /// Upon a successful (2XX) response from the client, the callback must call
+    /// the provided `onDone()` handler to signal the softhub to complete its association.
+    ///
+    /// Once a softhub has associated with an account,
+    /// it saves its configuration info locally to a path determined in part by
+    /// hashing the `accountId` value. Upon subsequent starts using the same `accountId`,
+    /// the softhub will connect directly to the Afero service requiring association.
+    /// For this reason, its highly desirable that the `accountId` parameter be the same
+    /// for each account, and that it differ from one account to another. Afero recommends
+    /// using an actual Afero account id, which is a UUID.
+    
+    public func start(
+        with accountId: String,
+        apiHost: String,
+        authenticatorCert: String,
+        behavingAs softhubType: SofthubType = .enterprise,
+        identifiedBy identifier: String? = nil,
+        logLevel: AferoSofthubLogLevel,
+        associationHandler: @escaping SofthubAssociationHandler,
+        setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = { _, _, _ in },
+        completionHandler: @escaping (SofthubCompletionReason)->Void
+        ) {
+        
+        if [.starting, .started].contains(state) { return }
+        
+        let localAssociationHandler: AferoSofthubSecureHubAssociationHandler = {
+            [weak self] associationId in
+            self?.associationId = associationId
+            associationHandler(associationId)
+        }
+        
+        let localCompletionHandler: AferoSofthubCompleteReasonHandler = {
+            [weak self] rawCompleteReason in
+            let cr = SofthubCompletionReason(rawCompleteReason)
+            self?.completionReason = cr
+            completionHandler(cr)
+        }
+        
+        completionReason = .none
+        
+            AferoSofthub.start(
+            withAccountId: accountId,
+            apiHost: apiHost,
+            authenticatorCert: authenticatorCert,
             logLevelName: logLevel,
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
