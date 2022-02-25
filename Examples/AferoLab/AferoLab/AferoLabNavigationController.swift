@@ -6,6 +6,7 @@
 //  Copyright © 2017 Afero, Inc. All rights reserved.
 //
 
+import AppAuth
 import UIKit
 import Afero
 import ReactiveSwift
@@ -17,14 +18,31 @@ import CocoaLumberjack
 
 class AferoLabNavigationController: UINavigationController {
     
+    
+    // property of the containing class
+    private var authState: OIDAuthState?
+    
     func presentSignin() {
-        guard let _ = presentedViewController else {
-            performSegue(withIdentifier: "PresentSignin", sender: self)
-            return
-        }
         
-        dismiss(animated: true) {
-            [weak self] in self?.performSegue(withIdentifier: "PresentSignin", sender: self)
+        if (AFNetworkingAferoAPIClient.default.oAuthAuthURL != nil) {
+            guard let _ = presentedViewController else {
+                performSegue(withIdentifier: "PresentStart", sender: self)
+                return
+            }
+
+            dismiss(animated: true) {
+                [weak self] in self?.performSegue(withIdentifier: "PresentStart", sender: self)
+            }
+            
+        } else {
+            guard let _ = presentedViewController else {
+                performSegue(withIdentifier: "PresentSignin", sender: self)
+                return
+            }
+
+            dismiss(animated: true) {
+                [weak self] in self?.performSegue(withIdentifier: "PresentSignin", sender: self)
+            }
         }
         
     }

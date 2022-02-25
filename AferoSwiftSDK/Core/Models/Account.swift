@@ -259,10 +259,6 @@ public struct UserAccount {
         
         public init(userId: String, credentialId: String?, credential: Credential? = nil, firstName: String? = nil, lastName: String? = nil, name: String? = nil, accountAccess: [AccountAccess]? = nil, sharingAccountAccess: SharingAccountAccess? = nil, partnerAccess: [PartnerAccessType]? = nil, tos: [ToS]? = nil, lastUsed: Date? = nil) {
 
-            if firstName == nil && lastName == nil && name == nil {
-                fatalError("Need at least one name field to make a valid user object")
-            }
-
             self.userId = userId
             self.credentialIdInternal = credentialId
             self.credential = credential

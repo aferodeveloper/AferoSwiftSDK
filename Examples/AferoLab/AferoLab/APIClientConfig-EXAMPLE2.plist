@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OAuthClientId</key>
+	<string>MY_OATHCLIENTID</string>
+	<key>OAuthTokenURL</key>
+	<string>MY_OATHTOKENURL</string>
+	<key>OAuthAuthURL</key>
+	<string>MY_OATHAUTHURL</string>
+	<key>OAuthRedirectURL</key>
+	<string>MY_OATHREDIRECTURL</string>
+	<key>APIHostname</key>
+	<string>MY_APIHOSTNAME</string>
+	<key>AuthenticatorCert</key>
+	<string>MY_AUTHENTICATORCERT</string>
+</dict>
+</plist>
