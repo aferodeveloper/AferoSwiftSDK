@@ -1,7 +1,7 @@
 ---
-author: Justin Middleton
+author: Cora Middleton
 title: "Examples/README"
-date: 2017-Jun-26 16:52:37 PDT
+date: 2022-March-02
 status: 1.0
 ---
 
@@ -11,7 +11,11 @@ status: 1.0
 
 AferoLab is a simple app that demonstrates connecting to the Afero Cloud,
 and basic device interaction. In order to run AferoLab, you'll have to
-first configure your OAuth2 Client ID and Secret.
+first configure APIClientConfig.plist. 
+Depending on your setup with Afero you will have either: 
+  * OAuth2 Client ID and Secret 
+  or 
+  * OAuth2 Client ID, auth/token url, redirect url, api hostname and authenticator cert.
 
 ### OAuth2 Client Configuration
 
@@ -19,6 +23,9 @@ First, place the APIClientConfig file:
 ```shell
 cd AferoLab/AferoLab
 cp APIClientConfig-EXAMPLE.plist APIClientConfig.plist
+or 
+cp APIClientConfig-EXAMPLE2.plist APIClientConfig.plist
+
 open APIClientConfig.plist
 ```
 
