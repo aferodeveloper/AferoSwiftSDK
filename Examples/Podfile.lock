@@ -1,5 +1,5 @@
 PODS:
-  - AferoSofthub (1.7.12)
+  - AferoSofthub (1.8.0)
   - AferoSwiftSDK/AFNetworking (1.3.0):
     - AferoSwiftSDK/Core
     - AFNetworking/NSURLSession (~> 3.1)
@@ -22,11 +22,16 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFOAuth2Manager (3.0.0):
     - AFNetworking/NSURLSession (~> 3.0)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - CocoaLumberjack/Core (3.5.2)
   - CocoaLumberjack/Swift (3.5.2):
     - CocoaLumberjack/Core
   - CocoaZ (1.4.2)
-  - CryptoSwift (1.4.2)
+  - CryptoSwift (1.4.3)
   - HTTPStatusCodes (3.3.1)
   - LKAlertController (1.12.2)
   - Nimble (9.2.1)
@@ -54,8 +59,10 @@ PODS:
   - SVProgressHUD (1.1.3)
 
 DEPENDENCIES:
+  - AferoSofthub (= 1.8.0)
   - AferoSwiftSDK/AFNetworking (from `..`)
   - AFNetworking/NSURLSession
+  - AppAuth (= 1.4.0)
   - CocoaLumberjack/Swift (= 3.5.2)
   - HTTPStatusCodes (~> 3.2)
   - LKAlertController (= 1.12.2)
@@ -75,6 +82,7 @@ SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
     - AFOAuth2Manager
+    - AppAuth
     - CocoaLumberjack
     - CocoaZ
     - CryptoSwift
@@ -96,13 +104,14 @@ EXTERNAL SOURCES:
     :path: ".."
 
 SPEC CHECKSUMS:
-  AferoSofthub: 60ca19294dd42c925123b2e15b64d1b5c8b65a8b
+  AferoSofthub: 6a8585924132c4b245282638573442fad992b7dc
   AferoSwiftSDK: c2cc0cc5a3b7cbbad1500cb01ba7d66a98d3d36f
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   AFOAuth2Manager: 0566da1be64883e339813d411229fdc9a84dab7c
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
+  CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
   HTTPStatusCodes: a07dff597042a9f692cf4f979cb0fd91fc938835
   LKAlertController: 10c7e8627e5d4757d03b4f53469f35ded14c378f
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
@@ -116,6 +125,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: 19e96ae84caf6c6489b3ce045b7c037443130418
+PODFILE CHECKSUM: ec9cc1e33a75e5c6492b5bdda35ccd448353b9b6
 
 COCOAPODS: 1.11.2

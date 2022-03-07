@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		491A6C774265D5E4E887AC8D /* Pods_AferoLabUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */; };
+		5BC4036627BDB7B300C7403B /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC4036527BDB7B300C7403B /* StartViewController.swift */; };
 		7C90D7040159EEF26D6D8852 /* Pods_AferoLab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */; };
 		CB1134411FDB233800AECFAB /* AferoWifiRSSIView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CB1134401FDB233800AECFAB /* AferoWifiRSSIView.xib */; };
 		CB1134431FDB29F600AECFAB /* AferoWifiRSSIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1134421FDB29F600AECFAB /* AferoWifiRSSIView.swift */; };
@@ -88,6 +89,7 @@
 		26B51F22D0383B24E011DBD6 /* Pods-AferoLab.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLab.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLab/Pods-AferoLab.release.xcconfig"; sourceTree = "<group>"; };
 		27DFF86046C063724D0D4CC5 /* Pods_AferoLabTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLabTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5532648D19448443F31C6A5F /* Pods-AferoLabTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabTests/Pods-AferoLabTests.release.xcconfig"; sourceTree = "<group>"; };
+		5BC4036527BDB7B300C7403B /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		96C90B15823479D835CA4F0F /* Pods_AferoLabUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLabUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		982FD2D8DADC37CF187B6F3E /* Pods-AferoLabUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AferoLabUITests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AferoLabUITests/Pods-AferoLabUITests.release.xcconfig"; sourceTree = "<group>"; };
 		BB49CB3C12E0C2DA96F9EA7A /* Pods_AferoLab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AferoLab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +240,7 @@
 			children = (
 				CB34C3721E7C689700547FD9 /* AppDelegate.swift */,
 				CB34C3741E7C689700547FD9 /* AferoLabNavigationController.swift */,
+				5BC4036527BDB7B300C7403B /* StartViewController.swift */,
 				CB82FEFC1E7D9A400088CC0C /* Storyboards */,
 				CB11343F1FDB22C700AECFAB /* BaseViews */,
 				CB82FEE71E7D160D0088CC0C /* Models */,
@@ -621,6 +624,7 @@
 				"${BUILT_PRODUCTS_DIR}/RSEnvironment/RSEnvironment.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework",
 				"${BUILT_PRODUCTS_DIR}/LKAlertController/LKAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/QRCodeReader.swift/QRCodeReader.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
@@ -639,6 +643,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSEnvironment.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppAuth.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LKAlertController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCodeReader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
@@ -660,6 +665,7 @@
 				CB3248101F9A92D900D210F9 /* AferoClimateControl.swift in Sources */,
 				CB82FEFB1E7D38BC0088CC0C /* SofthubMinder.swift in Sources */,
 				CBA5781D1FDCB0E8000D349C /* SectionHeaderView.swift in Sources */,
+				5BC4036627BDB7B300C7403B /* StartViewController.swift in Sources */,
 				CB34C3751E7C689700547FD9 /* AferoLabNavigationController.swift in Sources */,
 				CB72D8931F91750C000D8925 /* AferoUIControls.swift in Sources */,
 				CBA578191FDB3FCC000D349C /* XibBasedView.swift in Sources */,

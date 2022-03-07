@@ -8,6 +8,7 @@
 
 import UIKit
 import CocoaLumberjack
+import AppAuth
 
 @UIApplicationMain
 
@@ -15,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    // property of the app's AppDelegate
+    var currentAuthorizationFlow: OIDExternalUserAgentSession?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureLogging()
