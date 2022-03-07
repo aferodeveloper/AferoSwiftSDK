@@ -14,7 +14,6 @@ XCODE_VERSION = (`xcodebuild -version`.scan /^Xcode\s+(\S+)$/)[0][0]
 puts "Using Xcode version: #{XCODE_VERSION}"
 
 def base_pods
-    pod 'CryptoSwift', '1.4.0'
 
     pod 'CocoaLumberjack/Swift', '3.5.2', :inhibit_warnings => true
 

@@ -1351,9 +1351,16 @@ public struct DateTypes {
             set { components.minute = newValue }
         }
         
-        /// The `timeZone` component the internal `components` object.
+        /// The `timeZone` component of the internal `components` object.
+        /// NOTE: If `components.timeZone == nil`, then we return `TimeZone.current.`
+        
         public var timeZone: TimeZone {
-            get { return components.timeZone! }
+            get {
+                if let ret = components.timeZone {
+                    return ret
+                }
+                return TimeZone.current
+            }
             set { components.timeZone = newValue }
         }
         

@@ -31,7 +31,7 @@ PODS:
   - CocoaLumberjack/Swift (3.5.2):
     - CocoaLumberjack/Core
   - CocoaZ (1.4.2)
-  - CryptoSwift (1.4.0)
+  - CryptoSwift (1.4.3)
   - HTTPStatusCodes (3.3.1)
   - LKAlertController (1.12.2)
   - Nimble (9.2.1)
@@ -64,7 +64,6 @@ DEPENDENCIES:
   - AFNetworking/NSURLSession
   - AppAuth (= 1.4.0)
   - CocoaLumberjack/Swift (= 3.5.2)
-  - CryptoSwift (= 1.4.0)
   - HTTPStatusCodes (~> 3.2)
   - LKAlertController (= 1.12.2)
   - Nimble
@@ -112,7 +111,7 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   CocoaZ: a296b1fbea2c648daf2ccabb5403ed354569e633
-  CryptoSwift: 7cc902df1784de3b389a387756c7d710f197730c
+  CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
   HTTPStatusCodes: a07dff597042a9f692cf4f979cb0fd91fc938835
   LKAlertController: 10c7e8627e5d4757d03b4f53469f35ded14c378f
   Nimble: e7e615c0335ee4bf5b0d786685451e62746117d5
@@ -126,6 +125,6 @@ SPEC CHECKSUMS:
   RSEnvironment: 653f92019569ef8fb5005d4bb34cd1ccaf50727f
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
-PODFILE CHECKSUM: af29866964914edc09f60766e35b1e94f6ea27a9
+PODFILE CHECKSUM: ec9cc1e33a75e5c6492b5bdda35ccd448353b9b6
 
 COCOAPODS: 1.11.2

@@ -67,9 +67,8 @@ public extension AferoAPIClientProto {
         
         var httpRequestHeaders = HTTPRequestHeaders()
         
-        if let appId = appId,
+        if let appId = appId {
             let appIdHeaderValue = String(format: "%@:%@", appId, platformId).bytes.toBase64()
-        {
             httpRequestHeaders["x-afero-app"] = appIdHeaderValue
         }
         
