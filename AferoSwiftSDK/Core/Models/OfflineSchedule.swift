@@ -889,57 +889,19 @@ open class OfflineSchedule: NSObject {
                     return nil
                 }
                 
-                if (days & TimeSpecification.sundayBit != 0) {
-                    daySet.insert(DayOfWeek.sunday)
+                for day in DayOfWeek.allDays {
+                    let bit: UInt8 = (2 << (6 - day.dayNumber))
+                    if (days & bit != 0) {
+                        daySet.insert(day)
+                    }
                 }
-                if (days & TimeSpecification.mondayBit != 0) {
-                    daySet.insert(DayOfWeek.monday)
-                }
-                if (days & TimeSpecification.tuesdayBit != 0) {
-                    daySet.insert(DayOfWeek.tuesday)
-                }
-                if (days & TimeSpecification.wednesdayBit != 0) {
-                    daySet.insert(DayOfWeek.wednesday)
-                }
-                if (days & TimeSpecification.thursdayBit != 0) {
-                    daySet.insert(DayOfWeek.thursday)
-                }
-                if (days & TimeSpecification.fridayBit != 0) {
-                    daySet.insert(DayOfWeek.friday)
-                }
-                if (days & TimeSpecification.saturdayBit != 0) {
-                    daySet.insert(DayOfWeek.saturday)
-                }
+                
                 return daySet
             }
             
             
             static func daysToByte(days: Set<DayOfWeek>) ->  UInt8 {
-                var dayByte = compactFlag;
-                for day in days {
-                    if (day == DayOfWeek.sunday) {
-                        dayByte = dayByte | TimeSpecification.sundayBit;
-                    }
-                    if (day == DayOfWeek.monday) {
-                        dayByte = dayByte | TimeSpecification.mondayBit;
-                    }
-                    if (day == DayOfWeek.tuesday) {
-                        dayByte = dayByte | TimeSpecification.tuesdayBit;
-                    }
-                    if (day == DayOfWeek.wednesday) {
-                        dayByte = dayByte | TimeSpecification.wednesdayBit;
-                    }
-                    if (day == DayOfWeek.thursday) {
-                        dayByte = dayByte | TimeSpecification.thursdayBit;
-                    }
-                    if (day == DayOfWeek.friday) {
-                        dayByte = dayByte | TimeSpecification.fridayBit;
-                    }
-                    if (day == DayOfWeek.saturday) {
-                        dayByte = dayByte | TimeSpecification.saturdayBit;
-                    }
-                }
-                return dayByte;
+                return days.reduce(compactFlag, {(cur, next) -> UInt8 in cur | (2 << (6 - next.dayNumber)) })
             }
             
             

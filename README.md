@@ -2,7 +2,7 @@
 author: Cora Middleton
 title: "AferoSwiftSDK"
 date: 2022-September-15
-status: 1.4.3
+status: 1.5.0
 ---
 
 # AferoSwiftSDK

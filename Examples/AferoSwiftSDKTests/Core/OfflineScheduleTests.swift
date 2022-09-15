@@ -142,11 +142,28 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(encoded1[0]) == 2 // flags is [0x00, 0x00]
                 expect(schedule.repeats).to(beFalse())
                 expect(schedule.usesDeviceTimeZone).to(beTrue())
-                
+
                 expect(encoded1[1]) == UInt8(145) // 10010001
                 expect(encoded1[2]) == 12 // hour
                 expect(encoded1[3]) == 35 // min
             }
+            
+            it("should decode compact day representation") {
+                
+                // repeats
+                // 10010001
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(bytes: [3,145,12,35])!
+                
+          
+                expect(schedule.repeats) == true
+                expect(schedule.usesDeviceTimeZone) == true
+                expect(schedule.daysOfWeek.count) == 2
+
+                expect(schedule.daysOfWeek.contains(.saturday)) == true
+                expect(schedule.daysOfWeek.contains(.tuesday)) == true
+
+            }
+            
             
             it("should encode compact day representation repeating") {
                 let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(daysOfWeek: [.sunday,.wednesday,.thursday ,.friday], hour: 9, minute: 15, flags: [.repeats, .usesDeviceTimeZone])
