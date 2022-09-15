@@ -852,13 +852,6 @@ open class OfflineSchedule: NSObject {
             public var useCompactDayRepresentation: Bool = false
 
             private static let compactFlag: UInt8 = 128;
-            private static let saturdayBit: UInt8 = 1;
-            private static let fridayBit: UInt8 = 2;
-            private static let thursdayBit: UInt8 = 4;
-            private static let wednesdayBit: UInt8 = 8;
-            private static let tuesdayBit: UInt8 = 16;
-            private static let mondayBit: UInt8 = 32;
-            private static let sundayBit: UInt8 = 64;
             
             public var daysOfWeek: Set<DayOfWeek> {
                 get {
