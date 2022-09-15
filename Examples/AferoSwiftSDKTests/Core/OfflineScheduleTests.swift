@@ -113,6 +113,55 @@ class OfflineScheduleSpec: QuickSpec {
                 
             }
             
+            
+            it("should initialize to expected defaults for compact day format") {
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(daysOfWeek: [], hour: 12, minute: 35)
+                expect(schedule.useCompactDayRepresentation) == false
+                expect(schedule.repeats) == false
+                expect(schedule.daysOfWeek) == []
+                expect(schedule.hour) == 12
+                expect(schedule.minute) == 35
+            }
+            
+            it("should initialize to expected defaults") {
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(daysOfWeek: [.saturday, .tuesday], hour: 12, minute: 35)
+                expect(schedule.useCompactDayRepresentation) == true
+                expect(schedule.daysOfWeek) == [.saturday, .tuesday] // gives just first value
+                expect(schedule.repeats) == false
+                expect(schedule.hour) == 12
+                expect(schedule.minute) == 35
+            }
+            
+            
+            it("should encode compact day representation") {
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(daysOfWeek: [.saturday, .tuesday], hour: 12, minute: 35)
+                
+                let encoded1 = schedule.bytes
+
+                expect(encoded1[0]) == 2 // flags is [0x00, 0x00]
+                expect(schedule.repeats).to(beFalse())
+                expect(schedule.usesDeviceTimeZone).to(beTrue())
+                
+                expect(encoded1[1]) == UInt8(145) // 10010001
+                expect(encoded1[2]) == 12 // hour
+                expect(encoded1[3]) == 35 // min
+            }
+            
+            it("should encode compact day representation repeating") {
+                let schedule = OfflineSchedule.ScheduleEvent.TimeSpecification(daysOfWeek: [.sunday,.wednesday,.thursday ,.friday], hour: 9, minute: 15, flags: [.repeats, .usesDeviceTimeZone])
+                
+                let encoded1 = schedule.bytes
+
+                expect(encoded1[0]) == 3 // flags is [0x00, 0x00]
+                expect(schedule.repeats).to(beTrue())
+                expect(schedule.usesDeviceTimeZone).to(beTrue())
+                
+                expect(encoded1[1]) == UInt8(206) // 11001110
+                expect(encoded1[2]) == 9 // hour
+                expect(encoded1[3]) == 15 // min
+            }
+            
+            
             // MARK: • Should plug in custom values
             
             it("should plug in custom values") {

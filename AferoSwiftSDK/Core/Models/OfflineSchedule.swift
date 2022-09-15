@@ -779,6 +779,7 @@ open class OfflineSchedule: NSObject {
         }
         
         /// Accessor for the `timeSpecification`'s local-timezone day of week, starting with Sunday == 1, ending with Saturday == 7
+        @available(*, deprecated, message: "Use daysOfWeek instead.")
         public var dayOfWeek: TimeSpecification.DayOfWeek {
             get { return timeSpecification.dayOfWeek }
             set { timeSpecification.dayOfWeek = newValue }
@@ -847,7 +848,7 @@ open class OfflineSchedule: NSObject {
             public typealias Hour = UInt8
             public typealias Minute = UInt8
             
-            public var daysOfWeek: Set<DayOfWeek> = [] // Set<DayOfWeek>()
+            private var _daysOfWeek: Set<DayOfWeek> = []
 
             public var useCompactDayRepresentation: Bool = false
 
@@ -860,10 +861,19 @@ open class OfflineSchedule: NSObject {
             private static let mondayBit: UInt8 = 32;
             private static let sundayBit: UInt8 = 64;
             
+            public var daysOfWeek: Set<DayOfWeek> {
+                get {
+                    return _daysOfWeek }
+                set {
+                    _daysOfWeek = newValue
+                    useCompactDayRepresentation = true
+                }
+            }
+            
             public var dayOfWeek: DayOfWeek {
                 get {
                     return daysOfWeek.first ?? DayOfWeek.sunday }
-                set { daysOfWeek.insert(newValue) }
+                set { daysOfWeek = [newValue] }
             }
             
             @available(*, deprecated, message: "Use `dayOfWeek` instead.")
@@ -970,12 +980,19 @@ open class OfflineSchedule: NSObject {
             }
 
             
-            public init(daysOfWeek: Set<DayOfWeek> = [], hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimeZone]) {
-                self.daysOfWeek = daysOfWeek
+            public init(daysOfWeek: Set<DayOfWeek> = [], hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimeZone], useCompactDayRepresentation: Bool = false ) {
+                self._daysOfWeek = daysOfWeek
+                if (useCompactDayRepresentation || daysOfWeek.count > 1) {
+                    self.useCompactDayRepresentation = true
+                } else {
+                    self.useCompactDayRepresentation = useCompactDayRepresentation
+                }
+                
                 self.hour = hour
                 self.minute = minute
                 self.flags = flags
             }
+            
             
             public init(dayOfWeek: DayOfWeek, hour: Hour, minute: Minute, repeats: Repeats, usesDeviceTimeZone: UsesDeviceTimeZone) {
                 
@@ -989,7 +1006,7 @@ open class OfflineSchedule: NSObject {
                     flags.insert(.usesDeviceTimeZone)
                 }
                 
-                self.init(daysOfWeek: [dayOfWeek], hour: hour, minute: minute, flags: flags)
+                self.init(daysOfWeek: [dayOfWeek], hour: hour, minute: minute, flags: flags, useCompactDayRepresentation: false)
                 
             }
 
