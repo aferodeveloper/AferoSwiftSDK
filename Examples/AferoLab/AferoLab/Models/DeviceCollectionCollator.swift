@@ -8,7 +8,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 import CocoaLumberjack
 import Afero
 
@@ -113,10 +112,10 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     }
     
     /// Type for the sink to which we send `CollatorEvent`s.
-    fileprivate typealias CollatorEventSink = Signal<CollatorEvent, NoError>.Observer
+    fileprivate typealias CollatorEventSink = Signal<CollatorEvent, Never>.Observer
     
     /// Type for the signal on which clients listen for `CollatorEvent`s.
-    typealias CollatorEventSignal = Signal<CollatorEvent, NoError>
+    typealias CollatorEventSignal = Signal<CollatorEvent, Never>
     
     /// Type for the pipe that ties `CollatorEventSink` and `CollatorEventSignal` together.
     fileprivate typealias CollatorEventPipe = (output: CollatorEventSignal, input: CollatorEventSink)

@@ -9,7 +9,6 @@ import Foundation
 import CocoaLumberjack
 import ReactiveSwift
 import PromiseKit
-import Result
 
 /// Protocol to which DeviceTags (reference or value types) adhere.
 @objc public protocol AferoDeviceTagProto: NSCopying, NSMutableCopying {
@@ -480,10 +479,10 @@ internal protocol DeviceTagPersisting: class {
     }
     
     /// Type for the sink to which we send `Event`s.
-    private typealias EventSink = Signal<Event, NoError>.Observer
+    private typealias EventSink = Signal<Event, Never>.Observer
     
     /// Type for the signal on which clients listen for `Event`s.
-    typealias EventSignal = Signal<Event, NoError>
+    typealias EventSignal = Signal<Event, Never>
     
     /// Type for the pipe that ties `EventSink` and `EventSignal` together.
     private typealias EventPipe = (output: EventSignal, input: EventSink)

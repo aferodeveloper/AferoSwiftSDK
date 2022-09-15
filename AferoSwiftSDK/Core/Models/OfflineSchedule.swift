@@ -10,7 +10,6 @@ import Foundation
 import CocoaLumberjack
 import PromiseKit
 import ReactiveSwift
-import Result
 
 public protocol OfflineScheduleStorage: class {
     
@@ -709,10 +708,10 @@ open class OfflineSchedule: NSObject {
     }
     
     /// Type for the sink to which we send `Event`s.
-    fileprivate typealias EventSink = Signal<Event, NoError>.Observer
+    fileprivate typealias EventSink = Signal<Event, Never>.Observer
     
     /// Type for the signal on which clients listen for `Event`s.
-    public typealias EventSignal = Signal<Event, NoError>
+    public typealias EventSignal = Signal<Event, Never>
     
     /// Type for the pipe that ties `EventSink` and `EventSignal` together.
     fileprivate typealias EventPipe = (output: EventSignal, input: EventSink)

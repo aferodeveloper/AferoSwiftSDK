@@ -255,7 +255,7 @@ class DeviceModelSpec: QuickSpec {
                 }
                 
                 (deviceModel as! BaseDeviceModel).profile = profile2
-                expect(gotEvent).toEventually(beTrue(), timeout: 2.0, pollInterval: 0.25)
+                expect(gotEvent).toEventually(beTrue(), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(250))
             }
             
             it("Should not emit a profile update if the profile does not change.") {
@@ -272,7 +272,7 @@ class DeviceModelSpec: QuickSpec {
                 }
                 
                 (deviceModel as! BaseDeviceModel).profile = profile1
-                expect(gotEvent).toNotEventually(beTrue(), timeout: 2.0, pollInterval: 0.25)
+                expect(gotEvent).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(250))
 
             }
         }
@@ -394,7 +394,7 @@ class DeviceModelSpec: QuickSpec {
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
                 deviceModel.notifyViewing(true)
-                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 5 * 60)), timeout: 1, pollInterval: 0.1)
+                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 5 * 60)), timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(100))
             }
 
             it("should post notify requests with 0-length interval on stop") {
@@ -404,7 +404,7 @@ class DeviceModelSpec: QuickSpec {
                 expect(writeSink.postErrorToReturn).to(beNil())
                 
                 deviceModel.notifyViewing(false)
-                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 0)), timeout: 1, pollInterval: 0.1)
+                expect(writeSink.postedActions).toEventually(contain(DeviceBatchAction.Request.notifyViewing(interval: 0)), timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(100))
             }
 
         }
@@ -459,8 +459,8 @@ class DeviceModelSpec: QuickSpec {
                 expect(writeCount).toEventually(equal(2))
                 
                 deviceModel.isDirect = true
-                expect(writeCount).toEventually(equal(3), timeout: 2.0, pollInterval: 0.25)
-                expect(writeState?.isDirect).toEventually(beTrue(), timeout: 2.0, pollInterval: 0.25)
+                expect(writeCount).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(250))
+                expect(writeState?.isDirect).toEventually(beTrue(), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(250))
 
             }
         }

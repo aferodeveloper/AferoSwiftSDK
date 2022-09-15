@@ -321,8 +321,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.addedTag(t1b),
                                     ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -349,8 +349,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.addedTag(t1c)
                                 ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -391,8 +391,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.deletedTag(t2),
                                     ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -429,8 +429,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.deletedTag(t2),
                                     ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -466,8 +466,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.addedTag(t2),
                                     ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -506,8 +506,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.deletedTag(t1b),
                                     ])
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -550,8 +550,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                                     DeviceTagCollection.Event.deletedTag(t3b),
                                     ]
                             ),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }
@@ -582,8 +582,8 @@ class DeviceTagCollectionSpec: QuickSpec {
                         
                         expect(events.count).toNotEventually(
                             beGreaterThan(2),
-                            timeout: 4.0,
-                            pollInterval: 0.1
+                            timeout: DispatchTimeInterval.seconds(4),
+                            pollInterval: DispatchTimeInterval.milliseconds(100)
                         )
                         
                     }

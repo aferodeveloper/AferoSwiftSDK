@@ -32,8 +32,8 @@ class OfflineScheduleSpec: QuickSpec {
      day of week   | uint8_t            | Day of the week where 0 = Monday and Sunday = 7.
      hour          | uint8_t            | Hour of the day that the event should occur on.
      minute        | uint8_t	            | Minute of the day that the event should occur on.
-
-      */
+     
+     */
     
     typealias DayOfWeek = OfflineSchedule.ScheduleEvent.TimeSpecification.DayOfWeek
     
@@ -56,7 +56,7 @@ class OfflineScheduleSpec: QuickSpec {
         // MARK: - Days of the Week -
         
         describe("When handling days of week") {
-        
+            
             // MARK: • Should have expected rawValues
             
             it("should have expected rawValues for days of week.") {
@@ -71,13 +71,13 @@ class OfflineScheduleSpec: QuickSpec {
         }
         
         // MARK: - Time specification flags -
-    
+        
         describe("when handling time specification flags") {
             
             // MARK: • Should encode repeats properly.
             
             it("should encode repeats properly") {
-
+                
                 let flagsNoRepeats = OfflineSchedule.ScheduleEvent.TimeSpecification.Flags(rawValue: 0)
                 expect(flagsNoRepeats.contains(.repeats)).to(beFalse())
                 expect(flagsNoRepeats.bytes) == [0x00]
@@ -86,20 +86,21 @@ class OfflineScheduleSpec: QuickSpec {
                 let flagsNoRepeats2 = OfflineSchedule.ScheduleEvent.TimeSpecification.Flags.none
                 expect(flagsNoRepeats2.contains(.repeats)).to(beFalse())
                 expect(flagsNoRepeats2.bytes) == [0x00]
-
+                
                 let flagsRepeats = OfflineSchedule.ScheduleEvent.TimeSpecification.Flags(rawValue: 1)
                 expect(flagsRepeats.contains(.repeats)).to(beTrue())
                 expect(flagsRepeats.bytes) == [0x01]
                 expect(flagsRepeats) == OfflineSchedule.ScheduleEvent.TimeSpecification.Flags.repeats
-
+                
             }
             
         }
         
+        
         // MARK: - Time specifications -
         
         describe("when handling time specifications") {
-        
+            
             // MARK: • Should initialize to expected defaults
             
             it("should initialize to expected defaults") {
@@ -125,6 +126,7 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(schedule.hour) == 16
                 expect(schedule.minute) == 20
             }
+            
             
             // MARK: • Should compare as expected
             
@@ -184,7 +186,7 @@ class OfflineScheduleSpec: QuickSpec {
             // MARK: • Should encode as expected
             
             it("should encode as expected") {
-
+                
                 let timeSpec1 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: false, usesDeviceTimeZone: true)
                 
                 let encoded1 = timeSpec1.bytes
@@ -196,7 +198,7 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(encoded1[1]) == UInt8(DayOfWeek.wednesday.dayNumber)
                 expect(encoded1[2]) == 16 // hour
                 expect(encoded1[3]) == 20 // minute
-
+                
                 let timeSpec2 = OfflineSchedule.ScheduleEvent.TimeSpecification(dayOfWeek: .wednesday, hour: 16, minute: 20, repeats: true, usesDeviceTimeZone: true)
                 
                 let encoded2 = timeSpec2.bytes
@@ -209,7 +211,7 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(encoded2[2]) == 16 // hour
                 expect(encoded2[3]) == 20 // minute
                 
-
+                
             }
             
             // MARK: • Should roundtrip
@@ -226,22 +228,22 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 typealias TimeSpecification = OfflineSchedule.ScheduleEvent.TimeSpecification
                 
-                let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
-
-                let sunday0000RepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .repeats)
-
-                let sunday0000NoRepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .usesDeviceTimeZone)
+                let sunday0000NoRepeatUTCSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .none)
                 
-                let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
-
-                let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
+                let sunday0000RepeatUTCSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .repeats)
                 
-                let saturday2300RepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .repeats)
-
-                let saturday2300NoRepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .usesDeviceTimeZone)
+                let sunday0000NoRepeatLTSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .usesDeviceTimeZone)
                 
-                let saturday2300RepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
-
+                let sunday0000RepeatLTSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                
+                let saturday2300NoRepeatUTCSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .none)
+                
+                let saturday2300RepeatUTCSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .repeats)
+                
+                let saturday2300NoRepeatLTSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .usesDeviceTimeZone)
+                
+                let saturday2300RepeatLTSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                
                 it("should not perform an conversion if already in local time.") {
                     
                     do {
@@ -266,7 +268,7 @@ class OfflineScheduleSpec: QuickSpec {
                 }
                 
                 it("should update dayOfWeek if crossing a day boundary.") {
-          
+                    
                     do {
                         
                         let azot = try sunday0000RepeatUTCSpec.asDeviceLocalTimeSpecification(in: utcMinus1)
@@ -291,9 +293,9 @@ class OfflineScheduleSpec: QuickSpec {
                 }
                 
                 it("should have made a change if in-place conversion returns true.") {
-
+                    
                     var azot = sunday0000RepeatUTCSpec
-
+                    
                     let converted = try? azot.convertToLocalTime(in: utcMinus1)
                     expect(converted).to(beTrue())
                     expect(azot.dayOfWeek) == DayOfWeek.saturday
@@ -305,11 +307,11 @@ class OfflineScheduleSpec: QuickSpec {
                 }
                 
                 it("should not have made a change if in-place conversion returns false.") {
-
+                    
                     var azot = sunday0000RepeatUTCSpec
                     let converted = try? azot.convertToLocalTime(in: utcMinus1)
                     expect(converted).to(beTrue())
-
+                    
                     var azot2 = azot
                     let converted2 = try? azot2.convertToLocalTime(in: utcMinus1)
                     expect(converted2).to(beFalse())
@@ -323,10 +325,15 @@ class OfflineScheduleSpec: QuickSpec {
             
         }
         
+        
+        
+        
+        
         // MARK: - When handling ScheduleEvents -
         
         describe("When handling ScheduleEvents") {
-        
+            
+            
             // MARK: • Should initialize as expected
             
             it("should initialize as expected") {
@@ -352,8 +359,11 @@ class OfflineScheduleSpec: QuickSpec {
                 schedule.attributes[26] = value2
                 
                 expect(schedule.attributes.count) == 2
-                expect(schedule.attributes[26]) == value2
+                
+                expect(value2).to(equal(schedule.attributes[26]))
+                
             }
+            
             
             // MARK: • Should encode poperly
             
@@ -397,7 +407,7 @@ class OfflineScheduleSpec: QuickSpec {
                     0x00, // attribute: id[1]
                     0x01, // attribute: value.bytes (true)
                 ]
-
+                
                 let encoded2: [UInt8] = [
                     0x03, // flags[0]
                     0x03, // schedule: day
@@ -407,12 +417,12 @@ class OfflineScheduleSpec: QuickSpec {
                     0x00, // attribute: id[1]
                     0x01, // attribute: value.bytes (true)
                 ]
-
+                
                 var parseResult: (event: OfflineSchedule.ScheduleEvent?, consumed: Int) = (nil, 0)
                 
                 expect {
                     parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded1, types: types)
-                    }.toNot(throwError())
+                }.toNot(throwError())
                 
                 expect(parseResult.consumed) == encoded1.count
                 
@@ -429,10 +439,10 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(scheduleEvent1.attributes.count) == 1
                 expect(scheduleEvent1.attributes[25]).toNot(beNil())
                 expect(scheduleEvent1.attributes[25]!.boolValue) == true
-
+                
                 expect {
                     parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded2, types: types)
-                    }.toNot(throwError())
+                }.toNot(throwError())
                 
                 expect(parseResult.consumed) == encoded1.count
                 
@@ -454,6 +464,7 @@ class OfflineScheduleSpec: QuickSpec {
             
             describe("When converting from UTC to Device Local time") {
                 
+                
                 typealias TimeSpecification = OfflineSchedule.ScheduleEvent.TimeSpecification
                 
                 /*
@@ -470,28 +481,28 @@ class OfflineScheduleSpec: QuickSpec {
                 // UTC-1 (e.g. Azores)
                 let utcMinus1 = TimeZone(secondsFromGMT: -3600)!
                 
-//                let sunday0000NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .none)
-//                let sunday0000NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatUTCSpec, attributes: [0: false])
+                //                let sunday0000NoRepeatUTCSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .none)
+                //                let sunday0000NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatUTCSpec, attributes: [0: false])
                 
-                let sunday0000RepeatUTCSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .repeats)
+                let sunday0000RepeatUTCSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .repeats)
                 let sunday0000RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatUTCSpec, attributes: [0: false])
                 
-                let sunday0000NoRepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: .usesDeviceTimeZone)
+                let sunday0000NoRepeatLTSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: .usesDeviceTimeZone)
                 let sunday0000NoRepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000NoRepeatLTSpec, attributes: [0: false])
                 
-                let sunday0000RepeatLTSpec = TimeSpecification(dayOfWeek: .sunday, hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                let sunday0000RepeatLTSpec = TimeSpecification(daysOfWeek: [.sunday], hour: 0, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
                 let sunday0000RepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: sunday0000RepeatLTSpec, attributes: [0: false])
                 
-//                let saturday2300NoRepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .none)
-//                let saturday2300NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatUTCSpec, attributes: [0: false])
+                //                let saturday2300NoRepeatUTCSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .none)
+                //                let saturday2300NoRepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatUTCSpec, attributes: [0: false])
                 
-                let saturday2300RepeatUTCSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .repeats)
+                let saturday2300RepeatUTCSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .repeats)
                 let saturday2300RepeatUTCEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300RepeatUTCSpec, attributes: [0: false])
                 
-                let saturday2300NoRepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: .usesDeviceTimeZone)
+                let saturday2300NoRepeatLTSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: .usesDeviceTimeZone)
                 let saturday2300NoRepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300NoRepeatLTSpec, attributes: [0: false])
                 
-                let saturday2300RepeatLTSpec = TimeSpecification(dayOfWeek: .saturday, hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
+                let saturday2300RepeatLTSpec = TimeSpecification(daysOfWeek: [.saturday], hour: 23, minute: 0, flags: [.repeats, .usesDeviceTimeZone])
                 let saturday2300RepeatLTEvent = OfflineSchedule.ScheduleEvent(timeSpecification: saturday2300RepeatLTSpec, attributes: [0: false])
                 
                 
@@ -573,11 +584,11 @@ class OfflineScheduleSpec: QuickSpec {
                 }
                 
             }
-        
-            // MARK: - When handling bad data -
             
+            // MARK: - When handling bad data -
             describe("when handling bad data") {
-
+                
+                
                 // MARK: • Should fail on too-small value section
                 
                 it("should fail on too-small-value section.") {
@@ -600,12 +611,12 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
                 // MARK: • Should barf on strings
                 
                 it("should barf on strings.") {
@@ -628,9 +639,9 @@ class OfflineScheduleSpec: QuickSpec {
                     expect {
                         ()->Void in
                         let _: (OfflineSchedule.ScheduleEvent?, Int) = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.to(throwError())
+                    }.to(throwError())
                 }
-
+                
                 // MARK: • Should barf on raw bytes
                 
                 it("should barf on raw bytes.") {
@@ -653,9 +664,9 @@ class OfflineScheduleSpec: QuickSpec {
                     expect {
                         ()->Void in
                         let _: (OfflineSchedule.ScheduleEvent?, Int) = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.to(throwError())
+                    }.to(throwError())
                 }
-
+                
                 // MARK: • Should barf on missing id
                 
                 it("should barf on missing id.") {
@@ -678,9 +689,9 @@ class OfflineScheduleSpec: QuickSpec {
                     expect {
                         ()->Void in
                         let _: (OfflineSchedule.ScheduleEvent?, Int) = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.to(throwError())
+                    }.to(throwError())
                 }
-
+                
                 // MARK: • Should barf on bad timespec
                 
                 it("should barf on a bad timespec.") {
@@ -703,9 +714,9 @@ class OfflineScheduleSpec: QuickSpec {
                     expect {
                         ()->Void in
                         let _: (OfflineSchedule.ScheduleEvent?, Int) = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.to(throwError())
+                    }.to(throwError())
                 }
-
+                
                 // MARK: • Shold bail on smaller-than-minimum size
                 
                 it("should bail on smaller than minimum size.") {
@@ -727,12 +738,12 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
                 // MARK: • Should bail on truncated id
                 
                 it("should bail on truncated id") {
@@ -750,15 +761,15 @@ class OfflineScheduleSpec: QuickSpec {
                     ]
                     
                     var parseResult: (event: OfflineSchedule.ScheduleEvent?, consumed: Int) = (nil, 0)
-
+                    
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
                 // MARK: • Should bail on missing id
                 
                 it("should bail on missing id altogether.") {
@@ -778,12 +789,12 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
                 // MARK: • Should bail on truncated timespec
                 
                 it("should bail on truncated timespec.") {
@@ -802,12 +813,12 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
                 // MARK: • Should bail on empty array
                 
                 it("should bail on empty array.") {
@@ -823,18 +834,18 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect {
                         parseResult = try OfflineSchedule.ScheduleEvent.FromBytes(encoded, types: types)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                     
                     expect(parseResult.consumed) == 0
                     expect(parseResult.event).to(beNil())
                 }
-
+                
             }
             
             // MARK: • Should be able to encode a stream of ScheduleEvents
             
             it("should be able to encode a stream of ScheduleEvents") {
-
+                
                 typealias ScheduleEvent = OfflineSchedule.ScheduleEvent
                 typealias TimeSpec = ScheduleEvent.TimeSpecification
                 
@@ -855,10 +866,10 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 var event2: OfflineSchedule.ScheduleEvent? = nil
                 var consumed: Int = 0
-
+                
                 expect {
                     (event2, consumed) = try OfflineSchedule.ScheduleEvent.FromBytes(serialized, types: types)
-                    }.toNot(throwError())
+                }.toNot(throwError())
                 
                 expect(event2?.attributes[50]) == .boolean(false)
                 expect(event2?.attributes[100]) == .signedInt32(5000)
@@ -867,7 +878,7 @@ class OfflineScheduleSpec: QuickSpec {
                 
                 expect(consumed) == serialized.count
             }
-
+            
         }
         
         describe("when handling OfflineScheduleFlags") {
@@ -883,7 +894,7 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(flagsEnabled.contains(.enabled)).to(beTrue())
                 expect(flagsEnabled.rawValue) == 0x01
                 expect(flagsEnabled) == OfflineSchedule.Flags.enabled
-
+                
             }
         }
         
@@ -896,7 +907,7 @@ class OfflineScheduleSpec: QuickSpec {
             
             var deviceModel: RecordingDeviceModel!
             var schedule: OfflineSchedule!
-
+            
             let profile = DeviceProfile(attributes: [
                 
                 // Values that can be modified
@@ -919,7 +930,7 @@ class OfflineScheduleSpec: QuickSpec {
                 DeviceProfile.AttributeDescriptor(id: 59038, type: .bytes,   operations: [.Read, .Write]),
                 DeviceProfile.AttributeDescriptor(id: 59039, type: .bytes,   operations: [.Read, .Write]),
                 
-                ])
+            ])
             
             let ts1 = ScheduleEvent.TimeSpecification(dayOfWeek: .sunday, hour: 1, minute: 4, repeats: true, usesDeviceTimeZone: true)
             let event1 = ScheduleEvent(timeSpecification: ts1, attributes: [
@@ -927,32 +938,32 @@ class OfflineScheduleSpec: QuickSpec {
                 100: .signedInt32(5000),
                 20: .q1516(22.33),
                 70: .q3132(444.555),
-                ])
-
+            ])
+            
             let ts2 = ScheduleEvent.TimeSpecification(dayOfWeek: .monday, hour: 2, minute: 1, repeats: true, usesDeviceTimeZone: true)
             let event2 = ScheduleEvent(timeSpecification: ts2, attributes: [
                 90: .boolean(true),
                 101: .signedInt64(-999),
-                ])
-
+            ])
+            
             let ts3 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 3, minute: 1, repeats: true, usesDeviceTimeZone: false)
             let event3 = ScheduleEvent(timeSpecification: ts3, attributes: [
                 201: .signedInt64(-1999),
                 204: .signedInt8(-10),
-                ])
-
+            ])
+            
             let ts4 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 4, minute: 1, repeats: true, usesDeviceTimeZone: false)
             let event4 = ScheduleEvent(timeSpecification: ts4, attributes: [
                 201: .signedInt64(-1999),
                 204: .signedInt8(-10),
-                ])
-
+            ])
+            
             let ts5 = ScheduleEvent.TimeSpecification(dayOfWeek: .tuesday, hour: 5, minute: 1, repeats: true, usesDeviceTimeZone: false)
             let event5 = ScheduleEvent(timeSpecification: ts5, attributes: [
                 201: .signedInt64(-1999),
                 204: .signedInt8(-10),
-                ])
-
+            ])
+            
             beforeEach {
                 deviceModel = RecordingDeviceModel(deviceId: "foo", accountId: "moo", profile: profile)
                 guard let maybeSchedule = OfflineSchedule(storage: deviceModel) else {
@@ -966,7 +977,7 @@ class OfflineScheduleSpec: QuickSpec {
             }
             
             // MARK: • Should default-initialize properly
-
+            
             it("should default-initialize properly") {
                 expect(schedule.enabled) == false
                 expect(schedule.numberOfEvents) == 0
@@ -989,7 +1000,7 @@ class OfflineScheduleSpec: QuickSpec {
                     DeviceProfile.AttributeDescriptor(id: 201,   type: .sInt8,   operations: [.Read]),
                     
                     DeviceProfile.AttributeDescriptor(id: 59001, type: .bytes,   operations: [.Read, .Write]), // enabled / flags
-                    ])
+                ])
                 
                 let deviceModel2 = RecordingDeviceModel(deviceId: "foo2", accountId: "moo2", profile: profile2)
                 expect(deviceModel2.supportsOfflineSchedules).to(beFalse())
@@ -998,12 +1009,12 @@ class OfflineScheduleSpec: QuickSpec {
             // MARK: • Should custom-initialize properly
             
             it("should set and clear attributes properly") {
-
+                
                 expect(schedule.enabled).to(beFalse())
                 
                 expect(schedule.events().count) == 0
                 expect(schedule.numberOfEvents) == 0
-
+                
                 schedule.setEvent(event: event1, forAttributeId: 59002)
                 expect(schedule.events().count) == 1
                 expect(schedule.numberOfEvents) == 1
@@ -1029,7 +1040,7 @@ class OfflineScheduleSpec: QuickSpec {
                 expect(deviceModel.value(for: 59002)).to(beNil())
                 expect(deviceModel.value(for: 59004)).to(beNil())
                 expect(deviceModel.value(for: 59007)).to(beNil())
-
+                
             }
             
             it("should report supported event counts properly") {
@@ -1044,7 +1055,7 @@ class OfflineScheduleSpec: QuickSpec {
                     schedule.setEvent(event: event2, forAttributeId: 59004)
                     schedule.setEvent(event: event3, forAttributeId: 59007)
                 }
-
+                
                 it("should filter events properly") {
                     let allEvents = schedule.events { _ in return true }
                     expect(allEvents) == schedule.events()
@@ -1056,11 +1067,11 @@ class OfflineScheduleSpec: QuickSpec {
                     
                     expect(schedule.events { $0.usesDeviceTimeZone }) == [event1, event2]
                     expect(schedule.events { !$0.usesDeviceTimeZone }) == [event3]
-
+                    
                     expect(schedule.events { $0.hour == 1 }) == [event1]
                     expect(schedule.events { $0.hour == 2 }) == [event2]
                     expect(schedule.events { $0.hour == 3 }) == [event3]
-
+                    
                     expect(schedule.events { $0.minute == 1 }) == [event2, event3]
                     expect(schedule.events { $0.minute == 4 }) == [event1]
                 }
@@ -1103,7 +1114,7 @@ class OfflineScheduleSpec: QuickSpec {
                 afterEach {
                     deviceModel.timeZoneState = .none
                 }
-
+                
                 it("should report the appropriate number of UTC events") {
                     expect(schedule.utcEvents) == [event3, event4, event5]
                 }
@@ -1114,25 +1125,25 @@ class OfflineScheduleSpec: QuickSpec {
                     _ = schedule.migrateUTCEvents(maxCount: 1).then {
                         results in result = results
                     }
-                    expect(result?.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
+                    expect(result?.count).toEventually(equal(0), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("should migrate only the max number of events per call") {
                     expect(schedule.utcEvents.count) == 3
-
+                    
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
                     var error: Error? = nil
                     var result: [OfflineSchedule.OfflineScheduleMigrationResult]? = nil
                     _ = schedule.migrateUTCEvents(maxCount: 1).then {
                         r -> Void in result = r
-                        }.catch {
-                            e in error = e
+                    }.catch {
+                        e in error = e
                     }
                     
                     expect(schedule.utcEvents.count).toEventually(equal(2))
-                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.5)
-                    expect(result?.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
-                    expect(result?.count).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
+                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(2), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(result?.count).toEventually(equal(1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(result?.count).toNotEventually(beGreaterThan(1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                     expect(error == nil).toNotEventually(beFalse())
                 }
                 
@@ -1144,19 +1155,19 @@ class OfflineScheduleSpec: QuickSpec {
                     var result: [OfflineSchedule.OfflineScheduleMigrationResult]? = nil
                     _ = schedule.migrateUTCEvents(maxCount: 4).then {
                         r -> Void in result = r
-                        }.catch {
-                            e in error = e
+                    }.catch {
+                        e in error = e
                     }
                     
                     expect(schedule.utcEvents.count).toEventually(equal(0))
-                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(0), timeout: 5.0, pollInterval: 0.5)
-                    expect(result?.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.5)
-                    expect(result?.count).toNotEventually(beGreaterThan(3), timeout: 5.0, pollInterval: 0.5)
+                    expect(schedule.utcEvents.count).toNotEventually(beGreaterThan(0), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(result?.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(result?.count).toNotEventually(beGreaterThan(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                     expect(error == nil).toNotEventually(beFalse())
                 }
                 
                 it("should perform a full migration at intervals.") {
-                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(100))
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     var doneCount: Int = 0
@@ -1165,34 +1176,34 @@ class OfflineScheduleSpec: QuickSpec {
                         doneCount += 1
                     }
                     expect(deviceModel.utcMigrationIsInProgress).to(beTrue())
-                    expect(doneCount).toEventually(equal(1), timeout: 5.0, pollInterval: 0.5)
-                    expect(doneCount).toNotEventually(beGreaterThan(1), timeout: 5.0, pollInterval: 0.5)
-                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: 5.0, pollInterval: 0.5)
-                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
+                    expect(doneCount).toEventually(equal(1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(doneCount).toNotEventually(beGreaterThan(1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("shouldn't perform an automatic on timeZone change migration unless allowed.") {
-                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(100))
                     expect(deviceModel.shouldAttemptAutomaticUTCMigration).to(beFalse())
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
-                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toNotEventually(beLessThan(3), timeout: 5.0, pollInterval: 0.5)
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toNotEventually(beLessThan(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("should perform an automatic on timeZone change migration if allowed.") {
                     
-                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: 5.0, pollInterval: 0.1)
+                    expect(deviceModel.offlineSchedule()?.utcEvents.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(100))
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     deviceModel.shouldAttemptAutomaticUTCMigration = true
                     expect(deviceModel.utcMigrationIsInProgress).to(beFalse())
                     deviceModel.timeZoneState = .some(timeZone: utcMinus1, isUserOverride: false)
                     expect(deviceModel.utcMigrationIsInProgress).to(beTrue())
                     
-                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: 5.0, pollInterval: 0.5)
-                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: 5.0, pollInterval: 0.5)
+                    expect(deviceModel.utcMigrationIsInProgress).toEventually(beFalse(), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(schedule.utcEvents.count).toEventually(equal(0), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
-
+                
                 
             }
             
@@ -1243,7 +1254,7 @@ class OfflineScheduleSpec: QuickSpec {
             it("should persist offline schedule changes") {
                 
             }
-
+            
             it("should send events when its offline schedule changes") {
                 
             }

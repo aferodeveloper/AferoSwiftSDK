@@ -42,7 +42,7 @@ class DebounceSpec: QuickSpec {
                     return
                 }
                 
-                expect(refCount).toEventually(equal(1),timeout: 1, pollInterval: 0.01)
+                expect(refCount).toEventually(equal(1),timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(10))
 
                 expect(startTime).toNot(beNil());
                 expect(triggerTime).toNot(beNil());
@@ -77,7 +77,7 @@ class DebounceSpec: QuickSpec {
                     return
                 }
 
-                expect(refCount).toEventually(equal(1),timeout: 1, pollInterval: 0.01)
+                expect(refCount).toEventually(equal(1),timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(10))
             }
             
         }
@@ -106,7 +106,7 @@ class DebounceSpec: QuickSpec {
                     return
                 }
                 
-                expect(refCount).toEventually(equal(1),timeout: 1, pollInterval: 0.01)
+                expect(refCount).toEventually(equal(1),timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(10))
                 expect(startTime).toNot(beNil());
                 expect(triggerTime).toNot(beNil());
                 
@@ -140,7 +140,7 @@ class DebounceSpec: QuickSpec {
                     return
                 }
                 
-                expect(refCount).toEventually(equal(2) ,timeout: 1, pollInterval: 0.01)
+                expect(refCount).toEventually(equal(2) ,timeout: DispatchTimeInterval.seconds(1), pollInterval: DispatchTimeInterval.milliseconds(10))
             }
         }
     }

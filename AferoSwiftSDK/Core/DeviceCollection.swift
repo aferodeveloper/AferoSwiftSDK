@@ -10,7 +10,6 @@
 import Foundation
 import ReactiveSwift
 import PromiseKit
-import Result
 import CoreLocation
 
 import CocoaLumberjack
@@ -189,8 +188,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
     /// See `ContentsChange` for a discussion of the events
     /// emitted by this signal.
     
-    fileprivate(set) public var contentsSignal: Signal<ContentEvent, NoError>! = nil
-    fileprivate var contentsSink: Signal<ContentEvent, NoError>.Observer! = nil
+    fileprivate(set) public var contentsSignal: Signal<ContentEvent, Never>! = nil
+    fileprivate var contentsSink: Signal<ContentEvent, Never>.Observer! = nil
     
     // MARK: - State Observation -
     
@@ -257,8 +256,8 @@ public class DeviceCollection: NSObject, MetricsReportable {
         
     }
     
-    fileprivate(set) public var connectionStateSignal: Signal<ConnectionState, NoError>! = nil
-    fileprivate var connectionStateSink: Signal<ConnectionState, NoError>.Observer! = nil
+    fileprivate(set) public var connectionStateSignal: Signal<ConnectionState, Never>! = nil
+    fileprivate var connectionStateSink: Signal<ConnectionState, Never>.Observer! = nil
     
     /// State of this device collection. For updates, observe `stateSignal`.
     fileprivate(set) public var connectionState: ConnectionState = .unloaded {
@@ -270,14 +269,14 @@ public class DeviceCollection: NSObject, MetricsReportable {
     
     fileprivate func setupSinks() {
         // Set up the signal for contents changes
-        var localContentsSink: Signal<ContentEvent, NoError>.Observer! = nil
+        var localContentsSink: Signal<ContentEvent, Never>.Observer! = nil
         self.contentsSignal = Signal {
             sink, _ in localContentsSink = sink
         }
         self.contentsSink = localContentsSink
         
         // Set up the signal for state changes
-        var localStateSink: Signal<ConnectionState, NoError>.Observer! = nil
+        var localStateSink: Signal<ConnectionState, Never>.Observer! = nil
         self.connectionStateSignal = Signal {
             sink, _ in localStateSink = sink
         }
@@ -1386,7 +1385,7 @@ extension DeviceCollection {
     public typealias State = ConnectionState
     
     @available(*, deprecated, renamed: "connectionStateSignal")
-    public var stateSignal: Signal<ConnectionState, NoError>! { return connectionStateSignal }
+    public var stateSignal: Signal<ConnectionState, Never>! { return connectionStateSignal }
     
     @available(*, deprecated, renamed: "connectionState")
     public var state: ConnectionState { return connectionState }

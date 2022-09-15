@@ -75,7 +75,9 @@ extension XCTestCase {
     
 }
 
-extension OHHTTPStubsResponse {
+
+extension OHHTTPStubs.HTTPStubsResponse {
+    
     
     /// Initialize a stub response with any JSONCoding-compliant type.
     /// - parameter object: The object to use for the stub.
