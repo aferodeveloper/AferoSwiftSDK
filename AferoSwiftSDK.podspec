@@ -22,10 +22,10 @@ Pod::Spec.new do |s|
     s.subspec 'Core' do |ss|
         ss.source_files  = "AferoSwiftSDK/Core/**/*"
         ss.dependency 'AferoSofthub', '~> 1.8'
-        ss.dependency 'CocoaLumberjack/Swift', '~> 3.5'
-        ss.dependency 'CryptoSwift'
+        ss.dependency 'CocoaLumberjack/Swift', '~> 3.7.4'
+        ss.dependency 'CryptoSwift', '1.5.1'
         ss.dependency 'CocoaZ', '~> 1.4'
-        ss.dependency 'ReactiveSwift', '~> 5.0'
+        ss.dependency 'ReactiveSwift', '~> 7.0'
         ss.dependency 'PromiseKit/CorePromise', '~> 4.5'
         ss.dependency 'HTTPStatusCodes', '~> 3.2'
         ss.dependency 'RSEnvironment', '0.0.3'

@@ -305,8 +305,14 @@ class MockAPIClient: AferoAPIClientProto {
     
     private var realClient = AFNetworkingAferoAPIClient(
         config: AFNetworkingAferoAPIClient.Config(
+            softhubService: "",
+            authenticatorCert: "",
+            oAuthAuthURL: "",
+            oAuthTokenURL: "",
             oauthClientId: "mockClient123",
             oauthClientSecret: "mockClient789"
+            
+            
         )
     )
     

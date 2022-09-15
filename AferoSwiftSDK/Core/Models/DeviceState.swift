@@ -10,7 +10,6 @@ import Foundation
 
 
 import ReactiveSwift
-import Result
 import CocoaLumberjack
 import PromiseKit
 
@@ -366,8 +365,8 @@ public protocol DeviceEventSignaling: class {
     var eventSink: DeviceEventSink { get }
 }
 
-public typealias DeviceEventSink = Signal<DeviceModelEvent, NoError>.Observer
-public typealias DeviceEventSignal = Signal<DeviceModelEvent, NoError>
+public typealias DeviceEventSink = Signal<DeviceModelEvent, Never>.Observer
+public typealias DeviceEventSignal = Signal<DeviceModelEvent, Never>
 public typealias DeviceEventPipe = (signal: DeviceEventSignal, sink: DeviceEventSink)
 
 // MARK: <AttributeSignaling>
@@ -437,10 +436,10 @@ open class PipeHolder<Value: CustomStringConvertible & CustomDebugStringConverti
     
 }
 
-//public typealias AttributeEventSink = Signal<AttributeEvent, NoError>.Observer
-public typealias AttributeEventSignal = Signal<AttributeEvent, NoError>
+//public typealias AttributeEventSink = Signal<AttributeEvent, Never>.Observer
+public typealias AttributeEventSignal = Signal<AttributeEvent, Never>
 
-public typealias AttributeEventPipe = PipeHolder<AttributeEvent, NoError>
+public typealias AttributeEventPipe = PipeHolder<AttributeEvent, Never>
 
 public protocol AttributeEventSignaling: class {
     
@@ -490,12 +489,12 @@ public enum DeviceModelCommand {
     case postBatchActions(actions: [DeviceBatchAction.Request], completion: WriteAttributeOnDone)
 }
 
-public typealias DeviceCommandSink = Signal<DeviceModelCommand, NoError>.Observer
-public typealias DeviceCommandSignal = Signal<DeviceModelCommand, NoError>
+public typealias DeviceCommandSink = Signal<DeviceModelCommand, Never>.Observer
+public typealias DeviceCommandSignal = Signal<DeviceModelCommand, Never>
 public typealias DeviceCommandPipe = (DeviceCommandSignal, DeviceCommandSink)
 
 public protocol DeviceCommandConsuming: class {
-    var commandSink: Signal<DeviceModelCommand, NoError>.Observer { get }
+    var commandSink: Signal<DeviceModelCommand, Never>.Observer { get }
 }
 
 

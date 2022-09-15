@@ -8,7 +8,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 import CocoaLumberjack
 import AferoSofthub
 
@@ -675,7 +674,7 @@ extension WifiSetupEvent: CustomDebugStringConvertible {
 /// For clients of a `<WifiSetupManaging>` instance, the signal type
 /// for setup event emissions.
 
-public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, NoError>
+public typealias WifiSetupEventSignal = Signal<WifiSetupEvent, Never>
 
 public protocol WifiNetworkProto: Hashable {
 
@@ -821,7 +820,7 @@ private class LiveWifiSetupManager: WifiSetupManaging, CustomDebugStringConverti
     // MARK: -
     // MARK: Signaling
     
-    fileprivate typealias WifiSetupEventSink = Signal<WifiSetupEvent, NoError>.Observer
+    fileprivate typealias WifiSetupEventSink = Signal<WifiSetupEvent, Never>.Observer
     fileprivate typealias WifiSetupEventPipe = (output: WifiSetupEventSignal, input: WifiSetupEventSink)
     
     lazy fileprivate var wifiSetupEventPipe: WifiSetupEventPipe = {

@@ -15,9 +15,9 @@ puts "Using Xcode version: #{XCODE_VERSION}"
 
 def base_pods
 
-    pod 'CocoaLumberjack/Swift', '3.5.2', :inhibit_warnings => true
+    pod 'CocoaLumberjack/Swift', '3.7.4', :inhibit_warnings => true
 
-    pod 'ReactiveSwift', '5.0.0', :inhibit_warnings => true
+    pod 'ReactiveSwift', '7.0', :inhibit_warnings => true
     pod 'PromiseKit/CorePromise', '4.5.1'
     pod 'HTTPStatusCodes', '~> 3.2'
     pod 'AFNetworking/NSURLSession', :inhibit_warnings => true
@@ -25,8 +25,8 @@ def base_pods
 end
 
 def test_pods
-    pod 'Quick', :inhibit_warnings => true
-    pod 'Nimble', :inhibit_warnings => true
+    pod 'Quick', '5.0.1', :inhibit_warnings => true
+    pod 'Nimble', '10.0.0', :inhibit_warnings => true
     pod 'OHHTTPStubs/Swift'
 end
 

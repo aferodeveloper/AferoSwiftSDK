@@ -33,7 +33,7 @@ class APIClientProfileSpec: QuickSpec {
             }
             
             afterEach {
-                OHHTTPStubs.removeAllStubs()
+                HTTPStubs.removeAllStubs()
             }
             
             describe("when calling fetchProfile(assocationId:version:)") {
@@ -47,7 +47,7 @@ class APIClientProfileSpec: QuickSpec {
                     let result = DeviceProfile(id: "profileId", deviceType: "deviceType", attributes: [DeviceProfile.AttributeDescriptor]())
                     
                     stub(condition: isPath(path) && isMethodGET()) {
-                        _ in OHHTTPStubsResponse(jsonObject: result.JSONDict!, statusCode: 200, headers: [:])
+                        _ in OHHTTPStubs.HTTPStubsResponse(jsonObject: result.JSONDict!, statusCode: 200, headers: [:])
                     }
                     
                     var response: DeviceProfile?
@@ -61,8 +61,8 @@ class APIClientProfileSpec: QuickSpec {
                             error = $0
                     }
                     
-                    expect(response).toEventually(equal(result), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventually(equal(result), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
                 
@@ -74,7 +74,7 @@ class APIClientProfileSpec: QuickSpec {
                     let path = "/v1/devices/\(associationId)/deviceProfiles/versions/\(version)"
                     
                     stub(condition: isPath(path) && isMethodGET()) {
-                        _ in OHHTTPStubsResponse(jsonObject: [:], statusCode: 404, headers: [:])
+                        _ in OHHTTPStubs.HTTPStubsResponse(jsonObject: [:], statusCode: 404, headers: [:])
                     }
                     
                     var response: DeviceProfile?
@@ -88,8 +88,8 @@ class APIClientProfileSpec: QuickSpec {
                             error = $0
                     }
                     
-                    expect(response != nil).toEventuallyNot(beTrue(), timeout: 5.0)
-                    expect(error?.httpStatusCode != nil).toEventually(equal(404), timeout: 5.0)
+                    expect(response != nil).toEventuallyNot(beTrue(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error?.httpStatusCode != nil).toEventually(equal(404), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
 
@@ -106,7 +106,7 @@ class APIClientProfileSpec: QuickSpec {
                     let result = DeviceProfile(id: "profileId", deviceType: "deviceType", attributes: [DeviceProfile.AttributeDescriptor]())
                     
                     stub(condition: isPath(path) && isMethodGET()) {
-                        _ in OHHTTPStubsResponse(jsonObject: result.JSONDict!, statusCode: 200, headers: [:])
+                        _ in OHHTTPStubs.HTTPStubsResponse(jsonObject: result.JSONDict!, statusCode: 200, headers: [:])
                     }
                     
                     var response: DeviceProfile?
@@ -118,8 +118,8 @@ class APIClientProfileSpec: QuickSpec {
                         error = err
                     }
                     
-                    expect(response).toEventually(equal(result), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventually(equal(result), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
                 
@@ -131,7 +131,7 @@ class APIClientProfileSpec: QuickSpec {
                     let path = "/v1/devices/\(associationId)/deviceProfiles/versions/\(version)"
                     
                     stub(condition: isPath(path) && isMethodGET()) {
-                        _ in OHHTTPStubsResponse(jsonObject: [:], statusCode: 404, headers: [:])
+                        _ in OHHTTPStubs.HTTPStubsResponse(jsonObject: [:], statusCode: 404, headers: [:])
                     }
                     
                     var response: DeviceProfile?
@@ -143,8 +143,8 @@ class APIClientProfileSpec: QuickSpec {
                         error = err
                     }
 
-                    expect(response != nil).toEventuallyNot(beTrue(), timeout: 5.0)
-                    expect(error?.httpStatusCode != nil).toEventually(equal(404), timeout: 5.0)
+                    expect(response != nil).toEventuallyNot(beTrue(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error?.httpStatusCode != nil).toEventually(equal(404), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
                 

@@ -9,7 +9,6 @@
 import Foundation
 import ReactiveSwift
 import PromiseKit
-import Result
 import CocoaLumberjack
 
 
