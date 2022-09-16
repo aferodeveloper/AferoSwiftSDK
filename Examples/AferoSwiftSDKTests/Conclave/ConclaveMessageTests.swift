@@ -100,9 +100,11 @@ class ConclaveMessageSpec: QuickSpec {
     override func spec() {
         
         dynamicLogLevel = DDLogLevel.debug
+        if let logger = DDTTYLogger.sharedInstance  {
+            logger.logFormatter = AferoTTYADBLogFormatter()
+            DDLog.add(logger)
+        }
         
-        DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
-        DDLog.add(DDTTYLogger.sharedInstance)
         
         describe("When decoding messages") {
             

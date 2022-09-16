@@ -33,7 +33,7 @@ class APIClientAccountSpec: QuickSpec {
             }
             
             afterEach {
-                OHHTTPStubs.removeAllStubs()
+                HTTPStubs.removeAllStubs()
             }
             
             
@@ -48,7 +48,7 @@ class APIClientAccountSpec: QuickSpec {
                     
                     stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                         request in
-                        return OHHTTPStubsResponse(jsonObject: janeDoeUser.JSONDict!, statusCode: 200, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: janeDoeUser.JSONDict!, statusCode: 200, headers: nil)
                     }
                     
                     var fetchedUser: UserAccount.User?
@@ -66,15 +66,15 @@ class APIClientAccountSpec: QuickSpec {
                     }
                     
                     expect(error).to(beNil())
-                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
-                    expect(fetchedUser).toEventually(equal(janeDoeUser), timeout: 5.0)
+                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: DispatchTimeInterval.seconds(5))
+                    expect(fetchedUser).toEventually(equal(janeDoeUser), timeout: DispatchTimeInterval.seconds(5))
                 }
                 
                 it("should not refresh oauth if a 503 is encountered.") {
                     
                     stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                         request in
-                        return OHHTTPStubsResponse(jsonObject: ["error_description", "service unavailable"], statusCode: 503, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: ["error_description", "service unavailable"], statusCode: 503, headers: nil)
                     }
                     
                     var fetchedUser: UserAccount.User?
@@ -91,8 +91,8 @@ class APIClientAccountSpec: QuickSpec {
                         error  = err
                     }
                     
-                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
-                    expect(fetchedUser != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: DispatchTimeInterval.seconds(5))
+                    expect(fetchedUser != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     expect(error?.httpStatusCodeValue).toEventually(equal(.serviceUnavailable))
                 }
                 
@@ -100,7 +100,7 @@ class APIClientAccountSpec: QuickSpec {
                     
                     stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                         request in
-                        return OHHTTPStubsResponse(jsonObject: ["error_description", "service unavailable"], statusCode: 500, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: ["error_description", "service unavailable"], statusCode: 500, headers: nil)
                     }
                     
                     var fetchedUser: UserAccount.User?
@@ -117,8 +117,8 @@ class APIClientAccountSpec: QuickSpec {
                         error  = err
                     }
                     
-                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
-                    expect(fetchedUser != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: DispatchTimeInterval.seconds(5))
+                    expect(fetchedUser != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     expect(error?.httpStatusCodeValue).toEventually(equal(.internalServerError))
                     
                 }
@@ -128,7 +128,7 @@ class APIClientAccountSpec: QuickSpec {
                     stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                         _ in
                         let resp = ["error_description": "authentication required"]
-                        return OHHTTPStubsResponse(jsonObject: resp, statusCode: 401, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: resp, statusCode: 401, headers: nil)
                     }
                     
                     var response: Any?
@@ -145,10 +145,10 @@ class APIClientAccountSpec: QuickSpec {
                         error = err
                     }
                     
-                    expect(response != nil).toNotEventually(beTrue(), timeout: 5.0)
-                    expect(error).toNotEventually(beNil(), timeout: 5.0)
-                    expect(error?.httpStatusCodeValue).toEventually(equal(.unauthorized), timeout: 5.0)
-                    expect(apiClient.refreshOauthCount).toEventually(equal(1), timeout: 5.0)
+                    expect(response != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error).toNotEventually(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error?.httpStatusCodeValue).toEventually(equal(.unauthorized), timeout: DispatchTimeInterval.seconds(5))
+                    expect(apiClient.refreshOauthCount).toEventually(equal(1), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
                 
@@ -157,7 +157,7 @@ class APIClientAccountSpec: QuickSpec {
                     stub(condition: isPath("/v1/users/me") && isMethodGET()) {
                         _ in
                         let resp = ["error_description": "authentication required"]
-                        return OHHTTPStubsResponse(jsonObject: resp, statusCode: 403, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: resp, statusCode: 403, headers: nil)
                     }
                     
                     var response: Any?
@@ -174,10 +174,10 @@ class APIClientAccountSpec: QuickSpec {
                         error = err
                     }
                     
-                    expect(response != nil).toNotEventually(beTrue(), timeout: 5.0)
-                    expect(error).toNotEventually(beNil(), timeout: 5.0)
-                    expect(error?.httpStatusCodeValue).toEventually(equal(.forbidden), timeout: 5.0)
-                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: 5.0)
+                    expect(response != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error).toNotEventually(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error?.httpStatusCodeValue).toEventually(equal(.forbidden), timeout: DispatchTimeInterval.seconds(5))
+                    expect(apiClient.refreshOauthCount).toNotEventually(beGreaterThan(0), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }
@@ -189,12 +189,12 @@ class APIClientAccountSpec: QuickSpec {
                     let credentialId = "foo@bar.com"
                     let pathAllowedCredentialId = credentialId.pathAllowedURLEncodedString!
                     let appId = "my.sooper.app"
-                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()
                     let path = "/v1/credentials/\(pathAllowedCredentialId)/passwordReset"
                     
                     stub(condition: isPath(path) && isMethodPOST() && hasHeaderNamed("x-afero-app", value: base64EncodedAppId)) {
                         _ in
-                        OHHTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
+                        OHHTTPStubs.HTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
                     }
                     
                     var response: Any?
@@ -208,8 +208,8 @@ class APIClientAccountSpec: QuickSpec {
                         error = $0
                     }
                     
-                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventuallyNot(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }
@@ -220,7 +220,7 @@ class APIClientAccountSpec: QuickSpec {
                     
                     let shortCode = "31337".pathAllowedURLEncodedString!
                     let appId = "my.sooper.app"
-                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()
                     let password = "newPassword"
                     
                     let path = "/v1/shortvalues/\(shortCode)/passwordReset"
@@ -232,7 +232,7 @@ class APIClientAccountSpec: QuickSpec {
                         return ((body as? [String: Any])?["password"] as? String) == password
                     }) {
                         _ in
-                        OHHTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
+                        OHHTTPStubs.HTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
                     }
                     
                     var response: Any?
@@ -246,8 +246,8 @@ class APIClientAccountSpec: QuickSpec {
                         error = $0
                     }
                     
-                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventuallyNot(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }
@@ -269,7 +269,7 @@ class APIClientAccountSpec: QuickSpec {
                         return ((body as? [String: Any])?["password"] as? String) == password
                     }) {
                         _ in
-                        OHHTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
+                        OHHTTPStubs.HTTPStubsResponse(jsonObject: [], statusCode: 204, headers: [:])
                     }
                     
                     var response: Any?
@@ -283,8 +283,8 @@ class APIClientAccountSpec: QuickSpec {
                         error = $0
                     }
                     
-                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventuallyNot(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }
@@ -295,7 +295,7 @@ class APIClientAccountSpec: QuickSpec {
                     let accountId = "jarjar"
                     let credentialId = "foo@bar.com".pathAllowedURLEncodedString!
                     let appId = "my.sooper.app"
-                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()
 
                     
                     let path = "/v1/accounts/\(accountId)/credentials/\(credentialId)/resendVerification"
@@ -307,7 +307,7 @@ class APIClientAccountSpec: QuickSpec {
                         return ((body as? [String: Any])?["credentialId"] as? String) == credentialId
                     }) {
                         _ in
-                        OHHTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
+                        OHHTTPStubs.HTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
                     }
                     
                     var response: Any?
@@ -321,8 +321,8 @@ class APIClientAccountSpec: QuickSpec {
                         error = $0
                     }
                     
-                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventuallyNot(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }
@@ -340,7 +340,7 @@ class APIClientAccountSpec: QuickSpec {
                     let accountDescription = "My Special Account"
 
                     let appId = "my.sooper.app"
-                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()!
+                    let base64EncodedAppId = "\(appId):IOS".bytes.toBase64()
                     
                     
                     let path = "/v1/accounts"
@@ -400,7 +400,7 @@ class APIClientAccountSpec: QuickSpec {
                         
                     }) {
                         _ in
-                        OHHTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
+                        OHHTTPStubs.HTTPStubsResponse(jsonObject: [:], statusCode: 201, headers: [:])
                     }
                     
                     var response: Any?
@@ -423,8 +423,8 @@ class APIClientAccountSpec: QuickSpec {
                             error = $0
                     }
                     
-                    expect(response).toEventuallyNot(beNil(), timeout: 5.0)
-                    expect(error != nil).toNotEventually(beTrue(), timeout: 5.0)
+                    expect(response).toEventuallyNot(beNil(), timeout: DispatchTimeInterval.seconds(5))
+                    expect(error != nil).toNotEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5))
                     
                 }
             }

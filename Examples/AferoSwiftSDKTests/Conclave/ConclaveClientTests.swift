@@ -33,10 +33,11 @@ class JSONStreamSpec: QuickSpec {
         
         dynamicLogLevel = DDLogLevel.debug
         
-        DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
-        DDLog.add(DDTTYLogger.sharedInstance)
+        if let logger = DDTTYLogger.sharedInstance  {
+            logger.logFormatter = AferoTTYADBLogFormatter()
+            DDLog.add(logger)
+        }
         
-
         var pipe: Pipe! = nil
         var reader: LineDelimitedJSONStreamReader! = nil
         var writer: LineDelimitedJSONStreamWriter! = nil
@@ -98,12 +99,12 @@ class JSONStreamSpec: QuickSpec {
                 
                 writer.writeSink.send(value: obj)
                 writer.writeSink.send(value: obj2)
-                expect(eventsReceived.count).toEventually(equal(3), timeout: 5, pollInterval: 0.5)
+                expect(eventsReceived.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 
                 writer.writeSink.sendCompleted()
-                expect(writer.finished).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
-                expect(completedReceived).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
-                expect(reader.finished).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
+                expect(writer.finished).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(completedReceived).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(reader.finished).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
             }
             
             it("Should be able to pump Conclave messages") {
@@ -153,14 +154,14 @@ class JSONStreamSpec: QuickSpec {
                     (msg: ConclaveMessage) -> () in writer.writeSink.send(value: msg.JSONDict)
                 }
                 
-                expect(eventsReceived.count).toEventually(equal(3), timeout: 5, pollInterval: 0.5)
+                expect(eventsReceived.count).toEventually(equal(3), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 
-                expect(messagesReceived).toEventually(equal(messagesToSend), timeout: 5, pollInterval: 0.5)
+                expect(messagesReceived).toEventually(equal(messagesToSend), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 
                 writer.writeSink.sendCompleted()
-                expect(writer.finished).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
-                expect(completedReceived).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
-                expect(reader.finished).toEventually(equal(true), timeout: 5, pollInterval: 0.5)
+                expect(writer.finished).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(completedReceived).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(reader.finished).toEventually(equal(true), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
             }
         }
     }
@@ -483,10 +484,10 @@ class ConclaveClientSpec: QuickSpec {
                 
                 serverConnection!.writeSink.send(value: .hello(version: "version 6666", bufferSize: 512, heartbeat: 270))
                 
-                expect(client.heartbeatInterval).toEventually(equal(270), timeout: 5, pollInterval: 0.5)
-                expect(client.bufferSize).toEventually(equal(512), timeout: 5, pollInterval: 0.5)
-                expect(client.sessionId).toEventually(equal(666), timeout: 5, pollInterval: 0.5)
-                expect(client.seqNum).toEventually(equal(10), timeout: 5, pollInterval: 0.5)
+                expect(client.heartbeatInterval).toEventually(equal(270), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(client.bufferSize).toEventually(equal(512), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(client.sessionId).toEventually(equal(666), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                expect(client.seqNum).toEventually(equal(10), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
             }
             
             it("should handle heartbeats") {
@@ -527,7 +528,7 @@ class ConclaveClientSpec: QuickSpec {
                 
                 serverConnection!.writeSink.send(value: .hello(version: "version 6666", bufferSize: 512, heartbeat: 270))
                 serverConnection!.writeSink.send(value: .heartbeat)
-                expect(heartbeatReceived).toEventually(beTrue(), timeout: 5, pollInterval: 0.5)
+                expect(heartbeatReceived).toEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
             }
 
             
@@ -643,12 +644,12 @@ class ConclaveClientSpec: QuickSpec {
 
                     expect(client.connectionState) == ConnectionState.connecting
                     let expectedResponses = [ConclaveMessage.login(channelId: "coobar", accessToken: "nubar", type:"poobar", deviceId: "floobar", mobileDeviceId: "clientfu", version: "voobar", trace: false, protocol: 2)]
-                    expect(connection.receivedMessages).toEventually(equal(expectedResponses), timeout: 2, pollInterval: 0.1)
-                    expect(client.sessionId).toEventually(equal(99), timeout: 2, pollInterval: 0.1)
-                    expect(client.channelId).toEventually(equal("coobar"), timeout: 2, pollInterval: 0.1)
-                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: 2, pollInterval: 0.1)
-                    expect(client.seqNum).toEventually(equal(44), timeout: 2, pollInterval: 0.1)
-                    expect(client.bufferSize).toEventually(equal(512), timeout: 2, pollInterval: 0.1)
+                    expect(connection.receivedMessages).toEventually(equal(expectedResponses), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
+                    expect(client.sessionId).toEventually(equal(99), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
+                    expect(client.channelId).toEventually(equal("coobar"), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
+                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
+                    expect(client.seqNum).toEventually(equal(44), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
+                    expect(client.bufferSize).toEventually(equal(512), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(100))
                     expect(client.connectionState) == ConnectionState.connected
                 }
                 
@@ -695,8 +696,8 @@ class ConclaveClientSpec: QuickSpec {
                         client.disconnect()
                     }
                     
-                    expect(connection.receivedMessages.last).toEventually(equal(ConclaveMessage.bye), timeout: 5, pollInterval: 0.5)
-                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: 5, pollInterval: 0.1)
+                    expect(connection.receivedMessages.last).toEventually(equal(ConclaveMessage.bye), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(100))
                 }
                 
                 it("Should respond with a heartbeat if it receives a heartbeat") {
@@ -708,7 +709,7 @@ class ConclaveClientSpec: QuickSpec {
                     }
                     
                     connection.testSendHeartbeat()
-                    expect(connection.receivedMessages.last).toEventually(equal(ConclaveMessage.heartbeat), timeout: 5, pollInterval: 0.5)
+                    expect(connection.receivedMessages.last).toEventually(equal(ConclaveMessage.heartbeat), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("Should set a hearbeat interval and watchdog timer once receiving a heartbeat interval from the server") {
@@ -720,7 +721,7 @@ class ConclaveClientSpec: QuickSpec {
                         fail("Client connection failed: \(error.localizedDescription)")
                     }
                     
-                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: 2, pollInterval: 0.5) // set in the beforeEach
+                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(500)) // set in the beforeEach
                 }
                 
                 it("Should send a completed if a heartbeat isn't sent by the time the watchdog expires") {
@@ -732,7 +733,7 @@ class ConclaveClientSpec: QuickSpec {
                         fail("Client connection failed: \(error.localizedDescription)")
                     }
                     
-                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: 2, pollInterval: 0.5) // set in the beforeEach
+                    expect(client.heartbeatInterval).toEventually(equal(2), timeout: DispatchTimeInterval.seconds(2), pollInterval: DispatchTimeInterval.milliseconds(500)) // set in the beforeEach
                     
                     let heartbeatInterval: TimeInterval? = 2.0
                     let localizedDescription = "Conclave client timed out after \(String(describing: heartbeatInterval)) seconds (with \(client.heartbeatSlack)s slack)"
@@ -747,7 +748,7 @@ class ConclaveClientSpec: QuickSpec {
                         .stateChange(.disconnected),
                     ]
                     
-                    expect(clientEventsReceived).toEventually(equal(expectedEventsReceived), timeout: 5, pollInterval: 0.5)
+                    expect(clientEventsReceived).toEventually(equal(expectedEventsReceived), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("Should emit a Data event when receiving public messages") {
@@ -770,16 +771,16 @@ class ConclaveClientSpec: QuickSpec {
                         connection.testDisconnect()
                     }
 
-                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: 5, pollInterval: 0.5)
-                    expect(clientEventsReceived.count).toEventually(equal(4), timeout: 5, pollInterval: 0.5)
+                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(clientEventsReceived.count).toEventually(equal(4), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                     expect(clientEventsReceived.contains(
                         ConclaveClient.ClientEvent.data(
                             event: "device:test",
                             data: [:],
                             seq: 999,
                             target: nil
-                        ))).toEventually(beTrue(), timeout: 5, pollInterval: 0.5)
-                    expect(client.seqNum).toEventually(equal(999), timeout:5, pollInterval: 0.5)
+                        ))).toEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(client.seqNum).toEventually(equal(999), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
                 
                 it("Should emit Data events when receiving private messages") {
@@ -802,8 +803,8 @@ class ConclaveClientSpec: QuickSpec {
                         connection.testDisconnect()
                     }
                     
-                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: 5, pollInterval: 0.5)
-                    expect(clientEventsReceived.count).toEventually(equal(4), timeout: 5, pollInterval: 0.5)
+                    expect(client.connectionState).toEventually(equal(ConnectionState.disconnected), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(clientEventsReceived.count).toEventually(equal(4), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                     expect(clientEventsReceived.contains(
                             ConclaveClient.ClientEvent.data(
                                 event: "device:test",
@@ -812,8 +813,8 @@ class ConclaveClientSpec: QuickSpec {
                                 target: nil
                             )
                         )
-                        ).toEventually(beTrue(), timeout: 5, pollInterval: 0.5)
-                    expect(client.seqNum).toEventually(equal(77), timeout:5, pollInterval: 0.5)
+                        ).toEventually(beTrue(), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
+                    expect(client.seqNum).toEventually(equal(77), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(500))
                 }
             }
         }

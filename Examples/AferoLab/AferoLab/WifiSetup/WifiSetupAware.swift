@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import Afero
 import ReactiveSwift
-import Result
 import CocoaLumberjack
 
 

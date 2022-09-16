@@ -10,7 +10,6 @@ import Foundation
 import CocoaLumberjack
 import PromiseKit
 import ReactiveSwift
-import Result
 
 public protocol OfflineScheduleStorage: class {
     
@@ -709,10 +708,10 @@ open class OfflineSchedule: NSObject {
     }
     
     /// Type for the sink to which we send `Event`s.
-    fileprivate typealias EventSink = Signal<Event, NoError>.Observer
+    fileprivate typealias EventSink = Signal<Event, Never>.Observer
     
     /// Type for the signal on which clients listen for `Event`s.
-    public typealias EventSignal = Signal<Event, NoError>
+    public typealias EventSignal = Signal<Event, Never>
     
     /// Type for the pipe that ties `EventSink` and `EventSignal` together.
     fileprivate typealias EventPipe = (output: EventSignal, input: EventSink)
@@ -779,10 +778,17 @@ open class OfflineSchedule: NSObject {
         }
         
         /// Accessor for the `timeSpecification`'s local-timezone day of week, starting with Sunday == 1, ending with Saturday == 7
+        @available(*, deprecated, message: "Use daysOfWeek instead.")
         public var dayOfWeek: TimeSpecification.DayOfWeek {
             get { return timeSpecification.dayOfWeek }
             set { timeSpecification.dayOfWeek = newValue }
         }
+        
+        public var daysOfWeek: Set<TimeSpecification.DayOfWeek> {
+            get { return timeSpecification.daysOfWeek }
+            set { timeSpecification.daysOfWeek = newValue }
+        }
+        
         
         @available(*, deprecated, message: "Use `dayOfWeek` instead.")
         public var localDayOfWeek: TimeSpecification.DayOfWeek {
@@ -841,13 +847,57 @@ open class OfflineSchedule: NSObject {
             public typealias Hour = UInt8
             public typealias Minute = UInt8
             
-            public var dayOfWeek: DayOfWeek
+            private var _daysOfWeek: Set<DayOfWeek> = []
 
+            public var useCompactDayRepresentation: Bool = false
+
+            private static let compactFlag: UInt8 = 128;
+            
+            public var daysOfWeek: Set<DayOfWeek> {
+                get {
+                    return _daysOfWeek }
+                set {
+                    _daysOfWeek = newValue
+                    useCompactDayRepresentation = true
+                }
+            }
+            
+            public var dayOfWeek: DayOfWeek {
+                get {
+                    return daysOfWeek.first ?? DayOfWeek.sunday }
+                set { daysOfWeek = [newValue] }
+            }
+            
             @available(*, deprecated, message: "Use `dayOfWeek` instead.")
             public var localDayOfWeek: DayOfWeek {
                 get { return dayOfWeek }
                 set { dayOfWeek = newValue }
             }
+            
+            
+            static func byteToDays( days: UInt8) -> Set<DayOfWeek>? {
+                var daySet: Set<DayOfWeek> = []
+                
+                if (days & TimeSpecification.compactFlag == 0) {
+                    return nil
+                }
+                
+                for day in DayOfWeek.allDays {
+                    let bit: UInt8 = (2 << (6 - day.dayNumber))
+                    if (days & bit != 0) {
+                        daySet.insert(day)
+                    }
+                }
+                
+                return daySet
+            }
+            
+            
+            static func daysToByte(days: Set<DayOfWeek>) ->  UInt8 {
+                return days.reduce(compactFlag, {(cur, next) -> UInt8 in cur | (2 << (6 - next.dayNumber)) })
+            }
+            
+            
             
             public var hour: Hour
 
@@ -883,12 +933,20 @@ open class OfflineSchedule: NSObject {
                 }
             }
 
-            public init(dayOfWeek: DayOfWeek = .sunday, hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimeZone]) {
-                self.dayOfWeek = dayOfWeek
+            
+            public init(daysOfWeek: Set<DayOfWeek> = [], hour: Hour = 0, minute: Minute = 0, flags: Flags = [.usesDeviceTimeZone], useCompactDayRepresentation: Bool = false ) {
+                self._daysOfWeek = daysOfWeek
+                if (useCompactDayRepresentation || daysOfWeek.count > 1) {
+                    self.useCompactDayRepresentation = true
+                } else {
+                    self.useCompactDayRepresentation = useCompactDayRepresentation
+                }
+                
                 self.hour = hour
                 self.minute = minute
                 self.flags = flags
             }
+            
             
             public init(dayOfWeek: DayOfWeek, hour: Hour, minute: Minute, repeats: Repeats, usesDeviceTimeZone: UsesDeviceTimeZone) {
                 
@@ -902,7 +960,7 @@ open class OfflineSchedule: NSObject {
                     flags.insert(.usesDeviceTimeZone)
                 }
                 
-                self.init(dayOfWeek: dayOfWeek, hour: hour, minute: minute, flags: flags)
+                self.init(daysOfWeek: [dayOfWeek], hour: hour, minute: minute, flags: flags, useCompactDayRepresentation: false)
                 
             }
 
@@ -1443,7 +1501,8 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
         
         return [
             flags.bytes,
-            [UInt8(dayOfWeek.dayNumber)],
+            [useCompactDayRepresentation ?
+             OfflineSchedule.ScheduleEvent.TimeSpecification.daysToByte(days: daysOfWeek) : UInt8(  dayOfWeek.dayNumber)],
             [hour],
             [minute],
             ].flatMap { $0 }
@@ -1477,12 +1536,24 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
         
         flags = Flags(rawValue: bytes[type(of: self).FlagsOffset])
         
-        guard let dayOfWeek = DayOfWeek(dayNumber: Int(bytes[type(of: self).DayOfWeekOffset])) else {
-            DDLogError("Unexpected value \(bytes[type(of: self).DayOfWeekOffset]) for encoded 'dayOfWeek'")
-            return nil
-        }
         
-        self.dayOfWeek = dayOfWeek
+        let dayInt = bytes[type(of: self).DayOfWeekOffset]
+        let isCompact = dayInt & OfflineSchedule.ScheduleEvent.TimeSpecification.compactFlag
+        if (isCompact != 0) {
+            useCompactDayRepresentation = true
+            guard let daysOfWeek =             OfflineSchedule.ScheduleEvent.TimeSpecification.byteToDays(days: dayInt) else {
+                DDLogError("Unexpected value for encoded 'daysOfWeek'")
+                return nil
+            }
+            self.daysOfWeek = daysOfWeek
+        } else {
+            guard let dayOfWeek = DayOfWeek(dayNumber: Int(dayInt)) else {
+                DDLogError("Unexpected value \(bytes[type(of: self).DayOfWeekOffset]) for encoded 'dayOfWeek'")
+                return nil
+            }
+            
+            self.dayOfWeek = dayOfWeek
+        }
         
         guard (0...23).contains(bytes[type(of: self).HourOffset]) else {
             DDLogError("Unexpected value \(bytes[type(of: self).HourOffset]) for encoded 'hour'")
@@ -1798,7 +1869,7 @@ extension OfflineSchedule.ScheduleEvent.TimeSpecification {
         }
         
         let newTimeSpec = OfflineSchedule.ScheduleEvent.TimeSpecification(
-            dayOfWeek: dayOfWeek,
+            daysOfWeek: [dayOfWeek],
             hour: UInt8(hour),
             minute: UInt8(minute),
             flags: flags.union([.usesDeviceTimeZone])

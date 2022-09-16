@@ -15,7 +15,6 @@ import AppAuth
 import UIKit
 import Afero
 import ReactiveSwift
-import Result
 import PromiseKit
 import CocoaLumberjack
 import SVProgressHUD

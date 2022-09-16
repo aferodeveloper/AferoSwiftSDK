@@ -48,7 +48,7 @@ class DeviceCollectionSpec: QuickSpec {
                 
                 stateEventDisposable?.dispose()
                 stateEventDisposable = nil
-                OHHTTPStubs.removeAllStubs()
+                HTTPStubs.removeAllStubs()
             }
             
             // MARK: - Should Instantiate
@@ -89,7 +89,7 @@ class DeviceCollectionSpec: QuickSpec {
                 beforeEach {
                     stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles") && isMethodGET()) {
                         request in
-                        return OHHTTPStubsResponse(jsonObject: accountProfilesFixtureData, statusCode: 200, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: accountProfilesFixtureData, statusCode: 200, headers: nil)
                     }
                     
                     accountProfilesFixtureData.forEach {
@@ -99,7 +99,7 @@ class DeviceCollectionSpec: QuickSpec {
                         
                         stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles/\(profileId)") && isMethodGET()) {
                             request in
-                            return OHHTTPStubsResponse(jsonObject: fixture, statusCode: 200, headers: nil)
+                            return OHHTTPStubs.HTTPStubsResponse(jsonObject: fixture, statusCode: 200, headers: nil)
                         }
                     }
                 }
@@ -144,8 +144,8 @@ class DeviceCollectionSpec: QuickSpec {
                     deviceCollection.start()
                     expect(deviceCollection.connectionState) == State.loading
                     deviceEventStreamable.eventSink.send(value: peripheralListFixture)
-                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
-                    expect(deviceCollection.devices.filter { $0.isDirect }.count).toEventually(equal(1), timeout: 5.0, pollInterval: 0.25)
+                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(deviceCollection.devices.filter { $0.isDirect }.count).toEventually(equal(1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
                     expect(deviceCollection.connectionState).toEventually(equal(State.loaded))
                     
                 }
@@ -186,13 +186,13 @@ class DeviceCollectionSpec: QuickSpec {
                         deviceEventStreamable.eventSink.send(value: peripheralListFixtureTruncated)
                     }
 
-                    expect(beginCount).toEventually(equal(2), timeout: 5.0, pollInterval: 0.25)
-                    expect(beginCount).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.25)
-                    expect(addCount).toEventually(equal(peripheralList.count), timeout: 5.0, pollInterval: 0.25)
-                    expect(deleteCount).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
-                    expect(endCount).toEventually(equal(2), timeout: 5.0, pollInterval: 0.25)
-                    expect(endCount).toNotEventually(beGreaterThan(2), timeout: 5.0, pollInterval: 0.25)
-                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count - 1), timeout: 5.0, pollInterval: 0.25)
+                    expect(beginCount).toEventually(equal(2), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(beginCount).toNotEventually(beGreaterThan(2), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(addCount).toEventually(equal(peripheralList.count), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(deleteCount).toEventually(equal(peripheralList.count - 1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(endCount).toEventually(equal(2), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(endCount).toNotEventually(beGreaterThan(2), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
+                    expect(deviceCollection.devices.count).toEventually(equal(peripheralList.count - 1), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
                 }
 
                 // MARK: • should fire the expected state events
@@ -216,7 +216,7 @@ class DeviceCollectionSpec: QuickSpec {
                         deviceCollection.stop()
                     }
 
-                    expect(stateEvents).toEventually(equal([.unloaded, .loading, .loaded, .unloaded]), timeout: 5.0, pollInterval: 0.25)
+                    expect(stateEvents).toEventually(equal([.unloaded, .loading, .loaded, .unloaded]), timeout: DispatchTimeInterval.seconds(5), pollInterval: DispatchTimeInterval.milliseconds(250))
                 }
                 
             }
@@ -256,7 +256,7 @@ class DeviceCollectionSpec: QuickSpec {
                     
                     stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles") && isMethodGET()) {
                         request in
-                        return OHHTTPStubsResponse(jsonObject: accountProfilesFixtureData, statusCode: 200, headers: nil)
+                        return OHHTTPStubs.HTTPStubsResponse(jsonObject: accountProfilesFixtureData, statusCode: 200, headers: nil)
                     }
                     
                     accountProfilesFixtureData.forEach {
@@ -266,7 +266,7 @@ class DeviceCollectionSpec: QuickSpec {
                         
                         stub(condition: isPath("/v1/accounts/\(accountId)/deviceProfiles/\(profileId)") && isMethodGET()) {
                             request in
-                            return OHHTTPStubsResponse(jsonObject: fixture, statusCode: 200, headers: nil)
+                            return OHHTTPStubs.HTTPStubsResponse(jsonObject: fixture, statusCode: 200, headers: nil)
                         }
                     }
                     
@@ -275,7 +275,7 @@ class DeviceCollectionSpec: QuickSpec {
                 }
                 
                 afterEach {
-                    OHHTTPStubs.removeAllStubs()
+                    HTTPStubs.removeAllStubs()
                 }
 
                 // MARK: • Create device if association return beats peripheralList

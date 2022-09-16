@@ -30,11 +30,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.setValue(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
         
         #if DEBUG
-            DDTTYLogger.sharedInstance.logFormatter = AferoTTYADBLogFormatter()
-            DDLog.add(DDTTYLogger.sharedInstance)
+            guard let logger: DDTTYLogger = DDTTYLogger.sharedInstance else {
+                return
+            }
+            logger.logFormatter = AferoTTYADBLogFormatter()
+            DDLog.add(logger)
         #else
-            DDASLLogger.sharedInstance.logFormatter = AferoASLADBLogFormatter()
-            DDLog.add(DDASLLogger.sharedInstance)
+            guard let logger: DDTTYLogger = DDTTYLogger.sharedInstance else {
+                return
+            }
+            logger.logFormatter = AferoASLADBLogFormatter()
+            DDLog.add(logger)
+    
         #endif
         
         
