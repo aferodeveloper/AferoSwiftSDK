@@ -192,6 +192,10 @@ extension DeviceModelable {
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = {
             deviceId, associationId, profileVersion in
             DDLogInfo("Softhub detected setup mode deviceId:\(deviceId) associationId:\(associationId) profileVersion:\(profileVersion)");
+        },
+        setupModeDeviceGoneHandler: @escaping SofthubSetupModeDeviceGoneHandler = {
+            deviceId in
+            DDLogInfo("Softhub setup mode deviceId:\(deviceId) gone");
         }
     ) {
         
@@ -212,6 +216,7 @@ extension DeviceModelable {
                 logLevel: logLevel,
                 associationHandler: associationNeededHandler,
                 setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+                setupModeDeviceGoneHandler: setupModeDeviceGoneHandler,
                 completionHandler: {
                 completionReason in
                     DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")
@@ -229,6 +234,7 @@ extension DeviceModelable {
                 logLevel: logLevel,
                 associationHandler: associationNeededHandler,
                 setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+                setupModeDeviceGoneHandler: setupModeDeviceGoneHandler,
                 completionHandler: {
                 completionReason in
                     DDLogInfo("Softhub stopped with status \(String(reflecting: completionReason))")

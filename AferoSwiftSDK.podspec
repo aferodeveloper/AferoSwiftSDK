@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
     s.name         = "AferoSwiftSDK"
     s.module_name  = "Afero"
-    s.version      = "1.5.0"
+    s.version      = "1.5.1"
     s.summary      = "Library for interacting with Afero devices"
 
     s.description  = <<-DESC
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 
     s.subspec 'Core' do |ss|
         ss.source_files  = "AferoSwiftSDK/Core/**/*"
-        ss.dependency 'AferoSofthub', '~> 1.8'
+        ss.dependency 'AferoSofthub', '~> 1.8.4'
         ss.dependency 'CocoaLumberjack/Swift', '~> 3.7.4'
         ss.dependency 'CryptoSwift', '1.5.1'
         ss.dependency 'CocoaZ', '~> 1.4'

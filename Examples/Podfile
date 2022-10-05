@@ -56,8 +56,7 @@ target 'AferoLab' do
     pod 'QRCodeReader.swift', '~> 10.0.0'
     pod 'LKAlertController', '1.12.2'
     pod 'AppAuth', '1.4.0'
-    pod 'AferoSofthub', '1.8.0'
-    # :path => '../../AferoSofthub'
+    pod 'AferoSofthub', '1.8.4'
 
 end
 

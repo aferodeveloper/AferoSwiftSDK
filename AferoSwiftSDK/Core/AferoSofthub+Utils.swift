@@ -166,6 +166,7 @@ public typealias SofthubAssociationHandler = (String) -> Void
 public typealias SofthubAssociationStatus = AferoSofthubAssociationStatus
 
 public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDeviceDetectedHandler
+public typealias SofthubSetupModeDeviceGoneHandler = (String) -> Void
 
 /// A Swift wrapper around the Afero softhub software. This is the lowest-level
 /// interface available to non-Afero developers.
@@ -338,6 +339,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         logLevel: AferoSofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = { _, _, _ in },
+        setupModeDeviceGoneHandler: @escaping SofthubSetupModeDeviceGoneHandler,
         completionHandler: @escaping (SofthubCompletionReason)->Void
         ) {
         
@@ -365,6 +367,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
             setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+            setupModeDeviceGoneHandler: setupModeDeviceGoneHandler,
             completionHandler: localCompletionHandler
         )
         
@@ -453,6 +456,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
         logLevel: AferoSofthubLogLevel,
         associationHandler: @escaping SofthubAssociationHandler,
         setupModeDeviceDetectedHandler: @escaping SofthubSetupModeDeviceDetectedHandler = { _, _, _ in },
+        setupModeDeviceGoneHandler: @escaping SofthubSetupModeDeviceGoneHandler,
         completionHandler: @escaping (SofthubCompletionReason)->Void
         ) {
         
@@ -481,6 +485,7 @@ public typealias SofthubSetupModeDeviceDetectedHandler = AferoSofthubSetupModeDe
             hardwareIdentifier: identifier,
             associationHandler: localAssociationHandler,
             setupModeDeviceDetectedHandler: setupModeDeviceDetectedHandler,
+            setupModeDeviceGoneHandler: setupModeDeviceGoneHandler,
             completionHandler: localCompletionHandler
         )
         
