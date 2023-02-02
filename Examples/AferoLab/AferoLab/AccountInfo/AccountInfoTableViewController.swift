@@ -115,12 +115,14 @@ class AccountViewController: UITableViewController {
         if shouldShowTableContent {
             _ = zeroStateView.hideImage(animated: animated, delay: delay).then {
                 ()->Void in
-                self.navigationController?.setNavigationBarHidden(false, animated: animated)
+//                self.navigationController?.setNavigationBarHidden(false, animated: animated)
                 self.tableView.separatorStyle = .singleLine
             }
             return
         }
-        navigationController?.setNavigationBarHidden(true, animated: animated)
+//        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+
+//        navigationController?.setNavigationBarHidden(true, animated: animated)
         _ = zeroStateView.showImage(animated: animated, delay: delay)
         tableView.separatorStyle = .none
         
@@ -142,7 +144,11 @@ class AccountViewController: UITableViewController {
         AccountInfoHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
         }
+//
+//        print("Nav hidden: \(self.navigationController?.isNavigationBarHidden)")
+//
 
+        
         updateBackgroundVisibility(animated: false)
         refreshAccountAccess()
     }
@@ -449,14 +455,14 @@ class AccountViewController: UITableViewController {
         headerView.captionText = section.caption
         headerView.removeAllAccessoryViews()
         
-        if section == .devices {
-            let addDeviceButton = UIButton()
-            let image = UIImage(named: "AddButtonSmall", in: Bundle(for: type(of: self)), compatibleWith: nil)
-            addDeviceButton.setImage(image, for: .normal)
-            addDeviceButton.imageView?.contentMode = .scaleAspectFit
-            addDeviceButton.addTarget(self, action: #selector(associateDeviceTapped(_:)), for: .touchUpInside)
-            headerView.accessoryViews = [addDeviceButton]
-        }
+//        if section == .devices {
+//            let addDeviceButton = UIButton()
+//            let image = UIImage(named: "AddButtonSmall", in: Bundle(for: type(of: self)), compatibleWith: nil)
+//            addDeviceButton.setImage(image, for: .normal)
+//            addDeviceButton.imageView?.contentMode = .scaleAspectFit
+//            addDeviceButton.addTarget(self, action: #selector(associateDeviceTapped(_:)), for: .touchUpInside)
+//            headerView.accessoryViews = [addDeviceButton]
+//        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -619,20 +625,20 @@ class AccountViewController: UITableViewController {
     
     // MARK: <UITableViewDelegate>
     
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-
-        guard let _ = self.device(at: indexPath) else { return [] }
-        
-        return [
-            UITableViewRowAction(
-            style: .destructive,
-            title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
-                [weak self] action, indexPath in
-                _ = self?.disassociateDevice(at: indexPath)
-                },
-        ]
-        
-    }
+//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+//
+//        guard let _ = self.device(at: indexPath) else { return [] }
+//
+//        return [
+//            UITableViewRowAction(
+//            style: .destructive,
+//            title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
+//                [weak self] action, indexPath in
+//                _ = self?.disassociateDevice(at: indexPath)
+//                },
+//        ]
+//
+//    }
     
     // MARK: Actions
     

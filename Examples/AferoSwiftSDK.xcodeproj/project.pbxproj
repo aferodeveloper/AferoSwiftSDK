@@ -171,7 +171,7 @@
 		CBB10EC01DB6D419008297FB /* afrac-profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "afrac-profile.json"; sourceTree = "<group>"; };
 		CBB85CC41EC4D77B0010D61B /* userJohnSmith.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userJohnSmith.json; sourceTree = "<group>"; };
 		CBB85CC61EC4DD920010D61B /* userJaneDoe.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userJaneDoe.json; sourceTree = "<group>"; };
-		CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RulesProcessor2.playground; sourceTree = "<group>"; };
+		CBBD3BF71B17776B00C20237 /* RulesProcessor2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RulesProcessor2.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		CBC7A2731ADD48D300655611 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		CBC7A2741ADD48D300655611 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 		CBD2D5661B7CFAFE0056C72D /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
