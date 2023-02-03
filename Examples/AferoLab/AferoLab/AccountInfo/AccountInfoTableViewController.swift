@@ -16,6 +16,7 @@ import SVProgressHUD
 import QRCodeReader
 import AVFoundation
 import HTTPStatusCodes
+import AFNetworking
 
 import LKAlertController
 
@@ -157,8 +158,28 @@ class AccountViewController: UITableViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem!
     @IBAction func signOutTapped(_ sender: Any) {
-        _ = APIClient.default.signOut().then {
-            self.user = nil
+        let manager = AFHTTPSessionManager(sessionConfiguration: URLSessionConfiguration.default)
+        manager.requestSerializer = AFHTTPRequestSerializer()
+        manager.requestSerializer.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        let client = AFNetworkingAferoAPIClient.default
+        
+        let url = "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/logout"
+
+        let parameters =  ["client_id":"hubspace_ios" , "refresh_token": client.oauthCredential!.refreshToken]
+                
+        print("POST url \(url)   parameters \(parameters)" )
+    
+        manager.post(url, parameters: parameters, progress: nil, success: { (task: URLSessionDataTask, responseObject: Any?) in
+            print("Successfully posted logout")
+
+            APIClient.default.doSignOut(error: nil, completion: {
+                self.user = nil
+            } )
+        }) { (task: URLSessionDataTask?, error: Error) in
+            print("POST logout fails with error \(error)")
+            APIClient.default.doSignOut(error: nil, completion: {
+                self.user = nil
+            } )
         }
     }
     

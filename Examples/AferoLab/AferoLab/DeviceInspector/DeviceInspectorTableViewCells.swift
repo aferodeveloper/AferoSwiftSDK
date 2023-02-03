@@ -70,7 +70,7 @@ class DeviceInspectorGenericAttributeCell: UITableViewCell {
 
 // MARK: DeviceInspectorTagCollectionCellDelegate
 
-protocol DeviceInspectorTagCollectionCellDelegate: class {
+protocol DeviceInspectorTagCollectionCellDelegate: AnyObject {
     func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, preferredHeightDidChangeTo newHeight: CGFloat)
     func tagCollectionCell(_ cell: DeviceInspectorTagCollectionCell, presentTagEditorForTagAt indexPath: IndexPath)
 }
