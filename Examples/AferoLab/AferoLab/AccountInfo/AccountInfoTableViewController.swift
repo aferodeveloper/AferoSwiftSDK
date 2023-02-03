@@ -117,14 +117,13 @@ class AccountViewController: UITableViewController {
         if shouldShowTableContent {
             _ = zeroStateView.hideImage(animated: animated, delay: delay).then {
                 ()->Void in
-//                self.navigationController?.setNavigationBarHidden(false, animated: animated)
+                self.navigationController?.setNavigationBarHidden(false, animated: animated)
                 self.tableView.separatorStyle = .singleLine
             }
             return
         }
-//        self.navigationController?.setNavigationBarHidden(false, animated: animated)
 
-//        navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         _ = zeroStateView.showImage(animated: animated, delay: delay)
         tableView.separatorStyle = .none
         
@@ -146,10 +145,6 @@ class AccountViewController: UITableViewController {
         AccountInfoHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
         }
-//
-//        print("Nav hidden: \(self.navigationController?.isNavigationBarHidden)")
-//
-
         
         updateBackgroundVisibility(animated: false)
         refreshAccountAccess()

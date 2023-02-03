@@ -104,16 +104,18 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
         // builds authentication request
         let request = OIDAuthorizationRequest(configuration: configuration,
                                               clientId: clientID,
-                                              scopes: [OIDScopeOpenID, OIDScopeProfile],
+                                              scopes: [OIDScopeOpenID, OIDScopeProfile, "offline_access"],//, "oidc", "offline_access"],
                                               redirectURL: redirectURI,
                                               responseType: OIDResponseTypeCode,
                                               additionalParameters: nil)
 
+        
         // performs authentication request
         print("Initiating authorization request with scope: \(request.scope ?? "nil")")
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
+        
         appDelegate.currentAuthorizationFlow =
             OIDAuthState.authState(byPresenting: request, presenting: self) { authState, error in
           if let authState = authState {
