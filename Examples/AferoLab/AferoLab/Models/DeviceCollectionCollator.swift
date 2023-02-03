@@ -186,7 +186,8 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
         collatedDeviceIds = deviceCollection?
             .allDevices
             .filter {
-                !($0.profile?.deviceType?.starts(with: "Enterprise Hub") ?? false) || $0.isLocalSofthub
+                !($0.profile?.deviceType?.starts(with: "Enterprise Hub") ?? false)
+//                || $0.isLocalSofthub
             }
             .sorted(by: isOrderedBefore)
             .map { $0.deviceId } ?? []

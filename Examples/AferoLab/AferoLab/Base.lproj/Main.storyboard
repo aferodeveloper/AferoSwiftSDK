@@ -651,19 +651,19 @@
                                             <rect key="frame" x="16" y="11" width="287.5" height="175"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dqp-sv-pwW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="47"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="126.5"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utp-Gi-l02">
-                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="47"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="126.5"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zdJ-7Q-UQd">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="287.5" height="100"/>
                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                                     <color key="textColor" systemColor="darkTextColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-Xe-jBJ">
-                                                                    <rect key="frame" x="0.0" y="21" width="287.5" height="26"/>
+                                                                    <rect key="frame" x="0.0" y="100.5" width="287.5" height="26"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="AccountNameLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWG-lA-CQM">
                                                                             <rect key="frame" x="0.0" y="0.0" width="253.5" height="26"/>
@@ -684,7 +684,7 @@
                                                     </subviews>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oqh-tm-OYC">
-                                                    <rect key="frame" x="0.0" y="55" width="287.5" height="40.5"/>
+                                                    <rect key="frame" x="0.0" y="134.5" width="287.5" height="40.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Connection Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lpp-Yr-GLK">
                                                             <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
@@ -700,20 +700,20 @@
                                                         </label>
                                                     </subviews>
                                                 </stackView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Nd-Iw-iQK">
-                                                    <rect key="frame" x="0.0" y="103.5" width="287.5" height="71.5"/>
+                                                <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Nd-Iw-iQK">
+                                                    <rect key="frame" x="0.0" y="179" width="287.5" height="8"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SoftHub" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lf0-Ze-wi8">
-                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="20.5"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SoftHub" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lf0-Ze-wi8">
+                                                            <rect key="frame" x="0.0" y="0.0" width="287.5" height="0.0"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                             <color key="textColor" systemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ccQ-4H-2db">
-                                                            <rect key="frame" x="0.0" y="28.5" width="287.5" height="43"/>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ccQ-4H-2db">
+                                                            <rect key="frame" x="0.0" y="8" width="287.5" height="0.0"/>
                                                             <subviews>
                                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="right" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zcz-gR-67K" userLabel="HubStatusSwitch">
-                                                                    <rect key="frame" x="238.5" y="0.0" width="51" height="43"/>
+                                                                    <rect key="frame" x="238.5" y="0.0" width="51" height="0.0"/>
                                                                     <color key="onTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <connections>
@@ -744,6 +744,7 @@
                                     <outlet property="accountNameLabel" destination="FWG-lA-CQM" id="6KK-oi-YMN"/>
                                     <outlet property="connectionStatusLabel" destination="T7V-1m-RXK" id="4ce-Rx-npY"/>
                                     <outlet property="softhubSwitch" destination="Zcz-gR-67K" id="nkD-H3-kA2"/>
+                                    <outlet property="softhubView" destination="1Nd-Iw-iQK" id="nRb-9j-JJv"/>
                                     <outlet property="verificationNeededAnnunciator" destination="x64-jD-a0d" id="V4j-WB-MNc"/>
                                 </connections>
                             </tableViewCell>
@@ -1062,7 +1063,7 @@
                 <navigationController title="AferoLab" automaticallyAdjustsScrollViewInsets="NO" id="YYV-1Q-Ilk" customClass="AferoLabNavigationController" customModule="AferoLab" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="NJL-Rb-4Ot">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="98.5"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="92.5"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="barTintColor" red="0.99987393619999998" green="0.67495071890000002" blue="0.24090552330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2903,7 +2904,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sf2-PJ-NAK" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qhz-SK-aoL">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

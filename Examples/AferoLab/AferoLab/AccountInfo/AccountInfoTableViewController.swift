@@ -26,6 +26,7 @@ typealias APIClient = AFNetworkingAferoAPIClient
 
 class AccountInfoCell: UITableViewCell {
     
+    @IBOutlet weak var softhubView: UIStackView!
     @IBOutlet weak var accountNameLabel: UILabel!
     @IBOutlet weak var verificationNeededAnnunciator: UIButton!
     @IBAction func verificationNeededAnnunciatorTapped(_ sender: Any) {
@@ -551,7 +552,8 @@ class AccountViewController: UITableViewController {
     }
     
     func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
-        annunciator?.isHidden = user?.credential?.verified ?? true
+        annunciator?.isHidden = true
+//        annunciator?.isHidden = user?.credential?.verified ?? true
         annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
         annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
     }
@@ -635,6 +637,7 @@ class AccountViewController: UITableViewController {
     }
     
     func configureSofthubSwitch(_ softhubSwitch: UISwitch?) {
+        
         softhubSwitch?.isOn = softhubEnabled
         softhubSwitch?.removeTarget(nil, action: nil, for: .valueChanged)
         softhubSwitch?.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
