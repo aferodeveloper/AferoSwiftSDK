@@ -1,7 +1,7 @@
 source 'git@github.com:aferodeveloper/Podspecs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '9.3'
+platform :ios, '12.0'
 
 use_frameworks!
 
@@ -80,6 +80,13 @@ target 'Bubba' do
 end
 
 post_install do |installer|
+    installer.generated_projects.each do |project|
+        project.targets.each do |target|
+            target.build_configurations.each do |config|
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+            end
+        end
+    end
 
 #  # List of Pods to use as Swift 4.2
 #  myTargets = ['AferoSwiftSDK']

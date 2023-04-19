@@ -472,14 +472,14 @@ class AccountViewController: UITableViewController {
         headerView.captionText = section.caption
         headerView.removeAllAccessoryViews()
         
-//        if section == .devices {
-//            let addDeviceButton = UIButton()
-//            let image = UIImage(named: "AddButtonSmall", in: Bundle(for: type(of: self)), compatibleWith: nil)
-//            addDeviceButton.setImage(image, for: .normal)
-//            addDeviceButton.imageView?.contentMode = .scaleAspectFit
-//            addDeviceButton.addTarget(self, action: #selector(associateDeviceTapped(_:)), for: .touchUpInside)
-//            headerView.accessoryViews = [addDeviceButton]
-//        }
+        if section == .devices {
+            let addDeviceButton = UIButton()
+            let image = UIImage(named: "AddButtonSmall", in: Bundle(for: type(of: self)), compatibleWith: nil)
+            addDeviceButton.setImage(image, for: .normal)
+            addDeviceButton.imageView?.contentMode = .scaleAspectFit
+            addDeviceButton.addTarget(self, action: #selector(associateDeviceTapped(_:)), for: .touchUpInside)
+            headerView.accessoryViews = [addDeviceButton]
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -547,7 +547,7 @@ class AccountViewController: UITableViewController {
     }
     
     func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
-        annunciator?.isHidden = true
+//        annunciator?.isHidden = true
 //        annunciator?.isHidden = user?.credential?.verified ?? true
         annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
         annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
@@ -644,20 +644,20 @@ class AccountViewController: UITableViewController {
     
     // MARK: <UITableViewDelegate>
     
-//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-//
-//        guard let _ = self.device(at: indexPath) else { return [] }
-//
-//        return [
-//            UITableViewRowAction(
-//            style: .destructive,
-//            title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
-//                [weak self] action, indexPath in
-//                _ = self?.disassociateDevice(at: indexPath)
-//                },
-//        ]
-//
-//    }
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+
+        guard let _ = self.device(at: indexPath) else { return [] }
+        
+        return [
+            UITableViewRowAction(
+            style: .destructive,
+            title: NSLocalizedString("Disassociate", comment: "Disassociate device table row action titile")) {
+                [weak self] action, indexPath in
+                _ = self?.disassociateDevice(at: indexPath)
+                },
+        ]
+        
+    }
     
     // MARK: Actions
     

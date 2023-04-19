@@ -75,7 +75,8 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     enum Section: Int, CustomStringConvertible, CustomDebugStringConvertible {
         
         case deviceInfo = 0
-     
+        case wifi
+        case tags
         case mcuApplicationSpecificAttributes
         case gpioAttributes
         case aferoVersionsAttributes
@@ -85,11 +86,11 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         case aferoCloudProvidedAttributes
         case aferoOfflineSchedulesAttributes
         case aferoSystemSpecificAttributes
-        case wifi // hide
-        case tags // hide
         
         static let all: [Section] = [
             .deviceInfo,
+            .wifi,
+            .tags,
             .mcuApplicationSpecificAttributes,
             .gpioAttributes,
             .aferoVersionsAttributes,
@@ -99,8 +100,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
             .aferoCloudProvidedAttributes,
             .aferoOfflineSchedulesAttributes,
             .aferoSystemSpecificAttributes,
-//            .wifi,
-//            .tags,
         ]
         
         static var count: Int { return all.count }
@@ -379,7 +378,6 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         
         didSet {
             title = deviceModelable?.displayName
-            
             tagObservation = deviceModelable.deviceTagCollection?.observe(\.deviceTags, options: [.initial, .new]) {
                 [weak self] obj, chg in
                 self?.updateTagCell()

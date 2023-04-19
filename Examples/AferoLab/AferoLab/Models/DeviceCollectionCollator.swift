@@ -184,13 +184,10 @@ class DeviceCollectionDeviceCollator: DeviceCollectionObserving, DeviceCollator 
     
     func updateCollatedIds() {
         collatedDeviceIds = deviceCollection?
-            .allDevices
-            .filter {
-                !($0.profile?.deviceType?.starts(with: "Enterprise Hub") ?? false)
-//                || $0.isLocalSofthub
-            }
+            .devices
             .sorted(by: isOrderedBefore)
             .map { $0.deviceId } ?? []
+        
     }
     
     func deviceCollectionBeganUpdates() {
