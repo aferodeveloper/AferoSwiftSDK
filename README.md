@@ -1,8 +1,8 @@
 ---
 author: Cora Middleton
 title: "AferoSwiftSDK"
-date: 2022-Jamuary-30
-status: 1.5.1
+date: 2023-April-20
+status: 1.5.2
 ---
 
 # AferoSwiftSDK
@@ -42,8 +42,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Required Environment
-### XCode 13
-AferoSwiftSDK supports Swift versions 5+, and Xcode versions 13 and 14, and iOS 9.3+.
+### XCode 14
+AferoSwiftSDK supports Swift versions 5+, and Xcode versions 13 and 14, and iOS 11.0+.
 ### GitHub
 AferoSwiftSDK is hosted in source format on GitHub; partners are provided read-only access. In addition, for compatibility with CocoaPods installation, the user must configure their GitHub account for password-less authentication at the command line. GitHub provides a number of methods for accomplishing this, including [SSH Keys](https://help.github.com/en/articles/adding-a-new-ssh-key-to-your-github-account) and [Personal Access Tokens](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line).
 ### Cocoapods
