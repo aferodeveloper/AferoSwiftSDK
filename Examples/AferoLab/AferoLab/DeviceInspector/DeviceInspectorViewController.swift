@@ -344,7 +344,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         super.viewDidLoad()
         tableView.allowsMultipleSelection = false
         tableView.allowsSelection = true
-        tableView.remembersLastFocusedIndexPath = false//true
+        tableView.remembersLastFocusedIndexPath = false
         tableView.estimatedRowHeight = 55
         tableView.estimatedSectionHeaderHeight = 25
         tableView.sectionHeaderHeight = UITableView.automaticDimension
