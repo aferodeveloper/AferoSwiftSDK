@@ -3,14 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>OAuthClientId</key>
-	<string>MY_OATHCLIENTID</string>
+	<string>MY_OAUTH_CLIENT_ID</string>
 	<key>OAuthOpenIdURL</key>
-	<string>MY_OATHOPENIDURL</string>
+	<string>MY_OAUTH_OPENID_URL</string>
 	<key>OAuthRedirectURL</key>
-	<string>MY_OATHREDIRECTURL</string>
+	<string>MY_OAUTH_REDIRECT_URL</string>
 	<key>APIHostname</key>
-	<string>MY_APIHOSTNAME</string>
+	<string>MY_API_HOSTNAME</string>
 	<key>AuthenticatorCert</key>
-	<string>MY_AUTHENTICATORCERT</string>
+	<string>MY_AUTHENTICATOR_CERT</string>
 </dict>
 </plist>
