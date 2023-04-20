@@ -4,10 +4,8 @@
 <dict>
 	<key>OAuthClientId</key>
 	<string>MY_OATHCLIENTID</string>
-	<key>OAuthTokenURL</key>
-	<string>MY_OATHTOKENURL</string>
-	<key>OAuthAuthURL</key>
-	<string>MY_OATHAUTHURL</string>
+	<key>OAuthOpenIdURL</key>
+	<string>MY_OATHOPENIDURL</string>
 	<key>OAuthRedirectURL</key>
 	<string>MY_OATHREDIRECTURL</string>
 	<key>APIHostname</key>

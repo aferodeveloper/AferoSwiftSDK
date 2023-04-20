@@ -158,6 +158,7 @@ extension DeviceModelable {
 
     }
     
+    
     /// Tell the softhub that association has been completed.
     ///
     /// This is required after a successful call to the Afero Client API to associate

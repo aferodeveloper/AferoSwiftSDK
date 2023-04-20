@@ -344,11 +344,13 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
         super.viewDidLoad()
         tableView.allowsMultipleSelection = false
         tableView.allowsSelection = true
-        tableView.remembersLastFocusedIndexPath = true
+        tableView.remembersLastFocusedIndexPath = false
         tableView.estimatedRowHeight = 55
         tableView.estimatedSectionHeaderHeight = 25
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.rowHeight = UITableView.automaticDimension
+        
+        tableView.backgroundColor = UIColor.white
         
         TableViewHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
@@ -956,6 +958,10 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     }
     
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = UIColor(red: 0.953, green: 0.686, blue: 0.333, alpha: 1.0)
+        cell.selectedBackgroundView = backgroundView
+        
         
         if let deviceInfoCell = cell as? DeviceInspectorDeviceCharacteristicCell {
             configure(characteristicCell: deviceInfoCell, for: indexPath)
@@ -981,7 +987,7 @@ class DeviceInspectorViewController: UITableViewController, DeviceModelableObser
     
     func configure(tagCell cell: DeviceInspectorTagCollectionCell) {
         cell.delegate = self
-        cell.selectionStyle = .none
+        cell.selectionStyle = .blue
         cell.set(tags: deviceModelable.deviceTags)
     }
     
@@ -1142,7 +1148,7 @@ extension DeviceInspectorViewController: DeviceInspectorTagCollectionCellDelegat
 
         guard
             let tagCell = cell.collectionView.cellForItem(at: indexPath) else {
-                print("No tagCell to present")
+            DDLogInfo("No tagCell to present")
                 return
         }
         performSegue(withIdentifier: .showTagEditor, sender: tagCell)

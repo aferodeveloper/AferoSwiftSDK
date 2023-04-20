@@ -104,15 +104,15 @@ class SignInViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func unwindFromRequestResetCode(segue: UIStoryboardSegue) {
-        print("performed with segue: \(segue)")
+        DDLogInfo("performed with segue: \(segue)")
     }
     
     @IBAction func unwindFromResetPassword(segue: UIStoryboardSegue) {
-        print("performed with segue: \(segue)")
+        DDLogInfo("performed with segue: \(segue)")
     }
     
     @IBAction func cancelFromCreateAccount(segue: UIStoryboardSegue) {
-        print("performed with segue: \(segue)")
+        DDLogInfo("performed with segue: \(segue)")
     }
 
     @IBAction func signInFromCreateAccount(segue: UIStoryboardSegue) {

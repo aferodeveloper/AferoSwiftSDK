@@ -690,13 +690,15 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     func handleWifiSetupError(_ error: Error) {
         
+        
+        
         let completion: ()->Void = {
             
             let msg = String(
                 format: NSLocalizedString("Unable to complete wifi setup: %@",
                                           comment: "wifi setup error template"
                 ),
-                error.localizedDescription
+                String(describing: error)
             )
             
             SVProgressHUD.showError(withStatus: msg)
@@ -736,6 +738,8 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
             try wifiSetupManager?.scan()
             startAnimatingRefreshIndicators()
         } catch {
+            stopAnimatingRefreshIndicators()
+            
             DDLogError("Error thrown attempting to scan for wifi SSIDs: \(String(describing: error))", tag: TAG)
             handleWifiSetupError(error)
         }
@@ -803,7 +807,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
                 "Unable to associate with %@: %@", comment: "ScanWifiViewController associate error template"
             )
             
-            let msg = String(format: tmpl, ssid, error.localizedDescription)
+            let msg = String(format: tmpl, ssid, String(describing: error))
             
             DDLogError(msg, tag: TAG)
             SVProgressHUD.showError(
@@ -925,7 +929,7 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
     
     override func handleWifiCommandError(_ error: Error) {
         stopAnimatingRefreshIndicators()
-        let message = String(format: NSLocalizedString("Wifi command error: %@", comment: "Wifi command error status template"), error.localizedDescription)
+        let message = String(format: NSLocalizedString("Wifi command error: %@", comment: "Wifi command error status template"), String(describing: error))
         DDLogError("Error executing wifi command for device \(deviceModel!.deviceId): \(message)", tag: TAG)
         SVProgressHUD.showError(withStatus: message, maskType: .gradient)
     }
@@ -945,3 +949,12 @@ class ScanWifiViewController: WifiSetupAwareTableViewController, AferoWifiPasswo
 }
 
 
+
+enum ApiError: String, LocalizedError {
+
+  case invalidCredentials = "Invalid credentials"
+  case noConnection = "No connection"
+
+  var localizedDescription: String { return NSLocalizedString(self.rawValue, comment: "") }
+
+}

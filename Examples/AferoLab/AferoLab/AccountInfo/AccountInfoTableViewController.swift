@@ -16,6 +16,7 @@ import SVProgressHUD
 import QRCodeReader
 import AVFoundation
 import HTTPStatusCodes
+import AFNetworking
 
 import LKAlertController
 
@@ -25,6 +26,7 @@ typealias APIClient = AFNetworkingAferoAPIClient
 
 class AccountInfoCell: UITableViewCell {
     
+    @IBOutlet weak var softhubView: UIStackView!
     @IBOutlet weak var accountNameLabel: UILabel!
     @IBOutlet weak var verificationNeededAnnunciator: UIButton!
     @IBAction func verificationNeededAnnunciatorTapped(_ sender: Any) {
@@ -120,6 +122,7 @@ class AccountViewController: UITableViewController {
             }
             return
         }
+
         navigationController?.setNavigationBarHidden(true, animated: animated)
         _ = zeroStateView.showImage(animated: animated, delay: delay)
         tableView.separatorStyle = .none
@@ -142,7 +145,7 @@ class AccountViewController: UITableViewController {
         AccountInfoHeaderFooterViewReuse.allCases.forEach {
             tableView.register($0.reuseClass, forHeaderFooterViewReuseIdentifier: $0.reuseIdentifier)
         }
-
+        
         updateBackgroundVisibility(animated: false)
         refreshAccountAccess()
     }
@@ -151,8 +154,26 @@ class AccountViewController: UITableViewController {
     
     @IBOutlet weak var signOutButton: UIBarButtonItem!
     @IBAction func signOutTapped(_ sender: Any) {
-        _ = APIClient.default.signOut().then {
-            self.user = nil
+        let manager = AFHTTPSessionManager(sessionConfiguration: URLSessionConfiguration.default)
+        manager.requestSerializer = AFHTTPRequestSerializer()
+        manager.requestSerializer.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        let client = AFNetworkingAferoAPIClient.default
+        
+        let url = AFNetworkingAferoAPIClient.default.oAuthOpenIdURL!.appendingPathComponent("logout")
+        
+        let parameters =  ["client_id": AFNetworkingAferoAPIClient.default.oauthClientId , "refresh_token": client.oauthCredential!.refreshToken]
+        
+        manager.post(url.absoluteString, parameters: parameters, progress: nil, success: { (task: URLSessionDataTask, responseObject: Any?) in
+            DDLogInfo("Successfully posted logout")
+
+            APIClient.default.doSignOut(error: nil, completion: {
+                self.user = nil
+            } )
+        }) { (task: URLSessionDataTask?, error: Error) in
+            DDLogWarn("POST logout fails with error \(error)")
+            APIClient.default.doSignOut(error: nil, completion: {
+                self.user = nil
+            } )
         }
     }
     
@@ -161,7 +182,7 @@ class AccountViewController: UITableViewController {
     }
     
     @IBAction func unwindFromCreateAccount(segue: UIStoryboardSegue) {
-        print("performed with segue: \(segue)")
+        DDLogInfo("performed with segue: \(segue)")
     }
     
     @IBAction func unwindFromDeviceInspector(segue: UIStoryboardSegue) {
@@ -524,7 +545,6 @@ class AccountViewController: UITableViewController {
     }
     
     func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
-        annunciator?.isHidden = user?.credential?.verified ?? true
         annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
         annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
     }
@@ -608,6 +628,7 @@ class AccountViewController: UITableViewController {
     }
     
     func configureSofthubSwitch(_ softhubSwitch: UISwitch?) {
+        
         softhubSwitch?.isOn = softhubEnabled
         softhubSwitch?.removeTarget(nil, action: nil, for: .valueChanged)
         softhubSwitch?.addTarget(self, action: #selector(softhubSwitchValueChanged(_:)), for: .valueChanged)
