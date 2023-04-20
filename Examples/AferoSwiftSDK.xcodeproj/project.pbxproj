@@ -589,20 +589,20 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AferoTests/Pods-AferoTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking-iOS9.3/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager-iOS9.3/AFOAuth2Manager.framework",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
 				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
-				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK-iOS9.3/Afero.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-iOS9.3/CocoaLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaZ-iOS9.3/CocoaZ.framework",
-				"${BUILT_PRODUCTS_DIR}/CryptoSwift-iOS9.3/CryptoSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/HTTPStatusCodes-iOS9.3/HTTPStatusCodes.framework",
+				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK/Afero.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaZ/CocoaZ.framework",
+				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/HTTPStatusCodes/HTTPStatusCodes.framework",
 				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit-iOS9.3/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
-				"${BUILT_PRODUCTS_DIR}/RSEnvironment-iOS9.3/RSEnvironment.framework",
-				"${BUILT_PRODUCTS_DIR}/ReactiveSwift-iOS9.3/ReactiveSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RSEnvironment/RSEnvironment.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (

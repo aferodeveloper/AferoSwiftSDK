@@ -612,17 +612,17 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AferoLab/Pods-AferoLab-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking-iOS12.0/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager-iOS12.0/AFOAuth2Manager.framework",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/AFOAuth2Manager/AFOAuth2Manager.framework",
 				"${PODS_ROOT}/AferoSofthub/AferoSofthub.framework",
-				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK-iOS12.0/Afero.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack-iOS12.0/CocoaLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaZ-iOS12.0/CocoaZ.framework",
-				"${BUILT_PRODUCTS_DIR}/CryptoSwift-iOS12.0/CryptoSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/HTTPStatusCodes-iOS12.0/HTTPStatusCodes.framework",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit-iOS12.0/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/RSEnvironment-iOS12.0/RSEnvironment.framework",
-				"${BUILT_PRODUCTS_DIR}/ReactiveSwift-iOS12.0/ReactiveSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/AferoSwiftSDK/Afero.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaZ/CocoaZ.framework",
+				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/HTTPStatusCodes/HTTPStatusCodes.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/RSEnvironment/RSEnvironment.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework",
 				"${BUILT_PRODUCTS_DIR}/LKAlertController/LKAlertController.framework",
 				"${BUILT_PRODUCTS_DIR}/QRCodeReader.swift/QRCodeReader.framework",
@@ -864,7 +864,7 @@
 				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DINTERNAL -DDEBUG -Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
@@ -884,7 +884,7 @@
 				CODE_SIGN_ENTITLEMENTS = AferoLab/AferoLab.entitlements;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -901,6 +901,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLabTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -918,6 +919,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLabTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -934,6 +936,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLabUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -950,6 +953,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 534JTUC87X;
 				INFOPLIST_FILE = AferoLabUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.afero.AferoLabUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
