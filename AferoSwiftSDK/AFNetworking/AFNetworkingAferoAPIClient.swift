@@ -25,23 +25,20 @@ public class AFNetworkingAferoAPIClient {
             URL(string: "https://\(apiHostname)")!
         }
         
-        let oAuthAuthURL: URL?
-        let oAuthTokenURL: URL?
+        let oAuthOpenIdURL: URL?
         
         let softhubService: String?
         let authenticatorCert: String?
         
         public init(apiHostname: String = "api.afero.io", softhubService:String?,
                     authenticatorCert:String?,
-                    oAuthAuthURL: String?,
-                    oAuthTokenURL: String?,
+                    oAuthOpenIdURL: String?,
                     oauthClientId: String,
                     oauthClientSecret: String?) {
             self.apiHostname = apiHostname
             self.softhubService = softhubService
             self.authenticatorCert = authenticatorCert
-            self.oAuthAuthURL = oAuthAuthURL != nil ? URL(string: oAuthAuthURL!) : nil
-            self.oAuthTokenURL = oAuthTokenURL != nil ? URL(string: oAuthTokenURL!) : nil
+            self.oAuthOpenIdURL = oAuthOpenIdURL != nil ? URL(string: oAuthOpenIdURL!) : nil
             self.oauthClientId = oauthClientId
             self.oauthClientSecret = oauthClientSecret
         }
@@ -51,8 +48,7 @@ public class AFNetworkingAferoAPIClient {
         static let APIHostnameKey = "APIHostname"
         static let SofthubServiceKey = "SofthubService"
         static let AuthenticatorCertKey = "AuthenticatorCert"
-        static let OAuthAuthUrlKey = "OAuthAuthURL"
-        static let OAuthTokenUrlKey = "OAuthTokenURL"
+        static let OAuthOpenIdUrlKey = "OAuthOpenIdURL"
 
         
         init(with plistData: Data) {
@@ -85,10 +81,8 @@ public class AFNetworkingAferoAPIClient {
                 DDLogWarn("Overriding apiBaseUrl with \(apiHostname)", tag: "AFNetworkingAferoAPIClient.Config")
             }
             
-            let oAuthTokenURL: String? = plistDict[type(of: self).OAuthTokenUrlKey] as? String
-            
-            let oAuthAuthURL: String? = plistDict[type(of: self).OAuthAuthUrlKey] as? String
-            
+            let oAuthOpenIdURL: String? = plistDict[type(of: self).OAuthOpenIdUrlKey] as? String
+                        
             let softhubService = plistDict[type(of: self).SofthubServiceKey] as? String
             
             let authenticatorCert = plistDict[type(of: self).AuthenticatorCertKey] as? String
@@ -97,8 +91,7 @@ public class AFNetworkingAferoAPIClient {
             self.init(apiHostname: apiHostname,
                       softhubService: softhubService,
                       authenticatorCert: authenticatorCert,
-                      oAuthAuthURL: oAuthAuthURL,
-                      oAuthTokenURL: oAuthTokenURL,
+                      oAuthOpenIdURL: oAuthOpenIdURL,
                       oauthClientId: oauthClientId,
                       oauthClientSecret: oauthClientSecret)
         }
@@ -124,10 +117,9 @@ public class AFNetworkingAferoAPIClient {
     public var authenticatorCert: String? { return config.authenticatorCert }
     public var apiHostname: String { return config.apiHostname }
     public var apiBaseURL: URL { return config.apiBaseURL }
-    public var oAuthAuthURL: URL? { return config.oAuthAuthURL }
-    public var oAuthTokenURL: URL? { return config.oAuthTokenURL }
-    
-    var oauthClientId: String { return config.oauthClientId }
+    public var oAuthOpenIdURL: URL? { return config.oAuthOpenIdURL }
+        
+    public var oauthClientId: String { return config.oauthClientId }
     var oauthClientSecret: String { return config.oauthClientSecret ?? "" }
     
     let config: Config
@@ -343,8 +335,8 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
         }
 
         var oAuthBaseUrl: URL?
-        if let scheme = oAuthTokenURL?.scheme,let host = oAuthTokenURL?.host {
-            oAuthBaseUrl = URL(string: "\(scheme)://\(host)");
+        if let scheme = oAuthOpenIdURL?.scheme,let host = oAuthOpenIdURL?.host {
+            oAuthBaseUrl = URL(string: "\(scheme)://\(host)/token");
         }
         
         let oauthManager = AFOAuth2Manager(
@@ -354,7 +346,7 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
         )
 
         oauthManager.authenticateUsingOAuth(
-            withURLString: oAuthTokenURL?.path ?? type(of: self).OAUTH_TOKEN_PATH,
+            withURLString: oAuthBaseUrl?.path ?? type(of: self).OAUTH_TOKEN_PATH,
             refreshToken: credential.refreshToken,
             success: {
                 credential in

@@ -159,20 +159,18 @@ class AccountViewController: UITableViewController {
         manager.requestSerializer.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         let client = AFNetworkingAferoAPIClient.default
         
-        let url = "https://accounts.hubspaceconnect.com/auth/realms/thd/protocol/openid-connect/logout"
-
-        let parameters =  ["client_id":"hubspace_ios" , "refresh_token": client.oauthCredential!.refreshToken]
-                
-        print("POST url \(url)   parameters \(parameters)" )
-    
-        manager.post(url, parameters: parameters, progress: nil, success: { (task: URLSessionDataTask, responseObject: Any?) in
-            print("Successfully posted logout")
+        let url = AFNetworkingAferoAPIClient.default.oAuthOpenIdURL!.appendingPathComponent("logout")
+        
+        let parameters =  ["client_id": AFNetworkingAferoAPIClient.default.oauthClientId , "refresh_token": client.oauthCredential!.refreshToken]
+        
+        manager.post(url.absoluteString, parameters: parameters, progress: nil, success: { (task: URLSessionDataTask, responseObject: Any?) in
+            DDLogInfo("Successfully posted logout")
 
             APIClient.default.doSignOut(error: nil, completion: {
                 self.user = nil
             } )
         }) { (task: URLSessionDataTask?, error: Error) in
-            print("POST logout fails with error \(error)")
+            DDLogWarn("POST logout fails with error \(error)")
             APIClient.default.doSignOut(error: nil, completion: {
                 self.user = nil
             } )
@@ -184,7 +182,7 @@ class AccountViewController: UITableViewController {
     }
     
     @IBAction func unwindFromCreateAccount(segue: UIStoryboardSegue) {
-        print("performed with segue: \(segue)")
+        DDLogInfo("performed with segue: \(segue)")
     }
     
     @IBAction func unwindFromDeviceInspector(segue: UIStoryboardSegue) {
@@ -547,8 +545,6 @@ class AccountViewController: UITableViewController {
     }
     
     func configureVerificationNeededAnnunciator(_ annunciator: UIButton?) {
-//        annunciator?.isHidden = true
-//        annunciator?.isHidden = user?.credential?.verified ?? true
         annunciator?.removeTarget(nil, action: nil, for: .touchUpInside)
         annunciator?.addTarget(self, action: #selector(verificationNeededAnnunciatorTapped(_:)), for: .touchUpInside)
     }

@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-Version 1.5.2 *(2023-04-20)*
+Version 1.6.0 *(2023-04-20)*
 ----------------------------
  * Updates example app
  * set minimum deployment target to 11.0

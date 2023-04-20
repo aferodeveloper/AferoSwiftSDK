@@ -62,14 +62,10 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
     func beginSignin() {
         
         let plist = getPlist()
-        var maybeTokenEndpoint: URL? = nil
-        if let maybeOAuthTokenUrlString = plist["OAuthTokenURL"] as? String {
-            maybeTokenEndpoint = URL(string:maybeOAuthTokenUrlString)
-        }
         
-        var maybeAuthorizationEndpoint: URL? = nil
-        if let maybeOAuthAuthUrlString = plist["OAuthAuthURL"] as? String {
-            maybeAuthorizationEndpoint = URL(string:maybeOAuthAuthUrlString)
+        var maybeOpenIdEndpoint: String? = nil
+        if let maybeOAuthAuthUrlString = plist["OAuthOpenIdURL"] as? String {
+            maybeOpenIdEndpoint = maybeOAuthAuthUrlString
         }
         
         var maybeRedirectURI: URL? = nil
@@ -78,14 +74,14 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
         }
         
         
-        guard let authorizationEndpoint = maybeAuthorizationEndpoint else {
+        guard let openIdEndpoint = maybeOpenIdEndpoint else {
             fatalError("Missing AuthorizationEndpoint")
         }
         
         
-        guard let tokenEndpoint = maybeTokenEndpoint else {
-            fatalError("Missing TokenEndpoint")
-        }
+//        guard let tokenEndpoint = maybeTokenEndpoint else {
+//            fatalError("Missing TokenEndpoint")
+//        }
         
         
         guard let clientID = plist["OAuthClientId"] as? String else {
@@ -97,8 +93,8 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
             fatalError("Missing OAuthRedirectURL")
         }
         
-        let configuration = OIDServiceConfiguration(authorizationEndpoint: authorizationEndpoint,
-                                                    tokenEndpoint: tokenEndpoint)
+        let configuration = OIDServiceConfiguration(authorizationEndpoint: URL(string:"\(openIdEndpoint)/auth")!,
+                                                    tokenEndpoint: URL(string:"\(openIdEndpoint)/token")!)
   
         
         // builds authentication request
@@ -111,7 +107,7 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
 
         
         // performs authentication request
-        print("Initiating authorization request with scope: \(request.scope ?? "nil")")
+        DDLogInfo("Initiating authorization request with scope: \(request.scope ?? "nil")")
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
@@ -119,7 +115,7 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
         appDelegate.currentAuthorizationFlow =
             OIDAuthState.authState(byPresenting: request, presenting: self) { authState, error in
           if let authState = authState {
-            print("Got authorization tokens. Access token: " +
+              DDLogInfo("Got authorization tokens. Access token: " +
                   "\(authState.lastTokenResponse?.accessToken ?? "nil")")
               guard let accessToken = authState.lastTokenResponse?.accessToken else {
                   return
@@ -140,7 +136,7 @@ class StartViewController: UIViewController, ASWebAuthenticationPresentationCont
               
               
           } else {
-            print("Authorization error: \(error?.localizedDescription ?? "Unknown error")")
+              DDLogInfo("Authorization error: \(error?.localizedDescription ?? "Unknown error")")
           }
         }
         

@@ -1148,7 +1148,7 @@ extension DeviceInspectorViewController: DeviceInspectorTagCollectionCellDelegat
 
         guard
             let tagCell = cell.collectionView.cellForItem(at: indexPath) else {
-                print("No tagCell to present")
+            DDLogInfo("No tagCell to present")
                 return
         }
         performSegue(withIdentifier: .showTagEditor, sender: tagCell)
