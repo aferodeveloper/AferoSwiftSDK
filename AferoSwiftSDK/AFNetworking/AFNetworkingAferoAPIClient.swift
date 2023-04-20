@@ -334,19 +334,19 @@ extension AFNetworkingAferoAPIClient: AferoAPIClientProto {
             return
         }
 
-        var oAuthBaseUrl: URL?
-        if let scheme = oAuthOpenIdURL?.scheme,let host = oAuthOpenIdURL?.host {
-            oAuthBaseUrl = URL(string: "\(scheme)://\(host)/token");
-        }
+        let oAuthTokenUrl: String? = oAuthOpenIdURL != nil ? "\(oAuthOpenIdURL!.absoluteString )/token" : nil
+        
+        DDLogInfo("RefreshUrl \(String(describing: oAuthTokenUrl))", tag: TAG)
+
         
         let oauthManager = AFOAuth2Manager(
-            baseURL: oAuthBaseUrl ?? apiBaseURL,
+            baseURL: apiBaseURL,
             clientID: oauthClientId,
             secret: oauthClientSecret
         )
 
         oauthManager.authenticateUsingOAuth(
-            withURLString: oAuthBaseUrl?.path ?? type(of: self).OAUTH_TOKEN_PATH,
+            withURLString: oAuthTokenUrl ?? type(of: self).OAUTH_TOKEN_PATH,
             refreshToken: credential.refreshToken,
             success: {
                 credential in
